@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="h0jLtr" name="spiro" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginFormats="buildStandalone,buildVST3" pluginVST3Category="Instrument,Synth"
+              cppLanguageStandard="17" companyName="pole" pluginCode="pspr"
+              pluginManufacturerCode="pole" companyWebsite="https://github.com/p-o-l-e">
+  <MAINGROUP id="fQRmMz" name="spiro">
+    <GROUP id="{8092EC6A-FEE9-DE88-28B8-36D77CA9E780}" name="Source">
+      <GROUP id="{AEA3CE57-0D82-BF41-953F-F3D605F1E0AD}" name="cell">
+        <FILE id="vynom2" name="mixer.cpp" compile="1" resource="0" file="Source/cell/mixer.cpp"/>
+        <FILE id="Sbpidw" name="mixer.h" compile="0" resource="0" file="Source/cell/mixer.h"/>
+        <FILE id="g9rXL6" name="rotor.cpp" compile="1" resource="0" file="Source/cell/rotor.cpp"/>
+        <FILE id="zc2euK" name="rotor.h" compile="0" resource="0" file="Source/cell/rotor.h"/>
+        <FILE id="aVuAYP" name="product.cpp" compile="1" resource="0" file="Source/cell/product.cpp"/>
+        <FILE id="aVstCX" name="product.h" compile="0" resource="0" file="Source/cell/product.h"/>
+        <FILE id="afR1uw" name="sigma.cpp" compile="1" resource="0" file="Source/cell/sigma.cpp"/>
+        <FILE id="A7YTD8" name="sigma.h" compile="0" resource="0" file="Source/cell/sigma.h"/>
+        <FILE id="GKeWlr" name="snh.cpp" compile="1" resource="0" file="Source/cell/snh.cpp"/>
+        <FILE id="Dtr4Ro" name="snh.h" compile="0" resource="0" file="Source/cell/snh.h"/>
+        <FILE id="JMSKZ8" name="lfo.cpp" compile="1" resource="0" file="Source/cell/lfo.cpp"/>
+        <FILE id="WPtENd" name="lfo.h" compile="0" resource="0" file="Source/cell/lfo.h"/>
+        <FILE id="xlaS3x" name="vca.cpp" compile="1" resource="0" file="Source/cell/vca.cpp"/>
+        <FILE id="BoYDLX" name="vca.h" compile="0" resource="0" file="Source/cell/vca.h"/>
+        <FILE id="RIToGD" name="blur.cpp" compile="1" resource="0" file="Source/cell/blur.cpp"/>
+        <FILE id="usOQuQ" name="blur.hpp" compile="0" resource="0" file="Source/cell/blur.hpp"/>
+        <FILE id="a8JnzH" name="chaos.cpp" compile="1" resource="0" file="Source/cell/chaos.cpp"/>
+        <FILE id="qjDm6a" name="chaos.hpp" compile="0" resource="0" file="Source/cell/chaos.hpp"/>
+        <FILE id="bdpCwe" name="constants.cpp" compile="1" resource="0" file="Source/cell/constants.cpp"/>
+        <FILE id="GL5qff" name="constants.hpp" compile="0" resource="0" file="Source/cell/constants.hpp"/>
+        <FILE id="oq3wyO" name="containers.hpp" compile="0" resource="0" file="Source/cell/containers.hpp"/>
+        <FILE id="VMPQla" name="curves.hpp" compile="0" resource="0" file="Source/cell/curves.hpp"/>
+        <FILE id="qoblsG" name="delay.cpp" compile="1" resource="0" file="Source/cell/delay.cpp"/>
+        <FILE id="EqUSAW" name="delay.hpp" compile="0" resource="0" file="Source/cell/delay.hpp"/>
+        <FILE id="bHSVqZ" name="envelopes.cpp" compile="1" resource="0" file="Source/cell/envelopes.cpp"/>
+        <FILE id="YSLqAc" name="envelopes.hpp" compile="0" resource="0" file="Source/cell/envelopes.hpp"/>
+        <FILE id="g0az85" name="feeder.cpp" compile="1" resource="0" file="Source/cell/feeder.cpp"/>
+        <FILE id="dhjefW" name="feeder.hpp" compile="0" resource="0" file="Source/cell/feeder.hpp"/>
+        <FILE id="HpwUTx" name="filters.cpp" compile="1" resource="0" file="Source/cell/filters.cpp"/>
+        <FILE id="zpwPcv" name="filters.hpp" compile="0" resource="0" file="Source/cell/filters.hpp"/>
+        <FILE id="v7mRHn" name="fonts.c" compile="1" resource="0" file="Source/cell/fonts.c"/>
+        <FILE id="GPZJIy" name="fonts.h" compile="0" resource="0" file="Source/cell/fonts.h"/>
+        <FILE id="ISjnWA" name="interface.cpp" compile="1" resource="0" file="Source/cell/interface.cpp"/>
+        <FILE id="INHcBP" name="interface.h" compile="0" resource="0" file="Source/cell/interface.h"/>
+        <FILE id="jeJU1p" name="iospecs.cpp" compile="1" resource="0" file="Source/cell/iospecs.cpp"/>
+        <FILE id="hz9vhu" name="iospecs.hpp" compile="0" resource="0" file="Source/cell/iospecs.hpp"/>
+        <FILE id="qEyxSn" name="modmatrix.cpp" compile="1" resource="0" file="Source/cell/modmatrix.cpp"/>
+        <FILE id="voXnwE" name="modmatrix.hpp" compile="0" resource="0" file="Source/cell/modmatrix.hpp"/>
+        <FILE id="VyEV7X" name="node.cpp" compile="1" resource="0" file="Source/cell/node.cpp"/>
+        <FILE id="F5q98H" name="node.h" compile="0" resource="0" file="Source/cell/node.h"/>
+        <FILE id="uhVlsx" name="oscillator.cpp" compile="1" resource="0" file="Source/cell/oscillator.cpp"/>
+        <FILE id="P4S942" name="oscillator.hpp" compile="0" resource="0" file="Source/cell/oscillator.hpp"/>
+        <FILE id="ZI2pUm" name="spawner.cpp" compile="1" resource="0" file="Source/cell/spawner.cpp"/>
+        <FILE id="FRq840" name="spawner.hpp" compile="0" resource="0" file="Source/cell/spawner.hpp"/>
+        <FILE id="J4oGEH" name="utility.cpp" compile="1" resource="0" file="Source/cell/utility.cpp"/>
+        <FILE id="Gq7M06" name="utility.hpp" compile="0" resource="0" file="Source/cell/utility.hpp"/>
+        <FILE id="yikbY8" name="cell.cpp" compile="1" resource="0" file="Source/cell/cell.cpp"/>
+        <FILE id="cZc7us" name="cell.h" compile="0" resource="0" file="Source/cell/cell.h"/>
+      </GROUP>
+      <GROUP id="{22DBE737-6B22-673F-F2EE-8E243637B1D5}" name="assets">
+        <FILE id="WHBRTE" name="bg.png" compile="0" resource="1" file="Source/assets/bg.png"/>
+        <FILE id="PoqWZE" name="button_16_off.png" compile="0" resource="1"
+              file="Source/assets/button_16_off.png"/>
+        <FILE id="g7GrUO" name="button_16_y.png" compile="0" resource="1" file="Source/assets/button_16_y.png"/>
+        <FILE id="W36bBW" name="encoder_32_w.png" compile="0" resource="1"
+              file="Source/assets/encoder_32_w.png"/>
+        <FILE id="pMEoDw" name="pot_32.png" compile="0" resource="1" file="Source/assets/pot_32.png"/>
+        <FILE id="RNbNBl" name="pot_48.png" compile="0" resource="1" file="Source/assets/pot_48.png"/>
+        <FILE id="z8HtpQ" name="round_button_12_off.png" compile="0" resource="1"
+              file="Source/assets/round_button_12_off.png"/>
+        <FILE id="hPI48x" name="round_button_12_y.png" compile="0" resource="1"
+              file="Source/assets/round_button_12_y.png"/>
+      </GROUP>
+      <FILE id="e1PigC" name="EnvelopeDisplay.cpp" compile="1" resource="0"
+            file="Source/EnvelopeDisplay.cpp"/>
+      <FILE id="dBuxHo" name="EnvelopeDisplay.h" compile="0" resource="0"
+            file="Source/EnvelopeDisplay.h"/>
+      <FILE id="dbDEkM" name="ListSlider.h" compile="0" resource="0" file="Source/ListSlider.h"/>
+      <FILE id="lgIrct" name="ListSlider.cpp" compile="1" resource="0" file="Source/ListSlider.cpp"/>
+      <FILE id="rmtpvK" name="Socket.h" compile="0" resource="0" file="Source/Socket.h"/>
+      <FILE id="JvQfIq" name="Socket.cpp" compile="1" resource="0" file="Source/Socket.cpp"/>
+      <FILE id="tvFU9m" name="Colours.hpp" compile="0" resource="0" file="Source/Colours.hpp"/>
+      <FILE id="a6CqyS" name="SpriteSlider.cpp" compile="1" resource="0"
+            file="Source/SpriteSlider.cpp"/>
+      <FILE id="DsdWb3" name="SpriteSlider.h" compile="0" resource="0" file="Source/SpriteSlider.h"/>
+      <FILE id="iePAVG" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="oDx0El" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="raUZBh" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="pPgBMD" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="gghgDq" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
+      <FILE id="EX5zI8" name="Display.cpp" compile="1" resource="0" file="Source/Display.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
+               JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
+               JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
+  <EXPORTFORMATS>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="spiro" optimisation="6"
+                       linkTimeOptimisation="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../git/JUCE-7.0.5/modules/"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../git/JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../git/JUCE-7.0.5/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="1"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+  </MODULES>
+</JUCERPROJECT>
