@@ -31,6 +31,7 @@
 #include "scales.h"
 #include "node.h"
 
+#include <cstdint>
 #include <iostream>
 #include <complex>
 #include <string>
@@ -141,11 +142,11 @@ namespace cell
                 &oscillator::pulse, 
                 &oscillator::hexagon 
             };
-
+            static int idc;                                 // ID counter
+  
         public:
 
-            static int idc;                                 // ID counter
-            int id;                                         // Unique oscillator id
+                        int id;                                         // Unique oscillator id
             envelope env    [settings::poly];
         
             float   freq    [settings::poly];               // Frequency
@@ -158,6 +159,7 @@ namespace cell
         
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);
+
             void reset();
             oscillator();
            ~oscillator();
@@ -177,6 +179,13 @@ namespace cell
     std::map<std::string, std::atomic<float>*> vco_create_inputs_map(oscillator* o);
     std::map<std::string, std::atomic<float>*> vco_create_outputs_map(oscillator* o);
     
+
+
+    /**************************************************************************************************************************
+    *
+    *  Waveforms
+    *
+    **************************************************************************************************************************/
     inline float fPLL(const float& carrier, const float& modulator)
     {
         std::complex<float> fI = exp( std::complex<float> (0.0, 1.0) * carrier);
@@ -184,7 +193,6 @@ namespace cell
         float fE = std::arg( fI * std::conj(fO) );
         return fE;
     }
-
 
     constexpr float fTriangle(const float& x, const float& f) noexcept
     {

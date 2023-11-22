@@ -157,6 +157,8 @@ namespace cell
     }
 
 
+    
+
     void oscillator::reset()
     {
         init(interface::vco::ctrls, interface::vco::ins, interface::vco::outs);

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <memory>
 #include <atomic>
 #include <functional>
@@ -7,7 +8,8 @@
 
 namespace cell
 {
-    enum class module_type { vco, map, vca, vcf, snh };
+    enum class module_type    { disconnected, vco, map, vca, vcf, snh };
+    enum class parameter_type { ctrl = 0xFF, in = 0xEE, out = 0xDD };
 
     class module
     {
@@ -15,11 +17,16 @@ namespace cell
             size_t _cs = 0;
             size_t _is = 0;
             size_t _os = 0;
+            module_type type = module_type::disconnected;
 
         public:
+            std::unique_ptr<std::uint32_t[]>       uid;     // Unique ID
             std::unique_ptr<std::atomic<float>*[]> ctrl;    // Parameters
             std::unique_ptr<std::atomic<float>*[]> in;      // Inputs
             std::unique_ptr<std::atomic<float> []> out;     // Outputs
+                                                        
+            void set_uid(const module_type&, const uint8_t&);
+
                                                            
             virtual void fuse() 
             {
@@ -33,6 +40,7 @@ namespace cell
                 ctrl = std::make_unique<std::atomic<float>*[]>(ctrls);
                 in   = std::make_unique<std::atomic<float>*[]>(ins);
                 out  = std::make_unique<std::atomic<float> []>(outs);
+                uid  = std::make_unique<std::uint32_t[]>(ctrls + ins + outs);
                 _cs = ctrls;
                 _is = ins;
                 _os = outs;
@@ -47,7 +55,7 @@ namespace cell
     class rack_t
     {
         private:
-            std::unique_ptr<module*[]> node;
+            std::unique_ptr<module*[]>      node;
             size_t _size = 0;
 
         public:
@@ -58,4 +66,39 @@ namespace cell
             rack_t() {};
            ~rack_t() {};
     };
+
+    /**************************************************************************************************************************
+     * Returns 16-bit index [ MSB LSB ]
+     * MSB : Module type
+     * LSB : Module id
+     * ***********************************************************************************************************************/
+    inline uint16_t get_module_index(module_type t, uint8_t id)
+    {
+        uint16_t r = static_cast<uint8_t>(t);
+
+        if(r)
+        {
+            r <<= 8;
+            r += id;
+        }
+        return r;
+    }
+    
+    /**************************************************************************************************************************
+     * Returns 16-bit index [ MSB LSB ]
+     * MSB : Parameter type
+     * LSB : Parameter id
+     * ***********************************************************************************************************************/
+    inline uint16_t get_parameter_index(parameter_type t, uint8_t id)
+    {
+        uint16_t r = static_cast<uint8_t>(t);
+
+        if(r)
+        {
+            r <<= 8;
+            r += id;
+        }
+        return r;
+    }
+
 }

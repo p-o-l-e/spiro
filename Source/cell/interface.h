@@ -1,12 +1,12 @@
 #pragma once
 #include <atomic>
 #include "constants.hpp"
+#include <unordered_map>
 
 namespace cell 
 {
     namespace settings 
     {
-
         inline const unsigned osc_n 	{ 4 }; // # Oscillators
         inline const unsigned lfo_n     { 2 }; // # LFOs
         inline const unsigned map_n     { 2 }; // # CSOs
@@ -16,6 +16,9 @@ namespace cell
         inline const unsigned vca_n 	{ 2 }; // # VCAs
         inline const unsigned vcd_n     { 1 }; // # Delays
         inline const unsigned rtr_n     { 1 }; // # Rotors
+        inline const unsigned sum_n     { 2 }; // # Summators
+        inline const unsigned pct_n     { 1 }; // # Multipliers
+        inline const unsigned mix_n     { 1 }; // # Mixers
         inline const unsigned ctr_n 	{ 5 }; // # Controls
 
         inline const unsigned prm_n 	{ 82 }; // # Parameters
@@ -25,7 +28,7 @@ namespace cell
         inline const unsigned ports_out { 47 }; // # Outputs
         inline const unsigned ports_n 	{ ports_in + ports_out };
     }
-
+    
 
 
 namespace interface

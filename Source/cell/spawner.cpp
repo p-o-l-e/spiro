@@ -17,6 +17,8 @@
 ******************************************************************************************************************************/
 
 #include "spawner.hpp"
+#include "interface.h"
+#include "mixer.h"
 
 using namespace cell::interface;
 
@@ -32,16 +34,8 @@ void cell::spawner::process()
 
     for(int e = 0; e < rack.size(); ++e) rack.process(e);
 
-    sum[0].process();
-    sum[1].process();
-    pct.process();
-    mix.process();
-
-    l_r<float> lr { mix.out[0] * *bus.pot[potentiometer_list::volume], 
-                    mix.out[1] * *bus.pot[potentiometer_list::volume] };
-
-    out[0] = dcb[0].process(lr.l);
-    out[1] = dcb[1].process(lr.r);
+    out[0] = dcb[0].process(mix[0].out[0]);
+    out[1] = dcb[1].process(mix[0].out[1]);
 }
 
 
@@ -107,8 +101,9 @@ void cell::spawner::connect_bus()
     rot[0].ctrl[static_cast<int>(rtr::ctrl::z)]      = bus.pot[potentiometer_list::angle_z];
 
     // Mixer //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    mix.angle[0]                                     = bus.pot[potentiometer_list::lc_to_l];
-    mix.angle[1]                                     = bus.pot[potentiometer_list::cr_to_r];
+    mix[0].ctrl[static_cast<int>(mxr::ctrl::alpha)]  = bus.pot[potentiometer_list::lc_to_l];
+    mix[0].ctrl[static_cast<int>(mxr::ctrl::theta)]  = bus.pot[potentiometer_list::cr_to_r];
+    mix[0].ctrl[static_cast<int>(mxr::ctrl::volume)] = bus.pot[potentiometer_list::volume];
 
     // Chaos //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     chs[0].ctrl[static_cast<int>(map::ctrl::tune)]   = bus.pot[potentiometer_list::chs_a_tune];
@@ -220,12 +215,12 @@ void cell::spawner::connect_bus()
     bay->io[socket_list::lcr_in_r_b].com     = &rot[0].in[static_cast<int>(rtr::in::bz)];
 
     // Mixer
-    bay->io[socket_list::mix_lc_cv].com      = &mix.cv[0];
-    bay->io[socket_list::mix_cr_cv].com      = &mix.cv[1];
+    bay->io[socket_list::mix_lc_cv].com      = &mix[0].in[static_cast<int>(mxr::in::alpha)];
+    bay->io[socket_list::mix_cr_cv].com      = &mix[0].in[static_cast<int>(mxr::in::theta)];
 
-    bay->io[socket_list::mix_in_l].com       = &mix.in[0];
-    bay->io[socket_list::mix_in_c].com       = &mix.in[1];
-    bay->io[socket_list::mix_in_r].com       = &mix.in[2];
+    bay->io[socket_list::mix_in_l].com       = &mix[0].in[static_cast<int>(mxr::in::l)];
+    bay->io[socket_list::mix_in_c].com       = &mix[0].in[static_cast<int>(mxr::in::c)];
+    bay->io[socket_list::mix_in_r].com       = &mix[0].in[static_cast<int>(mxr::in::r)];
 
 
     bay->io[socket_list::sum_a_in_a].com     = &sum[0].in[0];
@@ -238,11 +233,11 @@ void cell::spawner::connect_bus()
     bay->io[socket_list::sum_b_out_a].data   = &sum[1].out[0]; 
     bay->io[socket_list::sum_b_out_b].data   = &sum[1].out[1]; 
 
-    bay->io[socket_list::pct_in_a].com       = &pct.in[0];
-    bay->io[socket_list::pct_in_b].com       = &pct.in[1];
-    bay->io[socket_list::pct_in_c].com       = &pct.in[2];
+    bay->io[socket_list::pct_in_a].com       = &pct[0].in[0];
+    bay->io[socket_list::pct_in_b].com       = &pct[0].in[1];
+    bay->io[socket_list::pct_in_c].com       = &pct[0].in[2];
 
-    bay->io[socket_list::pct_out_a].data     = &pct.out[0]; 
+    bay->io[socket_list::pct_out_a].data     = &pct[0].out[0]; 
 
     // DSystem
     bay->io[socket_list::chs_a_in_wm].com    = &chs[0].ctrl[static_cast<int>(map::in::warp)];
@@ -442,11 +437,9 @@ void cell::spawner::connect_bus()
     for(int e = 0; e < settings::vcf_n; ++e) rack.bind(&vcf[e], p++);
     for(int e = 0; e < settings::vcd_n; ++e) rack.bind(&vcd[e], p++);
     for(int e = 0; e < settings::rtr_n; ++e) rack.bind(&rot[e], p++);
-
-
-
-
-
+    for(int e = 0; e < settings::sum_n; ++e) rack.bind(&sum[e], p++);
+    for(int e = 0; e < settings::pct_n; ++e) rack.bind(&pct[e], p++);
+    for(int e = 0; e < settings::mix_n; ++e) rack.bind(&mix[e], p++);
 
 }
 
@@ -460,7 +453,10 @@ cell::spawner::spawner()
         settings::vca_n +
         settings::vcf_n +
         settings::vcd_n +
-        settings::rtr_n;
+        settings::rtr_n +
+        settings::sum_n +
+        settings::pct_n +
+        settings::mix_n;
 
     rack.allocate(modules_n);
 }

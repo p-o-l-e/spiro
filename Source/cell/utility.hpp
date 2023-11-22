@@ -124,47 +124,14 @@ inline float limiter_t::process(const float& in)
 }
 
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Product ///////////////////////////////////////////////////////////////////////////////////////////////////////
-struct product
-{
-    std::atomic<float>*  in[3];
-    std::atomic<float>  out[1];
-
-    inline void process()
-    {
-        bool  o = false;
-        float s = 1.0f;
-        for(int i = 0; i < 3; ++i)
-        {
-            if(in[i] == &zero) continue;
-            else 
-            {
-                s *= in[i]->load();
-                o = true;
-            }
-        }
-        out[0].store( o ? s : 0.0f);
-    };
-
-    inline void reset()
-    {
-        for(int i = 0; i < 3; ++i) in[i] = &zero;
-        for(int i = 0; i < 1; ++i) out[i].store(0.0f);
-    }
-
-    product() { reset(); };
-};
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Crossfader: f == 1? a = max; f==0? b = max ////////////////////////////////////////////////////////////////////
 constexpr float xfade(const float& a, const float& b, const float& f) noexcept
 {
     return a * f + b * (1.0f - f);
 }
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 3to2 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -174,39 +141,6 @@ constexpr l_r<T> c3c2(const lcr<T>& in, const float& a, const float& b) noexcept
     auto bc = b > 0.5f ? (1.0f - b) * 2.0f : b * 2.0f;
     return l_r<T> { xfade(in.l, in.c, ac), xfade(in.c, in.r, bc) };
 }
-
-struct mixer
-{
-    std::atomic<float>* in[3];
-    std::atomic<float>* angle[2];
-    std::atomic<float>* cv[2];
-    float  out[2];
-    inline void process()
-    {
-        lcr<float> a { in[0]->load(), in[1]->load(), in[2]->load() };
-        float lc = angle[0]->load() + cv[0]->load();
-        float cr = angle[1]->load() + cv[1]->load();
-        l_r<float> lr = c3c2(a, lc, cr);
-        out[0] = lr.l;
-        out[1] = lr.r;
-    }
-
-    inline void reset()
-    {
-        for(int i = 0; i < 3; ++i)
-        {
-            in[i] = &zero;
-        }
-        for(int i = 0; i < 2; ++i)
-        {
-            angle[i] = &zero;
-            cv[i] = &zero;
-            out[i] = 0.0f;
-        }
-    }
-
-    mixer() { reset(); };
-};
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

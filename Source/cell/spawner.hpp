@@ -33,6 +33,8 @@
 #include "chaos.hpp"
 #include "rotor.h"
 #include "sigma.h"
+#include "product.h"
+#include "mixer.h"
 #include "lfo.h"
 #include "snh.h"
 #include "vca.h"
@@ -50,20 +52,19 @@ class spawner
         vca_t       vca[settings::vca_n];
         rotor       rot[settings::rtr_n];
         delay       vcd[settings::vcd_n];
-        mixer       mix;
+        mixer       mix[settings::mix_n];
         map_t       chs[settings::map_n];
         snh_t       snh[settings::snh_n];
         lfo_t       lfo[settings::lfo_n];
+        sigma       sum[settings::sum_n];
+        product     pct[settings::pct_n];
         dcb_t       dcb[2];
-        sigma       sum[2];
-        product     pct;
-
         rack_t      rack;
         patchbay*   bay = nullptr;
-        float out[2];                       // LR Output
-        void connect_bus();
-        void process();
-        void reset();
+        float       out[2];                       // LR Output
+        void        connect_bus();
+        void        process();
+        void        reset();
         spawner();
        ~spawner();
 };

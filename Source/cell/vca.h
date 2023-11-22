@@ -44,9 +44,6 @@ namespace cell
             vca_t() 
             {  
                 init(interface::vca::ctrls, interface::vca::ins, interface::vca::outs);
-                for(int i = 0; i < interface::vca::ins; ++i) in[i] = &zero;
-                for(int i = 0; i < interface::vca::ctrls; ++i) ctrl[i] = &zero;
-
             };
            ~vca_t() {};
     };
