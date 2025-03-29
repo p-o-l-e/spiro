@@ -89,7 +89,7 @@ class SpiroSynth: public juce::AudioProcessor
         cell::feeder feed;
         std::unique_ptr<Sockets> sockets;
 
-        std::unique_ptr<cell::wavering<cell::l_r<float>>> c_buffer;
+        std::unique_ptr<cell::wavering<cell::point2d<float>>> c_buffer;
         
         bool armed = false;
 

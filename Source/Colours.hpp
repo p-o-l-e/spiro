@@ -66,7 +66,7 @@ inline const juce::Colour colour_set[] =
     juce::Colour::fromFloatRGBA (0.79f, 0.61f, 0.40f, 1.0f), // 25
     
 
-    juce::Colour::fromFloatRGBA (0.20f,	0.32f, 0.43f, 1.0f), // 26 
+    juce::Colour::fromFloatRGBA (0.40f,	0.52f, 0.63f, 1.0f), // 26 
 
 
 };

@@ -46,13 +46,13 @@ void Display::Scope()
         if(scope_type->load() < 0.5f)
         {
             auto lp = data->get();
-            lx = lp.l * gain + cx;
-            ly = lp.r * gain + cy;
+            lx = lp.x * gain + cx;
+            ly = lp.y * gain + cy;
             for(unsigned i = 0; i < data->segments; i++)
             {
-                cell::l_r<float> f = data->get();
-                float x = f.l * gain * 2.0f + cx;
-                float y = f.r * gain * 2.0f + cy;
+                cell::point2d<float> f = data->get();
+                float x = f.x * gain * 2.0f + cx;
+                float y = f.y * gain * 2.0f + cy;
                 lineSDFAABB(canvas.get(), lx, ly, x, y, 0.8f/(i+1), 0.01f/(i+1)) ;
                 canvas.get()->set(x, y, 1.0f);
                 lx = x;
@@ -65,7 +65,7 @@ void Display::Scope()
             for(int i = 0; i < notInterpolatedData.size(); ++i)
             {
                 auto f = data->get();
-                notInterpolatedData.at(i) = f.l + f.r;
+                notInterpolatedData.at(i) = f.x + f.y;
             }
             // resample data
             interpolator.process(ratio, notInterpolatedData.data(), newlyPopped.data(), queueSize);
@@ -335,7 +335,7 @@ void Display::resized()
 	reset();
 }
 
-Display::Display(cell::wavering<cell::l_r<float>>* buf, int x, int y, int w, int h): data(buf)
+Display::Display(cell::wavering<cell::point2d<float>>* buf, int x, int y, int w, int h): data(buf)
 {
 	area.x = x;
 	area.y = y;

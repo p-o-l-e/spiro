@@ -43,9 +43,12 @@ namespace cell {
 
 
 class spawner
-{  
+{ 
+    private:
+
+
     public:
-        bus_connector bus;
+        interface::bus_connector bus;
         oscillator  vco[settings::osc_n];
         envelope    env[settings::env_n];
         vcf_t       vcf[settings::vcf_n];
@@ -57,7 +60,7 @@ class spawner
         snh_t       snh[settings::snh_n];
         lfo_t       lfo[settings::lfo_n];
         sigma       sum[settings::sum_n];
-        product     pct[settings::pct_n];
+        product     pdt[settings::pdt_n];
         dcb_t       dcb[2];
         rack_t      rack;
         patchbay*   bay = nullptr;

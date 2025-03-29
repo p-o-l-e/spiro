@@ -1,0 +1,190 @@
+/*****************************************************************************************************************************
+* Copyright (c) 2022-2023 POLE
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
+
+
+#include "oscillator.hpp"
+
+namespace cell 
+{
+    using namespace interface::vco;
+    int oscillator::idc = 0;
+
+    void oscillator::set_delta(const unsigned& voice)
+    { 
+        int n = note[voice] + 12 * roundf(ctrl[ctl::octave]->load() * 10.0f);
+        freq[voice]  = chromatic[n];
+        delta[voice] = chromatic[n] * tao / settings::sample_rate; 
+        set_fine(voice);
+    }
+
+    void oscillator::set_fine(const unsigned& voice)
+    {
+        float range   = (freq[voice] * chromatic_ratio - freq[voice] / chromatic_ratio) * tao / settings::sample_rate;
+        delta[voice] += (ctrl[ctl::detune]->load() + in[cvi::detune]->load() - 0.5f) * range * 2.0f;
+    }
+
+    inline float oscillator::tomisawa(const int& voice)
+    {
+        float oa = cosf(phase[voice] + eax[0][voice]);
+        eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
+
+        float pw =  in[cvi::pwm] == &zero ? 
+            (0.5f - ctrl[ctl::pwm]->load()) * tao * 0.98f - pi :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load());  
+
+        float ob = cosf(phase[voice] + eax[1][voice] + pw);
+        eax[1][voice] = (ob + eax[1][voice]) * 0.5f;
+        return oa - ob;
+    }
+
+    inline float oscillator::pulse(const int& voice)
+    {
+        float pw =  in[cvi::pwm] == &zero ? 
+            (0.5f - ctrl[ctl::pwm]->load()) * 2.0f :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * 2.0f;    
+
+        return fPulse(phase[voice], pw, 0.0001f);
+    }
+
+    inline float oscillator::hexagon(const int& voice)
+    {
+        float pw = in[cvi::pwm] == &zero ? 
+            (0.5f - ctrl[ctl::pwm]->load()) * pi :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * pi;
+
+            float feed = (fTriangle(phase[voice], 0.001f) * fSquare(phase[voice] + pw, 0.001f))/pi + (pi * 0.5f - fabsf(pw)) * 0.25f;
+        return feed * (pi - fabsf(pw));
+    }
+
+
+    void oscillator::process()
+    {
+        float accu = 0.0f;
+        
+        if(ctrl[ctl::freerun]->load() > 0.5f)
+        {
+            set_delta(0);
+
+            float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
+
+            phase[0] += (delta[0] + in[cvi::fm]->load() * fm);
+            if(phase[0] >= pi) phase[0] -= tao;  
+
+            accu = (this->*form[(int)ctrl[ctl::form]->load()])(0);
+
+
+            if(in[cvi::pll] != &zero)
+            {
+                float f = powf(ctrl[ctl::pll]->load(), 3.0f);
+                phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
+            }
+            if(in[cvi::am] != &zero)
+            {
+                accu = xfade(accu * in[cvi::am]->load(), accu, ctrl[ctl::am]->load());
+            }
+            accu *= ctrl[ctl::amp]->load();
+            out[cvo::main].store(accu);
+        }
+
+        else
+        {
+            for(int i = 0; i < settings::poly; ++i)
+            {
+                if(gate[i])
+                {
+                    // o->set_fine(i);
+                    set_delta(i);
+
+                    float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
+
+                    phase[i] += (delta[i] + in[cvi::fm]->load() * fm);
+                    if(phase[i] >= pi) phase[i] -= tao;  
+
+                    float feed = (this->*form[(int)ctrl[ctl::form]->load()])(i);
+
+                    if(in[cvi::pll] != &zero) 
+                    {
+                        float f = powf(ctrl[ctl::pll]->load(), 3.0f);
+                        phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
+                   }
+
+                    if(in[cvi::am] != &zero)
+                    {
+                        feed = xfade(feed * in[cvi::am]->load(), feed, ctrl[ctl::am]->load());
+                    }                    
+                    feed *= (ctrl[ctl::amp]->load() * velo[i]);
+
+                    if(env[i].stage == SUS) // Sustained
+                    {
+                        if(release[i]) feed *= env[i].iterate();
+                        else feed *= env[i].out;
+                    }
+                    else feed *= env[i].iterate();
+
+                    if(env[i].stage == OFF) 
+                    {
+                        gate[i]    = false;
+                        release[i] = false;
+                        velo[i]    = 0.0f;
+                    }
+
+                    accu += feed;
+                            
+                }
+            }
+            out[cvo::main].store(accu);
+        }
+
+    }
+
+
+    
+
+    void oscillator::reset()
+    {
+        init(id, &descriptor);
+        for(int i = 0; i < settings::poly; ++i)
+        {
+            phase[i]    = 0;
+            delta[i]    = 0;
+            gate[i]     = false;
+            release[i]  = false;
+            eax[0][i]   = 0.0f;
+            eax[1][i]   = 0.0f;
+            eax[2][i]   = 0.0f;
+            note[i]     = 36;
+            env[i].reset();
+        }
+    }
+
+
+    oscillator::oscillator()
+    {
+        id = ++idc;
+        reset();
+    }
+
+    oscillator::~oscillator() = default;
+
+
+ 
+}; // Namespace

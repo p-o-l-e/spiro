@@ -21,7 +21,6 @@
 #include <JuceHeader.h>
 #include <vector>
 #include "cell/modmatrix.hpp"
-#include "cell/interface.h"
 #include "Constraints.hpp"
 #include "Colours.hpp"
 

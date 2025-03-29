@@ -22,6 +22,8 @@
 
 
 #include "modmatrix.hpp"
+#include "interface.h"
+#include <cstdint>
 namespace cell {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,7 @@ constexpr void patchcord::process()
     float t = 0.0;
     for(int i = 0; i < iterations; i++)
     {
-        point<float> car { interpolate_bezier(spline[0], spline[1], spline[2], spline[3], t) };
+        point2d<float> car { interpolate_bezier(spline[0], spline[1], spline[2], spline[3], t) };
         data[i].x = car.x;
         data[i].y = car.y;
         t += inc;
@@ -41,7 +43,7 @@ constexpr void patchcord::process()
 
 patchcord::patchcord(int j = 8): iterations(j)
 {
-    data = new point<float>[iterations];
+    data = new point2d<float>[iterations];
 }
 
 patchcord::~patchcord()
@@ -133,6 +135,12 @@ void patchbay::connect(socket* a, socket* b)
     }
     *a->com = a->data;
     *b->com = b->data;
+    uid_t id_a = decode_uid(a->id);
+    uid_t id_b = decode_uid(b->id);
+
+    std::cout<<"Module A: "<<std::hex<<a->id<<"\t"<<(int)id_a.module<<"\tModule position: "<<id_a.module_position<<"\tParameter: "<<(int)id_a.parameter<<"\tParameter position: "<<id_a.parameter_position<<"\n";
+    std::cout<<"Module B: "<<std::hex<<b->id<<"\t"<<(int)id_b.module<<"\tModule position: "<<id_b.module_position<<"\tParameter: "<<(int)id_b.parameter<<"\tParameter position: "<<id_b.parameter_position<<"\n\n";
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +199,7 @@ int patchbay::down_test(const float& x, const float& y, const int& mb)
         if(stamp)
         {
             // Socket is hitted ///////////////////////////////////////////////////////////////////////////////////////////////////
-            int i = (stamp>>24) - 1;
+            int i = get_index(stamp);
             {
                 // Already connected? /////////////////////////////////////////////////////////////////////////////////////////////
                 if(io[i].on)
@@ -226,7 +234,7 @@ int patchbay::down_test(const float& x, const float& y, const int& mb)
         if(stamp)
         {
             // Socket is hitted ///////////////////////////////////////////////////////////////////////////////////////////////////
-            int i = (stamp>>24) - 1;
+            int i = get_index(stamp);
             {
                 // Already connected? /////////////////////////////////////////////////////////////////////////////////////////////
                 if(io[i].on)
@@ -260,7 +268,7 @@ int patchbay::up_test(const float& x, const float& y, const int& mb)
     if(stamp && src)
     {
         // Socket is hitted ///////////////////////////////////////////////////////////////////////////////////////////////////
-        int i = (stamp>>24) - 1;
+        int i = get_index(stamp);
         {
             // Self hit ///////////////////////////////////////////////////////////////////////////////////////////////////////
             if(src == &io[i])
@@ -339,7 +347,7 @@ void patchbay::move_test(const float& x, const float& y, const int& mb)
     auto stamp = canvas.get(x, y);
     if(stamp)
     {
-        int p = (stamp>>24) - 1;
+        int p = get_index(stamp);
         if(io[p].on)
         {
             io[p].cord.focused = true;
@@ -371,6 +379,8 @@ patchbay::patchbay(const int& w, const int& h, const int& ins, const int& outs):
     }
     canvas.clr(0);
     matrix.clr(false);
+    std::cout  <<"-- Patchbay initialized...\n";
+
 }
 
 patchbay::~patchbay()
@@ -379,23 +389,26 @@ patchbay::~patchbay()
     delete[] io;
 }
 
-void patchbay::set_socket(const point<int>* o, const int& radius, const unsigned& id, const bool& route, const int& p)
+void patchbay::set_socket(const point2d<int>* o, const int& radius, const uint32_t& id, const bool& route, const int& p)
 {
-    int pos = (id>>24) - 1;
-    if(pos >= 0)
-    {
-        io[pos].bounds.xCentre = o->x;
-        io[pos].bounds.yCentre = o->y;
-        io[pos].bounds.radius  = radius;
-        io[pos].id = id;
-        io[pos].pos = p;
-        io[pos].route = route;
-        io[pos].data = &zero;
-        io[pos].collapse();
-    }
+    io[p].bounds.xCentre = o->x;
+    io[p].bounds.yCentre = o->y;
+    io[p].bounds.radius  = radius;
+    io[p].id = id;
+    io[p].pos = p;
+    io[p].route = route;
+    io[p].data = &zero;
+    io[p].collapse();
 }
 
-
+int patchbay::get_index(const uint32_t& id)
+{
+    for(int i = 0; i < nodes; ++i)
+    {
+        if(io[i].id == id) return i;
+    }
+    return -1;
+}
 
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

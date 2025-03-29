@@ -135,11 +135,11 @@ constexpr float xfade(const float& a, const float& b, const float& f) noexcept
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 3to2 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-constexpr l_r<T> c3c2(const lcr<T>& in, const float& a, const float& b) noexcept
+constexpr point2d<T> c3c2(const point3d<T>& in, const float& a, const float& b) noexcept
 {
     auto ac = a > 0.5f ? (1.0f - a) * 2.0f : a * 2.0f;
     auto bc = b > 0.5f ? (1.0f - b) * 2.0f : b * 2.0f;
-    return l_r<T> { xfade(in.l, in.c, ac), xfade(in.c, in.r, bc) };
+    return point2d<T> { xfade(in.x, in.y, ac), xfade(in.y, in.z, bc) };
 }
 
 

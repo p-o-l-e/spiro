@@ -17,27 +17,51 @@
 *******************************************************************************************************************************/
 
 #include "Socket.h"
+#include "cell/interface.h"
+#include <iostream>
 
 Sockets::Sockets(int w, int h, int ins, int outs)
 {
+    std::cout  <<"-- Initializing sockets...\n";
+
     bay = new cell::patchbay(w, h, ins, outs);
 
-    unsigned position = 1; // 255 sockets max
+    unsigned position = 0; // 255 sockets max
 
     for(int i = 0; i < ins; ++i)
     {    
-        unsigned id = (position<<24) + i;
-        bay->set_socket(&socket_pos.at(static_cast<interface::socket_list>(i)), SOCKET_RADIUS, id, SOCKET_IN, i);
+        //unsigned id = (position<<24) + i;
+        if(socket_pos.count(interface::input_list[i]))
+        {
+            bay->set_socket(&socket_pos.at(interface::input_list[i]), SOCKET_RADIUS, interface::input_list[i], SOCKET_IN, position);
+        }
+        else std::cout  <<"-- Element in input list:\t"<<interface::input_list[i]<<" doesn't exists...\n";
         ++position;
     }
 
-    for(int i = ins; i < (ins + outs); ++i)
+    for(int i = 0; i < outs; ++i)
     {
-        unsigned id = (position<<24) + i;
-        bay->set_socket(&socket_pos.at(static_cast<interface::socket_list>(i)), SOCKET_RADIUS, id, SOCKET_OUT, i - ins);
+        //unsigned id = (position<<24) + i;
+        if(socket_pos.count(interface::output_list[i]))
+        {
+            bay->set_socket(&socket_pos.at(interface::output_list[i]), SOCKET_RADIUS, interface::output_list[i], SOCKET_OUT, position);
+        }
+        else
+        {
+            cell::uid_t err = decode_uid(interface::output_list[i]);
+            std::cout  <<"-- Element in output list:\t"<<interface::output_list[i]<<" doesn't exists...\n";
+            std::cout   <<"\t-- Module type: "<<std::hex<<(int)err.module
+                        <<" -- Module position: "<<err.module_position
+                        <<" -- Parameter type: "<<(int)err.parameter
+                        <<" -- Parameter position: "<<err.parameter_position
+                        <<"\n";
+
+        }
         ++position;
     }
     bay->draw();
+    std::cout  <<"-- Sockets initialized!\n";
+
 };
 
 Sockets::~Sockets()
@@ -69,34 +93,13 @@ void Sockets::drawMask(juce::Graphics& g, juce::Colour colour)
     g.setOpacity (1.0f);
     g.drawRect(area);
     g.drawImageAt(layer, xo, yo);
-    
-    // auto yo = area.getY();
-    // auto xo = area.getX();
-    //
-    // auto h  = area.getHeight();
-    // auto w  = area.getWidth();
-    //
-    // static auto layer = juce::Image (juce::Image::PixelFormat::ARGB, w, h, true);
-    // static juce::Image::BitmapData bmp(layer, juce::Image::BitmapData::ReadWriteMode::readWrite);
-    //
-    // for(int y = 8; y < h; y+=30)
-    // {
-    //     for(int x = 10; x < w; x+=19)
-    //     {
-    //         bmp.setPixelColour (x, y, juce::Colour::fromFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-    //     }
-    // }
-    // g.setOpacity (1.0f);
-    // g.drawRect(area);
-    // g.drawImageAt(layer, xo, yo);
-
 }
 
 void Sockets::drawCords(juce::Graphics& g, float alpha)
 {
     for(int j = 0; j < bay->nodes; j++)
     {
-        cell::point<float> pre , car = bay->io[j].cord.data[0];
+        cell::point2d<float> pre , car = bay->io[j].cord.data[0];
         bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {
@@ -155,7 +158,7 @@ void Sockets::load()
 void Sockets::paint (juce::Graphics& g)
 {
     drawCords(g, 1.0f);
-    // drawMask(g, colour_set[0]);
+    drawMask(g, colour_set[0]);
 }
 
 void Sockets::resized ()

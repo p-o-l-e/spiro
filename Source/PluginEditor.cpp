@@ -42,7 +42,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     bg.setPaintingIsUnclipped(true);
     addAndMakeVisible(bg);
 
-    display = std::make_unique<Display>(audioProcessor.c_buffer.get(), mwc.lcd_display.getX(), mwc.lcd_display.getY(), mwc.lcd_display.getWidth(), mwc.lcd_display.getHeight());
+    display = std::make_unique<Display>(audioProcessor.c_buffer.get(), mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
     pot = std::make_unique<SpriteSlider[]>(cell::settings::pot_n);
 
     for(int i = 0; i < cell::settings::pot_n; ++i)
@@ -1337,22 +1337,25 @@ void SpiroSynthEditor::resized()
 
     for(int i = 0; i < cell::settings::env_n; ++i)
     {
-        env[i].setBounds(mwc.env_display);
+        juce::Rectangle<int> r { mwc.env_display.x, mwc.env_display.y, mwc.env_display.w, mwc.env_display.h };
+        env[i].setBounds(r);
     }
 
     for(int i = 0; i < cell::settings::btn_n; ++i)
     {
         interface::button_list p = static_cast<interface::button_list>(i);
-        button.at(i).get()->setBounds(button_list.at(p).pos);
+        juce::Rectangle<int> r { button_list.at(p).pos.x, button_list.at(p).pos.y, button_list.at(p).pos.w, button_list.at(p).pos.h };
+        button.at(i).get()->setBounds(r);
     }
    
     for(int i = 0; i < cell::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
-        pot[i].setBounds(slider_list.at(p).pos);
+        juce::Rectangle<int> r { slider_list.at(p).pos.x, slider_list.at(p).pos.y, slider_list.at(p).pos.w, slider_list.at(p).pos.h };
+        pot[i].setBounds(r);
     }
 
-    display->setBounds(mwc.lcd_display.getX(), mwc.lcd_display.getY(), mwc.lcd_display.getWidth(), mwc.lcd_display.getHeight());
+    display->setBounds(mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
     startTimerHz(cell::settings::scope_fps);
 
     onReload();
