@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   add_headers_lua;
+    const int            add_headers_luaSize = 920;
+
     extern const char*   bg_png;
     const int            bg_pngSize = 2532263;
 
@@ -33,7 +36,7 @@ namespace BinaryData
     const int            round_button_12_y_pngSize = 1116;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 8;
+    const int namedResourceListSize = 9;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
