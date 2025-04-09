@@ -1,0 +1,15 @@
+<map id="core::spiro_t::connect_bus" name="core::spiro_t::connect_bus">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,95,196,120"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1rack__t.html#abdde2ff5b6314ffb95f5c4d13de4e8ea" title=" " alt="" coords="263,5,382,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,92,243,41,266,33,268,38,245,46,129,97"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1rack__t.html#a5eccf44ee96a3fc5586bf561ae78ae73" title=" " alt="" coords="244,55,401,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,92,230,86,231,91,190,97"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1rack__t.html#afee572e4593241e06b17fbf3e59d6a92" title=" " alt="" coords="244,119,401,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="190,117,231,123,230,129,189,123"/>
+<area shape="rect" id="Node000005" href="$structcore_1_1interface_1_1bus__connector.html#a0bacaa2cf3ed8441cb46e4985ea5b1d7" title=" " alt="" coords="249,183,396,223"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="131,118,245,169,261,176,259,181,243,174,129,123"/>
+<area shape="rect" id="Node000006" href="$classcore_1_1interface_1_1module__map.html#a95661f81ebae26099e784a04fcfe6dea" title=" " alt="" coords="449,183,623,223"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="396,201,435,201,435,206,396,206"/>
+<area shape="rect" id="Node000007" href="$namespacecore.html#a08ab273ebe1071de953d389338ac7c70" title=" " alt="" coords="671,191,811,216"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="623,201,657,201,657,206,623,206"/>
+</map>

@@ -57,6 +57,9 @@
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "functional": "cpp",
-        "*.m": "cpp"
+        "*.m": "cpp",
+        "list": "cpp",
+        "unordered_set": "cpp",
+        "complex": "cpp"
     }
 }

@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2023 POLE
+* Copyright (c) 2022-2025 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,169 +21,121 @@
 ******************************************************************************************************************************/
 
 
-#include "oscillator.hpp"
+#include "vco.hpp"
+#include "../setup/constants.hpp"
+#include "../utility/utility.hpp"
 
-namespace cell 
+#include "../setup/iospecs.hpp"
+#include "../setup/scales.h"
+
+namespace core
 {
     using namespace interface::vco;
-    int oscillator::idc = 0;
+    int vco_t::idc = 0;
 
-    void oscillator::set_delta(const unsigned& voice)
+    void vco_t::set_delta(const unsigned& voice)
     { 
-        int n = note[voice] + 12 * roundf(ctrl[ctl::octave]->load() * 10.0f);
+        int n = note[voice] + 12 * roundf(ccv[ctl::octave]->load() * 10.0f);
         freq[voice]  = chromatic[n];
         delta[voice] = chromatic[n] * tao / settings::sample_rate; 
         set_fine(voice);
     }
 
-    void oscillator::set_fine(const unsigned& voice)
+    void vco_t::set_fine(const unsigned& voice)
     {
         float range   = (freq[voice] * chromatic_ratio - freq[voice] / chromatic_ratio) * tao / settings::sample_rate;
-        delta[voice] += (ctrl[ctl::detune]->load() + in[cvi::detune]->load() - 0.5f) * range * 2.0f;
+        delta[voice] += (ccv[ctl::detune]->load() + icv[cvi::detune]->load() - 0.5f) * range * 2.0f;
     }
 
-    inline float oscillator::tomisawa(const int& voice)
+    inline float vco_t::tomisawa(const int& voice)
     {
         float oa = cosf(phase[voice] + eax[0][voice]);
         eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
 
-        float pw =  in[cvi::pwm] == &zero ? 
-            (0.5f - ctrl[ctl::pwm]->load()) * tao * 0.98f - pi :
-            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load());  
+        float pw =  icv[cvi::pwm] == &zero ? 
+            (0.5f - ccv[ctl::pwm]->load()) * tao * 0.98f - pi :
+            (0.5f - ccv[ctl::pwm]->load() + icv[cvi::pwm]->load());  
 
         float ob = cosf(phase[voice] + eax[1][voice] + pw);
         eax[1][voice] = (ob + eax[1][voice]) * 0.5f;
         return oa - ob;
     }
 
-    inline float oscillator::pulse(const int& voice)
+    inline float vco_t::pulse(const int& voice)
     {
-        float pw =  in[cvi::pwm] == &zero ? 
-            (0.5f - ctrl[ctl::pwm]->load()) * 2.0f :
-            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * 2.0f;    
+        float pw =  icv[cvi::pwm] == &zero ? 
+            (0.5f - ccv[ctl::pwm]->load()) * 2.0f :
+            (0.5f - ccv[ctl::pwm]->load() + icv[cvi::pwm]->load()) * 2.0f;    
 
         return fPulse(phase[voice], pw, 0.0001f);
     }
 
-    inline float oscillator::hexagon(const int& voice)
+    inline float vco_t::hexagon(const int& voice)
     {
-        float pw = in[cvi::pwm] == &zero ? 
-            (0.5f - ctrl[ctl::pwm]->load()) * pi :
-            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * pi;
+        float pw = icv[cvi::pwm] == &zero ? 
+            (0.5f - ccv[ctl::pwm]->load()) * pi :
+            (0.5f - ccv[ctl::pwm]->load() + icv[cvi::pwm]->load()) * pi;
 
             float feed = (fTriangle(phase[voice], 0.001f) * fSquare(phase[voice] + pw, 0.001f))/pi + (pi * 0.5f - fabsf(pw)) * 0.25f;
         return feed * (pi - fabsf(pw));
     }
 
 
-    void oscillator::process()
+    void vco_t::process()
     {
         float accu = 0.0f;
         
-        if(ctrl[ctl::freerun]->load() > 0.5f)
+        if(ccv[ctl::freerun]->load() > 0.5f)
         {
             set_delta(0);
 
-            float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
+            float fm = powf(ccv[ctl::fm]->load(), 3.0f);
 
-            phase[0] += (delta[0] + in[cvi::fm]->load() * fm);
+            phase[0] += (delta[0] + icv[cvi::fm]->load() * fm);
             if(phase[0] >= pi) phase[0] -= tao;  
 
-            accu = (this->*form[(int)ctrl[ctl::form]->load()])(0);
+            accu = (this->*form[(int)ccv[ctl::form]->load()])(0);
 
 
-            if(in[cvi::pll] != &zero)
+            if(icv[cvi::pll] != &zero)
             {
-                float f = powf(ctrl[ctl::pll]->load(), 3.0f);
-                phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
+                float f = powf(ccv[ctl::pll]->load(), 3.0f);
+                phase[0] += fPLL(accu, icv[cvi::pll]->load()) * f;
             }
-            if(in[cvi::am] != &zero)
+            if(icv[cvi::am] != &zero)
             {
-                accu = xfade(accu * in[cvi::am]->load(), accu, ctrl[ctl::am]->load());
+                accu = xfade(accu * icv[cvi::am]->load(), accu, ccv[ctl::am]->load());
             }
-            accu *= ctrl[ctl::amp]->load();
-            out[cvo::main].store(accu);
+            accu *= ccv[ctl::amp]->load();
+            ocv[cvo::main].store(accu);
         }
-
-        else
-        {
-            for(int i = 0; i < settings::poly; ++i)
-            {
-                if(gate[i])
-                {
-                    // o->set_fine(i);
-                    set_delta(i);
-
-                    float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
-
-                    phase[i] += (delta[i] + in[cvi::fm]->load() * fm);
-                    if(phase[i] >= pi) phase[i] -= tao;  
-
-                    float feed = (this->*form[(int)ctrl[ctl::form]->load()])(i);
-
-                    if(in[cvi::pll] != &zero) 
-                    {
-                        float f = powf(ctrl[ctl::pll]->load(), 3.0f);
-                        phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
-                   }
-
-                    if(in[cvi::am] != &zero)
-                    {
-                        feed = xfade(feed * in[cvi::am]->load(), feed, ctrl[ctl::am]->load());
-                    }                    
-                    feed *= (ctrl[ctl::amp]->load() * velo[i]);
-
-                    if(env[i].stage == SUS) // Sustained
-                    {
-                        if(release[i]) feed *= env[i].iterate();
-                        else feed *= env[i].out;
-                    }
-                    else feed *= env[i].iterate();
-
-                    if(env[i].stage == OFF) 
-                    {
-                        gate[i]    = false;
-                        release[i] = false;
-                        velo[i]    = 0.0f;
-                    }
-
-                    accu += feed;
-                            
-                }
-            }
-            out[cvo::main].store(accu);
-        }
-
     }
 
 
     
 
-    void oscillator::reset()
+    void vco_t::reset()
     {
-        init(id, &descriptor);
+        init(id, &interface::vco::descriptor);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;
             delta[i]    = 0;
-            gate[i]     = false;
-            release[i]  = false;
             eax[0][i]   = 0.0f;
             eax[1][i]   = 0.0f;
             eax[2][i]   = 0.0f;
             note[i]     = 36;
-            env[i].reset();
         }
     }
 
 
-    oscillator::oscillator()
+    vco_t::vco_t()
     {
         id = ++idc;
         reset();
     }
 
-    oscillator::~oscillator() = default;
+    vco_t::~vco_t() = default;
 
 
  

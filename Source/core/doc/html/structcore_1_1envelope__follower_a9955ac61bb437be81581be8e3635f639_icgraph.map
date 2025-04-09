@@ -1,0 +1,7 @@
+<map id="core::envelope_follower::init" name="core::envelope_follower::init">
+<area shape="rect" id="Node000001" title=" " alt="" coords="420,5,599,45"/>
+<area shape="rect" id="Node000002" href="$structcore_1_1limiter__t.html#a4d4e0b928b16d89d31bb3f718a1ca444" title=" " alt="" coords="229,13,372,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="406,28,372,28,372,23,406,23"/>
+<area shape="rect" id="Node000003" href="$structcore_1_1limiter__t.html#aa82a48f5f7f7b73c1f8f20854146eca7" title=" " alt="" coords="5,13,181,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="215,28,182,28,182,23,215,23"/>
+</map>

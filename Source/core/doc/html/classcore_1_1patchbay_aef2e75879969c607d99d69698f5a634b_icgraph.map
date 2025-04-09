@@ -1,0 +1,9 @@
+<map id="core::patchbay::get_index" name="core::patchbay::get_index">
+<area shape="rect" id="Node000001" title=" " alt="" coords="248,47,395,87"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1patchbay.html#a0a005f816ddaa01026f9ac5c6d5fa81e" title=" " alt="" coords="7,5,199,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="234,50,159,33,160,28,235,45"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1patchbay.html#a716cfa981a43d57ae147fb7c7b35efb1" title=" " alt="" coords="5,55,200,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="234,70,200,70,200,65,234,65"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1patchbay.html#a074aab52988e925fb418ba03f16d715a" title=" " alt="" coords="16,104,189,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="235,90,160,107,159,101,234,84"/>
+</map>

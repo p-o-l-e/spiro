@@ -1,0 +1,11 @@
+<map id="core::lineSDFAABB" name="core::lineSDFAABB">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,55,148,80"/>
+<area shape="rect" id="Node000002" href="$namespacecore.html#ac0ffded04aa6a8cd4adb7d0de31c3924" title=" " alt="" coords="198,29,329,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,55,184,50,185,55,148,60"/>
+<area shape="rect" id="Node000005" href="$namespacecore.html#a14263b0e9d31e22b38b1b1f7aaca2f50" title=" " alt="" coords="196,79,331,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="148,74,183,78,182,84,148,79"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1frame.html#a19843a067b8d05ea2fadafe2c9bce3d7" title=" " alt="" coords="379,5,505,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="328,31,364,26,365,31,329,36"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1frame.html#a9ee527091da2e15be7374d030638bdbe" title=" " alt="" coords="379,55,505,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="329,49,366,54,366,59,328,54"/>
+</map>

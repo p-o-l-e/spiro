@@ -1,33 +1,38 @@
 /*****************************************************************************************************************************
-* ISC License
-*
-* Copyright (c) 2023 POLE
-*
-* Permission to use, copy, modify, and/or distribute this software for any
-* purpose with or without fee is hereby granted, provided that the above
-* copyright notice and this permission notice appear in all copies.
-*
-* THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-* REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-* AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-* INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-* LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-* OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-* PERFORMANCE OF THIS SOFTWARE.
+* Copyright (c) 2022-2025 POLE
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
 ******************************************************************************************************************************/
 
+#include "vcd.hpp"
 
-#include "delay.hpp"
+namespace core 
+{
+    using namespace interface::vcd;
 
-namespace cell {
-
-    delay::delay()
+    vcd_t::vcd_t()
     {
         init(0, &interface::vcd::descriptor);
         reset();
     }
 
-    void delay::reset() 
+    void vcd_t::reset() 
     {
         psf.reset(10.0f);
         apf.a   = 0.6f;
@@ -38,17 +43,17 @@ namespace cell {
         data = std::make_unique<float[]>(length);
         for (uint i = 0; i < length; i++)  data.get()[i] = 0.0f;
 
-        for(int i = 0; i < interface::vcd::cc; ++i)  ctrl[i] = &zero;
-        for(int i = 0; i < interface::vcd::ic; ++i)    in[i] = &zero;
-        for(int i = 0; i < interface::vcd::oc; ++i)   out[i].store(0.0f);
+        for(int i = 0; i < cc; ++i) ccv[i] = &zero;
+        for(int i = 0; i < ic; ++i) icv[i] = &zero;
+        for(int i = 0; i < oc; ++i) ocv[i].store(0.0f);
     }
 
-    delay::~delay() {}
+    vcd_t::~vcd_t() {}
 
-    void delay::process()
+    void vcd_t::process()
     {
         if (departed >= length) departed = 0;
-        float time = in[interface::vcd::cvi::time]->load() + ctrl[interface::vcd::ctl::time]->load();
+        float time = icv[cvi::time]->load() + ccv[ctl::time]->load();
 
         if      (time > 1.0f) time = 1.0f;
         else if (time < 0.1f) time = 0.1f;
@@ -57,16 +62,16 @@ namespace cell {
         time = psf.process(time);
         
 
-        float input = in[interface::vcd::cvi::a]->load()  +
-                      in[interface::vcd::cvi::b]->load()  +
-                      in[interface::vcd::cvi::c]->load()  +
-                      in[interface::vcd::cvi::d]->load();
+        float input = icv[cvi::a]->load()  +
+                      icv[cvi::b]->load()  +
+                      icv[cvi::c]->load()  +
+                      icv[cvi::d]->load();
 
 
         int f = departed - roundf(fabsf(time) * tmax);
         if (f < 0) f += length;
 
-        float feedback = in[interface::vcd::cvi::feed]->load() + ctrl[interface::vcd::ctl::feed]->load();
+        float feedback = icv[cvi::feed]->load() + ccv[ctl::feed]->load();
         if      (feedback > 1.0f) feedback = 1.0f;
         else if (feedback < 0.0f) feedback = 0.0f;
 
@@ -77,9 +82,9 @@ namespace cell {
         eax = time;
         departed++;
 
-        out[interface::vcd::cvo::a].store(accu);
-        out[interface::vcd::cvo::b].store(accu);
-        out[interface::vcd::cvo::c].store(accu);
-        out[interface::vcd::cvo::d].store(accu);
+        ocv[cvo::a].store(accu);
+        ocv[cvo::b].store(accu);
+        ocv[cvo::c].store(accu);
+        ocv[cvo::d].store(accu);
     }
 };

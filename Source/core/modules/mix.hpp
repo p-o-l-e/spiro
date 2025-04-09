@@ -1,39 +1,41 @@
-#pragma once
-#include "node.h"
-#include "constants.hpp"
-#include "containers.hpp"
-#include "interface/mix_interface.hpp"
-#include "utility.hpp"
+/*****************************************************************************************************************************
+* Copyright (c) 2022-2025 POLE
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
-namespace cell
+#pragma once
+#include "node.hpp"
+
+namespace core
 {
-    class mixer: public module
+    class mix_t: public module_t
     {
         private:
             static int idc;
 
         public:
             int id;
-            void process() override
-            {
-                point3d<float> a 
-                { 
-                    in[static_cast<int>(interface::mix::cvi::l)]->load(), 
-                    in[static_cast<int>(interface::mix::cvi::c)]->load(), 
-                    in[static_cast<int>(interface::mix::cvi::r)]->load() 
-                };
-                float lc = ctrl[static_cast<int>(interface::mix::ctl::alpha)]->load() + in[static_cast<int>(interface::mix::cvi::alpha)]->load();
-                float cr = ctrl[static_cast<int>(interface::mix::ctl::theta)]->load() + in[static_cast<int>(interface::mix::cvi::theta)]->load();
-                point2d<float> lr = c3c2(a, lc, cr);
-                out[static_cast<int>(interface::mix::cvo::l)].store(lr.x * ctrl[static_cast<int>(interface::mix::ctl::amp)]->load());
-                out[static_cast<int>(interface::mix::cvo::r)].store(lr.y * ctrl[static_cast<int>(interface::mix::ctl::amp)]->load());
-            }
+            void process() override;
 
-            mixer(): id(++idc)
-            {
-                init(id, &interface::mix::descriptor);
-            }
-           ~mixer() {};
+            mix_t();
+           ~mix_t() {};
     };
 
-}; // Namespace
+}; // Namespace core

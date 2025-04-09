@@ -1,0 +1,12 @@
+<map id="core::lfo_t" name="core::lfo_t">
+<area shape="rect" id="Node000001" title=" " alt="" coords="77,373,163,399"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1module__t.html" title=" " alt="" coords="61,299,179,324"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,338,123,373,117,373,117,338"/>
+<area shape="rect" id="Node000003" href="$structcore_1_1descriptor__t.html" title=" " alt="" coords="53,211,187,236"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="123,250,123,298,117,298,117,250"/>
+<area shape="rect" id="Node000004" href="$structcore_1_1control__t.html" title=" " alt="" coords="163,93,277,119"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="203,131,132,212,128,209,199,128"/>
+<area shape="rect" id="Node000005" href="$structcore_1_1rectangle.html" title=" " alt="" coords="5,5,184,31"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="93,44,88,93,88,118,102,169,117,209,112,211,96,171,83,119,83,93,88,44"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="124,36,204,91,201,95,121,41"/>
+</map>

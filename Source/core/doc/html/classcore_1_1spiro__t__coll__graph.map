@@ -1,0 +1,37 @@
+<map id="core::spiro_t" name="core::spiro_t">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1636,147,1739,173"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1interface_1_1module__map.html" title=" " alt="" coords="1088,57,1297,82"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1311,71,1430,82,1555,103,1615,122,1664,145,1662,150,1613,127,1554,108,1429,87,1311,77"/>
+<area shape="rect" id="Node000009" href="$classcore_1_1rack__t.html" title=" " alt="" coords="1432,118,1531,143"/>
+<area shape="poly" id="edge11_Node000009_Node000002" title=" " alt="" coords="1253,83,1322,100,1432,121,1431,126,1321,105,1252,88"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1interface_1_1blueprint__t.html" title=" " alt="" coords="783,23,977,49"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="991,20,1110,12,1253,12,1329,17,1406,27,1482,41,1556,61,1593,79,1627,101,1676,145,1672,149,1624,106,1590,83,1554,67,1481,46,1405,32,1328,23,1252,18,1110,17,991,25"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="991,47,1002,48,1088,57,1087,62,1001,53,991,52"/>
+<area shape="rect" id="Node000004" href="$structcore_1_1descriptor__t.html" title=" " alt="" coords="515,23,649,49"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="663,33,782,33,782,39,663,39"/>
+<area shape="rect" id="Node000005" href="$structcore_1_1control__t.html" title=" " alt="" coords="297,54,412,79"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="426,67,474,64,545,46,547,51,475,69,426,73"/>
+<area shape="rect" id="Node000006" href="$structcore_1_1rectangle.html" title=" " alt="" coords="5,22,184,47"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="197,24,329,18,475,20,515,24,514,29,475,25,330,23,198,29"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="198,45,297,57,297,62,197,50"/>
+<area shape="rect" id="Node000007" href="$structcore_1_1interface_1_1bus__connector.html" title=" " alt="" coords="1408,168,1555,208"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="1568,183,1612,177,1644,170,1645,175,1612,183,1568,188"/>
+<area shape="rect" id="Node000008" href="$structcore_1_1dcb__t.html" title=" " alt="" coords="1435,233,1528,258"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="1541,228,1611,203,1667,171,1669,175,1613,208,1542,233"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="1545,137,1636,150,1635,155,1544,142"/>
+<area shape="rect" id="Node000010" href="$classcore_1_1patchbay.html" title=" " alt="" coords="1422,282,1541,307"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="1534,275,1554,267,1583,254,1610,237,1647,203,1674,171,1678,175,1651,206,1614,241,1586,259,1556,272,1536,280"/>
+<area shape="rect" id="Node000011" href="$classcore_1_1frame.html" title=" " alt="" coords="1099,233,1286,258"/>
+<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="1296,257,1384,272,1422,279,1421,285,1384,277,1296,263"/>
+<area shape="rect" id="Node000012" href="$classcore_1_1frame.html" title=" " alt="" coords="1115,282,1270,307"/>
+<area shape="poly" id="edge14_Node000010_Node000012" title=" " alt="" coords="1284,292,1422,292,1422,297,1284,297"/>
+<area shape="rect" id="Node000013" href="$structcore_1_1socket.html" title=" " alt="" coords="1143,370,1243,395"/>
+<area shape="poly" id="edge15_Node000010_Node000013" title=" " alt="" coords="1248,363,1438,305,1440,310,1249,368"/>
+<area shape="poly" id="edge19_Node000013_Node000013" title=" " alt="" coords="1161,355,1171,347,1193,343,1211,346,1222,352,1225,362,1220,371,1215,369,1220,361,1218,355,1209,351,1193,349,1173,352,1165,359"/>
+<area shape="rect" id="Node000014" href="$structcore_1_1patchcord.html" title=" " alt="" coords="819,345,941,370"/>
+<area shape="poly" id="edge16_Node000013_Node000014" title=" " alt="" coords="955,361,1143,376,1142,381,955,366"/>
+<area shape="rect" id="Node000015" href="$structcore_1_1point2d.html" title=" " alt="" coords="499,345,665,370"/>
+<area shape="poly" id="edge17_Node000014_Node000015" title=" " alt="" coords="680,355,818,355,818,360,680,360"/>
+<area shape="rect" id="Node000016" href="$structcore_1_1square.html" title=" " alt="" coords="785,394,975,419"/>
+<area shape="poly" id="edge18_Node000013_Node000016" title=" " alt="" coords="989,404,1064,400,1142,389,1143,395,1064,405,989,409"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="core::patchbay::patchbay" name="core::patchbay::patchbay">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,191,31"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1frame.html#aaa59d98001168f59d9dbe495ecaf1201" title=" " alt="" coords="239,5,360,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="191,15,225,15,225,21,191,21"/>
+</map>

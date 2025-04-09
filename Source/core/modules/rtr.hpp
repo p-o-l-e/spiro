@@ -1,54 +1,44 @@
-#pragma once
-#include "containers.hpp"
-#include "constants.hpp"
-#include "node.h"
+/*****************************************************************************************************************************
+* Copyright (c) 2022-2025 POLE
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
-namespace cell
+#pragma once
+#include "../utility/containers.hpp"
+#include "node.hpp"
+
+namespace core
 {
 
-class rotor: public module
+class rtr_t: public module_t
 {
     private:
         static int idc;
+        quaternion q;
 
     public:
         int id;
-        quaternion q;
+        void process() override;
 
-        void process() override
-        {
-            point3d<float> a 
-            { 
-                in[static_cast<int>(interface::rtr::cvi::ax)]->load() + 
-                in[static_cast<int>(interface::rtr::cvi::bx)]->load(),
-                in[static_cast<int>(interface::rtr::cvi::ay)]->load() +
-                in[static_cast<int>(interface::rtr::cvi::by)]->load(),
-                in[static_cast<int>(interface::rtr::cvi::az)]->load() +
-                in[static_cast<int>(interface::rtr::cvi::bz)]->load() 
-            };
-
-            float x = ctrl[static_cast<int>(interface::rtr::ctl::x)]->load() + pi * in[static_cast<int>(interface::rtr::cvi::cvx)]->load();
-            float y = ctrl[static_cast<int>(interface::rtr::ctl::y)]->load() + pi * in[static_cast<int>(interface::rtr::cvi::cvy)]->load();
-            float z = ctrl[static_cast<int>(interface::rtr::ctl::z)]->load() + pi * in[static_cast<int>(interface::rtr::cvi::cvz)]->load();
-
-            q.from_euler(x, y, z);
-            q.rotate_vector(a.x, a.y, a.z);
-
-            out[static_cast<int>(interface::rtr::cvo::ax)].store(a.x);
-            out[static_cast<int>(interface::rtr::cvo::ay)].store(a.y);
-            out[static_cast<int>(interface::rtr::cvo::az)].store(a.z);
-
-            out[static_cast<int>(interface::rtr::cvo::bx)].store(a.x);
-            out[static_cast<int>(interface::rtr::cvo::by)].store(a.y);
-            out[static_cast<int>(interface::rtr::cvo::bz)].store(a.z);
-
-        }
-
-        rotor(): id(++idc)
-        { 
-            init(id, &interface::rtr::descriptor);
-        };
-       ~rotor() {};
+        rtr_t();
+       ~rtr_t(){};
 };
 
 }

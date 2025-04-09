@@ -1,0 +1,10 @@
+<map id="graphics/curves.hpp" name="graphics/curves.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,157,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="9,152,71,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,32,60,53,48,79,42,109,41,138,36,138,37,109,43,78,55,51,70,29"/>
+<area shape="rect" id="Node000003" href="$containers_8hpp.html" title=" " alt="" coords="58,79,230,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="94,29,127,66,123,70,90,33"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="129,106,70,146,67,142,126,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="115,152,173,177"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="147,104,147,138,141,138,141,104"/>
+</map>

@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2023 POLE
+* Copyright (c) 2022-2025 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -8,7 +8,7 @@
 * copies of the Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
 * 
-* The above copyright noticeand this permission notice shall be included in all
+* The above copyright notice and this permission notice shall be included in all
 * copies or substantial portions of the Software.
 * 
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -23,22 +23,12 @@
 #pragma once
 
 #include <cmath>
-#include "constants.hpp"
-#include "interface/vco_interface.hpp"
-#include "utility.hpp"
-#include "delay.hpp"
-#include "envelopes.hpp"
-#include "iospecs.hpp"
-#include "scales.h"
-#include "node.h"
 #include <cstdint>
-#include <iostream>
 #include <complex>
-#include <string>
-#include <map>
 
+#include "node.hpp"
 
-namespace cell 
+namespace core
 {
     namespace settings
     {
@@ -50,7 +40,7 @@ namespace cell
     *  VCO
     * 
     **************************************************************************************************************************/
-    class oscillator: public module
+    class vco_t: public module_t
     {   
         private:
             float   phase   [settings::poly];               // Current phase
@@ -60,23 +50,19 @@ namespace cell
             float tomisawa(const int&);
             float pulse(const int&);
             float hexagon(const int&);
-            float (oscillator::*form[3])(const int&) = 
+            float (vco_t::*form[3])(const int&) = 
             { 
-                &oscillator::tomisawa, 
-                &oscillator::pulse, 
-                &oscillator::hexagon 
+                &vco_t::tomisawa, 
+                &vco_t::pulse, 
+                &vco_t::hexagon 
             };
             static int idc;                                 // ID counter
   
         public:
-            int id;                                         // Unique oscillator id
-            envelope env    [settings::poly];
+            int id;                                         // Unique vco_t id
         
             float   freq    [settings::poly];               // Frequency
-            bool    gate    [settings::poly];               // Gate ON ?
-            bool    release [settings::poly];               // Released ?
             uint8_t note    [settings::poly];               // Triggered note
-            float   velo    [settings::poly];               // Velocity
 
             void process() override;
         
@@ -84,8 +70,8 @@ namespace cell
             void set_fine(const unsigned&);
 
             void reset();
-            oscillator();
-           ~oscillator();
+            vco_t();
+           ~vco_t();
     };
 
 

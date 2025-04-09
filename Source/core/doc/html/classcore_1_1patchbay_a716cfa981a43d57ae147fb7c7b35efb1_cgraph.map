@@ -1,0 +1,9 @@
+<map id="core::patchbay::move_test" name="core::patchbay::move_test">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,55,200,80"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1patchbay.html#acc01345c53a2063bb8ffd190bfe8e38b" title=" " alt="" coords="248,5,428,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,52,263,31,264,36,164,57"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1frame.html#a19843a067b8d05ea2fadafe2c9bce3d7" title=" " alt="" coords="275,55,401,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,65,261,65,261,70,200,70"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1patchbay.html#aef2e75879969c607d99d69698f5a634b" title=" " alt="" coords="265,105,411,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="156,77,252,101,251,106,155,83"/>
+</map>

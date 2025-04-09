@@ -1,0 +1,10 @@
+<map id="core::socket" name="core::socket">
+<area shape="rect" id="Node000001" title=" " alt="" coords="129,196,229,221"/>
+<area shape="poly" id="edge4_Node000001_Node000001" title=" " alt="" coords="244,200,256,208,248,217,230,219,229,214,245,212,251,209,242,204"/>
+<area shape="rect" id="Node000002" href="$structcore_1_1patchcord.html" title=" " alt="" coords="27,108,150,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,141,169,194,165,197,109,145"/>
+<area shape="rect" id="Node000003" href="$structcore_1_1point2d.html" title=" " alt="" coords="5,5,172,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="91,45,91,108,86,108,86,45"/>
+<area shape="rect" id="Node000004" href="$structcore_1_1square.html" title=" " alt="" coords="175,108,365,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="250,145,194,197,190,194,246,141"/>
+</map>

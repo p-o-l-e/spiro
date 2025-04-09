@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2023 POLE
+* Copyright (c) 2022-2025 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,36 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 
-#include "snh.h"
+#include "snh.hpp"
 
-namespace cell {
+#include "../setup/constants.hpp"
+#include "../setup/iospecs.hpp"
+
+namespace core 
+{
+    using namespace interface::snh;
 
 int snh_t::idc = 0;
 
 void snh_t::process()
 {
-    if(in[interface::snh::cvi::time] == &zero)
+    if(icv[cvi::time] == &zero)
     {
         if (t > (scale * float(settings::sample_rate) / 1000.0f))
         {
             t = 0.0f;
-            out[interface::snh::cvo::a].store(in[interface::snh::cvi::a]->load() + in[interface::snh::cvi::b]->load());
+            ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
         }
-        t += (1.0f - ctrl[interface::snh::ctl::time]->load() * 0.99f);
+        t += (1.0f - ccv[ctl::time]->load() * 0.99f);
     }
     else
     {
         if (t > (scale * float(settings::sample_rate) / 1000.0f))
         {
             t = 0.0f;
-            out[interface::snh::cvo::a].store(in[interface::snh::cvi::a]->load() + in[interface::snh::cvi::b]->load());
+            ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
         }
-        t += ((1.0f - ctrl[interface::snh::ctl::time]->load() * 0.99f) * fabsf(in[interface::snh::cvi::time]->load()));
+        t += ((1.0f - ccv[ctl::time]->load() * 0.99f) * fabsf(icv[cvi::time]->load()));
     }
 }
 
@@ -57,7 +62,7 @@ void snh_t::reset()
 
 snh_t::snh_t(): id(++idc)
 {
-    init(id, &interface::snh::descriptor[0]);
+    init(id, &descriptor[0]);
     reset();
 }
 
