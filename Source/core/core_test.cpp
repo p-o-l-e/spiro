@@ -17,11 +17,11 @@ int main()
     std::cout<<"\nControls [CVC]: \n";
     for(int i = 0; i < spiro.rack.bus.blueprint.mc; ++i)
     {
-        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].prefix<<"] "; 
+        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].data()->prefix<<"] "; 
         std::cout<<"Postfix: ";
-        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].cc; ++j)
+        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].data()->cc; ++j)
         {
-            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].set_c[j].postfix);
+            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].data()->set_c[j].postfix);
         }
         std::cout<<"\n";
     }
@@ -29,11 +29,11 @@ int main()
     std::cout<<"\nInputs [CVI]: \n";
     for(int i = 0; i < spiro.rack.bus.blueprint.mc; ++i)
     {
-        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].prefix<<"] "; 
+        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].data()->prefix<<"] "; 
         std::cout<<"Postfix: ";
-        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].ic; ++j)
+        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].data()->ic; ++j)
         {
-            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].set_i[j].postfix);
+            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].data()->set_i[j].postfix);
         }
         std::cout<<"\n";
     }
@@ -41,11 +41,11 @@ int main()
     std::cout<<"\nOutputs [CVO]: \n";
     for(int i = 0; i < spiro.rack.bus.blueprint.mc; ++i)
     {
-        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].prefix<<"] "; 
+        std::cout<<std::format("{:2})", i)<<" Prefix:["<<*spiro.rack.bus.blueprint.descriptor[i].data()->prefix<<"] "; 
         std::cout<<"Postfix: ";
-        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].oc; ++j)
+        for(int j = 0; j < *spiro.rack.bus.blueprint.descriptor[i].data()->oc; ++j)
         {
-            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].set_o[j].postfix);
+            std::cout<<std::format("{:3}:[{:>7}]",j, spiro.rack.bus.blueprint.descriptor[i].data()->set_o[j].postfix);
         }
         std::cout<<"\n";
     }

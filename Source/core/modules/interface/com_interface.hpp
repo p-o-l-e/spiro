@@ -42,7 +42,7 @@ namespace core
             
             const core::descriptor_t descriptor
             {
-                module_type::snh, 
+                core::map::module::type::snh, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

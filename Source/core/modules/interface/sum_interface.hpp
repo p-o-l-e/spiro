@@ -46,7 +46,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::sum, 
+                core::map::module::type::sum, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

@@ -9,11 +9,11 @@ namespace core
         return node.get()[pos]; 
     }
 
-    module_t* rack_t::at(const module_type& t, const int& pos)
+    module_t* rack_t::at(const core::map::module::type& t, const int& pos)
     {
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
-            if(node.get()[i]->descriptor->mtype == t)
+            if(node.get()[i]->descriptor->type == t)
             {
                 if(node.get()[i]->position == pos) return node.get()[i];
             }
@@ -50,30 +50,30 @@ namespace core
         #endif
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
-            node[i] = create_node(bus.blueprint.descriptor[i].mtype);
+            node[i] = create_node(bus.blueprint.descriptor[i].type);
         }
     }
 
-    module_t* rack_t::create_node(const module_type& t)
+    module_t* rack_t::create_node(const core::map::module::type& t)
     {
         switch (t)
         {
-            case module_type::vco: return new vco_t(); break;
-            case module_type::env: return new env_t(); break;
-            case module_type::lfo: return new lfo_t(); break;
-            case module_type::map: return new map_t(); break;
-            case module_type::mix: return new mix_t(); break;
-            case module_type::pdt: return new pdt_t(); break;
-            case module_type::rtr: return new rtr_t(); break;
-            case module_type::snh: return new snh_t(); break;
-            case module_type::sum: return new sum_t(); break;
-            case module_type::vca: return new vca_t(); break;
-            case module_type::vcd: return new vcd_t(); break;
-            case module_type::vcf: return new vcf_t(); break;
+            case core::map::module::type::vco: return new vco_t(); break;
+            case core::map::module::type::env: return new env_t(); break;
+            case core::map::module::type::lfo: return new lfo_t(); break;
+            case core::map::module::type::map: return new map_t(); break;
+            case core::map::module::type::mix: return new mix_t(); break;
+            case core::map::module::type::pdt: return new pdt_t(); break;
+            case core::map::module::type::rtr: return new rtr_t(); break;
+            case core::map::module::type::snh: return new snh_t(); break;
+            case core::map::module::type::sum: return new sum_t(); break;
+            case core::map::module::type::vca: return new vca_t(); break;
+            case core::map::module::type::vcd: return new vcd_t(); break;
+            case core::map::module::type::vcf: return new vcf_t(); break;
             
-            // case module_type::com: return new lfo_t(); break;
-            // case module_type::cro: return new lfo_t(); break;
-            // case module_type::fuse: return new lfo_t(); break;
+            // case map::module::type::com: return new lfo_t(); break;
+            // case map::module::type::cro: return new lfo_t(); break;
+            // case map::module::type::fuse: return new lfo_t(); break;
 
             
             default: break;
@@ -95,7 +95,7 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->mtype == _uid.module)
+            if(node[i]->descriptor->type == _uid.module)
             {
                 if(node[i]->position == _uid.module_position)
                 {
@@ -112,7 +112,7 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->mtype == _uid.module)
+            if(node[i]->descriptor->type == _uid.module)
             {
                 if(node[i]->position == _uid.module_position)
                 {
@@ -129,7 +129,7 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->mtype == _uid.module)
+            if(node[i]->descriptor->type == _uid.module)
             {
                 if(node[i]->position == _uid.module_position)
                 {

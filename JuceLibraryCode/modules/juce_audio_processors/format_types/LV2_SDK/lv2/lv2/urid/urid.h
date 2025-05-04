@@ -116,7 +116,7 @@ typedef struct {
 
      Returns NULL if `urid` is not yet mapped.  Otherwise, the corresponding
      URI is returned in a canonical form.  This MAY not be the exact same
-     string that was originally passed to LV2_URID_Map::map(), but it MUST be
+     string that was originally passed to LV2_URID_core::map::map(), but it MUST be
      an identical URI according to the URI syntax specification (RFC3986).  A
      non-NULL return for a given `urid` will always be the same for the life
      of the plugin.  Plugins that intend to perform string comparison on

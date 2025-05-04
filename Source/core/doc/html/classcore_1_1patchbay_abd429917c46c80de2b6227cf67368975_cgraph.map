@@ -1,9 +1,0 @@
-<map id="core::patchbay::drag" name="core::patchbay::drag">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,160,31"/>
-<area shape="rect" id="Node000002" href="$structcore_1_1socket.html#a467ebd3e1a206116f70a8953ad0f0f1c" title=" " alt="" coords="208,5,345,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,15,194,15,194,21,160,21"/>
-<area shape="rect" id="Node000003" href="$structcore_1_1patchcord.html#a901a2f1a809d2136170a883ac5aa937f" title=" " alt="" coords="393,5,573,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="345,15,380,15,380,21,345,21"/>
-<area shape="rect" id="Node000004" href="$namespacecore.html#a48a1ca35ebba09c2d9b66b6cf90f8d36" title=" " alt="" coords="621,5,797,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="574,15,608,15,608,21,574,21"/>
-</map>

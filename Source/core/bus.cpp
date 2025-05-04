@@ -5,7 +5,7 @@
 namespace core {
 namespace interface { 
 
-    bus_connector::bus_connector(const descriptor_t* d): blueprint(d)
+    bus_connector::bus_connector(const std::span<descriptor_t>* d): blueprint(d)
     {
         #ifdef DEBUG 
             std::cout<<"-- Initializing bus...\n";

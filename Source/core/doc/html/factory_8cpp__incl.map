@@ -1,9 +1,0 @@
-<map id="test/factory.cpp" name="test/factory.cpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="87,5,209,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,85,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,33,75,73,72,68,130,28"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="109,79,187,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="151,31,151,65,145,65,145,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="211,79,274,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="165,29,218,68,215,72,162,33"/>
-</map>

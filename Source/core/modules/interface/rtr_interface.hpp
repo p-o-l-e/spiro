@@ -61,7 +61,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::rtr, 
+                core::map::module::type::rtr, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

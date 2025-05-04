@@ -1,9 +1,0 @@
-<map id="core::vcd_t::vcd_t" name="core::vcd_t::vcd_t">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,141,56"/>
-<area shape="rect" id="Node000002" href="$classcore_1_1module__t.html#aea65c727e2bd733b1c556fe2548ef1cf" title=" " alt="" coords="189,5,337,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,32,175,27,176,32,142,37"/>
-<area shape="rect" id="Node000003" href="$classcore_1_1vcd__t.html#a2e09785b1197d460235af5dc5ad0cc40" title=" " alt="" coords="196,55,331,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="142,49,183,55,182,60,141,55"/>
-<area shape="rect" id="Node000004" href="$structcore_1_1onepole.html#a16fa18682735c90a3d7bf5d2696e4270" title=" " alt="" coords="385,55,536,80"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="331,65,372,65,372,70,331,70"/>
-</map>

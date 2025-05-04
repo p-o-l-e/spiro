@@ -74,7 +74,7 @@ namespace core
             const core::descriptor_t descriptor[vc] 
             { 
                 {
-                    module_type::env, 
+                    core::map::module::type::env, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i, 
@@ -83,7 +83,7 @@ namespace core
                     &constrain
                 },
                 {
-                    module_type::env, 
+                    core::map::module::type::env, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i, 
@@ -92,7 +92,7 @@ namespace core
                     &constrain
                 },
                 {
-                    module_type::env, 
+                    core::map::module::type::env, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i, 
@@ -101,7 +101,7 @@ namespace core
                     &constrain
                 },
                 {
-                    module_type::env, 
+                    core::map::module::type::env, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i, 

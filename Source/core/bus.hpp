@@ -19,7 +19,7 @@ namespace core
                 std::atomic<float>* pin_i(const uint32_t&) const;
                 std::atomic<float>* pin_o(const uint32_t&) const;
 
-                bus_connector(const descriptor_t*);
+                bus_connector(const std::span<descriptor_t>*);
                ~bus_connector() {};
         };
     }

@@ -60,6 +60,7 @@
         "*.m": "cpp",
         "list": "cpp",
         "unordered_set": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "map": "cpp"
     }
 }

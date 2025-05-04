@@ -42,7 +42,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::fuse, 
+                core::map::module::type::fuse, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

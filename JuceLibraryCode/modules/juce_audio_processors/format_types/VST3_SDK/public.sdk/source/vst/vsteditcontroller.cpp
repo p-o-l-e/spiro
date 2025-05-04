@@ -440,7 +440,7 @@ tresult PLUGIN_API EditControllerEx1::getProgramListInfo (int32 listIndex,
 tresult PLUGIN_API EditControllerEx1::getProgramName (ProgramListID listId, int32 programIndex,
                                                       String128 name /*out*/)
 {
-	ProgramIndexMap::const_iterator it = programIndexMap.find (listId);
+	ProgramIndexcore::map::const_iterator it = programIndexMap.find (listId);
 	if (it != programIndexMap.end ())
 	{
 		return programLists[it->second]->getProgramName (programIndex, name);
@@ -452,7 +452,7 @@ tresult PLUGIN_API EditControllerEx1::getProgramName (ProgramListID listId, int3
 tresult EditControllerEx1::setProgramName (ProgramListID listId, int32 programIndex,
                                            const String128 name /*in*/)
 {
-	ProgramIndexMap::const_iterator it = programIndexMap.find (listId);
+	ProgramIndexcore::map::const_iterator it = programIndexMap.find (listId);
 	if (it != programIndexMap.end ())
 	{
 		return programLists[it->second]->setProgramName (programIndex, name);
@@ -465,7 +465,7 @@ tresult PLUGIN_API EditControllerEx1::getProgramInfo (ProgramListID listId, int3
                                                       CString attributeId /*in*/,
                                                       String128 attributeValue /*out*/)
 {
-	ProgramIndexMap::const_iterator it = programIndexMap.find (listId);
+	ProgramIndexcore::map::const_iterator it = programIndexMap.find (listId);
 	if (it != programIndexMap.end ())
 	{
 		return programLists[it->second]->getProgramInfo (programIndex, attributeId, attributeValue);
@@ -477,7 +477,7 @@ tresult PLUGIN_API EditControllerEx1::getProgramInfo (ProgramListID listId, int3
 tresult PLUGIN_API EditControllerEx1::hasProgramPitchNames (ProgramListID listId,
                                                             int32 programIndex)
 {
-	ProgramIndexMap::const_iterator it = programIndexMap.find (listId);
+	ProgramIndexcore::map::const_iterator it = programIndexMap.find (listId);
 	if (it != programIndexMap.end ())
 	{
 		return programLists[it->second]->hasPitchNames (programIndex);
@@ -489,7 +489,7 @@ tresult PLUGIN_API EditControllerEx1::hasProgramPitchNames (ProgramListID listId
 tresult PLUGIN_API EditControllerEx1::getProgramPitchName (ProgramListID listId, int32 programIndex,
                                                            int16 midiPitch, String128 name /*out*/)
 {
-	ProgramIndexMap::const_iterator it = programIndexMap.find (listId);
+	ProgramIndexcore::map::const_iterator it = programIndexMap.find (listId);
 	if (it != programIndexMap.end ())
 	{
 		return programLists[it->second]->getPitchName (programIndex, midiPitch, name);
@@ -583,7 +583,7 @@ tresult ProgramList::getProgramInfo (int32 programIndex, CString attributeId,
 {
 	if (programIndex >= 0 && programIndex < static_cast<int32> (programNames.size ()))
 	{
-		StringMap::const_iterator it = programInfos[programIndex].find (attributeId);
+		Stringcore::map::const_iterator it = programInfos[programIndex].find (attributeId);
 		if (it != programInfos[programIndex].end ())
 		{
 			if (!it->second.isEmpty ())
@@ -666,7 +666,7 @@ bool ProgramListWithPitchNames::setPitchName (int32 programIndex, int16 pitch,
 		return false;
 
 	bool nameChanged = true;
-	std::pair<PitchNameMap::iterator, bool> res =
+	std::pair<PitchNamecore::map::iterator, bool> res =
 	    pitchNames[programIndex].insert (std::make_pair (pitch, pitchName));
 	if (!res.second)
 	{
@@ -708,7 +708,7 @@ tresult ProgramListWithPitchNames::getPitchName (int32 programIndex, int16 midiP
 {
 	if (programIndex >= 0 && programIndex < getCount ())
 	{
-		PitchNameMap::const_iterator it = pitchNames[programIndex].find (midiPitch);
+		PitchNamecore::map::const_iterator it = pitchNames[programIndex].find (midiPitch);
 		if (it != pitchNames[programIndex].end ())
 		{
 			it->second.copyTo16 (name, 0, 128);

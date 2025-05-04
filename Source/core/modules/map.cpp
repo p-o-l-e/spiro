@@ -29,11 +29,11 @@
 #include <iostream>
 
 namespace core {
-    using namespace interface::map;
+    using namespace interface::cso;
 
-int map_t::idc = 0;
+int cso_t::idc = 0;
 
-void map_t::process()
+void cso_t::process()
 {
     int f = (int)ccv[ctl::form]->load();
 
@@ -45,17 +45,17 @@ void map_t::process()
     (this->*form[0])();
 }
 
-void map_t::switch_wave(const int& w)
+void cso_t::switch_wave(const int& w)
 {
     _reset = true;
 }
 
-map_t::map_t(): id(++idc)
+cso_t::cso_t(): id(++idc)
 {
-    init(id, &interface::map::descriptor);
+    init(id, &interface::cso::descriptor);
 }
 
-void map_t::sprott_reset()
+void cso_t::sprott_reset()
 {
     f[0] = 0.8f;     // a
     f[1] = 0.5f;     // b
@@ -68,7 +68,7 @@ void map_t::sprott_reset()
     f[7] = 0.1f;     // z
 }
 
-void map_t::sprott() 
+void cso_t::sprott() 
 {
     f[4] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.0001f;
     if(ccv[cvi::warp] == &zero) f[2] = 0.1f + ccv[ctl::warp]->load();
@@ -92,7 +92,7 @@ void map_t::sprott()
     }
 }
 
-void map_t::helmholz_reset()
+void cso_t::helmholz_reset()
 {
     f[5] = 0.1f;     // x
     f[6] = 0.1f;     // y
@@ -103,7 +103,7 @@ void map_t::helmholz_reset()
     f[2] = 0.01;     // t
 }
 
-void map_t::helmholz() 
+void cso_t::helmholz() 
 {
     f[2] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.01f;
     if(ccv[cvi::warp] == &zero) f[1] = ((ccv[ctl::warp]->load() - 0.5f) * 0.03f) + 0.55f;
@@ -127,7 +127,7 @@ void map_t::helmholz()
     }
 }
 
-void map_t::halvorsen_reset()
+void cso_t::halvorsen_reset()
 {
     f[0] = 1.4f;     // a
     f[1] = 0.01f;    // t
@@ -138,7 +138,7 @@ void map_t::halvorsen_reset()
 };
 
 
-void map_t::halvorsen()
+void cso_t::halvorsen()
 {
     f[1] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.01f) * 0.02f + 0.00001f;
     if(ccv[cvi::warp] == &zero) f[0] = 1.4f + ccv[ctl::warp]->load();
@@ -163,7 +163,7 @@ void map_t::halvorsen()
 
 }
 
-void map_t::tsucs_reset()
+void cso_t::tsucs_reset()
 {
     f[0] = 1.0f;     // x
     f[1] = 1.0f;     // y
@@ -178,7 +178,7 @@ void map_t::tsucs_reset()
     f[8] = 0.001f;   // t
 };
 
-void map_t::tsucs()
+void cso_t::tsucs()
 {
     if(ccv[cvi::warp] == &zero) f[7] = ccv[ctl::warp]->load() / 8.0f + 0.55f;
     else f[7] = ccv[ctl::warp]->load() * fabsf(ccv[cvi::warp]->load())  / 8.0f + 0.55f;

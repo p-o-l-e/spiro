@@ -1,6 +1,6 @@
 #include "interface_headers.hpp"
 
-namespace cell
+namespace core
 {
    /**********************************************************************************************************************
     * 
@@ -27,53 +27,34 @@ namespace cell
     
     namespace settings {
 
-        inline const int      sectors = 26; 
+        inline const int sectors = 26; 
         inline Sector sector_map[]
         {
-
             Sector(&interface::vca::descriptor[0]   , point2d<float> { 228.0f, 292.0f }, 1 ),
             Sector(&interface::vca::descriptor[1]   , point2d<float> { 228.0f, 292.0f }, 2 ),
-
             Sector(&interface::snh::descriptor[0]   , point2d<float> { 532.0f, 292.0f }, 1 ),
             Sector(&interface::snh::descriptor[1]   , point2d<float> { 532.0f, 292.0f }, 2 ),
-            
             Sector(&interface::sum::descriptor      , point2d<float> {  76.0f, 292.0f }, 1 ),
             Sector(&interface::sum::descriptor      , point2d<float> { 152.0f, 292.0f }, 2 ),   
-            
             Sector(&interface::pdt::descriptor      , point2d<float> {  76.0f, 351.0f }, 1 ),
-
             Sector(&interface::vco::descriptor      , point2d<float> {   0.0f,   0.0f }, 1 ),
             Sector(&interface::vco::descriptor      , point2d<float> { 152.0f,   0.0f }, 2 ),
             Sector(&interface::vco::descriptor      , point2d<float> { 304.0f,   0.0f }, 3 ),
             Sector(&interface::vco::descriptor      , point2d<float> { 456.0f,   0.0f }, 4 ),
-            
-            Sector(&interface::map::descriptor      , point2d<float> { 608.0f,   0.0f }, 1 ),
-            Sector(&interface::map::descriptor      , point2d<float> { 684.0f,   0.0f }, 2 ),    
-
-
+            Sector(&interface::cso::descriptor      , point2d<float> { 608.0f,   0.0f }, 1 ),
+            Sector(&interface::cso::descriptor      , point2d<float> { 684.0f,   0.0f }, 2 ),    
             Sector(&interface::vcd::descriptor      , point2d<float> { 304.0f, 292.0f }, 1 ),
- 
             Sector(&interface::vcf::descriptor      , point2d<float> { 380.0f, 292.0f }, 1 ),
             Sector(&interface::vcf::descriptor      , point2d<float> { 456.0f, 292.0f }, 2 ),
-
-
- 
             Sector(&interface::lfo::descriptor      , point2d<float> { 608.0f, 352.0f }, 1 ),
             Sector(&interface::lfo::descriptor      , point2d<float> { 684.0f, 352.0f }, 2 ),
- 
             Sector(&interface::rtr::descriptor      , point2d<float> { 760.0f, 270.0f }, 1 ),
-            
             Sector(&interface::mix::descriptor      , point2d<float> { 888.0f, 270.0f }, 1 ),
-            
-
-
             Sector(&interface::env::descriptor[0]   , point2d<float> {   0.0f, 381.0f }, 1 ),
             Sector(&interface::env::descriptor[1]   , point2d<float> {   0.0f, 381.0f }, 2 ),
             Sector(&interface::env::descriptor[2]   , point2d<float> {   0.0f, 381.0f }, 3 ),
             Sector(&interface::env::descriptor[3]   , point2d<float> {   0.0f, 381.0f }, 4 ),
-
             Sector(&interface::com::descriptor      , point2d<float> {   0.0f, 292.0f }, 1 ),
-
             Sector(&interface::cro::descriptor      , point2d<float> { 760.0f,   0.0f }, 1 ),
         };
     }
@@ -85,12 +66,12 @@ namespace cell
         rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
         float scale { 1.0f };
 
-        Sector* get_sector(const module_type& t, const int& index)
+        Sector* get_sector(const core::map::module::type& t, const int& index)
         {
             for(int i = 0; i < sectors; ++i)
             {
                 if(sector[i].index == index)
-                    if(sector[i].descriptor->mtype == t)
+                    if(sector[i].descriptor->type == t)
                         return &sector[i];
             }
             return nullptr;

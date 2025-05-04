@@ -316,7 +316,7 @@ private:
         return sources;
     }
 
-    std::pair<Map::const_iterator, Map::const_iterator> getMatchingDestinations (NodeID destID) const
+    std::pair<core::map::const_iterator, core::map::const_iterator> getMatchingDestinations (NodeID destID) const
     {
         return std::equal_range (sourcesForDestination.cbegin(), sourcesForDestination.cend(), destID, ImplicitNode::compare);
     }

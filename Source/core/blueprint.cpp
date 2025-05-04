@@ -6,13 +6,13 @@ namespace core
 {
 namespace interface
 {
-    const uint32_t blueprint_t::get_hash(const parameter_type& t, const int& p) const
+    const uint32_t blueprint_t::get_hash(const core::map::parameter::type& t, const int& p) const
     {
         switch(t)
         {
-            case parameter_type::cc: return hash_table_c[p]; break;
-            case parameter_type::ic: return hash_table_i[p]; break;
-            case parameter_type::oc: return hash_table_o[p]; break;
+            case core::map::parameter::type::cc: return hash_table_c[p]; break;
+            case core::map::parameter::type::ic: return hash_table_i[p]; break;
+            case core::map::parameter::type::oc: return hash_table_o[p]; break;
             default: break;
         }
         return 0;
@@ -21,15 +21,15 @@ namespace interface
 
     const int blueprint_t::get_index(const uint32_t& hash) const
     {
-        switch(static_cast<parameter_type>(core::extract_byte(hash, uid_t::shift::m_index)))
+        switch(static_cast<core::map::parameter::type>(core::extract_byte(hash, uid_t::shift::m_index)))
         {
-            case parameter_type::cc:
+            case core::map::parameter::type::cc:
                 for(int i = 0; i < cc; ++i) if(hash_table_c[i] == hash) return i;    
                 break;
-            case parameter_type::ic:
+            case core::map::parameter::type::ic:
                 for(int i = 0; i < ic; ++i) if(hash_table_i[i] == hash) return i;    
                 break;
-            case parameter_type::oc:
+            case core::map::parameter::type::oc:
                 for(int i = 0; i < oc; ++i) if(hash_table_o[i] == hash) return i;    
                 break;
             default:
@@ -38,20 +38,20 @@ namespace interface
         return error::invalid_index;
     }
 
-    const std::unique_ptr<int[]> blueprint_t::set_relatives(const descriptor_t* d) const
+    const std::unique_ptr<int[]> blueprint_t::set_relatives(const std::span<descriptor_t>* d) const
     {
-        int n = settings::n_modules();
+        int n = d->size();
         auto r = std::make_unique<int[]>(n);
 
         for(int s = 0; s < n; ++s)
         {
             int pos = 0;
-            module_type car = d[s].mtype;
+            core::map::module::type car = d[s].data()->type;
             r[s] = pos;
 
             for(int i = s + 1; i < n; ++i)
             {
-                if(car == d[i].mtype) 
+                if(car == d[i].data()->type) 
                 {
                     r[i] = ++pos;
                     ++s;
@@ -72,25 +72,25 @@ namespace interface
 
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].cc; ++i)
+            for(int i = 0; i < *descriptor[m].data()->cc; ++i)
             {
-                hash_table_c[h] = core::uid_t::encode_uid(descriptor[m].mtype, parameter_type::cc, relative[m], i);
+                hash_table_c[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::cc, relative[m], i);
                 ++h;
             }
         }
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].ic; ++i)
+            for(int i = 0; i < *descriptor[m].data()->ic; ++i)
             {
-                hash_table_i[h] = core::uid_t::encode_uid(descriptor[m].mtype, parameter_type::ic, relative[m], i);
+                hash_table_i[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::ic, relative[m], i);
                 ++h;
             }
         }
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].oc; ++i)
+            for(int i = 0; i < *descriptor[m].data()->oc; ++i)
             {
-                hash_table_o[h] = core::uid_t::encode_uid(descriptor[m].mtype, parameter_type::oc, relative[m], i);
+                hash_table_o[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::oc, relative[m], i);
                 ++h;
             }
         }
@@ -100,27 +100,26 @@ namespace interface
     }
 
 
-    const int blueprint_t::count(const parameter_type& p, const descriptor_t* d) const
+    const int blueprint_t::count(const core::map::parameter::type& p, const std::span<descriptor_t>* d) const
     {
         int c { 0 };
-        int m = settings::n_modules();
         switch(p)
         {
-            case parameter_type::ic: for(int i = 0; i < m; ++i) c += *d[i].ic; break;
-            case parameter_type::oc: for(int i = 0; i < m; ++i) c += *d[i].oc; break;
-            case parameter_type::cc: for(int i = 0; i < m; ++i) c += *d[i].cc; break;
+            case core::map::parameter::type::ic: for(auto o: *d) c += *o.ic; break;
+            case core::map::parameter::type::oc: for(auto o: *d) c += *o.oc; break;
+            case core::map::parameter::type::cc: for(auto o: *d) c += *o.cc; break;
             default: break;
         }
         return c;
     }
 
-    blueprint_t::blueprint_t(const descriptor_t* d): 
+    blueprint_t::blueprint_t(const std::span<descriptor_t>* d): 
         descriptor(d), 
         relative(set_relatives(d)),
-        mc(settings::n_modules()), 
-        ic(count(parameter_type::ic, d)),
-        oc(count(parameter_type::oc, d)),
-        cc(count(parameter_type::cc, d))
+        mc(d->size()), 
+        ic(count(core::map::parameter::type::ic, d)),
+        oc(count(core::map::parameter::type::oc, d)),
+        cc(count(core::map::parameter::type::cc, d))
     { 
         calculate_hash();
         #ifdef DEBUG 

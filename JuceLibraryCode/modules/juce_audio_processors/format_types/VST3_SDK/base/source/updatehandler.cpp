@@ -148,8 +148,8 @@ using DependentMap = std::unordered_map<const FUnknown*, DependentList>;
 #else
 typedef std::map<const FUnknown*, DependentList> DependentMap;
 #endif
-using DependentMapIter = DependentMap::iterator;
-using DependentMapIterConst = DependentMap::const_iterator;
+using DependentMapIter = Dependentcore::map::iterator;
+using DependentMapIterConst = Dependentcore::map::const_iterator;
 
 struct Table
 {

@@ -52,7 +52,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::mix, 
+                core::map::module::type::mix, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

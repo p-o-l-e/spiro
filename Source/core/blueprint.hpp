@@ -13,8 +13,8 @@ namespace interface {
 	class blueprint_t
     {
         private:
-            const int count(const parameter_type&, const descriptor_t*) const;
-            const std::unique_ptr<int[]> set_relatives(const descriptor_t*) const;
+            const int count(const core::map::parameter::type&, const std::span<descriptor_t>*) const;
+            const std::unique_ptr<int[]> set_relatives(const std::span<descriptor_t>*) const;
             void calculate_hash();
             std::unique_ptr<uint32_t[]> hash_table_i; 
             std::unique_ptr<uint32_t[]> hash_table_o;
@@ -22,15 +22,15 @@ namespace interface {
 
         public:
             const int get_index(const uint32_t&) const;
-            const uint32_t get_hash(const parameter_type&, const int&) const;
-            const descriptor_t* descriptor;
+            const uint32_t get_hash(const core::map::parameter::type&, const int&) const;
+            const std::span<descriptor_t>* descriptor;
             const std::unique_ptr<int[]> relative; 
             const int ic = 0;
             const int oc = 0;
             const int cc = 0;
             const int mc = 0;
 
-            blueprint_t(const descriptor_t*);
+            blueprint_t(const std::span<descriptor_t>*);
            ~blueprint_t() {};
     };
 }

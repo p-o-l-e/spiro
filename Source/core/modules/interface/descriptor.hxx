@@ -6,12 +6,43 @@
 
 namespace core 
 {
-    enum class parameter_type { cc = 0xCC, ic = 0xAA, oc = 0xEE, off = 0x00 };
-    enum class module_type { fuse, vco, lfo, map, vca, vcd, vcf, snh, sum, pdt, rtr, mix, env, mod, com, cro };
-
-    namespace settings 
+    namespace map
     {
-       inline const int  module_types = 16; 
+        struct parameter
+        { 
+            enum type
+            {
+                off = 0x00,
+                cc  = 0xCC, 
+                ic  = 0xAA, 
+                oc  = 0xEE 
+            };
+            static const int count { 4 };
+        };
+
+        struct module
+        { 
+            enum type
+            {   
+                fuse = 0x00, 
+                vco  = 0xFF, 
+                lfo  = 0xEE, 
+                cso  = 0xDD, 
+                vca  = 0xCC, 
+                vcd  = 0xBB, 
+                vcf  = 0xAA, 
+                snh  = 0x99, 
+                sum  = 0x88, 
+                pdt  = 0x77, 
+                rtr  = 0x66, 
+                mix  = 0x55, 
+                env  = 0x44, 
+                mod  = 0x33, 
+                com  = 0x22, 
+                cro  = 0x11,
+            };
+            static const int count { 16 };
+        };
     }
 
     struct control_t
@@ -38,7 +69,7 @@ namespace core
 
     struct descriptor_t 
     {
-        const module_type mtype = module_type::fuse;
+        const map::module::type type = map::module::type::fuse;
         
         const int* const ic;                                    // Inputs
         const int* const oc;                                    // Outputs

@@ -11,7 +11,7 @@ namespace core
         *  Descriptor
         * 
         **********************************************************************************************************************/
-        namespace map 
+        namespace cso 
         {
             const int cc { 5 };
             const int ic { 2 };
@@ -21,7 +21,7 @@ namespace core
             struct cvi { enum { fm, warp                          }; };             // CV in
             struct cvo { enum { x, y, z                           }; };             // CV out
 
-            const std::string prefix    { "map"                                             };
+            const std::string prefix    { "cso"                                             };
             
             const core::control_t set_i[ic]
             {
@@ -52,7 +52,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::map, 
+                core::map::module::type::cso, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

@@ -46,7 +46,7 @@ namespace core
             
             const core::descriptor_t descriptor  
             { 
-                module_type::pdt, 
+                core::map::module::type::pdt, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

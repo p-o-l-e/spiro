@@ -52,7 +52,7 @@ namespace core
             
             const core::descriptor_t descriptor
             {
-                module_type::cro, 
+                core::map::module::type::cro, 
                 &ic, &oc, &cc,
                 &prefix, 
                 set_i, 

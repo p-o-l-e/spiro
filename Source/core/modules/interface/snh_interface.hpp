@@ -69,7 +69,7 @@ namespace core
             const core::descriptor_t descriptor[vc]
             {
                 {
-                    module_type::snh, 
+                    core::map::module::type::snh, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i[0], 
@@ -78,7 +78,7 @@ namespace core
                     &constrain
                 },
                 {
-                    module_type::snh, 
+                    core::map::module::type::snh, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i[1], 

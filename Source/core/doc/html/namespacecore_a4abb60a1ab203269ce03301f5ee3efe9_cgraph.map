@@ -1,9 +1,0 @@
-<map id="core::Rotate" name="core::Rotate">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,55,107,80"/>
-<area shape="rect" id="Node000002" href="$namespacecore.html#ac96ad90626d4bb344772a0c4cd3e72f5" title=" " alt="" coords="155,5,265,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,52,155,33,157,38,97,57"/>
-<area shape="rect" id="Node000003" href="$namespacecore.html#a99e6964188cd36f614b1b8a836b08c9c" title=" " alt="" coords="155,55,265,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="107,65,141,65,141,70,107,70"/>
-<area shape="rect" id="Node000004" href="$namespacecore.html#ae417f28dee5263d100efa48a4ac45131" title=" " alt="" coords="155,104,265,129"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="97,78,157,97,155,102,95,83"/>
-</map>

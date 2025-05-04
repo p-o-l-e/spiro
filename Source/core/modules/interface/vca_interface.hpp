@@ -71,7 +71,7 @@ namespace core
             const core::descriptor_t descriptor[vc]  
             { 
                 core::descriptor_t {
-                    module_type::vca, 
+                    core::map::module::type::vca, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i[0], 
@@ -80,7 +80,7 @@ namespace core
                     &constrain
                 },
                 core::descriptor_t {
-                    module_type::vca, 
+                    core::map::module::type::vca, 
                     &ic, &oc, &cc,
                     &prefix, 
                     set_i[1], 

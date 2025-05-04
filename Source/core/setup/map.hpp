@@ -18,8 +18,8 @@ namespace core
             interface::env::descriptor[0] ,
             interface::lfo::descriptor    ,
             interface::lfo::descriptor    ,
-            interface::map::descriptor    ,
-            interface::map::descriptor    ,
+            interface::cso::descriptor    ,
+            interface::cso::descriptor    ,
             interface::mix::descriptor    ,
             interface::pdt::descriptor    ,
             interface::sum::descriptor    ,
@@ -34,11 +34,6 @@ namespace core
             interface::cro::descriptor    
         };
 
-        inline const std::span<descriptor_t> dm (descriptor_map);
-
-        inline constexpr int n_modules()
-        {
-            return sizeof(descriptor_map)/sizeof(descriptor_t);
-        }
+        inline const std::span<descriptor_t> default_map(descriptor_map);
     }  
 } // Namespace core

@@ -31,7 +31,7 @@ namespace core
     #define n_forms_chaotic 4
     inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
-    class map_t: public module_t
+    class cso_t: public module_t
     { 
         private:
             static int idc;
@@ -45,12 +45,12 @@ namespace core
 
             bool _reset = true; // Reset flag
 
-            void (map_t::*reset[4])() = 
+            void (cso_t::*reset[4])() = 
             { 
-                &map_t::sprott_reset,
-                &map_t::helmholz_reset,
-                &map_t::halvorsen_reset,
-                &map_t::tsucs_reset
+                &cso_t::sprott_reset,
+                &cso_t::helmholz_reset,
+                &cso_t::halvorsen_reset,
+                &cso_t::tsucs_reset
             };
             
             void sprott();
@@ -58,12 +58,12 @@ namespace core
             void halvorsen();
             void tsucs();
 
-            void (map_t::*form[4])() = 
+            void (cso_t::*form[4])() = 
             { 
-                &map_t::sprott,
-                &map_t::helmholz,
-                &map_t::halvorsen,
-                &map_t::tsucs
+                &cso_t::sprott,
+                &cso_t::helmholz,
+                &cso_t::halvorsen,
+                &cso_t::tsucs
             };
 
 
@@ -72,7 +72,7 @@ namespace core
             void process() override;
             void switch_wave(const int&);
 
-            map_t();
-        ~map_t() {};
+            cso_t();
+        ~cso_t() {};
     }; 
 } // Namespace core

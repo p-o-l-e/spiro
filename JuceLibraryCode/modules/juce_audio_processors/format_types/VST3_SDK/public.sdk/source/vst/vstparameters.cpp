@@ -407,7 +407,7 @@ bool ParameterContainer::removeParameter (ParamID tag)
 	if (!params)
 		return false;
 	
-	IndexMap::const_iterator it = id2index.find (tag);
+	Indexcore::map::const_iterator it = id2index.find (tag);
 	if (it != id2index.end ())
 	{
 		params->erase (params->begin () + it->second);

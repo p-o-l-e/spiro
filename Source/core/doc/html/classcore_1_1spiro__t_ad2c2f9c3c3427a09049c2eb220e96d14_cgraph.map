@@ -1,7 +1,0 @@
-<map id="core::spiro_t::process" name="core::spiro_t::process">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,165,56"/>
-<area shape="rect" id="Node000002" href="$classcore_1_1rack__t.html#abdde2ff5b6314ffb95f5c4d13de4e8ea" title=" " alt="" coords="229,5,348,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,31,216,24,216,30,166,36"/>
-<area shape="rect" id="Node000003" href="$structcore_1_1dcb__t.html#aba3e19392086869ddb64ac4581ea4ea1" title=" " alt="" coords="213,55,364,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="166,50,200,54,199,59,165,55"/>
-</map>
