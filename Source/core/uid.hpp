@@ -4,8 +4,6 @@
 
 namespace core
 {
-
-
     constexpr uint8_t extract_byte(const uint32_t&, const int&) noexcept;
     struct uid_t 
     {
@@ -23,7 +21,6 @@ namespace core
             uid_t(const uint32_t&);
             uid_t(const map::module::type&, const map::parameter::type&, const int&, const int&);
            ~uid_t() {};
-
     };
 
 
