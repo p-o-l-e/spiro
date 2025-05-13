@@ -24,13 +24,13 @@
 
 #pragma once
 #include <cmath>
-#include "../utility/containers.hpp"
+#include "../utility/primitives.hpp"
 
 namespace core {
 
-    constexpr point2d<float> interpolateiBezier(const point2d<float>& p0, const point2d<float>& p1, const point2d<float>& p2, const point2d<float>& p3, const float& t) noexcept // t always lies between 0 and 1
+    constexpr Point2D<float> interpolateBezier(const Point2D<float>& p0, const Point2D<float>& p1, const Point2D<float>& p2, const Point2D<float>& p3, const float& t) noexcept // t always lies between 0 and 1
     {
-        return point2d<float>
+        return Point2D<float>
         {
             powf(1-t, 3) * p0.x + 3 * t * powf(1 - t, 2) * p1.x + 3 * t * t * (1 - t) * p2.x + powf(t, 3) * p3.x,
             powf(1-t, 3) * p0.y + 3 * t * powf(1 - t, 2) * p1.y + 3 * t * t * (1 - t) * p2.y + powf(t, 3) * p3.y

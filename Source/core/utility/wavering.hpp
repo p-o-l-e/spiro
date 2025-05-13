@@ -18,61 +18,31 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
+*
 ******************************************************************************************************************************/
-
 #pragma once
 
-#include "../utility/utility.hpp"
-#include "node.hpp"
+namespace core {
 
-namespace core 
-{
-
-    #define n_forms_chaotic 4
-    inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
-
-    class cso_t: public module_t
-    { 
+    template <typename T>
+    class wavering
+    {
         private:
-            static int idc;
-            float f[9];
-            Limiter limiter;
-
-            void sprott_reset();
-            void helmholz_reset();
-            void halvorsen_reset();
-            void tsucs_reset();
-
-            bool _reset = true; // Reset flag
-
-            void (cso_t::*reset[4])() = 
-            { 
-                &cso_t::sprott_reset,
-                &cso_t::helmholz_reset,
-                &cso_t::halvorsen_reset,
-                &cso_t::tsucs_reset
-            };
-            
-            void sprott();
-            void helmholz();
-            void halvorsen();
-            void tsucs();
-
-            void (cso_t::*form[4])() = 
-            { 
-                &cso_t::sprott,
-                &cso_t::helmholz,
-                &cso_t::halvorsen,
-                &cso_t::tsucs
-            };
-
-
+            T* data;
+            int  i = 0; // Write Pointer
+            int  o = 0; // Read Pointer
         public:
-            const int id = 0;
-            void process() override;
-            void switch_wave(const int&);
+            const int segments = 1024;
+            constexpr void set(const T&) noexcept;
+            constexpr void set(const unsigned&, const T&) noexcept;
+            constexpr T get() noexcept;
+            constexpr T get(const int&) noexcept;
+            constexpr T* raw() const noexcept { return data; }
+            constexpr wavering() noexcept { data = new T[segments]; }
+            constexpr wavering(const int& n): segments(n) { data = new T[segments]; }
+           ~wavering() { delete[] data; }
+    };
 
-            cso_t();
-        ~cso_t() {};
-    }; 
-} // Namespace core
+}; // namespace core
+
+

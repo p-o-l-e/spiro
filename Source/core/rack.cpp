@@ -32,7 +32,7 @@ namespace core
         if(pos < bus.blueprint.mc) node[pos] = m; 
     }
 
-    rack_t::rack_t(const std::span<Descriptor>* d): bus(d) 
+    rack_t::rack_t(const Descriptor* d): bus(d) 
     { 
         allocate(); 
         build(); 
@@ -61,7 +61,7 @@ namespace core
             case core::map::module::type::vco: return new vco_t(); break;
             case core::map::module::type::env: return new env_t(); break;
             case core::map::module::type::lfo: return new lfo_t(); break;
-            case core::map::module::type::map: return new map_t(); break;
+            case core::map::module::type::cso: return new cso_t(); break;
             case core::map::module::type::mix: return new mix_t(); break;
             case core::map::module::type::pdt: return new pdt_t(); break;
             case core::map::module::type::rtr: return new rtr_t(); break;

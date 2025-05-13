@@ -24,9 +24,11 @@
 #pragma once
 #include <cstdint>
 #include <vector>
-#include "../graphics/curves.hpp"
-#include "../graphics/primitives.hpp"
-#include "../setup/constants.hpp"
+#include "curves.hpp"
+#include "shapes.hpp"
+#include "primitives.hpp"
+#include "canvas.hpp"
+#include "constants.hpp"
 #include <iostream>
 #include <string>
 #include <atomic>
@@ -51,64 +53,64 @@ namespace core {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PatchCord //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    
-    struct patchcord
+    struct Patchcord
     {
-        point2d<float>* data;               // Rendered spline
-        point2d<float> spline[4];           // Control points
+        Point2D<float>* data;               // Rendered spline
+        Point2D<float> spline[4];           // Control points
         const int segments = 4;             // # Segments
         const int iterations;               // Precision
         bool focused = false;
         constexpr void process();           // Fill spline data
-        patchcord(int);
-       ~patchcord();
+        Patchcord(int);
+       ~Patchcord();
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Socket Data ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    struct socket
+    struct Socket
     {
         const unsigned* w;
         const unsigned* h;
 
-        patchcord cord;
-        square<unsigned> bounds { 0, 0, 0 };
+        Patchcord cord;
+        RadialSquare<unsigned> bounds { 0, 0, 0 };
         unsigned id = 0;
         int pos;                                            // Array position
         bool route = 0;                                     // 0: Output - 1: Input
         bool on = false;                                    // Is connected ?
-        socket* to = nullptr;
+        Socket* to = nullptr;
 
         std::atomic<float>* data  = &zero;                  // Output
         std::atomic<float>** com  = &data;                  // Pointer to module input pointer
         constexpr void collapse();                          // Collapse to centre
         constexpr void drag(const float&, const float&);    // Drag
-        socket(int);
-       ~socket();
+        Socket(int);
+       ~Socket();
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Patchbay ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    class patchbay
+    class Patchbay
     {
         private:
-            socket* src = nullptr;          // Armed source
-            socket* dst = nullptr;          // Armed destination
+            Socket* src = nullptr;              // Armed source
+            Socket* dst = nullptr;              // Armed destination
             
         public:
             int   get_index(const uint32_t&);
-            void  connect(socket*, socket*);
-            void  disconnect(socket*, socket*);
+            void  connect(Socket*, Socket*);
+            void  disconnect(Socket*, Socket*);
 
-            frame<unsigned> canvas;         // Hit test layer
-            frame<bool>     matrix;         // Connections matrix
-            const int       nodes;          // Number of sockets
-            socket*         io;             // Sockets array
+            Canvas<unsigned>    canvas;         // Hit test layer
+            Canvas<bool>        matrix;         // Connections matrix
+            const int           nodes;          // Number of sockets
+            Socket*             io;             // Sockets array
 
-            int inputs, outputs;            // Number of inpunts and outputs
+            int inputs, outputs;                // Number of inpunts and outputs
             
-            void set_socket(const point2d<int>*, const int&, const uint32_t&, const bool&, const int&);
+            void set_socket(const Point2D<int>*, const int&, const uint32_t&, const bool&, const int&);
             void drag(const float&, const float&);
             void draw();
             int  down_test(const float&, const float&, const int&);
@@ -117,8 +119,8 @@ namespace core {
             void deselect();
             void clear();
 
-            patchbay(const int&, const int&, const int&, const int&);
-           ~patchbay();
+            Patchbay(const int&, const int&, const int&, const int&);
+           ~Patchbay();
     };
 
 };

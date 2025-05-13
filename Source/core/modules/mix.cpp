@@ -23,7 +23,7 @@
 #include "mix.hpp"
 #include "interface/mix_interface.hpp"
 #include "../utility/utility.hpp"
-#include "../utility/containers.hpp"
+#include "../utility/primitives.hpp"
 
 namespace core {
 
@@ -33,7 +33,7 @@ namespace core {
 
     void mix_t::process()
     {
-        point3d<float> a 
+        Point3D<float> a 
         { 
             icv[cvi::l]->load(), 
             icv[cvi::c]->load(), 
@@ -41,7 +41,7 @@ namespace core {
         };
         float lc = ccv[ctl::alpha]->load() + icv[cvi::alpha]->load();
         float cr = ccv[ctl::theta]->load() + icv[cvi::theta]->load();
-        point2d<float> lr = c3c2(a, lc, cr);
+        Point2D<float> lr = c3c2(a, lc, cr);
         ocv[cvo::l].store(lr.x * ccv[ctl::amp]->load());
         ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
     }

@@ -18,61 +18,44 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
+*
 ******************************************************************************************************************************/
+#include "wavering.hpp"
 
-#pragma once
+namespace core {
 
-#include "../utility/utility.hpp"
-#include "node.hpp"
-
-namespace core 
+template <typename T>
+constexpr void wavering<T>::set(const T& value) noexcept
 {
+    i++;
+    if (i >= segments) i = 0;
+    data[i] = value;
+}
 
-    #define n_forms_chaotic 4
-    inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
+template <typename T>
+constexpr void wavering<T>::set(const unsigned& pos, const T& value) noexcept
+{
+    data[pos % segments] = value;
+}
 
-    class cso_t: public module_t
-    { 
-        private:
-            static int idc;
-            float f[9];
-            Limiter limiter;
+template <typename T>
+constexpr T wavering<T>::get() noexcept
+{
+    o++;
+    if (o >= segments) o = 0;
+    return data[o];
+}
 
-            void sprott_reset();
-            void helmholz_reset();
-            void halvorsen_reset();
-            void tsucs_reset();
-
-            bool _reset = true; // Reset flag
-
-            void (cso_t::*reset[4])() = 
-            { 
-                &cso_t::sprott_reset,
-                &cso_t::helmholz_reset,
-                &cso_t::halvorsen_reset,
-                &cso_t::tsucs_reset
-            };
-            
-            void sprott();
-            void helmholz();
-            void halvorsen();
-            void tsucs();
-
-            void (cso_t::*form[4])() = 
-            { 
-                &cso_t::sprott,
-                &cso_t::helmholz,
-                &cso_t::halvorsen,
-                &cso_t::tsucs
-            };
+template <typename T>
+constexpr T wavering<T>::get(const int& offset) noexcept
+{
+    o += offset;
+    if(o < 0) o = segments - o;
+    else o %= segments;
+    return data[o];
+}
 
 
-        public:
-            const int id = 0;
-            void process() override;
-            void switch_wave(const int&);
+}; // namespace core
 
-            cso_t();
-        ~cso_t() {};
-    }; 
-} // Namespace core
+

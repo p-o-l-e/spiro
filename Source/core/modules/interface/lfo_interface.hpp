@@ -24,40 +24,38 @@ namespace core
 
             const std::string prefix    { "lfo"                      };
             
-            const core::control_t set_i[ic]
+            const core::Control set_i[ic]
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN --- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { control_t::type_t::socket   , {  12.00f,  66.00f,  16.00f,  16.00f }, "fm"     , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-                { control_t::type_t::socket   , {  50.00f,  66.00f,  16.00f,  16.00f }, "am"     , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::socket   , {  12.00f,  66.00f,  16.00f,  16.00f }, "fm"     , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::socket   , {  50.00f,  66.00f,  16.00f,  16.00f }, "am"     , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             };
             
-            const core::control_t set_o[oc]
+            const core::Control set_o[oc]
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN --- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { control_t::type_t::socket   , {  30.00f,   6.00f,  16.00f,  16.00f }, "a"      , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-                { control_t::type_t::socket   , {  30.00f,  36.00f,  16.00f,  16.00f }, "b"      , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::socket   , {  30.00f,   6.00f,  16.00f,  16.00f }, "a"      , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::socket   , {  30.00f,  36.00f,  16.00f,  16.00f }, "b"      , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             };
 
-            const core::control_t set_c[cc]
+            const core::Control set_c[cc]
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN --- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { control_t::type_t::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-                { control_t::type_t::slider   , {  22.00f, 106.00f,  32.00f,  32.00f }, "delta"  , 0.001f, 1.00f, 0.01f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
-                { control_t::type_t::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "amp"    , 0.000f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
-                { control_t::type_t::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.000f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-                { control_t::type_t::radio    , {  60.00f, 228.00f,  12.00f,  12.00f }, "options", 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, 0x00000000  },
+                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::slider   , {  22.00f, 106.00f,  32.00f,  32.00f }, "delta"  , 0.001f, 1.00f, 0.01f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+                { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "amp"    , 0.000f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.000f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::radio    , {  60.00f, 228.00f,  12.00f,  12.00f }, "options", 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, 0x00000000  },
             };
             
-            const rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 244.0f };
+            const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 244.0f };
             
             const core::Descriptor descriptor  
             { 
                 core::map::module::type::lfo, 
-                &ic, &oc, &cc,
+                { &ic, &oc, &cc },
                 &prefix, 
-                set_i, 
-                set_o, 
-                set_c, 
+                { set_i, set_o, set_c }, 
                 &constrain
             };
         }

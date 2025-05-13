@@ -21,11 +21,11 @@
 ******************************************************************************************************************************/
 #pragma once
 
-#include "../utility/containers.hpp"
+#include "canvas.hpp"
 
 namespace core {
 
-constexpr void hBlur(frame<float>* data, const unsigned& scale = 1)
+constexpr void hBlur(Canvas<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;
     for(unsigned y = 0; y < data->height; y++)
@@ -43,7 +43,7 @@ constexpr void hBlur(frame<float>* data, const unsigned& scale = 1)
     }
 }
 
-constexpr void vBlur(frame<float>* data, const unsigned& scale = 1)
+constexpr void vBlur(Canvas<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;  
     for(unsigned x = 0; x < data->width; x++)
@@ -61,7 +61,7 @@ constexpr void vBlur(frame<float>* data, const unsigned& scale = 1)
     }
 }
 
-constexpr void boxBlur(frame<float>* data, const unsigned& scale = 1)
+constexpr void boxBlur(Canvas<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;
     for(unsigned y = 0; y < data->height; y++)

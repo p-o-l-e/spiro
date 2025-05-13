@@ -18,61 +18,14 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
+*
 ******************************************************************************************************************************/
+#include "canvas.hpp"
 
-#pragma once
-
-#include "../utility/utility.hpp"
-#include "node.hpp"
-
-namespace core 
-{
-
-    #define n_forms_chaotic 4
-    inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
-
-    class cso_t: public module_t
-    { 
-        private:
-            static int idc;
-            float f[9];
-            Limiter limiter;
-
-            void sprott_reset();
-            void helmholz_reset();
-            void halvorsen_reset();
-            void tsucs_reset();
-
-            bool _reset = true; // Reset flag
-
-            void (cso_t::*reset[4])() = 
-            { 
-                &cso_t::sprott_reset,
-                &cso_t::helmholz_reset,
-                &cso_t::halvorsen_reset,
-                &cso_t::tsucs_reset
-            };
-            
-            void sprott();
-            void helmholz();
-            void halvorsen();
-            void tsucs();
-
-            void (cso_t::*form[4])() = 
-            { 
-                &cso_t::sprott,
-                &cso_t::helmholz,
-                &cso_t::halvorsen,
-                &cso_t::tsucs
-            };
+namespace core {
 
 
-        public:
-            const int id = 0;
-            void process() override;
-            void switch_wave(const int&);
 
-            cso_t();
-        ~cso_t() {};
-    }; 
-} // Namespace core
+}; // namespace core
+
+

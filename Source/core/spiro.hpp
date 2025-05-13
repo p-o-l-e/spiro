@@ -25,10 +25,10 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "utility/modmatrix.hpp"
-#include "utility/containers.hpp"
+#include "modmatrix.hpp"
+#include "utility.hpp"
 #include "rack.hpp"
-#include "setup/iospecs.hpp"
+#include "iospecs.hpp"
 #include "module_headers.hpp"
 
 namespace core {
@@ -46,8 +46,8 @@ namespace core {
 
         public:
             rack_t      rack;
-            dcb_t       dcb[2];
-            patchbay*   bay = nullptr;
+            DCBlock     dcb[2];
+            Patchbay*   bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
             void        midi_message(uint8_t, uint8_t, uint8_t);
             void        process();

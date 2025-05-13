@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
 #include <atomic>
-#include "../setup/constants.hpp"
-#include "../interface_headers.hpp"
+#include "constants.hpp"
+#include "interface_headers.hpp"
 
 namespace core
 {
@@ -23,9 +23,9 @@ namespace core
             virtual void mute() {};
             virtual void fuse() 
             {
-                for(int i = 0; i < *descriptor->ic; ++i) icv[i] = &zero;
-                for(int i = 0; i < *descriptor->cc; ++i) ccv[i] = &zero;
-                for(int i = 0; i < *descriptor->oc; ++i) ocv[i].store(0.0f);
+                for(int i = 0; i < *descriptor->cv[map::cv::i]; ++i) icv[i] = &zero;
+                for(int i = 0; i < *descriptor->cv[map::cv::c]; ++i) ccv[i] = &zero;
+                for(int i = 0; i < *descriptor->cv[map::cv::o]; ++i) ocv[i].store(0.0f);
             };
 
             void init(const uint8_t&, const Descriptor*) noexcept;

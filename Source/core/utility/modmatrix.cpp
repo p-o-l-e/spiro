@@ -27,33 +27,33 @@
 namespace core {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PatchCord //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-constexpr void patchcord::process()
+// Patchcord //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+constexpr void Patchcord::process()
 {
     const float inc = 1.04 / (float)iterations;
     float t = 0.0;
     for(int i = 0; i < iterations; i++)
     {
-        point2d<float> car { interpolate_bezier(spline[0], spline[1], spline[2], spline[3], t) };
+        Point2D<float> car { interpolateBezier(spline[0], spline[1], spline[2], spline[3], t) };
         data[i].x = car.x;
         data[i].y = car.y;
         t += inc;
     }
 }
 
-patchcord::patchcord(int j = 8): iterations(j)
+Patchcord::Patchcord(int j = 8): iterations(j)
 {
-    data = new point2d<float>[iterations];
+    data = new Point2D<float>[iterations];
 }
 
-patchcord::~patchcord()
+Patchcord::~Patchcord()
 {
     delete[] data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Socket /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-constexpr void socket::collapse()
+constexpr void Socket::collapse()
 {
     for(int i = 0; i < cord.segments; i++)
     {
@@ -64,7 +64,7 @@ constexpr void socket::collapse()
 }
 
 
-constexpr void socket::drag(const float& x, const float& y)
+constexpr void Socket::drag(const float& x, const float& y)
 {          
     cord.focused = true;
     auto xe = x, ye = y;
@@ -99,12 +99,12 @@ constexpr void socket::drag(const float& x, const float& y)
     cord.process();
 }
 
-socket::socket(int n = 32): cord(n)
+Socket::Socket(int n = 32): cord(n)
 {
     collapse();
 }
 
-socket::~socket() 
+Socket::~Socket() 
 {
 
 }
@@ -115,7 +115,7 @@ socket::~socket()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Connect cords //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void patchbay::connect(socket* a, socket* b)
+void Patchbay::connect(Socket* a, Socket* b)
 {
     a->drag(b->bounds.xCentre, b->bounds.yCentre);
     a->on = true;
@@ -145,7 +145,7 @@ void patchbay::connect(socket* a, socket* b)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Disconnect cords ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-void patchbay::disconnect(socket* a, socket* b)
+void Patchbay::disconnect(Socket* a, Socket* b)
 {
     a->on = false;
     b->on = false;
@@ -169,7 +169,7 @@ void patchbay::disconnect(socket* a, socket* b)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Disconnect cords ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-void patchbay::clear()
+void Patchbay::clear()
 {
     for(int i = 0; i < nodes; i++)
     {
@@ -180,7 +180,7 @@ void patchbay::clear()
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Draw ID on canvas //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void patchbay::draw()
+void Patchbay::draw()
 {
     for(int i = 0; i < nodes; i++)
     {
@@ -190,7 +190,7 @@ void patchbay::draw()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HitTest DOWN ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int patchbay::down_test(const float& x, const float& y, const int& mb)
+int Patchbay::down_test(const float& x, const float& y, const int& mb)
 {
     if(mb == core::settings::mb::lmb)
     {
@@ -261,7 +261,7 @@ int patchbay::down_test(const float& x, const float& y, const int& mb)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HitTest UP /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int patchbay::up_test(const float& x, const float& y, const int& mb)
+int Patchbay::up_test(const float& x, const float& y, const int& mb)
 {
     auto stamp = canvas.get(x, y); 
 
@@ -337,12 +337,12 @@ int patchbay::up_test(const float& x, const float& y, const int& mb)
     return 0;
 }
 
-void patchbay::deselect()
+void Patchbay::deselect()
 {
     for(int i = 0; i < nodes; i++) io[i].cord.focused = false;
 }
 
-void patchbay::move_test(const float& x, const float& y, const int& mb)
+void Patchbay::move_test(const float& x, const float& y, const int& mb)
 {
     auto stamp = canvas.get(x, y);
     if(stamp)
@@ -359,7 +359,7 @@ void patchbay::move_test(const float& x, const float& y, const int& mb)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Drag cords /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void patchbay::drag(const float& x, const float& y)
+void Patchbay::drag(const float& x, const float& y)
 {
     if(src != nullptr)
     {
@@ -368,9 +368,9 @@ void patchbay::drag(const float& x, const float& y)
 }
 
 
-patchbay::patchbay(const int& w, const int& h, const int& ins, const int& outs): canvas(w, h), matrix(w, h), nodes(ins + outs), inputs(ins), outputs(outs)
+Patchbay::Patchbay(const int& w, const int& h, const int& ins, const int& outs): canvas(w, h), matrix(w, h), nodes(ins + outs), inputs(ins), outputs(outs)
 {
-    io = new socket[nodes];
+    io = new Socket[nodes];
 
     for(int i = 0; i < nodes; i++)
     {
@@ -383,13 +383,13 @@ patchbay::patchbay(const int& w, const int& h, const int& ins, const int& outs):
 
 }
 
-patchbay::~patchbay()
+Patchbay::~Patchbay()
 {
     src = nullptr;
     delete[] io;
 }
 
-void patchbay::set_socket(const point2d<int>* o, const int& radius, const uint32_t& id, const bool& route, const int& p)
+void Patchbay::set_socket(const Point2D<int>* o, const int& radius, const uint32_t& id, const bool& route, const int& p)
 {
     io[p].bounds.xCentre = o->x;
     io[p].bounds.yCentre = o->y;
@@ -401,7 +401,7 @@ void patchbay::set_socket(const point2d<int>* o, const int& radius, const uint32
     io[p].collapse();
 }
 
-int patchbay::get_index(const uint32_t& id)
+int Patchbay::get_index(const uint32_t& id)
 {
     for(int i = 0; i < nodes; ++i)
     {

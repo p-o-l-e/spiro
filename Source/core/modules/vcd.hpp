@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "../utility/utility.hpp"
+#include "utility.hpp"
 #include "node.hpp"
 #include <memory>
 
@@ -31,8 +31,8 @@ namespace core {
     class vcd_t: public module_t
     {
         private:
-            onepole psf;
-            allpass apf;
+            OnePole psf;
+            AllPass apf;
             std::unique_ptr<float[]> data;
             float tmax;
             float eax;

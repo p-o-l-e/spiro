@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "bus.hpp"
-#include "modules/node.hpp"
+#include "node.hpp"
 #include "module_headers.hpp"
 
 namespace core
@@ -27,7 +27,7 @@ namespace core
             module_t* at(const core::map::module::type&, const int&);
             void process(const int&);
             void bind(module_t*, const unsigned&);
-            rack_t(const std::span<Descriptor>*);
+            rack_t(const Descriptor*);
            ~rack_t();
     };
 

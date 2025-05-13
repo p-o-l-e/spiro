@@ -22,8 +22,8 @@
 
 #pragma once
 #include <cmath>
-#include "../setup/constants.hpp"
-#include "../setup/iospecs.hpp"
+#include "constants.hpp"
+#include "iospecs.hpp"
 #include "node.hpp"
 
 #include <map>

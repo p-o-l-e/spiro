@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include "modules/interface/descriptor.hxx"
+#include "descriptor.hxx"
 
 namespace core
 {

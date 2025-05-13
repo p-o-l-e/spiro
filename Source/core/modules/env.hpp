@@ -27,8 +27,8 @@
 #include <iostream>
 #include <atomic>
 #include "node.hpp"
-#include "../setup/constants.hpp"
-#include "../setup/iospecs.hpp"
+#include "constants.hpp"
+#include "iospecs.hpp"
 
 namespace core {
 

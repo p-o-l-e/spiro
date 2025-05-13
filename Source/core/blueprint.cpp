@@ -38,20 +38,20 @@ namespace interface
         return error::invalid_index;
     }
 
-    const std::unique_ptr<int[]> Blueprint::set_relatives(const std::span<Descriptor>* d) const
+    const std::unique_ptr<int[]> Blueprint::set_relatives(const Descriptor* d) const
     {
-        int n = d->size();
+        int n = settings::modules_n;
         auto r = std::make_unique<int[]>(n);
 
         for(int s = 0; s < n; ++s)
         {
             int pos = 0;
-            core::map::module::type car = d[s].data()->type;
+            core::map::module::type car = d[s].type;
             r[s] = pos;
 
             for(int i = s + 1; i < n; ++i)
             {
-                if(car == d[i].data()->type) 
+                if(car == d[i].type) 
                 {
                     r[i] = ++pos;
                     ++s;
@@ -72,25 +72,25 @@ namespace interface
 
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].data()->cc; ++i)
+            for(int i = 0; i < *descriptor[m].cv[map::cv::c]; ++i)
             {
-                hash_table_c[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::cc, relative[m], i);
+                hash_table_c[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::cc, relative[m], i);
                 ++h;
             }
         }
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].data()->ic; ++i)
+            for(int i = 0; i < *descriptor[m].cv[map::cv::i]; ++i)
             {
-                hash_table_i[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::ic, relative[m], i);
+                hash_table_i[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::ic, relative[m], i);
                 ++h;
             }
         }
         for(int m = 0, h = 0; m < mc; ++m)
         {
-            for(int i = 0; i < *descriptor[m].data()->oc; ++i)
+            for(int i = 0; i < *descriptor[m].cv[map::cv::o]; ++i)
             {
-                hash_table_o[h] = core::uid_t::encode_uid(descriptor[m].data()->type, core::map::parameter::type::oc, relative[m], i);
+                hash_table_o[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::oc, relative[m], i);
                 ++h;
             }
         }
@@ -100,26 +100,26 @@ namespace interface
     }
 
 
-    const int Blueprint::count(const core::map::parameter::type& p, const std::span<Descriptor>* d) const
+    const int Blueprint::count(const core::map::parameter::type& p, const Descriptor* d) const
     {
         int c { 0 };
         switch(p)
         {
-            case core::map::parameter::type::ic: for(auto o: *d) c += *o.ic; break;
-            case core::map::parameter::type::oc: for(auto o: *d) c += *o.oc; break;
-            case core::map::parameter::type::cc: for(auto o: *d) c += *o.cc; break;
+            case map::parameter::type::ic: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::i]; break;
+            case map::parameter::type::oc: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::o]; break;
+            case map::parameter::type::cc: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::c]; break;
             default: break;
         }
         return c;
     }
 
-    Blueprint::Blueprint(const std::span<Descriptor>* d): 
+    Blueprint::Blueprint(const Descriptor* d): 
         descriptor(d), 
         relative(set_relatives(d)),
-        mc(d->size()), 
-        ic(count(core::map::parameter::type::ic, d)),
-        oc(count(core::map::parameter::type::oc, d)),
-        cc(count(core::map::parameter::type::cc, d))
+        mc(settings::modules_n), 
+        ic(count(map::parameter::type::ic, d)),
+        oc(count(map::parameter::type::oc, d)),
+        cc(count(map::parameter::type::cc, d))
     { 
         calculate_hash();
         #ifdef DEBUG 

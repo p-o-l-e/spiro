@@ -28,7 +28,7 @@ namespace core
     
     void rtr_t::process()
     {
-        point3d<float> a 
+        Point3D<float> a 
         { 
             icv[cvi::ax]->load() + 
             icv[cvi::bx]->load(),

@@ -21,7 +21,7 @@
 ******************************************************************************************************************************/
 
 #pragma once
-#include "../utility/containers.hpp"
+#include "quaternion.hpp"
 #include "node.hpp"
 
 namespace core
@@ -31,7 +31,7 @@ class rtr_t: public module_t
 {
     private:
         static int idc;
-        quaternion q;
+        Quaternion q;
 
     public:
         int id;

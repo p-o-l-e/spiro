@@ -49,19 +49,19 @@ namespace core
 
         for(int o = 0; o < rack.bus.blueprint.mc; ++o)
         {
-            for(int i = 0; i < *rack.at(o)->descriptor->cc; ++i)
+            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::c]; ++i)
             {
                 auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::cc, i);
                 // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
                 
                 rack.bus.pin_c(0);
             }
-            for(int i = 0; i < *rack.at(o)->descriptor->ic; ++i)
+            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
             {
                 auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::ic, i);
                 // rack.connect_pin_i(hash, bay->io[rack.bus.blueprint.get_index(hash)].com);
             }
-            for(int i = 0; i < *rack.at(o)->descriptor->oc; ++i)
+            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::o]; ++i)
             {
                 auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::oc, i);
                 // rack.connect_pin_o(hash, bay->io[rack.bus.blueprint.get_index(hash)].data);

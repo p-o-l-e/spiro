@@ -22,50 +22,55 @@
 #pragma once
 #include <cmath>
 #include <atomic>
-#include "../setup/iospecs.hpp"
-#include "../setup/constants.hpp"
-#include "containers.hpp"
+#include "iospecs.hpp"
+#include "constants.hpp"
+#include "primitives.hpp"
 
 namespace core {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // One pole LP parameter smooth filter ///////////////////////////////////////////////////////////////////////////
-struct onepole 
+struct OnePole 
 {
-    float a;
-    float b;
-    float z;
+    private:
+        float a;
+        float b;
+        float z;
 
-    void reset(const float& time) noexcept
-    {
-        a = expf(- tao / (time * 0.001f * settings::sample_rate));
-        b = 1.0f - a;
-        z = 0.0f;
-    }
-    constexpr float process(const float& in) noexcept
-    {
-        z = (in * b) + (z * a);
-        return z;
-    }
+    public:
+        void reset(const float& ms) noexcept
+        {
+            a = expf(- tao / (ms * 0.001f * settings::sample_rate));
+            b = 1.0f - a;
+            z = 0.0f;
+        }
+        constexpr float process(const float& in) noexcept
+        {
+            z = (in * b) + (z * a);
+            return z;
+        }
+        OnePole() { reset(10.0f); };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Allpass filter ////////////////////////////////////////////////////////////////////////////////////////////////
-struct allpass
+struct AllPass
 {
-    float y = 0.0f;
-    float a = 0.0f;
-    constexpr float process(const float& in) noexcept
-    {
-        float out = y + a * in;
-        y = in - a * out;
-        return out;
-    }    
+    private:
+        float y = 0.0f;
+    public:
+        float a = 0.5f;
+        constexpr float process(const float& in) noexcept
+        {
+            float out = y + a * in;
+            y = in - a * out;
+            return out;
+        }    
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Envelope Follower /////////////////////////////////////////////////////////////////////////////////////////////
-struct envelope_follower
+struct EnvelopeFollower
 {
     float a;
     float r;
@@ -75,13 +80,13 @@ struct envelope_follower
     inline void process(const float& in);
 };
 
-inline void envelope_follower::init(const float& aMs, const float& rMs, const float& sample_rate )
+inline void EnvelopeFollower::init(const float& aMs, const float& rMs, const float& sample_rate )
 {
     a = pow( 0.01, 1.0 / ( aMs * sample_rate * 0.001 ) );
     r = pow( 0.01, 1.0 / ( rMs * sample_rate * 0.001 ) );
 }
 
-inline void envelope_follower::process(const float& in)
+inline void EnvelopeFollower::process(const float& in)
 {
     float f = fabs(in);
     if (f > envelope) envelope = a * ( envelope - f ) + f;
@@ -90,26 +95,26 @@ inline void envelope_follower::process(const float& in)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Limiter ///////////////////////////////////////////////////////////////////////////////////////////////////////
-struct limiter_t
+struct Limiter
 {
-    envelope_follower e;
+    EnvelopeFollower e;
     float threshold = 0.01f;
     inline void  init(const float&, const float&, const float&);
     inline float process(const float& in);
-    inline limiter_t();
+    inline Limiter();
 };
 
-inline limiter_t::limiter_t()
+inline Limiter::Limiter()
 {
     init(1.0f, 10.0f, settings::sample_rate);
 }
 
-inline void limiter_t::init(const float& aMs, const float& rMs, const float& sample_rate)
+inline void Limiter::init(const float& aMs, const float& rMs, const float& sample_rate)
 {
     e.init(aMs, rMs, sample_rate);
 }
 
-inline float limiter_t::process(const float& in)
+inline float Limiter::process(const float& in)
 {
     float out = in;
     e.process(out);
@@ -130,11 +135,11 @@ constexpr float xfade(const float& a, const float& b, const float& f) noexcept
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 3to2 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-constexpr point2d<T> c3c2(const point3d<T>& in, const float& a, const float& b) noexcept
+constexpr Point2D<T> c3c2(const Point3D<T>& in, const float& a, const float& b) noexcept
 {
     auto ac = a > 0.5f ? (1.0f - a) * 2.0f : a * 2.0f;
     auto bc = b > 0.5f ? (1.0f - b) * 2.0f : b * 2.0f;
-    return point2d<T> { xfade(in.x, in.y, ac), xfade(in.y, in.z, bc) };
+    return Point2D<T> { xfade(in.x, in.y, ac), xfade(in.y, in.z, bc) };
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,16 +176,52 @@ constexpr bool sign(const int& data) noexcept
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DC Block filter ///////////////////////////////////////////////////////////////////////////////////////////////
-struct dcb_t
+struct DCBlock 
 {
-    float f = 0.9995;
-    float eax = 0.0f, ebx = 0.0f;
-    constexpr float process(const float& in) noexcept
-    {
-        ebx = in - eax + f * ebx;
-        eax = in;
-        return ebx;
-    }
+    private:
+        float eax = 0.0f, ebx = 0.0f;
+    public:
+        float f = 0.9995f;
+        constexpr float process(const float& in) noexcept
+        {
+            ebx = in - eax + f * ebx;
+            eax = in;
+            return ebx;
+        }
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rotation //////////////////////////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+constexpr Point3D<T> RotateX(const Point3D<T>& o, const T& theta) noexcept
+{
+    return Point3D<T> { o.l, o.c * cosf(theta) - o.r * sinf(theta), o.c * sinf(theta) + o.r * cosf(theta)};
+}
+
+template <typename T>
+constexpr Point3D<T> RotateY(const Point3D<T>& o, const T& theta) noexcept
+{
+    return Point3D<T> { o.l * cosf(theta) + o.r * sinf(theta), o.c, o.r * cosf(theta) - o.l * sinf(theta)};
+}
+
+template <typename T>
+constexpr Point3D<T> RotateZ(const Point3D<T>& o, const T& theta) noexcept
+{
+    return Point3D<T> { o.l * cosf(theta) - o.c * sinf(theta), o.l * sinf(theta) + o.c * cosf(theta), o.r};
+}
+
+template <typename T>
+constexpr Point3D<T> Rotate(const Point3D<T>& o, const T& x, const T& y, const T& z) noexcept
+{
+    return RotateZ(RotateY(RotateX(o, x) , y), z);
+}
+
+template<typename T> 
+constexpr Point3D<T> sphericalToCartesian(const T& theta, const T& phi) noexcept
+{ 
+    return Point3D<T> { cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta) }; 
+}; 
+
+
 
 } // Namespace core
