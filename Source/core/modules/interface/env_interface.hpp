@@ -71,7 +71,7 @@ namespace core
             
             const rectangle<float> constrain { 0.0f, 0.0f, 228.0f, 215.0f };
             
-            const core::descriptor_t descriptor[vc] 
+            const core::Descriptor descriptor[vc] 
             { 
                 {
                     core::map::module::type::env, 

@@ -27,7 +27,7 @@ namespace core
             module_t* at(const core::map::module::type&, const int&);
             void process(const int&);
             void bind(module_t*, const unsigned&);
-            rack_t(const descriptor_t*);
+            rack_t(const std::span<Descriptor>*);
            ~rack_t();
     };
 

@@ -10,14 +10,14 @@ namespace core
     **********************************************************************************************************************/
     struct Sector
     {
-        const descriptor_t* const descriptor;
+        const Descriptor* const descriptor;
         point2d<float> offset { 0.0f, 0.0f };
         const int index { 0 };
         std::unique_ptr<rectangle<float>[]> constrain_i;
         std::unique_ptr<rectangle<float>[]> constrain_o;
         std::unique_ptr<rectangle<float>[]> constrain_c;
 
-        Sector(const descriptor_t* d, const point2d<float>& fs, const int& _index): descriptor(d), offset(fs), index(_index)
+        Sector(const Descriptor* d, const point2d<float>& fs, const int& _index): descriptor(d), offset(fs), index(_index)
         {
             constrain_i = std::make_unique<rectangle<float>[]>(*descriptor->ic);
             constrain_o = std::make_unique<rectangle<float>[]>(*descriptor->oc);          

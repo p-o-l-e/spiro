@@ -3,7 +3,7 @@
 
 namespace core
 {
-    void module_t::init(const uint8_t& id, const descriptor_t* d) noexcept 
+    void module_t::init(const uint8_t& id, const Descriptor* d) noexcept 
     {
         descriptor = d;
         ccv = std::make_unique<std::atomic<float>*[]>(*descriptor->cc);

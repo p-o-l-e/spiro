@@ -9,7 +9,7 @@ namespace core
     class module_t
     {
         public:
-            const descriptor_t* descriptor = &interface::fuse::descriptor;
+            const Descriptor* descriptor = &interface::fuse::descriptor;
         private:
             bool standby = false;
         public:
@@ -28,7 +28,7 @@ namespace core
                 for(int i = 0; i < *descriptor->oc; ++i) ocv[i].store(0.0f);
             };
 
-            void init(const uint8_t&, const descriptor_t*) noexcept;
+            void init(const uint8_t&, const Descriptor*) noexcept;
             virtual void process() {};
 
             module_t() {};

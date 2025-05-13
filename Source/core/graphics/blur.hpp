@@ -25,56 +25,56 @@
 
 namespace core {
 
-constexpr void blur_h(frame<float>* data, const unsigned& scale = 1)
+constexpr void hBlur(frame<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;
     for(unsigned y = 0; y < data->height; y++)
     {
         for(unsigned x = 0; x < data->width-range; x++)
         {
-            float car = 0.0f;
+            float carry = 0.0f;
             for(int i = 0; i < range; i++)
             {   
-                car += data->get(x + i, y);
+                carry += data->get(x + i, y);
             }
-            car /= range;
-            data->set(x + scale, y, car);
+            carry /= range;
+            data->set(x + scale, y, carry);
         }
     }
 }
 
-constexpr void blur_v(frame<float>* data, const unsigned& scale = 1)
+constexpr void vBlur(frame<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;  
     for(unsigned x = 0; x < data->width; x++)
     {
         for(unsigned y = 0; y < data->height-range; y++)
         {
-            float car = 0.0f;
+            float carry = 0.0f;
             for(int i = 0; i < range; i++)
             {   
-                car += data->get(x, y + i);
+                carry += data->get(x, y + i);
             }
-            car /= range;
-            data->set(x, y + scale, car);
+            carry /= range;
+            data->set(x, y + scale, carry);
         }
     }
 }
 
-constexpr void blur_box(frame<float>* data, const unsigned& scale = 1)
+constexpr void boxBlur(frame<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;
     for(unsigned y = 0; y < data->height; y++)
     {
         for(unsigned x = 0; x < data->width-range; x++)
         {
-            float car = 0.0f;
+            float carry = 0.0f;
             for(int i = 0; i < range; i++)
             {   
-                car += data->get(x + i, y);
+                carry += data->get(x + i, y);
             }
-            car /= float(range);
-            data->set(x + scale, y, car);
+            carry /= float(range);
+            data->set(x + scale, y, carry);
         }
     }
     
@@ -82,13 +82,13 @@ constexpr void blur_box(frame<float>* data, const unsigned& scale = 1)
     {
         for(unsigned y = 0; y < data->height-range; y++)
         {
-            float car = 0.0f;
+            float carry = 0.0f;
             for(int i = 0; i < range; i++)
             {   
-                car += data->get(x, y + i);
+                carry += data->get(x, y + i);
             }
-            car /= float(range);
-            data->set(x, y + scale, car);
+            carry /= float(range);
+            data->set(x, y + scale, carry);
         }
     }
 }

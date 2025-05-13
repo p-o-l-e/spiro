@@ -32,7 +32,7 @@ namespace core
         if(pos < bus.blueprint.mc) node[pos] = m; 
     }
 
-    rack_t::rack_t(const descriptor_t* d): bus(d) 
+    rack_t::rack_t(const std::span<Descriptor>* d): bus(d) 
     { 
         allocate(); 
         build(); 

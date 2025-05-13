@@ -66,7 +66,7 @@ namespace core
             
             const rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 304.0f };
             
-            const core::descriptor_t descriptor[vc]
+            const core::Descriptor descriptor[vc]
             {
                 {
                     core::map::module::type::snh, 

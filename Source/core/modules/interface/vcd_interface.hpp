@@ -52,7 +52,7 @@ namespace core
             
             const rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 304.0f };
             
-            const core::descriptor_t descriptor  
+            const core::Descriptor descriptor  
             { 
                 core::map::module::type::vcd, 
                 &ic, &oc, &cc,

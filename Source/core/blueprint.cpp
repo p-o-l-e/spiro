@@ -6,7 +6,7 @@ namespace core
 {
 namespace interface
 {
-    const uint32_t blueprint_t::get_hash(const core::map::parameter::type& t, const int& p) const
+    const uint32_t Blueprint::get_hash(const core::map::parameter::type& t, const int& p) const
     {
         switch(t)
         {
@@ -19,7 +19,7 @@ namespace interface
     }
 
 
-    const int blueprint_t::get_index(const uint32_t& hash) const
+    const int Blueprint::get_index(const uint32_t& hash) const
     {
         switch(static_cast<core::map::parameter::type>(core::extract_byte(hash, uid_t::shift::m_index)))
         {
@@ -38,7 +38,7 @@ namespace interface
         return error::invalid_index;
     }
 
-    const std::unique_ptr<int[]> blueprint_t::set_relatives(const std::span<descriptor_t>* d) const
+    const std::unique_ptr<int[]> Blueprint::set_relatives(const std::span<Descriptor>* d) const
     {
         int n = d->size();
         auto r = std::make_unique<int[]>(n);
@@ -64,7 +64,7 @@ namespace interface
         return r;
     }
 
-    void blueprint_t::calculate_hash()
+    void Blueprint::calculate_hash()
     {
         hash_table_c = std::make_unique<uint32_t[]>(cc);
         hash_table_i = std::make_unique<uint32_t[]>(ic);
@@ -100,7 +100,7 @@ namespace interface
     }
 
 
-    const int blueprint_t::count(const core::map::parameter::type& p, const std::span<descriptor_t>* d) const
+    const int Blueprint::count(const core::map::parameter::type& p, const std::span<Descriptor>* d) const
     {
         int c { 0 };
         switch(p)
@@ -113,7 +113,7 @@ namespace interface
         return c;
     }
 
-    blueprint_t::blueprint_t(const std::span<descriptor_t>* d): 
+    Blueprint::Blueprint(const std::span<Descriptor>* d): 
         descriptor(d), 
         relative(set_relatives(d)),
         mc(d->size()), 

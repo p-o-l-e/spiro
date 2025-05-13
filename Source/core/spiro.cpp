@@ -73,7 +73,7 @@ namespace core
         #endif
     }
 
-    spiro_t::spiro_t(const descriptor_t* d): rack(d)
+    spiro_t::spiro_t(const Descriptor* d): rack(d)
     {
         connect_bus();
         #ifdef DEBUG

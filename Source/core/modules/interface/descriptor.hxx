@@ -67,7 +67,7 @@ namespace core
 
 
 
-    struct descriptor_t 
+    struct Descriptor 
     {
         const map::module::type type = map::module::type::fuse;
         
