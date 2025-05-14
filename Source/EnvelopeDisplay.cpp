@@ -27,7 +27,7 @@ EnvelopeDisplay::EnvelopeDisplay (): npa(this), npd(this), nps(this), npr(this)
         envd.node[i].value = &node[i].value;
         envd.node[i].curve = &node[i].curve;
     }
-    envd.time_scale = &cell::one;
+    envd.time_scale = &core::one;
     envd.time_multiplier = 1.0f;
     envd.value_scale = 1.0f;
 

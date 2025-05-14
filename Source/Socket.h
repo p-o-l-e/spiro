@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 #include <vector>
-#include "cell/modmatrix.hpp"
+#include "modmatrix.hpp"
 #include "Constraints.hpp"
 #include "Colours.hpp"
 
@@ -38,7 +38,7 @@ class Sockets: public juce::Component
     public:
         juce::Colour colour_normal = colour_set[9];
         juce::Colour colour_highlighted = colour_set[26];
-        cell::patchbay* bay = nullptr;
+        core::Patchbay* bay = nullptr;
         void drawMask(juce::Graphics&, juce::Colour);
         void drawCords(juce::Graphics&, float);
         void load();

@@ -22,15 +22,12 @@
 
 #include "spiro.hpp"
 #include <cstdint>
-#include <iostream>
 
 namespace core
 {
     using namespace interface;
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Destination buffer setter //////////////////////////////////////////////////////////////////////////////////////////////////
-    void spiro_t::process()
+    void Spiro::process()
     {
         for(int o = 0; o < rack.bus.blueprint.mc; ++o) rack.process(o);
 
@@ -41,11 +38,9 @@ namespace core
         out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
     }
 
-    void spiro_t::connect_bus()
+    void Spiro::connect_bus()
     {
-        #ifdef DEBUG 
-            std::cout<<"-- Connecting bus...\n";
-        #endif
+        LOG("Spiro::connect_bus : \n");
 
         for(int o = 0; o < rack.bus.blueprint.mc; ++o)
         {
@@ -54,7 +49,7 @@ namespace core
                 auto hash = rack.bus.blueprint.get_hash(map::cv::index::c, i);
                 // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
                 
-                rack.bus.pin_c(0);
+                // rack.bus.pin_c(0);
             }
             for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
             {
@@ -68,36 +63,35 @@ namespace core
             }
         }
 
-        #ifdef DEBUG
-            std::cout<<"-- Bus connected...\n";
-        #endif
+        LOG("-- Bus connected...\n");
     }
 
-    spiro_t::spiro_t(const Descriptor* d): rack(d)
+    Spiro::Spiro(const Descriptor* d): rack(d)
     {
+        LOG("Spiro:\n");
         connect_bus();
-        #ifdef DEBUG
-            std::cout<<"-- Core initialized...\n";
-        #endif
+        LOG("-- Core initialized...\n");
     }
 
 
 
-    spiro_t::~spiro_t()
+    Spiro::~Spiro()
     {
-    }
-
-    void spiro_t::note_on(uint8_t msb, uint8_t lsb)
-    {
+        LOG("~Spiro :\n");
 
     }
 
-    void spiro_t::note_off(uint8_t msb)
+    void Spiro::note_on(uint8_t msb, uint8_t lsb)
     {
 
     }
 
-    void spiro_t::midi_message(uint8_t status, uint8_t msb, uint8_t lsb)
+    void Spiro::note_off(uint8_t msb)
+    {
+
+    }
+
+    void Spiro::midi_message(uint8_t status, uint8_t msb, uint8_t lsb)
     {
         switch(status&0xF0) 
         {
@@ -131,4 +125,4 @@ namespace core
         }
     }
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

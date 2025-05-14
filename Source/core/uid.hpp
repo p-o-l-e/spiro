@@ -20,6 +20,14 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
+
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
+
 #include <cstdint>
 #include "descriptor.hxx"
 

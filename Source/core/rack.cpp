@@ -45,9 +45,7 @@ namespace core
 
     void rack_t::build() noexcept 
     { 
-        #ifdef DEBUG 
-        std::cout<<"-- Creating modules...\n";
-        #endif
+        LOG("Rack::build() : ");
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
             node[i] = create_node(bus.blueprint.descriptor[i].type);
@@ -83,10 +81,9 @@ namespace core
 
     void rack_t::allocate() noexcept 
     { 
-        #ifdef DEBUG 
-        std::cout<<"-- Allocating space for rack...\n";
-        #endif
+        LOG("Rack::allocate() :"); 
         node = std::make_unique<module_t*[]>(bus.blueprint.mc); 
+        LOG("-- Space for rack allocated...");
     }
 
     void rack_t::connect_pin_i(const uint32_t& hash, std::atomic<float>** o)

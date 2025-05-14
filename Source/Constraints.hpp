@@ -26,20 +26,8 @@
 #include <map>
 #include <sys/types.h>
 #include <unordered_map>
-#include "cell/oscillator.hpp"
-#include "cell/chaos.hpp"
-#include "cell/sigma.h"
-#include "cell/lfo.h"
-#include "cell/product.h"
-#include "cell/delay.hpp"
-#include "cell/filters.hpp"
-#include "cell/mixer.h"
-#include "cell/rotor.h"
-#include "cell/snh.h"
-#include "cell/vca.h"
-#include "cell/containers.hpp"
-#include "cell/interface.h"
-#include "cell/envelopes.hpp"
+#include "module_headers.hpp"
+
 
 #define SOCKET_RADIUS 5
 using namespace cell;

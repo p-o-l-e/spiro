@@ -22,6 +22,13 @@
 
 #pragma once
 
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
+
 #include <iostream>
 #include <cstdlib>
 
@@ -34,7 +41,7 @@
 namespace core {
     using namespace interface;
 
-    class spiro_t
+    class Spiro
     { 
         public:
             struct stereo { enum { l, r }; };
@@ -51,7 +58,7 @@ namespace core {
             std::atomic<float> out[2];                       // LR Output
             void        midi_message(uint8_t, uint8_t, uint8_t);
             void        process();
-            spiro_t(const Descriptor*);
-           ~spiro_t();
+            Spiro(const Descriptor*);
+           ~Spiro();
     };
 };

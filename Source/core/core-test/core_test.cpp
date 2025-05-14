@@ -4,12 +4,11 @@
 #include "spiro.hpp"
 
 using namespace core;
-#define DEBUG
 
 
 int main()
 {
-    spiro_t spiro(core::settings::descriptor_map);
+    Spiro spiro(core::settings::descriptor_map);
 
     std::cout<<"\nControls [CVC]: \n";
     for(int i = 0; i < spiro.rack.bus.blueprint.mc; ++i)

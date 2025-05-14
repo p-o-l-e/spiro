@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="h0jLtr" name="spiro" projectType="audioplug" addUsingNamespaceToJuceHeader="0"
+              jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginFormats="buildStandalone" pluginVST3Category="Instrument,Synth"
+              cppLanguageStandard="20" companyName="pole" pluginCode="pspr"
+              pluginManufacturerCode="pole" companyWebsite="https://github.com/p-o-l-e"
+              version="0.5.0" headerPath="../../Source/core&#10;../../Source/core/utility&#10;../../Source/core/graphics&#10;../../Source/core/setup&#10;../../Source/core/modules&#10;../../Source/core/modules/interface">
+  <MAINGROUP id="fQRmMz" name="spiro">
+    <GROUP id="{8092EC6A-FEE9-DE88-28B8-36D77CA9E780}" name="Source">
+      <GROUP id="{E8EF9006-176C-5809-32EF-375440F940F3}" name="core">
+        <GROUP id="{C89373EA-CC8D-8A83-C69C-8C2B629D768E}" name="graphics">
+          <FILE id="zCvOqa" name="blur.cpp" compile="1" resource="0" file="Source/core/graphics/blur.cpp"/>
+          <FILE id="pZWb3J" name="blur.hpp" compile="0" resource="0" file="Source/core/graphics/blur.hpp"/>
+          <FILE id="Ag1YgG" name="curves.hpp" compile="0" resource="0" file="Source/core/graphics/curves.hpp"/>
+          <FILE id="ToEIkN" name="fonts.c" compile="1" resource="0" file="Source/core/graphics/fonts.c"/>
+          <FILE id="oUnmQS" name="fonts.h" compile="0" resource="0" file="Source/core/graphics/fonts.h"/>
+          <FILE id="FjLaie" name="shapes.hpp" compile="0" resource="0" file="Source/core/graphics/shapes.hpp"/>
+        </GROUP>
+        <GROUP id="{264A0FCE-3155-7712-140C-698B462E97E1}" name="setup">
+          <FILE id="l0MJjS" name="constants.cpp" compile="1" resource="0" file="Source/core/setup/constants.cpp"/>
+          <FILE id="Y6w7Lx" name="constants.hpp" compile="0" resource="0" file="Source/core/setup/constants.hpp"/>
+          <FILE id="Dp5IbA" name="iospecs.cpp" compile="1" resource="0" file="Source/core/setup/iospecs.cpp"/>
+          <FILE id="eeGDhx" name="iospecs.hpp" compile="0" resource="0" file="Source/core/setup/iospecs.hpp"/>
+          <FILE id="QhCjlk" name="map.cpp" compile="1" resource="0" file="Source/core/setup/map.cpp"/>
+          <FILE id="Wvrhjh" name="map.hpp" compile="0" resource="0" file="Source/core/setup/map.hpp"/>
+          <FILE id="URqNK0" name="scales.h" compile="0" resource="0" file="Source/core/setup/scales.h"/>
+        </GROUP>
+        <GROUP id="{884B736B-1C4F-C175-B966-9770C7AAAD0C}" name="utility">
+          <FILE id="Etq0lw" name="canvas.cpp" compile="1" resource="0" file="Source/core/utility/canvas.cpp"/>
+          <FILE id="t5sLwL" name="canvas.hpp" compile="0" resource="0" file="Source/core/utility/canvas.hpp"/>
+          <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
+          <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>
+          <FILE id="vRZTrq" name="primitives.hpp" compile="0" resource="0" file="Source/core/utility/primitives.hpp"/>
+          <FILE id="mShCRl" name="quaternion.cpp" compile="1" resource="0" file="Source/core/utility/quaternion.cpp"/>
+          <FILE id="kLoSYr" name="quaternion.hpp" compile="0" resource="0" file="Source/core/utility/quaternion.hpp"/>
+          <FILE id="arfwQM" name="utility.cpp" compile="1" resource="0" file="Source/core/utility/utility.cpp"/>
+          <FILE id="ohp4IW" name="utility.hpp" compile="0" resource="0" file="Source/core/utility/utility.hpp"/>
+          <FILE id="GhVMeq" name="wavering.cpp" compile="1" resource="0" file="Source/core/utility/wavering.cpp"/>
+          <FILE id="NA6UPK" name="wavering.hpp" compile="0" resource="0" file="Source/core/utility/wavering.hpp"/>
+        </GROUP>
+        <GROUP id="{93DD0B26-41C7-8874-C096-A794A29986BB}" name="modules">
+          <GROUP id="{E27165A6-2966-9389-F56D-7FA1F36D1113}" name="interface">
+            <FILE id="IXzz1t" name="com_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/com_interface.hpp"/>
+            <FILE id="N13m9d" name="cro_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/cro_interface.hpp"/>
+            <FILE id="TstgsJ" name="descriptor.hxx" compile="0" resource="0" file="Source/core/modules/interface/descriptor.hxx"/>
+            <FILE id="htlh0m" name="env_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/env_interface.hpp"/>
+            <FILE id="orJBSm" name="fus_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/fus_interface.hpp"/>
+            <FILE id="weUjND" name="lfo_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/lfo_interface.hpp"/>
+            <FILE id="tJuGMi" name="map_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/map_interface.hpp"/>
+            <FILE id="uwrImq" name="mix_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/mix_interface.hpp"/>
+            <FILE id="S6CxTl" name="pdt_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/pdt_interface.hpp"/>
+            <FILE id="muU0KW" name="rtr_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/rtr_interface.hpp"/>
+            <FILE id="BHmz8z" name="snh_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/snh_interface.hpp"/>
+            <FILE id="o3q5bB" name="sum_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/sum_interface.hpp"/>
+            <FILE id="eLckZo" name="vca_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/vca_interface.hpp"/>
+            <FILE id="R4aK8v" name="vcd_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/vcd_interface.hpp"/>
+            <FILE id="IeJUKK" name="vcf_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/vcf_interface.hpp"/>
+            <FILE id="vTMENC" name="vco_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/vco_interface.hpp"/>
+          </GROUP>
+          <FILE id="XZRHPq" name="env.cpp" compile="1" resource="0" file="Source/core/modules/env.cpp"/>
+          <FILE id="fFLllZ" name="env.hpp" compile="0" resource="0" file="Source/core/modules/env.hpp"/>
+          <FILE id="pkqFgs" name="lfo.cpp" compile="1" resource="0" file="Source/core/modules/lfo.cpp"/>
+          <FILE id="W5yCHL" name="lfo.hpp" compile="0" resource="0" file="Source/core/modules/lfo.hpp"/>
+          <FILE id="vqBKY7" name="map.cpp" compile="1" resource="0" file="Source/core/modules/map.cpp"/>
+          <FILE id="ZAwLfA" name="map.hpp" compile="0" resource="0" file="Source/core/modules/map.hpp"/>
+          <FILE id="vZoxBw" name="mix.cpp" compile="1" resource="0" file="Source/core/modules/mix.cpp"/>
+          <FILE id="nG2FNP" name="mix.hpp" compile="0" resource="0" file="Source/core/modules/mix.hpp"/>
+          <FILE id="YGbmXw" name="node.cpp" compile="1" resource="0" file="Source/core/modules/node.cpp"/>
+          <FILE id="WHR6LR" name="node.hpp" compile="0" resource="0" file="Source/core/modules/node.hpp"/>
+          <FILE id="Uc2y0t" name="pdt.cpp" compile="1" resource="0" file="Source/core/modules/pdt.cpp"/>
+          <FILE id="TH3yPi" name="pdt.hpp" compile="0" resource="0" file="Source/core/modules/pdt.hpp"/>
+          <FILE id="fcMCKL" name="rtr.cpp" compile="1" resource="0" file="Source/core/modules/rtr.cpp"/>
+          <FILE id="cP09ij" name="rtr.hpp" compile="0" resource="0" file="Source/core/modules/rtr.hpp"/>
+          <FILE id="YiQIYD" name="snh.cpp" compile="1" resource="0" file="Source/core/modules/snh.cpp"/>
+          <FILE id="d7hyCT" name="snh.hpp" compile="0" resource="0" file="Source/core/modules/snh.hpp"/>
+          <FILE id="at3jcs" name="sum.cpp" compile="1" resource="0" file="Source/core/modules/sum.cpp"/>
+          <FILE id="mfuUG7" name="sum.hpp" compile="0" resource="0" file="Source/core/modules/sum.hpp"/>
+          <FILE id="n5APxW" name="vca.cpp" compile="1" resource="0" file="Source/core/modules/vca.cpp"/>
+          <FILE id="iYkQCB" name="vca.hpp" compile="0" resource="0" file="Source/core/modules/vca.hpp"/>
+          <FILE id="Mnm84w" name="vcd.cpp" compile="1" resource="0" file="Source/core/modules/vcd.cpp"/>
+          <FILE id="MdbmCv" name="vcd.hpp" compile="0" resource="0" file="Source/core/modules/vcd.hpp"/>
+          <FILE id="IdaBlw" name="vcf.cpp" compile="1" resource="0" file="Source/core/modules/vcf.cpp"/>
+          <FILE id="UOPDAV" name="vcf.hpp" compile="0" resource="0" file="Source/core/modules/vcf.hpp"/>
+          <FILE id="Jitj1T" name="vco.cpp" compile="1" resource="0" file="Source/core/modules/vco.cpp"/>
+          <FILE id="HYr9fR" name="vco.hpp" compile="0" resource="0" file="Source/core/modules/vco.hpp"/>
+        </GROUP>
+        <FILE id="UlG9G2" name="blueprint.cpp" compile="1" resource="0" file="Source/core/blueprint.cpp"
+              skipPCH="0"/>
+        <FILE id="hKHAG5" name="blueprint.hpp" compile="0" resource="0" file="Source/core/blueprint.hpp"/>
+        <FILE id="H1QYEH" name="bus.cpp" compile="1" resource="0" file="Source/core/bus.cpp"/>
+        <FILE id="DMybCa" name="bus.hpp" compile="0" resource="0" file="Source/core/bus.hpp"/>
+        <FILE id="IS4uMt" name="grid.cpp" compile="1" resource="0" file="Source/core/grid.cpp"/>
+        <FILE id="G3sDwm" name="grid.hpp" compile="0" resource="0" file="Source/core/grid.hpp"/>
+        <FILE id="H9j97p" name="interface_headers.hpp" compile="0" resource="0"
+              file="Source/core/interface_headers.hpp"/>
+        <FILE id="LQOsvC" name="log.hpp" compile="0" resource="0" file="Source/core/log.hpp"/>
+        <FILE id="q8WRgh" name="module_headers.hpp" compile="0" resource="0"
+              file="Source/core/module_headers.hpp"/>
+        <FILE id="Iz4v86" name="rack.cpp" compile="1" resource="0" file="Source/core/rack.cpp"/>
+        <FILE id="lTSzKr" name="rack.hpp" compile="0" resource="0" file="Source/core/rack.hpp"/>
+        <FILE id="xPXyci" name="spiro.cpp" compile="1" resource="0" file="Source/core/spiro.cpp"/>
+        <FILE id="dXFE8u" name="spiro.hpp" compile="0" resource="0" file="Source/core/spiro.hpp"/>
+        <FILE id="FmcPIz" name="uid.cpp" compile="1" resource="0" file="Source/core/uid.cpp"/>
+        <FILE id="wbT7zX" name="uid.hpp" compile="0" resource="0" file="Source/core/uid.hpp"/>
+      </GROUP>
+      <GROUP id="{22DBE737-6B22-673F-F2EE-8E243637B1D5}" name="assets">
+        <FILE id="WHBRTE" name="bg.png" compile="0" resource="1" file="Source/assets/bg.png"/>
+        <FILE id="PoqWZE" name="button_16_off.png" compile="0" resource="1"
+              file="Source/assets/button_16_off.png"/>
+        <FILE id="g7GrUO" name="button_16_y.png" compile="0" resource="1" file="Source/assets/button_16_y.png"/>
+        <FILE id="W36bBW" name="encoder_32_w.png" compile="0" resource="1"
+              file="Source/assets/encoder_32_w.png"/>
+        <FILE id="pMEoDw" name="pot_32.png" compile="0" resource="1" file="Source/assets/pot_32.png"/>
+        <FILE id="RNbNBl" name="pot_48.png" compile="0" resource="1" file="Source/assets/pot_48.png"/>
+        <FILE id="z8HtpQ" name="round_button_12_off.png" compile="0" resource="1"
+              file="Source/assets/round_button_12_off.png"/>
+        <FILE id="hPI48x" name="round_button_12_y.png" compile="0" resource="1"
+              file="Source/assets/round_button_12_y.png"/>
+      </GROUP>
+      <FILE id="e1PigC" name="EnvelopeDisplay.cpp" compile="1" resource="0"
+            file="Source/EnvelopeDisplay.cpp"/>
+      <FILE id="dBuxHo" name="EnvelopeDisplay.h" compile="0" resource="0"
+            file="Source/EnvelopeDisplay.h"/>
+      <FILE id="dbDEkM" name="ListSlider.h" compile="0" resource="0" file="Source/ListSlider.h"/>
+      <FILE id="lgIrct" name="ListSlider.cpp" compile="1" resource="0" file="Source/ListSlider.cpp"/>
+      <FILE id="rmtpvK" name="Socket.h" compile="0" resource="0" file="Source/Socket.h"/>
+      <FILE id="JvQfIq" name="Socket.cpp" compile="1" resource="0" file="Source/Socket.cpp"/>
+      <FILE id="tvFU9m" name="Colours.hpp" compile="0" resource="0" file="Source/Colours.hpp"/>
+      <FILE id="a6CqyS" name="SpriteSlider.cpp" compile="1" resource="0"
+            file="Source/SpriteSlider.cpp"/>
+      <FILE id="DsdWb3" name="SpriteSlider.h" compile="0" resource="0" file="Source/SpriteSlider.h"/>
+      <FILE id="iePAVG" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="oDx0El" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="raUZBh" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="pPgBMD" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="gghgDq" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
+      <FILE id="EX5zI8" name="Display.cpp" compile="1" resource="0" file="Source/Display.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
+               JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
+               JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
+  <EXPORTFORMATS>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="spiro" optimisation="6"
+                       linkTimeOptimisation="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../git/JUCE-8.0.7/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../git/JUCE-8.0.7/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="1"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
+  </MODULES>
+</JUCERPROJECT>

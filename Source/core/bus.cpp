@@ -28,41 +28,22 @@ namespace interface {
 
     bus_connector::bus_connector(const Descriptor* d): blueprint(d)
     {
+        LOG("BusConnector() : ");
+        for(int i = 0; i < map::cv::count; ++i)
+        {
+            cv[i] = std::make_unique<std::atomic<float>*[]>(blueprint.ccv[i]);
+            for(int j = 0; j < blueprint.ccv[i]; ++j) cv[i][j] = &zero;
+        }
         #ifdef DEBUG 
-            std::cout<<"-- Initializing bus...\n";
-        #endif
-        _c = std::make_unique<std::atomic<float>*[]>(blueprint.cc);
-        _i = std::make_unique<std::atomic<float>*[]>(blueprint.ic);
-        _o = std::make_unique<std::atomic<float>*[]>(blueprint.oc);
-
-        for(int i = 0; i < blueprint.cc; ++i) _c[i] = &zero;
-        for(int i = 0; i < blueprint.ic; ++i) _i[i] = &zero;
-        for(int i = 0; i < blueprint.oc; ++i) _o[i] = &zero;
-        
-        #ifdef DEBUG 
-            std::cout<<"---- CC: "<<blueprint.cc<<" IC: "<<blueprint.ic<<" OC: "<<blueprint.oc<<"\n";
+            std::cout<<"---- CC: "<<blueprint.ccv[map::cv::c]<<" IC: "<<blueprint.ccv[map::cv::i]<<" OC: "<<blueprint.ccv[map::cv::o]<<"\n";
             std::cout<<"-- Bus initialized...\n";
         #endif
     }
 
-    std::atomic<float>* bus_connector::pin_c(const uint32_t& o) const 
+    std::atomic<float>* bus_connector::pin(const uint32_t& o, const map::cv::index& idx) const 
     { 
         auto i = blueprint.get_index(o);
-        if(i >= 0) return _c[i]; 
-        return &zero;
-    }
-
-    std::atomic<float>* bus_connector::pin_i(const uint32_t& o) const 
-    { 
-        auto i = blueprint.get_index(o);
-        if(i >= 0) return _i[i]; 
-        return &zero;
-    }
-    
-    std::atomic<float>* bus_connector::pin_o(const uint32_t& o) const 
-    { 
-        auto i = blueprint.get_index(o);
-        if(i >= 0) return _o[i]; 
+        if(i >= 0) return cv[idx][i]; 
         return &zero;
     }
 

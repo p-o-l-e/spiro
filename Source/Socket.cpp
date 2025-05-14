@@ -17,7 +17,6 @@
 *******************************************************************************************************************************/
 
 #include "Socket.h"
-#include "cell/interface.h"
 #include <iostream>
 
 Sockets::Sockets(int w, int h, int ins, int outs)

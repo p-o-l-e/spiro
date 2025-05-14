@@ -24,7 +24,13 @@
 #include "setup/constants.hpp"
 #include "setup/map.hpp"
 #include "interface_headers.hpp"
-#define DEBUG
+
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
 
 
 namespace core {
@@ -34,7 +40,7 @@ namespace interface {
 	class Blueprint
     {
         private:
-            const int count(const core::map::cv::index&, const Descriptor*) const;
+            const int count(const map::cv::index&, const Descriptor*) const;
             const std::unique_ptr<int[]> set_relatives(const Descriptor*) const;
             void calculate_hash();
             std::unique_ptr<uint32_t[]> hash_table[map::cv::count]; 
@@ -42,16 +48,14 @@ namespace interface {
 
         public:
             const int get_index(const uint32_t&) const;
-            const uint32_t get_hash(const core::map::cv::index&, const int&) const;
+            const uint32_t get_hash(const map::cv::index&, const int&) const;
             const Descriptor* descriptor;
             const std::unique_ptr<int[]> relative; 
-            const int ic = 0;
-            const int oc = 0;
-            const int cc = 0;
-            const int mc = 0;
+            const int ccv[map::cv::count];
+            const int mc;
 
             Blueprint(const Descriptor*);
-           ~Blueprint() {};
+           ~Blueprint() { LOG("~Blueprint()"); };
     };
 }
 } // Namespace core

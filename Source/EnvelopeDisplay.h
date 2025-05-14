@@ -21,10 +21,10 @@
 #include <iostream>
 #include "ListSlider.h"
 #include "Colours.hpp"
-#include "cell/blur.hpp"
-#include "cell/envelopes.hpp"
-#include "cell/containers.hpp"
-#include "cell/utility.hpp"
+#include "blur.hpp"
+#include "env.hpp"
+#include "wavering.hpp"
+#include "utility.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -43,9 +43,9 @@ class EnvelopeDisplay  : public juce::Component
         int   diameter = gap * 2 + 1;
         float opacity = 0.2f;
         float curve_width = 2.0f;
-        cell::envelope              envd;           // Displayed envelope
+        core::env_t                 envd;           // Displayed envelope
         juce::Rectangle<int>        area;           // Display bounds
-        cell::rectangle<int>        scope_bounds;   // Scope constraints
+        core::Rectangle<int>        scope_bounds;   // Scope constraints
         b_point                     node[SEGMENTS]; // Input nodes
         std::unique_ptr<float[]>    data;
         juce::Colour colour = colour_set[10];

@@ -1,6 +1,10 @@
 #pragma once
-#define DEBUG
-#include <iostream>
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
 
 #include "bus.hpp"
 #include "node.hpp"

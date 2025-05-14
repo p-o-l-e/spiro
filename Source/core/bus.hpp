@@ -21,6 +21,13 @@
 ******************************************************************************************************************************/
 #pragma once
 #include "blueprint.hpp"
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
+
 
 
 namespace core 
@@ -30,18 +37,13 @@ namespace core
         struct bus_connector
         {
             private:
-                std::unique_ptr<std::atomic<float>*[]> _c;
-                std::unique_ptr<std::atomic<float>*[]> _i;
-                std::unique_ptr<std::atomic<float>*[]> _o;
+                std::unique_ptr<std::atomic<float>*[]> cv[map::cv::count];
 
             public:
                 const Blueprint blueprint;
-                std::atomic<float>* pin_c(const uint32_t&) const;
-                std::atomic<float>* pin_i(const uint32_t&) const;
-                std::atomic<float>* pin_o(const uint32_t&) const;
-
+                std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;
                 bus_connector(const Descriptor*);
-               ~bus_connector() {};
+               ~bus_connector() { LOG("~BusConnector()"); };
         };
     }
 }
