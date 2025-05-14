@@ -9,7 +9,7 @@ namespace core
         return node.get()[pos]; 
     }
 
-    module_t* rack_t::at(const core::map::module::type& t, const int& pos)
+    module_t* rack_t::at(const map::module::type& t, const int& pos)
     {
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
@@ -54,22 +54,22 @@ namespace core
         }
     }
 
-    module_t* rack_t::create_node(const core::map::module::type& t)
+    module_t* rack_t::create_node(const map::module::type& t)
     {
         switch (t)
         {
-            case core::map::module::type::vco: return new vco_t(); break;
-            case core::map::module::type::env: return new env_t(); break;
-            case core::map::module::type::lfo: return new lfo_t(); break;
-            case core::map::module::type::cso: return new cso_t(); break;
-            case core::map::module::type::mix: return new mix_t(); break;
-            case core::map::module::type::pdt: return new pdt_t(); break;
-            case core::map::module::type::rtr: return new rtr_t(); break;
-            case core::map::module::type::snh: return new snh_t(); break;
-            case core::map::module::type::sum: return new sum_t(); break;
-            case core::map::module::type::vca: return new vca_t(); break;
-            case core::map::module::type::vcd: return new vcd_t(); break;
-            case core::map::module::type::vcf: return new vcf_t(); break;
+            case map::module::type::vco: return new vco_t(); break;
+            case map::module::type::env: return new env_t(); break;
+            case map::module::type::lfo: return new lfo_t(); break;
+            case map::module::type::cso: return new cso_t(); break;
+            case map::module::type::mix: return new mix_t(); break;
+            case map::module::type::pdt: return new pdt_t(); break;
+            case map::module::type::rtr: return new rtr_t(); break;
+            case map::module::type::snh: return new snh_t(); break;
+            case map::module::type::sum: return new sum_t(); break;
+            case map::module::type::vca: return new vca_t(); break;
+            case map::module::type::vcd: return new vcd_t(); break;
+            case map::module::type::vcf: return new vcf_t(); break;
             
             // case map::module::type::com: return new lfo_t(); break;
             // case map::module::type::cro: return new lfo_t(); break;
@@ -86,7 +86,7 @@ namespace core
         #ifdef DEBUG 
         std::cout<<"-- Allocating space for rack...\n";
         #endif
-        node = std::make_unique<core::module_t*[]>(bus.blueprint.mc); 
+        node = std::make_unique<module_t*[]>(bus.blueprint.mc); 
     }
 
     void rack_t::connect_pin_i(const uint32_t& hash, std::atomic<float>** o)

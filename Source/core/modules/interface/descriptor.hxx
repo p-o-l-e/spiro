@@ -11,41 +11,29 @@ namespace core
     {
         struct cv
         {
-            enum { i, o, c, count };
-        };
-
-        struct parameter
-        { 
-            enum type
-            {
-                off = 0x00,
-                cc  = 0xCC, 
-                ic  = 0xAA, 
-                oc  = 0xEE 
-            };
-            static const int count { 4 };
+            enum index { i, o, c, count, off = 0xFF };
         };
 
         struct module
         { 
             enum type
             {   
-                fuse = 0x00, 
-                vco  = 0xFF, 
-                lfo  = 0xEE, 
-                cso  = 0xDD, 
-                vca  = 0xCC, 
-                vcd  = 0xBB, 
-                vcf  = 0xAA, 
-                snh  = 0x99, 
-                sum  = 0x88, 
-                pdt  = 0x77, 
-                rtr  = 0x66, 
-                mix  = 0x55, 
-                env  = 0x44, 
-                mod  = 0x33, 
-                com  = 0x22, 
-                cro  = 0x11,
+                off  = 0xFF, 
+                vco  = 0xEE, 
+                lfo  = 0xDD, 
+                cso  = 0xCC, 
+                vca  = 0xBB, 
+                vcd  = 0xAA, 
+                vcf  = 0x99, 
+                snh  = 0x88, 
+                sum  = 0x77, 
+                pdt  = 0x66, 
+                rtr  = 0x55, 
+                mix  = 0x44, 
+                env  = 0x33, 
+                mod  = 0x22, 
+                com  = 0x11, 
+                cro  = 0x00,
             };
             static const int count { 16 };
         };
@@ -75,7 +63,7 @@ namespace core
 
     struct Descriptor 
     {
-        const map::module::type type = map::module::type::fuse;
+        const map::module::type type = map::module::type::off;
         const int* const cv[map::cv::count];
         const std::string* const prefix;
         const Control* const set[map::cv::count];

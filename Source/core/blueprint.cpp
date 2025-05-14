@@ -1,3 +1,24 @@
+/*****************************************************************************************************************************
+* Copyright (c) 2022-2025 POLE
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 #include "blueprint.hpp"
 #include "uid.hpp"
 #include <iostream>
@@ -6,31 +27,24 @@ namespace core
 {
 namespace interface
 {
-    const uint32_t Blueprint::get_hash(const core::map::parameter::type& t, const int& p) const
+    const uint32_t Blueprint::get_hash(const map::cv::index& i, const int& p) const
     {
-        switch(t)
-        {
-            case core::map::parameter::type::cc: return hash_table_c[p]; break;
-            case core::map::parameter::type::ic: return hash_table_i[p]; break;
-            case core::map::parameter::type::oc: return hash_table_o[p]; break;
-            default: break;
-        }
-        return 0;
+        return hash_table[i][p];
     }
 
 
     const int Blueprint::get_index(const uint32_t& hash) const
     {
-        switch(static_cast<core::map::parameter::type>(core::extract_byte(hash, uid_t::shift::m_index)))
+        switch(static_cast<core::map::cv::index>(core::extract_byte(hash, uid_t::shift::m_index)))
         {
-            case core::map::parameter::type::cc:
-                for(int i = 0; i < cc; ++i) if(hash_table_c[i] == hash) return i;    
+        case core::map::cv::index::c:
+                for(int i = 0; i < cc; ++i) if(hash_table[map::cv::c][i] == hash) return i;    
                 break;
-            case core::map::parameter::type::ic:
-                for(int i = 0; i < ic; ++i) if(hash_table_i[i] == hash) return i;    
+        case core::map::cv::index::i:
+                for(int i = 0; i < ic; ++i) if(hash_table[map::cv::i][i] == hash) return i;    
                 break;
-            case core::map::parameter::type::oc:
-                for(int i = 0; i < oc; ++i) if(hash_table_o[i] == hash) return i;    
+        case core::map::cv::index::o:
+                for(int i = 0; i < oc; ++i) if(hash_table[map::cv::o][i] == hash) return i;    
                 break;
             default:
                 break;
@@ -66,32 +80,18 @@ namespace interface
 
     void Blueprint::calculate_hash()
     {
-        hash_table_c = std::make_unique<uint32_t[]>(cc);
-        hash_table_i = std::make_unique<uint32_t[]>(ic);
-        hash_table_o = std::make_unique<uint32_t[]>(oc);
-
-        for(int m = 0, h = 0; m < mc; ++m)
+        hash_table[map::cv::c] = std::make_unique<uint32_t[]>(cc);
+        hash_table[map::cv::i] = std::make_unique<uint32_t[]>(ic);
+        hash_table[map::cv::o] = std::make_unique<uint32_t[]>(oc);
+        for(int j = 0; j < map::cv::count; ++j)
         {
-            for(int i = 0; i < *descriptor[m].cv[map::cv::c]; ++i)
+            for(int m = 0, h = 0; m < mc; ++m)
             {
-                hash_table_c[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::cc, relative[m], i);
-                ++h;
-            }
-        }
-        for(int m = 0, h = 0; m < mc; ++m)
-        {
-            for(int i = 0; i < *descriptor[m].cv[map::cv::i]; ++i)
-            {
-                hash_table_i[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::ic, relative[m], i);
-                ++h;
-            }
-        }
-        for(int m = 0, h = 0; m < mc; ++m)
-        {
-            for(int i = 0; i < *descriptor[m].cv[map::cv::o]; ++i)
-            {
-                hash_table_o[h] = core::uid_t::encode_uid(descriptor[m].type, core::map::parameter::type::oc, relative[m], i);
-                ++h;
+                for(int i = 0; i < *descriptor[m].cv[j]; ++i)
+                {
+                    hash_table[j][h] = core::uid_t::encode_uid(descriptor[m].type, static_cast<map::cv::index>(j), relative[m], i);
+                    ++h;
+                }
             }
         }
         #ifdef DEBUG 
@@ -100,16 +100,10 @@ namespace interface
     }
 
 
-    const int Blueprint::count(const core::map::parameter::type& p, const Descriptor* d) const
+    const int Blueprint::count(const core::map::cv::index& p, const Descriptor* d) const
     {
         int c { 0 };
-        switch(p)
-        {
-            case map::parameter::type::ic: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::i]; break;
-            case map::parameter::type::oc: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::o]; break;
-            case map::parameter::type::cc: for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[map::cv::c]; break;
-            default: break;
-        }
+        for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[p];
         return c;
     }
 
@@ -117,9 +111,9 @@ namespace interface
         descriptor(d), 
         relative(set_relatives(d)),
         mc(settings::modules_n), 
-        ic(count(map::parameter::type::ic, d)),
-        oc(count(map::parameter::type::oc, d)),
-        cc(count(map::parameter::type::cc, d))
+        ic(count(map::cv::index::i, d)),
+        oc(count(map::cv::index::o, d)),
+        cc(count(map::cv::index::c, d))
     { 
         calculate_hash();
         #ifdef DEBUG 

@@ -34,8 +34,8 @@ namespace core
     {
         for(int o = 0; o < rack.bus.blueprint.mc; ++o) rack.process(o);
 
-        out[stereo::l].store(rack.at(core::map::module::type::mix, 0)->ocv[mix::cvo::l]);
-        out[stereo::r].store(rack.at(core::map::module::type::mix, 0)->ocv[mix::cvo::r]);
+        out[stereo::l].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::l]);
+        out[stereo::r].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::r]);
         
         out[stereo::l].store(dcb[0].process(out[stereo::l].load()));
         out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
@@ -51,19 +51,19 @@ namespace core
         {
             for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::c]; ++i)
             {
-                auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::cc, i);
+                auto hash = rack.bus.blueprint.get_hash(map::cv::index::c, i);
                 // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
                 
                 rack.bus.pin_c(0);
             }
             for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
             {
-                auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::ic, i);
+                auto hash = rack.bus.blueprint.get_hash(map::cv::index::i, i);
                 // rack.connect_pin_i(hash, bay->io[rack.bus.blueprint.get_index(hash)].com);
             }
             for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::o]; ++i)
             {
-                auto hash = rack.bus.blueprint.get_hash(core::map::parameter::type::oc, i);
+                auto hash = rack.bus.blueprint.get_hash(map::cv::index::o, i);
                 // rack.connect_pin_o(hash, bay->io[rack.bus.blueprint.get_index(hash)].data);
             }
         }

@@ -42,7 +42,7 @@ namespace core
             
             const core::Descriptor descriptor  
             { 
-                core::map::module::type::fuse, 
+                core::map::module::type::off, 
                 { &ic, &oc, &cc },
                 &prefix, 
                 { set_i, set_o, set_c }, 
