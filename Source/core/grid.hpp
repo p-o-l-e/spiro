@@ -14,15 +14,14 @@ namespace core
         const Descriptor* const descriptor;
         Point2D<float> offset { 0.0f, 0.0f };
         const int index { 0 };
-        std::unique_ptr<Rectangle<float>[]> constrain_i;
-        std::unique_ptr<Rectangle<float>[]> constrain_o;
-        std::unique_ptr<Rectangle<float>[]> constrain_c;
+        std::unique_ptr<Rectangle<float>[]> bounds[map::cv::count];
 
         Sector(const Descriptor* d, const Point2D<float>& fs, const int& _index): descriptor(d), offset(fs), index(_index)
         {
-            constrain_i = std::make_unique<Rectangle<float>[]>(*descriptor->cv[map::cv::i]);
-            constrain_o = std::make_unique<Rectangle<float>[]>(*descriptor->cv[map::cv::o]);          
-            constrain_c = std::make_unique<Rectangle<float>[]>(*descriptor->cv[map::cv::c]);
+            for(int i = 0; i < map::cv::count; ++i)
+            {
+                bounds[i] = std::make_unique<Rectangle<float>[]>(*descriptor->cv[i]);
+            }
         }
     };
     
@@ -82,26 +81,15 @@ namespace core
         {
             for(int u = 0; u < sectors; ++u)
             {
-                for(int i = 0; i < *sector[u].descriptor->cv[map::cv::i]; ++i)
+                for(int j = 0; j < map::cv::count; ++j)
                 {
-                    sector[u].constrain_i[i].x = bounds.x + sector[u].offset.x + sector[u].descriptor->set[map::cv::i][i].constrain.x;
-                    sector[u].constrain_i[i].y = bounds.y + sector[u].offset.y + sector[u].descriptor->set[map::cv::i][i].constrain.y;
-                    sector[u].constrain_i[i].w = sector[u].descriptor->set[map::cv::i][i].constrain.w;
-                    sector[u].constrain_i[i].h = sector[u].descriptor->set[map::cv::i][i].constrain.h;
-                }
-                for(int i = 0; i < *sector[u].descriptor->cv[map::cv::o]; ++i)
-                {
-                    sector[u].constrain_o[i].x = bounds.x + sector[u].offset.x + sector[u].descriptor->set[map::cv::o][i].constrain.x;
-                    sector[u].constrain_o[i].y = bounds.y + sector[u].offset.y + sector[u].descriptor->set[map::cv::o][i].constrain.y;
-                    sector[u].constrain_o[i].w = sector[u].descriptor->set[map::cv::o][i].constrain.w;
-                    sector[u].constrain_o[i].h = sector[u].descriptor->set[map::cv::o][i].constrain.h;
-                }
-                for(int i = 0; i < *sector[u].descriptor->cv[map::cv::c]; ++i)
-                {
-                    sector[u].constrain_c[i].x = bounds.x + sector[u].offset.x + sector[u].descriptor->set[map::cv::c][i].constrain.x;
-                    sector[u].constrain_c[i].y = bounds.y + sector[u].offset.y + sector[u].descriptor->set[map::cv::c][i].constrain.y;
-                    sector[u].constrain_c[i].w = sector[u].descriptor->set[map::cv::c][i].constrain.w;
-                    sector[u].constrain_c[i].h = sector[u].descriptor->set[map::cv::c][i].constrain.h;
+                    for(int i = 0; i < *sector[u].descriptor->cv[j]; ++i)
+                    {
+                        sector[u].bounds[j][i].x = bounds.x + sector[u].offset.x + sector[u].descriptor->set[j][i].constrain.x;
+                        sector[u].bounds[j][i].y = bounds.y + sector[u].offset.y + sector[u].descriptor->set[j][i].constrain.y;
+                        sector[u].bounds[j][i].w = sector[u].descriptor->set[j][i].constrain.w;
+                        sector[u].bounds[j][i].h = sector[u].descriptor->set[j][i].constrain.h;
+                    }
                 }
             }
         }
