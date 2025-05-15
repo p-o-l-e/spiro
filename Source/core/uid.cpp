@@ -31,42 +31,27 @@ namespace core
      * DD : Parameter id/position
      * ***********************************************************************************************************************/
 
-     const uint32_t uid_t::encode_uid(const map::module::type& mt, const map::cv::index& pt, const int& mp, const int& pp) noexcept
-     {
-         uint32_t hash = static_cast<uint8_t>(mt);
-         hash <<= 8;
-         hash += mp;
-         hash <<= 8;
-         hash += static_cast<uint8_t>(pt);
-         hash <<= 8;
-         hash += pp;
- 
-         return hash;
-     }
+    const uint32_t encode_uid(const map::module::type& mt, const int& mp, const map::cv::index& pt, const int& pp) noexcept
+    {
+        uint32_t hash = static_cast<uint8_t>(mt);
+        hash <<= 8;
+        hash += mp;
+        hash <<= 8;
+        hash += static_cast<uint8_t>(pt);
+        hash <<= 8;
+        hash += pp;
 
-    const uid_t uid_t::decode_uid(const uint32_t& data) noexcept
+        return hash;
+    }
+
+    const uid_t decode_uid(const uint32_t& data) noexcept
     {
         return uid_t
         (
-            static_cast<map::module::type>(extract_byte(data, m_index)),
-            static_cast<map::cv::index>(extract_byte(data, p_index)),
-            extract_byte(data, m_position),
-            extract_byte(data, p_position)
+            static_cast<map::module::type>(extract_byte(data, shift::mt)),
+            extract_byte(data, shift::mp),
+            static_cast<map::cv::index>(extract_byte(data, shift::pt)),
+            extract_byte(data, shift::pp)
         );
     }
-
- 
-    uid_t::uid_t(const uint32_t& data):
-         hash(data),
-         module(static_cast<map::module::type>(extract_byte(data, m_index))),
-         module_position(extract_byte(data, m_position)),
-         parameter(static_cast<map::cv::index>(extract_byte(data, p_index))),
-         parameter_position(extract_byte(data, p_position))
-     {};
-  
-    uid_t::uid_t(const map::module::type& mt, const map::cv::index& pt, const int& mp, const int& pp):
-         module(mt), parameter(pt), module_position(mp), parameter_position(pp),
-         hash(encode_uid(mt, pt, mp, pp))
-     {};
-
 }

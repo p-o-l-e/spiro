@@ -24,8 +24,6 @@
 
 namespace core
 {
-    module::~module() = default;
-
     void module::fuse() 
     {
         for(int i = 0; i < _is; ++i) icv[i] = &zero;

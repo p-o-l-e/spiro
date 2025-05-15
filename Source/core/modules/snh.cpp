@@ -22,47 +22,45 @@
 
 #include "snh.hpp"
 
-namespace core {
-
-int snh_t::idc = 0;
-
-void snh_t::process()
+namespace core 
 {
-    if(icv[static_cast<int>(interface::snh::in::time)] == &zero)
+    using namespace interface::snh;
+    int snh_t::idc = 0;
+
+    void snh_t::process()
     {
-        if (t > (scale * float(settings::sample_rate) / 1000.0f))
+        if(icv[cvi::time] == &zero)
         {
-            t = 0.0f;
-            ocv[static_cast<int>(interface::snh::out::a)].store(icv[static_cast<int>(interface::snh::in::a)]->load() 
-                                                              + icv[static_cast<int>(interface::snh::in::b)]->load());
+            if (t > (scale * float(settings::sample_rate) / 1000.0f))
+            {
+                t = 0.0f;
+                ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
+            }
+            t += (1.0f - ccv[ctl::time]->load() * 0.99f);
         }
-        t += (1.0f - ccv[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f);
+        else
+        {
+            if (t > (scale * float(settings::sample_rate) / 1000.0f))
+            {
+                t = 0.0f;
+                ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
+            }
+            t += ((1.0f - ccv[ctl::time]->load() * 0.99f) * fabsf(icv[cvi::time]->load()));
+        }
     }
-    else
+
+    void snh_t::reset()
     {
-        if (t > (scale * float(settings::sample_rate) / 1000.0f))
-        {
-            t = 0.0f;
-            ocv[static_cast<int>(interface::snh::out::a)].store(icv[static_cast<int>(interface::snh::in::a)]->load() 
-                                                              + icv[static_cast<int>(interface::snh::in::b)]->load());
-        }
-        t += ((1.0f - ccv[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f)
-                    * fabsf(icv[static_cast<int>(interface::snh::in::time)]->load()));
+        t     = 0.0f;
+        value = 0.0f;
+        scale = 40.0f;
     }
-}
 
-void snh_t::reset()
-{
-    t     = 0.0f;
-    value = 0.0f;
-    scale = 40.0f;
-}
-
-snh_t::snh_t(): id(++idc)
-{
-    init(interface::snh::ctrls, interface::snh::ins, interface::snh::outs, module_type::snh, id);
-    reset();
-}
+    snh_t::snh_t(): id(++idc)
+    {
+        init(cc, ic, oc, module_type::snh, id);
+        reset();
+    }
 
 
 }; // Namespace

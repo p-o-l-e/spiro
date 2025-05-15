@@ -69,7 +69,7 @@ namespace core
             virtual void process() {};
 
             module() {};
-            virtual ~module();
+            virtual ~module() = default;
             friend class rack_t;
     };
 

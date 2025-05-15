@@ -33,33 +33,32 @@
 
 namespace core
 {
-    constexpr uint8_t extract_byte(const uint32_t&, const int&) noexcept;
+    enum shift { pp = 0, pt = 8, mp = 16, mt = 24 };
+
     struct uid_t 
     {
-            enum shift { p_position = 0, p_index, m_position, m_index };
-
-            static const uint32_t encode_uid(const map::module::type&, const map::cv::index&, const int&, const int&) noexcept;
-            static const uid_t decode_uid(const uint32_t&) noexcept;
-            const map::module::type module { map::module::type::off };                      
-            const map::cv::index parameter { map::cv::index::off };
-            const int module_position { 0 }; 
-            const int parameter_position { 0 };
-            const uint32_t hash { 0 };
-
-            uid_t() {};
-            uid_t(const uint32_t&);
-            uid_t(const map::module::type&, const map::cv::index&, const int&, const int&);
-           ~uid_t() {};
+        uint8_t mt: 8;
+        uint8_t mp: 8;
+        uint8_t pt: 8;
+        uint8_t pp: 8;
     };
 
-
+    /**************************************************************************************************************************
+     * Returns 32-bit hash [ AA BB CC DD  ]
+     * AA : Module type
+     * BB : Module id/position
+     * CC : Parameter type
+     * DD : Parameter id/position
+     * ***********************************************************************************************************************/
+    const uint32_t encode_uid(const map::module::type&, const int&, const map::cv::index&, const int&) noexcept;
+    const uid_t    decode_uid(const uint32_t&) noexcept;
     /**************************************************************************************************************************
      * Returns 8-bit value
      * Data : 0x FF FF FF FF
      * index:     3  2  1  0     MSB->LSB
      * ***********************************************************************************************************************/
-    constexpr uint8_t extract_byte(const uint32_t& data, const int& index) noexcept
+    constexpr uint8_t extract_byte(const uint32_t& data, const shift& index) noexcept
     {
-        return uint8_t((data >> (8 * (index % 4))) & 0xFF);
+        return uint8_t((data >> index) & 0xFF);
     }
 }; 

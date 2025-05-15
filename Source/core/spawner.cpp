@@ -131,8 +131,8 @@ void core::spawner::connect_bus()
     vcd[0].ccv[interface::vcd::ctl::feed]   = bus.pot[potentiometer_list::vcd_feed];
 
     // SNH ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    snh[0].ccv[static_cast<int>(snh::ctrl::time)]   = bus.pot[potentiometer_list::snh_a];
-    snh[1].ccv[static_cast<int>(snh::ctrl::time)]   = bus.pot[potentiometer_list::snh_b];
+    snh[0].ccv[interface::snh::ctl::time]   = bus.pot[potentiometer_list::snh_a];
+    snh[1].ccv[interface::snh::ctl::time]   = bus.pot[potentiometer_list::snh_b];
 
     lfo[0].ccv[interface::lfo::ctl::delta]  = bus.pot[potentiometer_list::lfo_a_freq];
     lfo[1].ccv[interface::lfo::ctl::delta]  = bus.pot[potentiometer_list::lfo_b_freq];
@@ -252,13 +252,13 @@ void core::spawner::connect_bus()
     bay->io[socket_list::chs_b_in_ec].com    = &chs[1].ccv[static_cast<int>(cso::in::fm)];
 
     // Sample n Hold
-    bay->io[socket_list::snh_a_in_a].com     = &snh[0].icv[static_cast<int>(snh::in::a)];
-    bay->io[socket_list::snh_a_in_b].com     = &snh[0].icv[static_cast<int>(snh::in::b)];
-    bay->io[socket_list::snh_b_in_a].com     = &snh[1].icv[static_cast<int>(snh::in::a)];
-    bay->io[socket_list::snh_b_in_b].com     = &snh[1].icv[static_cast<int>(snh::in::b)];
+    bay->io[socket_list::snh_a_in_a].com     = &snh[0].icv[interface::snh::cvi::a];
+    bay->io[socket_list::snh_a_in_b].com     = &snh[0].icv[interface::snh::cvi::b];
+    bay->io[socket_list::snh_b_in_a].com     = &snh[1].icv[interface::snh::cvi::a];
+    bay->io[socket_list::snh_b_in_b].com     = &snh[1].icv[interface::snh::cvi::b];
 
-    bay->io[socket_list::snh_a_time].com     = &snh[0].icv[static_cast<int>(snh::in::time)];
-    bay->io[socket_list::snh_b_time].com     = &snh[1].icv[static_cast<int>(snh::in::time)];;
+    bay->io[socket_list::snh_a_time].com     = &snh[0].icv[interface::snh::cvi::time];
+    bay->io[socket_list::snh_b_time].com     = &snh[1].icv[interface::snh::cvi::time];;
 
     bay->io[socket_list::lfo_a_in_freq].com  = &lfo[0].icv[interface::lfo::cvi::fm];
     bay->io[socket_list::lfo_b_in_freq].com  = &lfo[1].icv[interface::lfo::cvi::fm];
@@ -313,8 +313,8 @@ void core::spawner::connect_bus()
     bay->io[socket_list::lcr_out_c_b].data         = &rot[0].ocv[interface::rtr::cvo::by];
     bay->io[socket_list::lcr_out_r_b].data         = &rot[0].ocv[interface::rtr::cvo::bz];
 
-    bay->io[socket_list::snh_a_out].data           = &snh[0].ocv[static_cast<int>(snh::out::a)];
-    bay->io[socket_list::snh_b_out].data           = &snh[1].ocv[static_cast<int>(snh::out::a)];
+    bay->io[socket_list::snh_a_out].data           = &snh[0].ocv[interface::snh::cvo::a];
+    bay->io[socket_list::snh_b_out].data           = &snh[1].ocv[interface::snh::cvo::a];
 
     bay->io[socket_list::lfo_a_out_a].data         = &lfo[0].ocv[interface::lfo::cvo::a];
     bay->io[socket_list::lfo_a_out_b].data         = &lfo[0].ocv[interface::lfo::cvo::b];
