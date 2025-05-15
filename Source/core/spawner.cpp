@@ -97,8 +97,8 @@ void core::spawner::connect_bus()
     vcf[1].ctrl[interface::vcf::ctl::Q]      = bus.pot[potentiometer_list::vcf_b_res];
 
     // VCAs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    vca[0].ctrl[static_cast<int>(vca::ctrl::amp)]    = bus.pot[potentiometer_list::vca_a];
-    vca[1].ctrl[static_cast<int>(vca::ctrl::amp)]    = bus.pot[potentiometer_list::vca_b];
+    vca[0].ctrl[interface::vca::ctl::amp]    = bus.pot[potentiometer_list::vca_a];
+    vca[1].ctrl[interface::vca::ctl::amp]    = bus.pot[potentiometer_list::vca_b];
     
     // Rotor //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     rot[0].ctrl[interface::rtr::ctl::x]      = bus.pot[potentiometer_list::angle_x];
@@ -203,8 +203,8 @@ void core::spawner::connect_bus()
     bay->io[socket_list::vca_a_in_b].com     = &vca[0].in[1];
     bay->io[socket_list::vca_b_in_b].com     = &vca[1].in[1];
 
-    bay->io[socket_list::vca_a_in_cv].com    = &vca[0].in[static_cast<int>(vca::in::amp)];
-    bay->io[socket_list::vca_b_in_cv].com    = &vca[1].in[static_cast<int>(vca::in::amp)];
+    bay->io[socket_list::vca_a_in_cv].com    = &vca[0].in[interface::vca::cvi::amp];
+    bay->io[socket_list::vca_b_in_cv].com    = &vca[1].in[interface::vca::cvi::amp];
 
     // Rotor
     bay->io[socket_list::lcr_cv_l].com       = &rot[0].in[interface::rtr::cvi::cvx];

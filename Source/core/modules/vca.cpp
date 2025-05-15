@@ -21,7 +21,26 @@
 ******************************************************************************************************************************/
 #include "vca.hpp"
 
-namespace core {
+namespace core 
+{
+    using namespace interface::vca;
     int vca_t::idc = 0;
 
+            void vca_t::process()
+            {
+                float v = ctrl[ctl::amp]->load() + in[ctl::amp]->load();
+                if      (v < 0.0f) v = 0.0f;
+                else if (v > 1.0f) v = 1.0f;
+                float o = (in[cvi::a]->load() + in[cvi::b]->load()) * v; 
+                out[cvo::a].store(o);
+                out[cvo::b].store(o);
+
+            };
+
+            vca_t::vca_t(): id(++idc)
+            {  
+                init(cc, ic, oc, module_type::vca, 0);
+            };
+            vca_t::~vca_t() {};
+    
 }
