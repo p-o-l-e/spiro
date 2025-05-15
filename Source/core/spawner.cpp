@@ -90,11 +90,11 @@ void core::spawner::connect_bus()
     // Envelopes //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Filters ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    vcf[0].ctrl[static_cast<int>(vcf::ctrl::cutoff)] = bus.pot[potentiometer_list::vcf_a_cut];
-    vcf[0].ctrl[static_cast<int>(vcf::ctrl::Q)]      = bus.pot[potentiometer_list::vcf_a_res];
+    vcf[0].ctrl[interface::vcf::ctl::cutoff] = bus.pot[potentiometer_list::vcf_a_cut];
+    vcf[0].ctrl[interface::vcf::ctl::Q]      = bus.pot[potentiometer_list::vcf_a_res];
 
-    vcf[1].ctrl[static_cast<int>(vcf::ctrl::cutoff)] = bus.pot[potentiometer_list::vcf_b_cut];
-    vcf[1].ctrl[static_cast<int>(vcf::ctrl::Q)]      = bus.pot[potentiometer_list::vcf_b_res];
+    vcf[1].ctrl[interface::vcf::ctl::cutoff] = bus.pot[potentiometer_list::vcf_b_cut];
+    vcf[1].ctrl[interface::vcf::ctl::Q]      = bus.pot[potentiometer_list::vcf_b_res];
 
     // VCAs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     vca[0].ctrl[static_cast<int>(vca::ctrl::amp)]    = bus.pot[potentiometer_list::vca_a];
@@ -180,21 +180,21 @@ void core::spawner::connect_bus()
     bay->io[socket_list::vcd_in_feed].com    = &vcd[0].in[static_cast<int>(vcd::in::feed)];
 
     // VCF ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bay->io[socket_list::vcf_a_in_a].com     = &vcf[0].in[static_cast<int>(vcf::in::a)];
-    bay->io[socket_list::vcf_b_in_a].com     = &vcf[1].in[static_cast<int>(vcf::in::a)];
+    bay->io[socket_list::vcf_a_in_a].com     = &vcf[0].in[interface::vcf::cvi::a];
+    bay->io[socket_list::vcf_b_in_a].com     = &vcf[1].in[interface::vcf::cvi::a];
 
-    bay->io[socket_list::vcf_a_in_b].com     = &vcf[0].in[static_cast<int>(vcf::in::b)];
-    bay->io[socket_list::vcf_b_in_b].com     = &vcf[1].in[static_cast<int>(vcf::in::b)];
+    bay->io[socket_list::vcf_a_in_b].com     = &vcf[0].in[interface::vcf::cvi::b];
+    bay->io[socket_list::vcf_b_in_b].com     = &vcf[1].in[interface::vcf::cvi::b];
 
-    bay->io[socket_list::vcf_a_in_c].com     = &vcf[0].in[static_cast<int>(vcf::in::c)];
-    bay->io[socket_list::vcf_b_in_c].com     = &vcf[1].in[static_cast<int>(vcf::in::c)];
+    bay->io[socket_list::vcf_a_in_c].com     = &vcf[0].in[interface::vcf::cvi::c];
+    bay->io[socket_list::vcf_b_in_c].com     = &vcf[1].in[interface::vcf::cvi::c];
 
 
-    bay->io[socket_list::vcf_a_cut_in].com   = &vcf[0].in[static_cast<int>(vcf::in::cutoff)];
-    bay->io[socket_list::vcf_b_cut_in].com   = &vcf[1].in[static_cast<int>(vcf::in::cutoff)];
+    bay->io[socket_list::vcf_a_cut_in].com   = &vcf[0].in[interface::vcf::cvi::cutoff];
+    bay->io[socket_list::vcf_b_cut_in].com   = &vcf[1].in[interface::vcf::cvi::cutoff];
 
-    bay->io[socket_list::vcf_a_q_in].com     = &vcf[0].in[static_cast<int>(vcf::in::Q)];
-    bay->io[socket_list::vcf_b_q_in].com     = &vcf[1].in[static_cast<int>(vcf::in::Q)];
+    bay->io[socket_list::vcf_a_q_in].com     = &vcf[0].in[interface::vcf::cvi::Q];
+    bay->io[socket_list::vcf_b_q_in].com     = &vcf[1].in[interface::vcf::cvi::Q];
 
     // VCA
     bay->io[socket_list::vca_a_in_a].com     = &vca[0].in[0];
@@ -291,13 +291,13 @@ void core::spawner::connect_bus()
     bay->io[socket_list::chs_b_out_y].data         = &chs[1].out[1];
     bay->io[socket_list::chs_b_out_z].data         = &chs[1].out[2];
 
-    bay->io[socket_list::vcf_a_out_lp].data        = &vcf[0].out[static_cast<int>(vcf::out::lp)];
-    bay->io[socket_list::vcf_a_out_bp].data        = &vcf[0].out[static_cast<int>(vcf::out::bp)];
-    bay->io[socket_list::vcf_a_out_hp].data        = &vcf[0].out[static_cast<int>(vcf::out::hp)];
+    bay->io[socket_list::vcf_a_out_lp].data        = &vcf[0].out[interface::vcf::cvo::lp];
+    bay->io[socket_list::vcf_a_out_bp].data        = &vcf[0].out[interface::vcf::cvo::bp];
+    bay->io[socket_list::vcf_a_out_hp].data        = &vcf[0].out[interface::vcf::cvo::hp];
 
-    bay->io[socket_list::vcf_b_out_lp].data        = &vcf[1].out[static_cast<int>(vcf::out::lp)];
-    bay->io[socket_list::vcf_b_out_bs].data        = &vcf[1].out[static_cast<int>(vcf::out::bp)];
-    bay->io[socket_list::vcf_b_out_hp].data        = &vcf[1].out[static_cast<int>(vcf::out::hp)];
+    bay->io[socket_list::vcf_b_out_lp].data        = &vcf[1].out[interface::vcf::cvo::lp];
+    bay->io[socket_list::vcf_b_out_bs].data        = &vcf[1].out[interface::vcf::cvo::bp];
+    bay->io[socket_list::vcf_b_out_hp].data        = &vcf[1].out[interface::vcf::cvo::hp];
 
     bay->io[socket_list::vca_a_out_a].data         = &vca[0].out[0];
     bay->io[socket_list::vca_b_out_a].data         = &vca[1].out[0];

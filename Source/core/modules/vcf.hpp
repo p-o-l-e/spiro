@@ -20,7 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-
+#include "vcf_interface.hpp"
 #include "iospecs.hpp"
 #include "constants.hpp"
 #include "node.hpp"
@@ -28,29 +28,8 @@
 #include <atomic>
 
 
-namespace core {
-
-    namespace interface 
-    {
-        /**********************************************************************************************************************
-        * 
-        *  Descriptor
-        * 
-        **********************************************************************************************************************/
-        namespace vcf
-        {
-            const int ctrls  { 2 };
-            const int ins    { 5 };
-            const int outs   { 3 };
-
-            enum class ctrl { cutoff, Q };
-            enum class in   { a, b, c, cutoff, Q };
-            enum class out  { lp, bp, hp };
-
-        }
-    }
-
-
+namespace core 
+{
     class vcf_t: public module
     {
         private:
@@ -68,5 +47,4 @@ namespace core {
             vcf_t();
            ~vcf_t() {};
     };
-
 };
