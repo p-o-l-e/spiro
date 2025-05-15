@@ -21,7 +21,31 @@
 ******************************************************************************************************************************/
 #include "mix.hpp"
 
-namespace core {
-
+namespace core
+{
+    using namespace interface::mix;
     int mixer::idc = 0;
-}
+    
+            void mixer::process()
+            {
+                point3d<float> lcr
+                { 
+                    in[cvi::l]->load(), 
+                    in[cvi::c]->load(), 
+                    in[cvi::r]->load() 
+                };
+                float lc = ctrl[ctl::alpha]->load() + in[cvi::alpha]->load();
+                float cr = ctrl[ctl::theta]->load() + in[cvi::theta]->load();
+                point2d<float> lr = c3c2(lcr, lc, cr);
+                out[cvo::l].store(lr.x * ctrl[ctl::amp]->load());
+                out[cvo::r].store(lr.y * ctrl[ctl::amp]->load());
+            }
+
+            mixer::mixer(): id(++idc)
+            {
+                init(cc, ic, oc, module_type::mixer, id);
+            }
+            mixer::~mixer() {};
+
+
+}; // Namespace

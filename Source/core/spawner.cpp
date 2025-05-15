@@ -106,9 +106,9 @@ void core::spawner::connect_bus()
     rot[0].ctrl[static_cast<int>(rtr::ctrl::z)]      = bus.pot[potentiometer_list::angle_z];
 
     // Mixer //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    mix[0].ctrl[static_cast<int>(mxr::ctrl::alpha)]  = bus.pot[potentiometer_list::lc_to_l];
-    mix[0].ctrl[static_cast<int>(mxr::ctrl::theta)]  = bus.pot[potentiometer_list::cr_to_r];
-    mix[0].ctrl[static_cast<int>(mxr::ctrl::volume)] = bus.pot[potentiometer_list::volume];
+    mix[0].ctrl[interface::mix::ctl::alpha]  = bus.pot[potentiometer_list::lc_to_l];
+    mix[0].ctrl[interface::mix::ctl::theta]  = bus.pot[potentiometer_list::cr_to_r];
+    mix[0].ctrl[interface::mix::ctl::amp] = bus.pot[potentiometer_list::volume];
 
     // Chaos //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     chs[0].ctrl[static_cast<int>(cso::ctrl::tune)]   = bus.pot[potentiometer_list::chs_a_tune];
@@ -220,12 +220,12 @@ void core::spawner::connect_bus()
     bay->io[socket_list::lcr_in_r_b].com     = &rot[0].in[static_cast<int>(rtr::in::bz)];
 
     // Mixer
-    bay->io[socket_list::mix_lc_cv].com      = &mix[0].in[static_cast<int>(mxr::in::alpha)];
-    bay->io[socket_list::mix_cr_cv].com      = &mix[0].in[static_cast<int>(mxr::in::theta)];
+    bay->io[socket_list::mix_lc_cv].com      = &mix[0].in[interface::mix::cvi::alpha];
+    bay->io[socket_list::mix_cr_cv].com      = &mix[0].in[interface::mix::cvi::theta];
 
-    bay->io[socket_list::mix_in_l].com       = &mix[0].in[static_cast<int>(mxr::in::l)];
-    bay->io[socket_list::mix_in_c].com       = &mix[0].in[static_cast<int>(mxr::in::c)];
-    bay->io[socket_list::mix_in_r].com       = &mix[0].in[static_cast<int>(mxr::in::r)];
+    bay->io[socket_list::mix_in_l].com       = &mix[0].in[interface::mix::cvi::l];
+    bay->io[socket_list::mix_in_c].com       = &mix[0].in[interface::mix::cvi::c];
+    bay->io[socket_list::mix_in_r].com       = &mix[0].in[interface::mix::cvi::r];
 
 
     bay->io[socket_list::sum_a_in_a].com     = &sum[0].in[0];
