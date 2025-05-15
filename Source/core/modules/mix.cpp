@@ -25,7 +25,7 @@ namespace core
 {
     using namespace interface::mix;
     int mixer::idc = 0;
-    
+
             void mixer::process()
             {
                 point3d<float> lcr
@@ -48,4 +48,4 @@ namespace core
             mixer::~mixer() {};
 
 
-}; // Namespace
+}; // Namespace core

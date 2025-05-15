@@ -22,6 +22,29 @@
 #include "pdt.hpp"
 
 namespace core {
+using namespace interface::pdt;
     
     int product::idc = 0;
+
+    void product::process()
+    {
+        bool  o = false;
+        float s = 1.0f;
+        for(int i = 0; i < ic; ++i)
+        {
+            if(in[i] == &zero) continue;
+            else 
+            {
+                s *= in[i]->load();
+                o = true;
+            }
+        }
+        out[0].store( o ? s : 0.0f);
+    };
+
+    product::product(): id(++idc)
+    { 
+        init(cc, ic, oc, module_type::product, id); 
+    };
+
 }
