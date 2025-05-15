@@ -20,31 +20,12 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
+#include "sum_interface.hpp"
 #include "node.hpp"
 #include "constants.hpp"
 
 namespace core
 {
-    namespace interface 
-    {
-        /**********************************************************************************************************************
-        * 
-        *  Descriptor
-        * 
-        **********************************************************************************************************************/
-        namespace sum
-        {
-            const int ctrls  { 0 };
-            const int ins    { 2 };
-            const int outs   { 2 };
-
-            enum class ctrl { };
-            enum class in   { a, b };
-            enum class out  { a, b };
-
-        }
-    }
-
     using namespace interface::sum;
 
     class sigma: public module
@@ -54,17 +35,8 @@ namespace core
 
         public:
             int id;
-            void process() override
-            {
-                out[0].store(in[0]->load() + in[1]->load());
-                out[1].store(out[0]);
-            };
-
-
-            sigma(): id(++idc)
-            { 
-                init(interface::sum::ctrls, interface::sum::ins, interface::sum::outs, module_type::sigma, id);
-            };
-           ~sigma() {};
-};
+            void process() override;
+            sigma();
+           ~sigma();
+    };
 }

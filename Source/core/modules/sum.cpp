@@ -21,7 +21,20 @@
 ******************************************************************************************************************************/
 #include "sum.hpp"
 
-namespace core{
-
+namespace core
+{
+    using namespace interface::sum;
     int sigma::idc = 0;
+
+    void sigma::process()
+    {
+        out[cvo::a].store(in[cvi::a]->load() + in[cvi::b]->load());
+        out[cvo::b].store(out[cvo::a]);
+    };
+
+    sigma::sigma(): id(++idc)
+    { 
+        init(cc, ic, oc, module_type::sigma, id);
+    };
+    sigma::~sigma() {};
 }
