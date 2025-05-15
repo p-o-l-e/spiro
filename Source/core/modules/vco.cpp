@@ -29,17 +29,17 @@ namespace core
     int oscillator::idc = 0;
 
     void oscillator::set_delta(const unsigned& voice)
-    { 
-        int n = note[voice] + 12 * roundf(ctrl[static_cast<int>(ctrl::octave)]->load() * 10.0f);
+    {
+        int n = note[voice] + 12 * roundf(ctrl[ctl::octave]->load() * 10.0f);
         freq[voice]  = chromatic[n];
-        delta[voice] = chromatic[n] * tao / settings::sample_rate; 
+        delta[voice] = chromatic[n] * tao / settings::sample_rate;
         set_fine(voice);
     }
 
     void oscillator::set_fine(const unsigned& voice)
     {
         float range   = (freq[voice] * chromatic_ratio - freq[voice] / chromatic_ratio) * tao / settings::sample_rate;
-        delta[voice] += (ctrl[static_cast<int>(ctrl::detune)]->load() + in[static_cast<int>(in::detune)]->load() - 0.5f) * range * 2.0f;
+        delta[voice] += (ctrl[ctl::detune]->load() + in[cvi::detune]->load() - 0.5f) * range * 2.0f;
     }
 
     inline float oscillator::tomisawa(const int& voice)
@@ -47,9 +47,9 @@ namespace core
         float oa = cosf(phase[voice] + eax[0][voice]);
         eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
 
-        float pw =  in[static_cast<int>(in::pwm)] == &zero ? 
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load()) * tao * 0.98f - pi :
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load() + in[static_cast<int>(in::pwm)]->load());  
+        float pw =  in[cvi::pwm] == &zero ?
+            (0.5f - ctrl[ctl::pwm]->load()) * tao * 0.98f - pi :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load());
 
         float ob = cosf(phase[voice] + eax[1][voice] + pw);
         eax[1][voice] = (ob + eax[1][voice]) * 0.5f;
@@ -58,51 +58,50 @@ namespace core
 
     inline float oscillator::pulse(const int& voice)
     {
-        float pw =  in[static_cast<int>(in::pwm)] == &zero ? 
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load()) * 2.0f :
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load() + in[static_cast<int>(in::pwm)]->load()) * 2.0f;    
+        float pw =  in[cvi::pwm] == &zero ?
+            (0.5f - ctrl[ctl::pwm]->load()) * 2.0f :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * 2.0f;
 
         return fPulse(phase[voice], pw, 0.0001f);
     }
 
     inline float oscillator::hexagon(const int& voice)
     {
-        float pw = in[static_cast<int>(in::pwm)] == &zero ? 
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load()) * pi :
-            (0.5f - ctrl[static_cast<int>(ctrl::pwm)]->load() + in[static_cast<int>(in::pwm)]->load()) * pi;
+        float pw = in[cvi::pwm] == &zero ?
+            (0.5f - ctrl[ctl::pwm]->load()) * pi :
+            (0.5f - ctrl[ctl::pwm]->load() + in[cvi::pwm]->load()) * pi;
 
             float feed = (fTriangle(phase[voice], 0.001f) * fSquare(phase[voice] + pw, 0.001f))/pi + (pi * 0.5f - fabsf(pw)) * 0.25f;
         return feed * (pi - fabsf(pw));
     }
 
-
     void oscillator::process()
     {
         float accu = 0.0f;
         
-        if(ctrl[static_cast<int>(ctrl::freerun)]->load() > 0.5f)
+        if(ctrl[ctl::freerun]->load() > 0.5f)
         {
             set_delta(0);
 
-            float fm = powf(ctrl[static_cast<int>(ctrl::fm)]->load(), 3.0f);
+            float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
 
-            phase[0] += (delta[0] + in[static_cast<int>(in::fm)]->load() * fm);
+            phase[0] += (delta[0] + in[cvi::fm]->load() * fm);
             if(phase[0] >= pi) phase[0] -= tao;  
 
-            accu = (this->*form[(int)ctrl[static_cast<int>(ctrl::form)]->load()])(0);
+            accu = (this->*form[(int)ctrl[ctl::form]->load()])(0);
 
 
-            if(in[static_cast<int>(in::pll)] != &zero)
+            if(in[cvi::pll] != &zero)
             {
-                float f = powf(ctrl[static_cast<int>(ctrl::pll)]->load(), 3.0f);
-                phase[0] += fPLL(accu, in[static_cast<int>(in::pll)]->load()) * f;
+                float f = powf(ctrl[ctl::pll]->load(), 3.0f);
+                phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
             }
-            if(in[static_cast<int>(in::am)] != &zero)
+            if(in[cvi::am] != &zero)
             {
-                accu = xfade(accu * in[static_cast<int>(in::am)]->load(), accu, ctrl[static_cast<int>(ctrl::am)]->load());
+                accu = xfade(accu * in[cvi::am]->load(), accu, ctrl[ctl::am]->load());
             }
-            accu *= ctrl[static_cast<int>(ctrl::amp)]->load();
-            out[static_cast<int>(out::main)].store(accu);
+            accu *= ctrl[ctl::amp]->load();
+            out[cvo::main].store(accu);
         }
 
         else
@@ -114,24 +113,24 @@ namespace core
                     // o->set_fine(i);
                     set_delta(i);
 
-                    float fm = powf(ctrl[static_cast<int>(ctrl::fm)]->load(), 3.0f);
+                    float fm = powf(ctrl[ctl::fm]->load(), 3.0f);
 
-                    phase[i] += (delta[i] + in[static_cast<int>(in::fm)]->load() * fm);
+                    phase[i] += (delta[i] + in[cvi::fm]->load() * fm);
                     if(phase[i] >= pi) phase[i] -= tao;  
 
-                    float feed = (this->*form[(int)ctrl[static_cast<int>(ctrl::form)]->load()])(i);
+                    float feed = (this->*form[(int)ctrl[ctl::form]->load()])(i);
 
-                    if(in[static_cast<int>(in::pll)] != &zero) 
+                    if(in[cvi::pll] != &zero) 
                     {
-                        float f = powf(ctrl[static_cast<int>(ctrl::pll)]->load(), 3.0f);
-                        phase[0] += fPLL(accu, in[static_cast<int>(in::pll)]->load()) * f;
+                        float f = powf(ctrl[ctl::pll]->load(), 3.0f);
+                        phase[0] += fPLL(accu, in[cvi::pll]->load()) * f;
                    }
 
-                    if(in[static_cast<int>(in::am)] != &zero)
+                    if(in[cvi::am] != &zero)
                     {
-                        feed = xfade(feed * in[static_cast<int>(in::am)]->load(), feed, ctrl[static_cast<int>(ctrl::am)]->load());
+                        feed = xfade(feed * in[cvi::am]->load(), feed, ctrl[ctl::am]->load());
                     }                    
-                    feed *= (ctrl[static_cast<int>(ctrl::amp)]->load() * velo[i]);
+                    feed *= (ctrl[ctl::amp]->load() * velo[i]);
 
                     if(env[i].stage == SUS) // Sustained
                     {
@@ -151,7 +150,7 @@ namespace core
                             
                 }
             }
-            out[static_cast<int>(out::main)].store(accu);
+            out[cvo::main].store(accu);
         }
 
     }
@@ -161,7 +160,7 @@ namespace core
 
     void oscillator::reset()
     {
-        init(interface::vco::ctrls, interface::vco::ins, interface::vco::outs, module_type::vco, id);
+        init(cc, ic, oc, module_type::vco, id);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;
@@ -186,40 +185,6 @@ namespace core
     oscillator::~oscillator() = default;
 
 
-    std::map<std::string, std::atomic<float>*> vco_create_controls_map(oscillator* o)
-    {
-        std::map<std::string, std::atomic<float>*> list;
-        for(int i = 0; i < interface::vco::ctrl_postfix.size(); ++i)
-        {
-            interface::vco::ctrl p = static_cast<interface::vco::ctrl>(i);
-            std::string id { interface::vco::prefix + lowercase.at(o->id) + interface::vco::ctrl_postfix.at(p) };
-            list.insert( { id, o->ctrl[i] });
-        }
-        return list;
-    }
 
-    std::map<std::string, std::atomic<float>*> vco_create_inputs_map(oscillator* o)
-    {
-        std::map<std::string, std::atomic<float>*> list;
-        for(int i = 0; i < interface::vco::in_postfix.size(); ++i)
-        {
-            interface::vco::in p = static_cast<interface::vco::in>(i);
-            std::string id { interface::vco::prefix + lowercase.at(o->id) + interface::vco::in_postfix.at(p) };
-            list.insert( { id, o->in[i] });
-        }
-        return list;
-    }
-
-    std::map<std::string, std::atomic<float>*> vco_create_outputs_map(oscillator* o)
-    {
-        std::map<std::string, std::atomic<float>*> list;
-        for(int i = 0; i < interface::vco::out_postfix.size(); ++i)
-        {
-            interface::vco::out p = static_cast<interface::vco::out>(i);
-            std::string id { interface::vco::prefix + lowercase.at(o->id) + interface::vco::out_postfix.at(p) };
-            list.insert( { id, &o->out[i] });
-        }
-        return list;
-    }
 
 }; // Namespace

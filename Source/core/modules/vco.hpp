@@ -23,6 +23,7 @@
 #pragma once
 
 #include <cmath>
+#include "vco_interface.hpp"
 #include "constants.hpp"
 #include "utility.hpp"
 // #include "delay.hpp"
@@ -45,82 +46,7 @@ namespace core
         const int poly { 8 };
     }
 
-    namespace interface 
-    {
-        /**********************************************************************************************************************
-        * 
-        *  Descriptor
-        * 
-        **********************************************************************************************************************/
-        namespace vco 
-        {
-            const int ctrls  { 9 };
-            const int ins    { 5 };
-            const int outs   { 1 };
-
-            enum class ctrl { octave, detune, pll, pwm, fm, am, amp, form, freerun  };
-            enum class in   {         detune, pll, pwm, fm, am                      };
-            enum class out  {         main                                          };
-
-            const std::string prefix {"vco_"};
-
-            const std::map<interface::vco::ctrl, std::string> ctrl_postfix
-            {
-                { ctrl::octave, "_ctrl_octave"   },
-                { ctrl::detune, "_ctrl_detune"   },
-                { ctrl::pll,    "_ctrl_pll"      },
-                { ctrl::pwm,    "_ctrl_pwm"      },
-                { ctrl::fm,     "_ctrl_fm"       },
-                { ctrl::am,     "_ctrl_am"       },
-                { ctrl::amp,    "_ctrl_amp"      }
-            };
-
-            const std::map<interface::vco::in, std::string> in_postfix
-            {
-                { in::detune,   "_in_detune" },
-                { in::pll,      "_in_pll"    },
-                { in::pwm,      "_in_pwm"    },
-                { in::fm,       "_in_fm"     },
-                { in::am,       "_in_am"     }
-            };
-
-            const std::map<interface::vco::out, std::string> out_postfix
-            {
-                { out::main,    "_out_main"  }
-            };
-            
-            const std::map<interface::vco::ctrl, point2d<float>> ctrl_constraints
-            {
-                { ctrl::octave, { 0.00f, 0.000f }},
-                { ctrl::detune, { 0.25f, 0.175f }},
-                { ctrl::pll,    { 0.75f, 0.175f }},
-                { ctrl::pwm,    { 0.25f, 0.425f }},
-                { ctrl::fm,     { 0.75f, 0.425f }},
-                { ctrl::am,     { 0.25f, 0.625f }},
-                { ctrl::amp,    { 0.75f, 0.625f }}
-
-            };
-
-            const std::map<interface::vco::in, point2d<float>> in_constraints
-            {
-                { in::detune, { 0.375f, 0.8f }},
-                { in::pll,    { 0.625f, 0.8f }},
-                { in::pwm,    { 0.125f, 0.8f }},
-                { in::fm,     { 0.875f, 0.8f }},
-                { in::am,     { 0.250f, 0.9f }},
-            };
-
-            const std::map<interface::vco::out, point2d<float>> out_constraints
-            {
-                { out::main,  { 0.750f, 0.9f }},
-            };
-            
-            const float wh_ratio { 0.5f };         // Width/Height 
-
-
-        }
-    }
-
+    
     /**************************************************************************************************************************
     * 
     *  VCO

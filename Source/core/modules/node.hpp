@@ -31,7 +31,7 @@
 
 namespace core
 {
-    enum class module_type    { disconnected, vco, lfo, map, vca, vcd, vcf, snh, sigma, product, rotor, mixer };
+    enum class module_type    { disconnected, vco, lfo, cso, vca, vcd, vcf, snh, sigma, product, rotor, mixer };
     enum class parameter_type { ctrl = 0xFF, in = 0xEE, out = 0xDD };
 
     struct uid_t {

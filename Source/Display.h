@@ -55,7 +55,7 @@ class OledLabel : public juce::TextEditor
 	public:
 		float contrast = 0.6f;
 		core::frame<float>* canvas;
-		core::rectangle<int> area;
+		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
 		OledLabel() {};
 	   ~OledLabel() {};
@@ -116,7 +116,7 @@ class Display : public juce::ImageComponent
 		page_t page = scope;
 		int   row = 0;
 		float contrast = 0.6f;
-		core::rectangle<int> area;
+		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
         void Scope();
 		void ChaosMenu(core::map_t*, int);

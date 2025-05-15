@@ -23,6 +23,7 @@
 #include "spawner.hpp"
 #include "interface.h"
 #include "mix.hpp"
+#include "lfo_interface.hpp"
 
 using namespace core::interface;
 
@@ -46,45 +47,45 @@ void core::spawner::process()
 void core::spawner::connect_bus()
 {
     // Oscillators ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    vco[0].ctrl[static_cast<int>(vco::ctrl::octave)] = bus.prm[parameter_list::vco_a_oct];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::octave)] = bus.prm[parameter_list::vco_b_oct];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::octave)] = bus.prm[parameter_list::vco_c_oct];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::octave)] = bus.prm[parameter_list::vco_d_oct];
+    vco[0].ctrl[interface::vco::ctl::octave] = bus.prm[parameter_list::vco_a_oct];
+    vco[1].ctrl[interface::vco::ctl::octave] = bus.prm[parameter_list::vco_b_oct];
+    vco[2].ctrl[interface::vco::ctl::octave] = bus.prm[parameter_list::vco_c_oct];
+    vco[3].ctrl[interface::vco::ctl::octave] = bus.prm[parameter_list::vco_d_oct];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::detune)] = bus.pot[potentiometer_list::vco_a_fine];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::detune)] = bus.pot[potentiometer_list::vco_b_fine];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::detune)] = bus.pot[potentiometer_list::vco_c_fine];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::detune)] = bus.pot[potentiometer_list::vco_d_fine];
+    vco[0].ctrl[interface::vco::ctl::detune] = bus.pot[potentiometer_list::vco_a_fine];
+    vco[1].ctrl[interface::vco::ctl::detune] = bus.pot[potentiometer_list::vco_b_fine];
+    vco[2].ctrl[interface::vco::ctl::detune] = bus.pot[potentiometer_list::vco_c_fine];
+    vco[3].ctrl[interface::vco::ctl::detune] = bus.pot[potentiometer_list::vco_d_fine];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::pll)]    = bus.pot[potentiometer_list::vco_a_warp];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::pll)]    = bus.pot[potentiometer_list::vco_b_warp];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::pll)]    = bus.pot[potentiometer_list::vco_c_warp];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::pll)]    = bus.pot[potentiometer_list::vco_d_warp];
+    vco[0].ctrl[interface::vco::ctl::pll]    = bus.pot[potentiometer_list::vco_a_warp];
+    vco[1].ctrl[interface::vco::ctl::pll]    = bus.pot[potentiometer_list::vco_b_warp];
+    vco[2].ctrl[interface::vco::ctl::pll]    = bus.pot[potentiometer_list::vco_c_warp];
+    vco[3].ctrl[interface::vco::ctl::pll]    = bus.pot[potentiometer_list::vco_d_warp];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::am)]     = bus.pot[potentiometer_list::vco_a_am];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::am)]     = bus.pot[potentiometer_list::vco_b_am];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::am)]     = bus.pot[potentiometer_list::vco_c_am];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::am)]     = bus.pot[potentiometer_list::vco_d_am];
+    vco[0].ctrl[interface::vco::ctl::am]     = bus.pot[potentiometer_list::vco_a_am];
+    vco[1].ctrl[interface::vco::ctl::am]     = bus.pot[potentiometer_list::vco_b_am];
+    vco[2].ctrl[interface::vco::ctl::am]     = bus.pot[potentiometer_list::vco_c_am];
+    vco[3].ctrl[interface::vco::ctl::am]     = bus.pot[potentiometer_list::vco_d_am];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::pwm)]    = bus.pot[potentiometer_list::vco_a_pw];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::pwm)]    = bus.pot[potentiometer_list::vco_b_pw];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::pwm)]    = bus.pot[potentiometer_list::vco_c_pw];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::pwm)]    = bus.pot[potentiometer_list::vco_d_pw];
+    vco[0].ctrl[interface::vco::ctl::pwm]    = bus.pot[potentiometer_list::vco_a_pw];
+    vco[1].ctrl[interface::vco::ctl::pwm]    = bus.pot[potentiometer_list::vco_b_pw];
+    vco[2].ctrl[interface::vco::ctl::pwm]    = bus.pot[potentiometer_list::vco_c_pw];
+    vco[3].ctrl[interface::vco::ctl::pwm]    = bus.pot[potentiometer_list::vco_d_pw];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::fm)]     = bus.pot[potentiometer_list::vco_a_fm];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::fm)]     = bus.pot[potentiometer_list::vco_b_fm];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::fm)]     = bus.pot[potentiometer_list::vco_c_fm];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::fm)]     = bus.pot[potentiometer_list::vco_d_fm];
+    vco[0].ctrl[interface::vco::ctl::fm]     = bus.pot[potentiometer_list::vco_a_fm];
+    vco[1].ctrl[interface::vco::ctl::fm]     = bus.pot[potentiometer_list::vco_b_fm];
+    vco[2].ctrl[interface::vco::ctl::fm]     = bus.pot[potentiometer_list::vco_c_fm];
+    vco[3].ctrl[interface::vco::ctl::fm]     = bus.pot[potentiometer_list::vco_d_fm];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::amp)]    = bus.pot[potentiometer_list::vco_a_amp];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::amp)]    = bus.pot[potentiometer_list::vco_b_amp];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::amp)]    = bus.pot[potentiometer_list::vco_c_amp];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::amp)]    = bus.pot[potentiometer_list::vco_d_amp];
+    vco[0].ctrl[interface::vco::ctl::amp]    = bus.pot[potentiometer_list::vco_a_amp];
+    vco[1].ctrl[interface::vco::ctl::amp]    = bus.pot[potentiometer_list::vco_b_amp];
+    vco[2].ctrl[interface::vco::ctl::amp]    = bus.pot[potentiometer_list::vco_c_amp];
+    vco[3].ctrl[interface::vco::ctl::amp]    = bus.pot[potentiometer_list::vco_d_amp];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::form)]   = bus.prm[parameter_list::vco_a_form];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::form)]   = bus.prm[parameter_list::vco_b_form];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::form)]   = bus.prm[parameter_list::vco_c_form];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::form)]   = bus.prm[parameter_list::vco_d_form];
+    vco[0].ctrl[interface::vco::ctl::form]   = bus.prm[parameter_list::vco_a_form];
+    vco[1].ctrl[interface::vco::ctl::form]   = bus.prm[parameter_list::vco_b_form];
+    vco[2].ctrl[interface::vco::ctl::form]   = bus.prm[parameter_list::vco_c_form];
+    vco[3].ctrl[interface::vco::ctl::form]   = bus.prm[parameter_list::vco_d_form];
 
     // Envelopes //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -110,20 +111,20 @@ void core::spawner::connect_bus()
     mix[0].ctrl[static_cast<int>(mxr::ctrl::volume)] = bus.pot[potentiometer_list::volume];
 
     // Chaos //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    chs[0].ctrl[static_cast<int>(map::ctrl::tune)]   = bus.pot[potentiometer_list::chs_a_tune];
-    chs[1].ctrl[static_cast<int>(map::ctrl::tune)]   = bus.pot[potentiometer_list::chs_b_tune];
+    chs[0].ctrl[static_cast<int>(cso::ctrl::tune)]   = bus.pot[potentiometer_list::chs_a_tune];
+    chs[1].ctrl[static_cast<int>(cso::ctrl::tune)]   = bus.pot[potentiometer_list::chs_b_tune];
 
-    chs[0].ctrl[static_cast<int>(map::ctrl::warp)]   = bus.pot[potentiometer_list::chs_a_warp];
-    chs[1].ctrl[static_cast<int>(map::ctrl::warp)]   = bus.pot[potentiometer_list::chs_b_warp];
+    chs[0].ctrl[static_cast<int>(cso::ctrl::warp)]   = bus.pot[potentiometer_list::chs_a_warp];
+    chs[1].ctrl[static_cast<int>(cso::ctrl::warp)]   = bus.pot[potentiometer_list::chs_b_warp];
 
-    chs[0].ctrl[static_cast<int>(map::ctrl::amp)]    = bus.pot[potentiometer_list::chs_a_amp];
-    chs[1].ctrl[static_cast<int>(map::ctrl::amp)]    = bus.pot[potentiometer_list::chs_b_amp];
+    chs[0].ctrl[static_cast<int>(cso::ctrl::amp)]    = bus.pot[potentiometer_list::chs_a_amp];
+    chs[1].ctrl[static_cast<int>(cso::ctrl::amp)]    = bus.pot[potentiometer_list::chs_b_amp];
 
-    chs[0].ctrl[static_cast<int>(map::ctrl::form)]   = bus.prm[parameter_list::chs_a_form];
-    chs[1].ctrl[static_cast<int>(map::ctrl::form)]   = bus.prm[parameter_list::chs_b_form];
+    chs[0].ctrl[static_cast<int>(cso::ctrl::form)]   = bus.prm[parameter_list::chs_a_form];
+    chs[1].ctrl[static_cast<int>(cso::ctrl::form)]   = bus.prm[parameter_list::chs_b_form];
 
-    lfo[0].ctrl[static_cast<int>(lfo::ctrl::form)]   = bus.prm[parameter_list::lfo_a_form];
-    lfo[1].ctrl[static_cast<int>(lfo::ctrl::form)]   = bus.prm[parameter_list::lfo_b_form];
+    lfo[0].ctrl[interface::lfo::ctl::form]   = bus.prm[parameter_list::lfo_a_form];
+    lfo[1].ctrl[interface::lfo::ctl::form]   = bus.prm[parameter_list::lfo_b_form];
 
     // Delay //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     vcd[0].ctrl[static_cast<int>(vcd::ctrl::time)]   = bus.pot[potentiometer_list::vcd_time];
@@ -133,10 +134,10 @@ void core::spawner::connect_bus()
     snh[0].ctrl[static_cast<int>(snh::ctrl::time)]   = bus.pot[potentiometer_list::snh_a];
     snh[1].ctrl[static_cast<int>(snh::ctrl::time)]   = bus.pot[potentiometer_list::snh_b];
 
-    lfo[0].ctrl[static_cast<int>(lfo::ctrl::delta)]  = bus.pot[potentiometer_list::lfo_a_freq];
-    lfo[1].ctrl[static_cast<int>(lfo::ctrl::delta)]  = bus.pot[potentiometer_list::lfo_b_freq];
-    lfo[0].ctrl[static_cast<int>(lfo::ctrl::amp)]    = bus.pot[potentiometer_list::lfo_a_am];
-    lfo[1].ctrl[static_cast<int>(lfo::ctrl::amp)]    = bus.pot[potentiometer_list::lfo_b_am];
+    lfo[0].ctrl[interface::lfo::ctl::delta]  = bus.pot[potentiometer_list::lfo_a_freq];
+    lfo[1].ctrl[interface::lfo::ctl::delta]  = bus.pot[potentiometer_list::lfo_b_freq];
+    lfo[0].ctrl[interface::lfo::ctl::amp]    = bus.pot[potentiometer_list::lfo_a_am];
+    lfo[1].ctrl[interface::lfo::ctl::amp]    = bus.pot[potentiometer_list::lfo_b_am];
 
     /**************************************************************************************************************************
     * 
@@ -144,30 +145,30 @@ void core::spawner::connect_bus()
     * 
     **************************************************************************************************************************/
     // VCO ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bay->io[socket_list::vco_a_in_fm].com    = &vco[0].in[static_cast<int>(vco::in::fm)];
-    bay->io[socket_list::vco_b_in_fm].com    = &vco[1].in[static_cast<int>(vco::in::fm)];
-    bay->io[socket_list::vco_c_in_fm].com    = &vco[2].in[static_cast<int>(vco::in::fm)];
-    bay->io[socket_list::vco_d_in_fm].com    = &vco[3].in[static_cast<int>(vco::in::fm)];
+    bay->io[socket_list::vco_a_in_fm].com    = &vco[0].in[interface::vco::cvi::fm];
+    bay->io[socket_list::vco_b_in_fm].com    = &vco[1].in[interface::vco::cvi::fm];
+    bay->io[socket_list::vco_c_in_fm].com    = &vco[2].in[interface::vco::cvi::fm];
+    bay->io[socket_list::vco_d_in_fm].com    = &vco[3].in[interface::vco::cvi::fm];
 
-    bay->io[socket_list::vco_a_in_pw].com    = &vco[0].in[static_cast<int>(vco::in::pwm)];
-    bay->io[socket_list::vco_b_in_pw].com    = &vco[1].in[static_cast<int>(vco::in::pwm)];
-    bay->io[socket_list::vco_c_in_pw].com    = &vco[2].in[static_cast<int>(vco::in::pwm)];
-    bay->io[socket_list::vco_d_in_pw].com    = &vco[3].in[static_cast<int>(vco::in::pwm)];
+    bay->io[socket_list::vco_a_in_pw].com    = &vco[0].in[interface::vco::cvi::pwm];
+    bay->io[socket_list::vco_b_in_pw].com    = &vco[1].in[interface::vco::cvi::pwm];
+    bay->io[socket_list::vco_c_in_pw].com    = &vco[2].in[interface::vco::cvi::pwm];
+    bay->io[socket_list::vco_d_in_pw].com    = &vco[3].in[interface::vco::cvi::pwm];
 
-    bay->io[socket_list::vco_a_in_sh].com    = &vco[0].in[static_cast<int>(vco::in::pll)];
-    bay->io[socket_list::vco_b_in_sh].com    = &vco[1].in[static_cast<int>(vco::in::pll)];
-    bay->io[socket_list::vco_c_in_sh].com    = &vco[2].in[static_cast<int>(vco::in::pll)];
-    bay->io[socket_list::vco_d_in_sh].com    = &vco[3].in[static_cast<int>(vco::in::pll)];
+    bay->io[socket_list::vco_a_in_sh].com    = &vco[0].in[interface::vco::cvi::pll];
+    bay->io[socket_list::vco_b_in_sh].com    = &vco[1].in[interface::vco::cvi::pll];
+    bay->io[socket_list::vco_c_in_sh].com    = &vco[2].in[interface::vco::cvi::pll];
+    bay->io[socket_list::vco_d_in_sh].com    = &vco[3].in[interface::vco::cvi::pll];
 
-    bay->io[socket_list::vco_a_in_am].com    = &vco[0].in[static_cast<int>(vco::in::am)];
-    bay->io[socket_list::vco_b_in_am].com    = &vco[1].in[static_cast<int>(vco::in::am)];
-    bay->io[socket_list::vco_c_in_am].com    = &vco[2].in[static_cast<int>(vco::in::am)];
-    bay->io[socket_list::vco_d_in_am].com    = &vco[3].in[static_cast<int>(vco::in::am)];
+    bay->io[socket_list::vco_a_in_am].com    = &vco[0].in[interface::vco::cvi::am];
+    bay->io[socket_list::vco_b_in_am].com    = &vco[1].in[interface::vco::cvi::am];
+    bay->io[socket_list::vco_c_in_am].com    = &vco[2].in[interface::vco::cvi::am];
+    bay->io[socket_list::vco_d_in_am].com    = &vco[3].in[interface::vco::cvi::am];
 
-    bay->io[socket_list::vco_a_in_ec].com    = &vco[0].in[static_cast<int>(vco::in::detune)];
-    bay->io[socket_list::vco_b_in_ec].com    = &vco[1].in[static_cast<int>(vco::in::detune)];
-    bay->io[socket_list::vco_c_in_ec].com    = &vco[2].in[static_cast<int>(vco::in::detune)];
-    bay->io[socket_list::vco_d_in_ec].com    = &vco[3].in[static_cast<int>(vco::in::detune)];
+    bay->io[socket_list::vco_a_in_ec].com    = &vco[0].in[interface::vco::cvi::detune];
+    bay->io[socket_list::vco_b_in_ec].com    = &vco[1].in[interface::vco::cvi::detune];
+    bay->io[socket_list::vco_c_in_ec].com    = &vco[2].in[interface::vco::cvi::detune];
+    bay->io[socket_list::vco_d_in_ec].com    = &vco[3].in[interface::vco::cvi::detune];
 
     // Delay //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     bay->io[socket_list::vcd_in_a].com       = &vcd[0].in[static_cast<int>(vcd::in::a)];
@@ -244,11 +245,11 @@ void core::spawner::connect_bus()
     bay->io[socket_list::pct_out_a].data     = &pct[0].out[0]; 
 
     // DSystem
-    bay->io[socket_list::chs_a_in_wm].com    = &chs[0].ctrl[static_cast<int>(map::in::warp)];
-    bay->io[socket_list::chs_b_in_wm].com    = &chs[1].ctrl[static_cast<int>(map::in::warp)];
+    bay->io[socket_list::chs_a_in_wm].com    = &chs[0].ctrl[static_cast<int>(cso::in::warp)];
+    bay->io[socket_list::chs_b_in_wm].com    = &chs[1].ctrl[static_cast<int>(cso::in::warp)];
 
-    bay->io[socket_list::chs_a_in_ec].com    = &chs[0].ctrl[static_cast<int>(map::in::fm)];
-    bay->io[socket_list::chs_b_in_ec].com    = &chs[1].ctrl[static_cast<int>(map::in::fm)];
+    bay->io[socket_list::chs_a_in_ec].com    = &chs[0].ctrl[static_cast<int>(cso::in::fm)];
+    bay->io[socket_list::chs_b_in_ec].com    = &chs[1].ctrl[static_cast<int>(cso::in::fm)];
 
     // Sample n Hold
     bay->io[socket_list::snh_a_in_a].com     = &snh[0].in[static_cast<int>(snh::in::a)];
@@ -259,11 +260,11 @@ void core::spawner::connect_bus()
     bay->io[socket_list::snh_a_time].com     = &snh[0].in[static_cast<int>(snh::in::time)];
     bay->io[socket_list::snh_b_time].com     = &snh[1].in[static_cast<int>(snh::in::time)];;
 
-    bay->io[socket_list::lfo_a_in_freq].com  = &lfo[0].in[static_cast<int>(lfo::in::fm)];
-    bay->io[socket_list::lfo_b_in_freq].com  = &lfo[1].in[static_cast<int>(lfo::in::fm)];
+    bay->io[socket_list::lfo_a_in_freq].com  = &lfo[0].in[interface::lfo::cvi::fm];
+    bay->io[socket_list::lfo_b_in_freq].com  = &lfo[1].in[interface::lfo::cvi::fm];
 
-    bay->io[socket_list::lfo_a_in_am].com    = &lfo[0].in[static_cast<int>(lfo::in::am)];
-    bay->io[socket_list::lfo_b_in_am].com    = &lfo[1].in[static_cast<int>(lfo::in::am)];
+    bay->io[socket_list::lfo_a_in_am].com    = &lfo[0].in[interface::lfo::cvi::am];
+    bay->io[socket_list::lfo_b_in_am].com    = &lfo[1].in[interface::lfo::cvi::am];
 
 
     /**************************************************************************************************************************
@@ -271,10 +272,10 @@ void core::spawner::connect_bus()
     *  OUTPUT Sockets
     * 
     **************************************************************************************************************************/
-    bay->io[socket_list::vco_a_out].data           = &vco[0].out[static_cast<int>(vco::out::main)];
-    bay->io[socket_list::vco_b_out].data           = &vco[1].out[static_cast<int>(vco::out::main)];
-    bay->io[socket_list::vco_c_out].data           = &vco[2].out[static_cast<int>(vco::out::main)];
-    bay->io[socket_list::vco_d_out].data           = &vco[3].out[static_cast<int>(vco::out::main)];
+    bay->io[socket_list::vco_a_out].data           = &vco[0].out[interface::vco::cvo::main];
+    bay->io[socket_list::vco_b_out].data           = &vco[1].out[interface::vco::cvo::main];
+    bay->io[socket_list::vco_c_out].data           = &vco[2].out[interface::vco::cvo::main];
+    bay->io[socket_list::vco_d_out].data           = &vco[3].out[interface::vco::cvo::main];
 
     bay->io[socket_list::env_a_out].data           = &env[0].out; 
     bay->io[socket_list::env_b_out].data           = &env[1].out;
@@ -315,10 +316,10 @@ void core::spawner::connect_bus()
     bay->io[socket_list::snh_a_out].data           = &snh[0].out[static_cast<int>(snh::out::a)];
     bay->io[socket_list::snh_b_out].data           = &snh[1].out[static_cast<int>(snh::out::a)];
 
-    bay->io[socket_list::lfo_a_out_a].data         = &lfo[0].out[static_cast<int>(lfo::out::a)];
-    bay->io[socket_list::lfo_a_out_b].data         = &lfo[0].out[static_cast<int>(lfo::out::b)];
-    bay->io[socket_list::lfo_b_out_a].data         = &lfo[1].out[static_cast<int>(lfo::out::a)];
-    bay->io[socket_list::lfo_b_out_b].data         = &lfo[1].out[static_cast<int>(lfo::out::b)];
+    bay->io[socket_list::lfo_a_out_a].data         = &lfo[0].out[interface::lfo::cvo::a];
+    bay->io[socket_list::lfo_a_out_b].data         = &lfo[0].out[interface::lfo::cvo::b];
+    bay->io[socket_list::lfo_b_out_a].data         = &lfo[1].out[interface::lfo::cvo::a];
+    bay->io[socket_list::lfo_b_out_b].data         = &lfo[1].out[interface::lfo::cvo::b];
 
     bay->io[socket_list::vcd_out_a].data           = &vcd[0].out[static_cast<int>(vcd::out::a)];
     bay->io[socket_list::vcd_out_b].data           = &vcd[0].out[static_cast<int>(vcd::out::b)];
@@ -411,10 +412,10 @@ void core::spawner::connect_bus()
     env[2].time_scale    = bus.prm[parameter_list::env_c_scale];
     env[3].time_scale    = bus.prm[parameter_list::env_d_scale];
 
-    vco[0].ctrl[static_cast<int>(vco::ctrl::freerun)]   = bus.prm[parameter_list::vco_a_freerun];
-    vco[1].ctrl[static_cast<int>(vco::ctrl::freerun)]   = bus.prm[parameter_list::vco_b_freerun];
-    vco[2].ctrl[static_cast<int>(vco::ctrl::freerun)]   = bus.prm[parameter_list::vco_c_freerun];
-    vco[3].ctrl[static_cast<int>(vco::ctrl::freerun)]   = bus.prm[parameter_list::vco_d_freerun];
+    vco[0].ctrl[interface::vco::ctl::freerun]   = bus.prm[parameter_list::vco_a_freerun];
+    vco[1].ctrl[interface::vco::ctl::freerun]   = bus.prm[parameter_list::vco_b_freerun];
+    vco[2].ctrl[interface::vco::ctl::freerun]   = bus.prm[parameter_list::vco_c_freerun];
+    vco[3].ctrl[interface::vco::ctl::freerun]   = bus.prm[parameter_list::vco_d_freerun];
 
 
    

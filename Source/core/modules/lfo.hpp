@@ -28,78 +28,37 @@
 
 #include <map>
 
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
 namespace core {
-    namespace interface 
+
+    class lfo_t: public module
     {
-        /**********************************************************************************************************************
-        * 
-        *  Descriptor
-        * 
-        **********************************************************************************************************************/
-        namespace lfo
-        {
-            const int ctrls  { 4 };
-            const int ins    { 2 };
-            const int outs   { 2 };
+        private:
+            static int idc;                                 // ID counter
+            float sine();
+            float ramp();
+            float saw();
+            float square();
+            float triangle();
 
-            enum class ctrl { octave, delta, amp, form };
-            enum class in   { fm, am };
-            enum class out  {  a,  b };
-
-            const std::string prefix {"lfo_"};
-            const std::map<interface::lfo::ctrl, std::string> ctrl_postfix
-            {
-                { ctrl::octave, "_ctrl_octave"   },
-                { ctrl::delta,  "_ctrl_delta"    },
-                { ctrl::amp,    "_ctrl_amp"      }
+            float (lfo_t::*form[5])() = 
+            { 
+                &lfo_t::sine,
+                &lfo_t::square,
+                &lfo_t::ramp,
+                &lfo_t::saw,
+                &lfo_t::triangle
             };
-            const std::map<interface::lfo::in, std::string> in_postfix
-            {
-                { in::fm, "_in_fm" },
-                { in::am, "_in_am" }
-            };
-            const std::map<interface::lfo::out, std::string> out_postfix
-            {
-                { out::a, "_out_a" },
-                { out::b, "_out_b" }
-            };
-        }
-    }
 
-class lfo_t: public module
-{
-    private:
-        static int idc;                                 // ID counter
-        float sine();
-        float ramp();
-        float saw();
-        float square();
-        float triangle();
+            float phase = 0.0f;                                 // Current phase
 
-        float (lfo_t::*form[5])() = 
-        { 
-            &lfo_t::sine,
-            &lfo_t::square,
-            &lfo_t::ramp,
-            &lfo_t::saw,
-            &lfo_t::triangle
-        };
+        public:
+            const int id = 0;
+            void process() override;
+            void reset();
+            lfo_t();
+           ~lfo_t(){};
+    }; 
 
-        float phase = 0.0f;                                 // Current phase
-
-
-    public:
-        const int id = 0;
-        void process() override;
-        void reset();
-        lfo_t();
-       ~lfo_t(){};
-}; 
-
-
-inline const char* wforms_lfo[]     = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
-
+    inline const char* wforms_lfo[]     = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
 
 };

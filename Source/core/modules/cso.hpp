@@ -38,7 +38,7 @@ namespace core
         *  Descriptor
         * 
         **********************************************************************************************************************/
-        namespace map 
+        namespace cso 
         {
             const int ctrls  { 4 };
             const int ins    { 2 };

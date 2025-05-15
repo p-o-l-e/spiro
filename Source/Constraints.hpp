@@ -35,7 +35,7 @@ using namespace core;
 struct slider_descriptor
 {
 	enum type_t { A, B, Encoder };
-	rectangle<float> pos;
+	Rectangle<float> pos;
 	std::string id;
 	std::string name;
 	float min;
@@ -50,7 +50,7 @@ struct slider_descriptor
 struct button_descriptor
 {
 	enum type_t { A, B };
-	rectangle<float> pos;
+	Rectangle<float> pos;
 	std::string id;
 	std::string name;
 	int  radio_id;
@@ -72,9 +72,9 @@ struct main_window_constraints
 {
 	int width       = 1060;
     int height      = 596;
-    rectangle<float> lcd_display  	{ 820, 36, 196, 176 };
-    rectangle<float> patchbay 		{ 35, 238, 926, 198 };
-    rectangle<float> env_display 	{ 40, 460, 200, 100 };
+    Rectangle<float> lcd_display  	{ 820, 36, 196, 176 };
+    Rectangle<float> patchbay 		{ 35, 238, 926, 198 };
+    Rectangle<float> env_display 	{ 40, 460, 200, 100 };
 };
 
 struct window
@@ -82,10 +82,10 @@ struct window
     core::point2d<float>     pot_a { 48, 48 };
     core::point2d<float>     pot_b { 32, 32 };
 
-    core::rectangle<float> vco_a { 26,  6, 152, 304 };
-    core::rectangle<float> vco_b { 20, 20, 100, 200 };
-    core::rectangle<float> vco_c { 20, 20, 100, 200 };
-    core::rectangle<float> vco_d { 20, 20, 100, 200 };
+    core::Rectangle<float> vco_a { 26,  6, 152, 304 };
+    core::Rectangle<float> vco_b { 20, 20, 100, 200 };
+    core::Rectangle<float> vco_c { 20, 20, 100, 200 };
+    core::Rectangle<float> vco_d { 20, 20, 100, 200 };
     
     int sck_offset_x    = 10;
     int sck_offset_y    = 8;
@@ -96,9 +96,9 @@ struct window
 
 const window mw;    // Main window
 
-// inline rectangle<float> grid_at(core::point<float> ratio, core::rectangle<float> frame, core::point<float> size)
+// inline Rectangle<float> grid_at(core::point<float> ratio, core::Rectangle<float> frame, core::point<float> size)
 // {
-//     return rectangle<float>
+//     return Rectangle<float>
 //     {
 //         roundf(frame.x + frame.w * ratio.x - size.x * 0.5f),
 //         roundf(frame.y + frame.h * ratio.y - size.y * 0.5f),
@@ -116,82 +116,82 @@ const std::map<interface::potentiometer_list, slider_descriptor> slider_list
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VCOs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::vco_a_fine,  	{ rectangle<float> {41 + 76 * 0, 32, 48, 48 }, "vco_a_fine", "VCO A Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, 
+	{ interface::potentiometer_list::vco_a_fine,  	{ Rectangle<float> {41 + 76 * 0, 32, 48, 48 }, "vco_a_fine", "VCO A Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, 
 
-	{ interface::potentiometer_list::vco_b_fine, 	{ rectangle<float> {41 + 76 * 2, 32, 48, 48 }, "vco_b_fine", "VCO B Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 1
-	{ interface::potentiometer_list::vco_c_fine, 	{ rectangle<float> {41 + 76 * 4, 32, 48, 48 }, "vco_c_fine", "VCO C Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 2
-	{ interface::potentiometer_list::vco_d_fine, 	{ rectangle<float> {41 + 76 * 6, 32, 48, 48 }, "vco_d_fine", "VCO D Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 3
+	{ interface::potentiometer_list::vco_b_fine, 	{ Rectangle<float> {41 + 76 * 2, 32, 48, 48 }, "vco_b_fine", "VCO B Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 1
+	{ interface::potentiometer_list::vco_c_fine, 	{ Rectangle<float> {41 + 76 * 4, 32, 48, 48 }, "vco_c_fine", "VCO C Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 2
+	{ interface::potentiometer_list::vco_d_fine, 	{ Rectangle<float> {41 + 76 * 6, 32, 48, 48 }, "vco_d_fine", "VCO D Detune", 0.0f, 1.0f, 0.001f, 1.0f, true, 0.5f, slider_descriptor::type_t::A } }, // 3
 
-    { interface::potentiometer_list::vco_a_warp, 	{ rectangle<float> {41 + 76 * 1, 32, 48, 48 }, "vco_a_warp", "VCO A Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 4
-	{ interface::potentiometer_list::vco_b_warp, 	{ rectangle<float> {41 + 76 * 3, 32, 48, 48 }, "vco_b_warp", "VCO B Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 5
-	{ interface::potentiometer_list::vco_c_warp, 	{ rectangle<float> {41 + 76 * 5, 32, 48, 48 }, "vco_c_warp", "VCO C Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 6
-	{ interface::potentiometer_list::vco_d_warp, 	{ rectangle<float> {41 + 76 * 7, 32, 48, 48 }, "vco_d_warp", "VCO D Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 7
+    { interface::potentiometer_list::vco_a_warp, 	{ Rectangle<float> {41 + 76 * 1, 32, 48, 48 }, "vco_a_warp", "VCO A Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 4
+	{ interface::potentiometer_list::vco_b_warp, 	{ Rectangle<float> {41 + 76 * 3, 32, 48, 48 }, "vco_b_warp", "VCO B Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 5
+	{ interface::potentiometer_list::vco_c_warp, 	{ Rectangle<float> {41 + 76 * 5, 32, 48, 48 }, "vco_c_warp", "VCO C Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 6
+	{ interface::potentiometer_list::vco_d_warp, 	{ Rectangle<float> {41 + 76 * 7, 32, 48, 48 }, "vco_d_warp", "VCO D Warp",   0.0f, 1.0f, 0.001f, 0.2f, false, 0.0f, slider_descriptor::type_t::A } }, // 7
 
-	{ interface::potentiometer_list::vco_a_pw, 		{ rectangle<float> {41 + 76 * 0, 108, 48, 48 }, "vco_a_pw", "VCO A PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 8
-	{ interface::potentiometer_list::vco_b_pw, 		{ rectangle<float> {41 + 76 * 2, 108, 48, 48 }, "vco_b_pw", "VCO B PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 9
-	{ interface::potentiometer_list::vco_c_pw, 		{ rectangle<float> {41 + 76 * 4, 108, 48, 48 }, "vco_c_pw", "VCO C PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 10
-	{ interface::potentiometer_list::vco_d_pw, 		{ rectangle<float> {41 + 76 * 6, 108, 48, 48 }, "vco_d_pw", "VCO D PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 11
+	{ interface::potentiometer_list::vco_a_pw, 		{ Rectangle<float> {41 + 76 * 0, 108, 48, 48 }, "vco_a_pw", "VCO A PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 8
+	{ interface::potentiometer_list::vco_b_pw, 		{ Rectangle<float> {41 + 76 * 2, 108, 48, 48 }, "vco_b_pw", "VCO B PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 9
+	{ interface::potentiometer_list::vco_c_pw, 		{ Rectangle<float> {41 + 76 * 4, 108, 48, 48 }, "vco_c_pw", "VCO C PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 10
+	{ interface::potentiometer_list::vco_d_pw, 		{ Rectangle<float> {41 + 76 * 6, 108, 48, 48 }, "vco_d_pw", "VCO D PW",      0.0f, 1.0f, 0.0001f, 1.3f, true,  0.5f, slider_descriptor::type_t::A } }, // 11
 
-	{ interface::potentiometer_list::vco_a_fm, 		{ rectangle<float> {41 + 76 * 1, 108, 48, 48 }, "vco_a_fm", "VCO A FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 12
-	{ interface::potentiometer_list::vco_b_fm, 		{ rectangle<float> {41 + 76 * 3, 108, 48, 48 }, "vco_b_fm", "VCO B FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 13
-	{ interface::potentiometer_list::vco_c_fm, 		{ rectangle<float> {41 + 76 * 5, 108, 48, 48 }, "vco_c_fm", "VCO C FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 14
-	{ interface::potentiometer_list::vco_d_fm, 		{ rectangle<float> {41 + 76 * 7, 108, 48, 48 }, "vco_d_fm", "VCO D FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
+	{ interface::potentiometer_list::vco_a_fm, 		{ Rectangle<float> {41 + 76 * 1, 108, 48, 48 }, "vco_a_fm", "VCO A FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 12
+	{ interface::potentiometer_list::vco_b_fm, 		{ Rectangle<float> {41 + 76 * 3, 108, 48, 48 }, "vco_b_fm", "VCO B FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 13
+	{ interface::potentiometer_list::vco_c_fm, 		{ Rectangle<float> {41 + 76 * 5, 108, 48, 48 }, "vco_c_fm", "VCO C FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 14
+	{ interface::potentiometer_list::vco_d_fm, 		{ Rectangle<float> {41 + 76 * 7, 108, 48, 48 }, "vco_d_fm", "VCO D FM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
 
-	{ interface::potentiometer_list::vco_a_am, 		{ rectangle<float> {49 + 76 * 0, 177, 32, 32 }, "vco_a_am", "VCO A AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, 
-	{ interface::potentiometer_list::vco_b_am, 		{ rectangle<float> {49 + 76 * 2, 177, 32, 32 }, "vco_b_am", "VCO B AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 17
-	{ interface::potentiometer_list::vco_c_am, 		{ rectangle<float> {49 + 76 * 4, 177, 32, 32 }, "vco_c_am", "VCO C AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 18
-	{ interface::potentiometer_list::vco_d_am, 		{ rectangle<float> {49 + 76 * 6, 177, 32, 32 }, "vco_d_am", "VCO D AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 19
+	{ interface::potentiometer_list::vco_a_am, 		{ Rectangle<float> {49 + 76 * 0, 177, 32, 32 }, "vco_a_am", "VCO A AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, 
+	{ interface::potentiometer_list::vco_b_am, 		{ Rectangle<float> {49 + 76 * 2, 177, 32, 32 }, "vco_b_am", "VCO B AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 17
+	{ interface::potentiometer_list::vco_c_am, 		{ Rectangle<float> {49 + 76 * 4, 177, 32, 32 }, "vco_c_am", "VCO C AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 18
+	{ interface::potentiometer_list::vco_d_am, 		{ Rectangle<float> {49 + 76 * 6, 177, 32, 32 }, "vco_d_am", "VCO D AM",      0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 19
 
-	{ interface::potentiometer_list::vco_a_amp, 	{ rectangle<float> {49 + 76 * 1, 177, 32, 32 }, "vco_a_amp", "VCO A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 20
-	{ interface::potentiometer_list::vco_b_amp, 	{ rectangle<float> {49 + 76 * 3, 177, 32, 32 }, "vco_b_amp", "VCO B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 21
-	{ interface::potentiometer_list::vco_c_amp, 	{ rectangle<float> {49 + 76 * 5, 177, 32, 32 }, "vco_c_amp", "VCO C Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 22
-	{ interface::potentiometer_list::vco_d_amp, 	{ rectangle<float> {49 + 76 * 7, 177, 32, 32 }, "vco_d_amp", "VCO D Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
+	{ interface::potentiometer_list::vco_a_amp, 	{ Rectangle<float> {49 + 76 * 1, 177, 32, 32 }, "vco_a_amp", "VCO A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 20
+	{ interface::potentiometer_list::vco_b_amp, 	{ Rectangle<float> {49 + 76 * 3, 177, 32, 32 }, "vco_b_amp", "VCO B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 21
+	{ interface::potentiometer_list::vco_c_amp, 	{ Rectangle<float> {49 + 76 * 5, 177, 32, 32 }, "vco_c_amp", "VCO C Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 22
+	{ interface::potentiometer_list::vco_d_amp, 	{ Rectangle<float> {49 + 76 * 7, 177, 32, 32 }, "vco_d_amp", "VCO D Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DSystems ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::chs_a_warp, 	{ rectangle<float> {41 + 76 * 8, 108, 48, 48 }, "chs_a_warp", "CHS A Warp",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
-	{ interface::potentiometer_list::chs_b_warp, 	{ rectangle<float> {41 + 76 * 9, 108, 48, 48 }, "chs_b_warp", "CHS B Warp",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
+	{ interface::potentiometer_list::chs_a_warp, 	{ Rectangle<float> {41 + 76 * 8, 108, 48, 48 }, "chs_a_warp", "CHS A Warp",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
+	{ interface::potentiometer_list::chs_b_warp, 	{ Rectangle<float> {41 + 76 * 9, 108, 48, 48 }, "chs_b_warp", "CHS B Warp",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 15
 
-	{ interface::potentiometer_list::chs_a_tune,  	{ rectangle<float> {41 + 76 * 8,  32, 48, 48 }, "chs_a_tune", "CHS A Tune",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 3
-	{ interface::potentiometer_list::chs_b_tune,  	{ rectangle<float> {41 + 76 * 9,  32, 48, 48 }, "chs_b_tune", "CHS B Tune",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 3
+	{ interface::potentiometer_list::chs_a_tune,  	{ Rectangle<float> {41 + 76 * 8,  32, 48, 48 }, "chs_a_tune", "CHS A Tune",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 3
+	{ interface::potentiometer_list::chs_b_tune,  	{ Rectangle<float> {41 + 76 * 9,  32, 48, 48 }, "chs_b_tune", "CHS B Tune",  0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, // 3
 
-	{ interface::potentiometer_list::chs_a_amp, 	{ rectangle<float> {49 + 76 * 8, 177, 32, 32 }, "chs_a_amp", "CHS A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
-	{ interface::potentiometer_list::chs_b_amp, 	{ rectangle<float> {49 + 76 * 9, 177, 32, 32 }, "chs_b_amp", "CHS B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
+	{ interface::potentiometer_list::chs_a_amp, 	{ Rectangle<float> {49 + 76 * 8, 177, 32, 32 }, "chs_a_amp", "CHS A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
+	{ interface::potentiometer_list::chs_b_amp, 	{ Rectangle<float> {49 + 76 * 9, 177, 32, 32 }, "chs_b_amp", "CHS B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 23
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VCFs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::vcf_a_cut, 	{ rectangle<float> {49 + 76 * 5, 458, 32, 32 }, "vcf_a_cut", "VCF A Cut",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 24
-	{ interface::potentiometer_list::vcf_a_res, 	{ rectangle<float> {49 + 76 * 5, 518, 32, 32 }, "vcf_a_res", "VCF A Res",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 25
+	{ interface::potentiometer_list::vcf_a_cut, 	{ Rectangle<float> {49 + 76 * 5, 458, 32, 32 }, "vcf_a_cut", "VCF A Cut",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 24
+	{ interface::potentiometer_list::vcf_a_res, 	{ Rectangle<float> {49 + 76 * 5, 518, 32, 32 }, "vcf_a_res", "VCF A Res",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 25
 
-	{ interface::potentiometer_list::vcf_b_cut, 	{ rectangle<float> {49 + 76 * 6, 458, 32, 32 }, "vcf_b_cut", "VCF B Cut",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 26
-	{ interface::potentiometer_list::vcf_b_res, 	{ rectangle<float> {49 + 76 * 6, 518, 32, 32 }, "vcf_b_res", "VCF B Res",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 27
+	{ interface::potentiometer_list::vcf_b_cut, 	{ Rectangle<float> {49 + 76 * 6, 458, 32, 32 }, "vcf_b_cut", "VCF B Cut",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 26
+	{ interface::potentiometer_list::vcf_b_res, 	{ Rectangle<float> {49 + 76 * 6, 518, 32, 32 }, "vcf_b_res", "VCF B Res",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 27
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VCAs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::vca_a, 		{ rectangle<float> {49 + 76 * 3, 458, 32, 32 }, "vca_a_amp", "VCA A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 28 256
-	{ interface::potentiometer_list::vca_b, 		{ rectangle<float> {49 + 76 * 3, 518, 32, 32 }, "vca_b_amp", "VCA B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
-	{ interface::potentiometer_list::vcd_time, 		{ rectangle<float> {49 + 76 * 4, 458, 32, 32 }, "vcd_time", "VCD Time",	     0.01f,1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 30
-	{ interface::potentiometer_list::vcd_feed, 		{ rectangle<float> {49 + 76 * 4, 518, 32, 32 }, "vcd_feed", "VCD Feed",      0.0f, 1.0f, 0.001f, 2.0f, false,  0.0f, slider_descriptor::type_t::B } }, // 31
+	{ interface::potentiometer_list::vca_a, 		{ Rectangle<float> {49 + 76 * 3, 458, 32, 32 }, "vca_a_amp", "VCA A Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 28 256
+	{ interface::potentiometer_list::vca_b, 		{ Rectangle<float> {49 + 76 * 3, 518, 32, 32 }, "vca_b_amp", "VCA B Amp",    0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
+	{ interface::potentiometer_list::vcd_time, 		{ Rectangle<float> {49 + 76 * 4, 458, 32, 32 }, "vcd_time", "VCD Time",	     0.01f,1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 30
+	{ interface::potentiometer_list::vcd_feed, 		{ Rectangle<float> {49 + 76 * 4, 518, 32, 32 }, "vcd_feed", "VCD Feed",      0.0f, 1.0f, 0.001f, 2.0f, false,  0.0f, slider_descriptor::type_t::B } }, // 31
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Rotor //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::angle_x, 		{ rectangle<float> {794 + 38 * 0, 458, 32, 32 }, "angle_x", "Angle X",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, // 32
-	{ interface::potentiometer_list::angle_y, 		{ rectangle<float> {794 + 38 * 1, 458, 32, 32 }, "angle_y", "Angle Y",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, // 33
-	{ interface::potentiometer_list::angle_z, 		{ rectangle<float> {794 + 38 * 2, 458, 32, 32 }, "angle_z", "Angle Z",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder  } }, // 34
+	{ interface::potentiometer_list::angle_x, 		{ Rectangle<float> {794 + 38 * 0, 458, 32, 32 }, "angle_x", "Angle X",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, // 32
+	{ interface::potentiometer_list::angle_y, 		{ Rectangle<float> {794 + 38 * 1, 458, 32, 32 }, "angle_y", "Angle Y",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, // 33
+	{ interface::potentiometer_list::angle_z, 		{ Rectangle<float> {794 + 38 * 2, 458, 32, 32 }, "angle_z", "Angle Z",       0.0f, tao, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder  } }, // 34
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 3 to 2 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::lc_to_l, 		{ rectangle<float> {981, 288, 32, 32 },          "lc_to_l", "LC to L",       0.0f, 1.0f, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, 		// 35
-	{ interface::potentiometer_list::cr_to_r, 		{ rectangle<float> {981, 323, 32, 32 },          "cr_to_r", "CR to R",       0.0f, 1.0f, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, 		// 36
+	{ interface::potentiometer_list::lc_to_l, 		{ Rectangle<float> {981, 288, 32, 32 },          "lc_to_l", "LC to L",       0.0f, 1.0f, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, 		// 35
+	{ interface::potentiometer_list::cr_to_r, 		{ Rectangle<float> {981, 323, 32, 32 },          "cr_to_r", "CR to R",       0.0f, 1.0f, 0.001f, 1.0f, false,  0.0f, slider_descriptor::type_t::Encoder } }, 		// 36
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Main Volume ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::volume, 		{ rectangle<float> {972, 450, 48, 48 },          "volume", "Volume",         0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, 		// 37
+	{ interface::potentiometer_list::volume, 		{ Rectangle<float> {972, 450, 48, 48 },          "volume", "Volume",         0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::A } }, 		// 37
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SNH ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::snh_a, 		{ rectangle<float> {49 + 76 * 7, 458, 32, 32 },  "snh_a", "SNH A Time",  	 0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 28 256
-	{ interface::potentiometer_list::snh_b, 		{ rectangle<float> {49 + 76 * 7, 518, 32, 32 },  "snh_b", "SNH B Time",  	 0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
+	{ interface::potentiometer_list::snh_a, 		{ Rectangle<float> {49 + 76 * 7, 458, 32, 32 },  "snh_a", "SNH A Time",  	 0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 28 256
+	{ interface::potentiometer_list::snh_b, 		{ Rectangle<float> {49 + 76 * 7, 518, 32, 32 },  "snh_b", "SNH B Time",  	 0.0f, 1.0f, 0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LFOs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::potentiometer_list::lfo_a_freq, 	{ rectangle<float> {49 + 76 * 8, 458, 32, 32 },  "lfo_a_freq", "LFO A Freq", 0.001f, 1.0f, 0.001f, 0.2f, false,  0.01f, slider_descriptor::type_t::B } }, // 28 256
-	{ interface::potentiometer_list::lfo_a_am, 		{ rectangle<float> {49 + 76 * 8, 518, 32, 32 },  "lfo_a_am", "LFO A Am",  	 0.0f, 1.0f,   0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
+	{ interface::potentiometer_list::lfo_a_freq, 	{ Rectangle<float> {49 + 76 * 8, 458, 32, 32 },  "lfo_a_freq", "LFO A Freq", 0.001f, 1.0f, 0.001f, 0.2f, false,  0.01f, slider_descriptor::type_t::B } }, // 28 256
+	{ interface::potentiometer_list::lfo_a_am, 		{ Rectangle<float> {49 + 76 * 8, 518, 32, 32 },  "lfo_a_am", "LFO A Am",  	 0.0f, 1.0f,   0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
 
-	{ interface::potentiometer_list::lfo_b_freq, 	{ rectangle<float> {49 + 76 * 9, 458, 32, 32 },  "lfo_b_freq", "LFO B Freq", 0.001f, 1.0f, 0.001f, 0.2f, false,  0.01f, slider_descriptor::type_t::B } }, // 28 256
-	{ interface::potentiometer_list::lfo_b_am, 		{ rectangle<float> {49 + 76 * 9, 518, 32, 32 },  "lfo_b_am", "LFO B Am",  	 0.0f, 1.0f,   0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
+	{ interface::potentiometer_list::lfo_b_freq, 	{ Rectangle<float> {49 + 76 * 9, 458, 32, 32 },  "lfo_b_freq", "LFO B Freq", 0.001f, 1.0f, 0.001f, 0.2f, false,  0.01f, slider_descriptor::type_t::B } }, // 28 256
+	{ interface::potentiometer_list::lfo_b_am, 		{ Rectangle<float> {49 + 76 * 9, 518, 32, 32 },  "lfo_b_am", "LFO B Am",  	 0.0f, 1.0f,   0.001f, 0.2f, false,  0.0f, slider_descriptor::type_t::B } }, // 29
 };
 
 
@@ -199,37 +199,37 @@ const std::map<interface::potentiometer_list, slider_descriptor> slider_list
 // Buttons ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const std::map<interface::button_list, button_descriptor> button_list
 {
-	{ interface::button_list::soft_e, 		{ rectangle<float> {796,  77, 16, 16}, 			"soft_e", "Soft E", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_e, 		{ Rectangle<float> {796,  77, 16, 16}, 			"soft_e", "Soft E", 0x00, false, false, button_descriptor::type_t::A } }, 
 
-	{ interface::button_list::soft_f, 		{ rectangle<float> {796, 107, 16, 16}, 			"soft_f", "Soft F", 0x00, false, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::soft_g, 		{ rectangle<float> {796, 137, 16, 16}, 			"soft_g", "Soft G", 0x00, false, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::soft_h, 		{ rectangle<float> {796, 167, 16, 16}, 			"soft_h", "Soft H", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_f, 		{ Rectangle<float> {796, 107, 16, 16}, 			"soft_f", "Soft F", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_g, 		{ Rectangle<float> {796, 137, 16, 16}, 			"soft_g", "Soft G", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_h, 		{ Rectangle<float> {796, 167, 16, 16}, 			"soft_h", "Soft H", 0x00, false, false, button_descriptor::type_t::A } }, 
 
-	{ interface::button_list::vco_a, 		{ rectangle<float> {164      ,  5, 12, 12}, 	"vco_a", "VCO A", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::vco_b, 		{ rectangle<float> {164 + 152,  5, 12, 12}, 	"vco_b", "VCO B", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::vco_c, 		{ rectangle<float> {164 + 304,  5, 12, 12}, 	"vco_c", "VCO C", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::vco_d, 		{ rectangle<float> {164 + 456,  5, 12, 12}, 	"vco_d", "VCO D", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::vco_a, 		{ Rectangle<float> {164      ,  5, 12, 12}, 	"vco_a", "VCO A", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::vco_b, 		{ Rectangle<float> {164 + 152,  5, 12, 12}, 	"vco_b", "VCO B", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::vco_c, 		{ Rectangle<float> {164 + 304,  5, 12, 12}, 	"vco_c", "VCO C", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::vco_d, 		{ Rectangle<float> {164 + 456,  5, 12, 12}, 	"vco_d", "VCO D", 0xFF, true, false, button_descriptor::type_t::B } }, 
 
-	{ interface::button_list::chs_a, 		{ rectangle<float> {164 + 588,  5, 12, 12}, 	"chs_a", "Chaos A", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::chs_b, 		{ rectangle<float> {164 + 608,  5, 12, 12}, 	"chs_b", "Chaos B", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::chs_a, 		{ Rectangle<float> {164 + 588,  5, 12, 12}, 	"chs_a", "Chaos A", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::chs_b, 		{ Rectangle<float> {164 + 608,  5, 12, 12}, 	"chs_b", "Chaos B", 0xFF, true, false, button_descriptor::type_t::B } }, 
 
-	{ interface::button_list::lfo_a, 		{ rectangle<float> {155+ 541,  579, 12, 12}, 	"lfo_a", "LFO A", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::lfo_b, 		{ rectangle<float> {155+ 617,  579, 12, 12}, 	"lfo_b", "LFO B", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::lfo_a, 		{ Rectangle<float> {155+ 541,  579, 12, 12}, 	"lfo_a", "LFO A", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::lfo_b, 		{ Rectangle<float> {155+ 617,  579, 12, 12}, 	"lfo_b", "LFO B", 0xFF, true, false, button_descriptor::type_t::B } }, 
 
-	{ interface::button_list::soft_a, 		{ rectangle<float> {865,  223, 16, 16}, 		"soft_a", "Soft A", 0x00, false, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::soft_b, 		{ rectangle<float> {895,  223, 16, 16}, 		"soft_b", "Soft B", 0x00, false, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::soft_c, 		{ rectangle<float> {925,  223, 16, 16}, 		"soft_c", "Soft C", 0x00, false, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::soft_d, 		{ rectangle<float> {955,  223, 16, 16}, 		"soft_d", "Soft D", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_a, 		{ Rectangle<float> {865,  223, 16, 16}, 		"soft_a", "Soft A", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_b, 		{ Rectangle<float> {895,  223, 16, 16}, 		"soft_b", "Soft B", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_c, 		{ Rectangle<float> {925,  223, 16, 16}, 		"soft_c", "Soft C", 0x00, false, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::soft_d, 		{ Rectangle<float> {955,  223, 16, 16}, 		"soft_d", "Soft D", 0x00, false, false, button_descriptor::type_t::A } }, 
 
-	{ interface::button_list::env_a, 		{ rectangle<float> {55 + 38 * 0, 434 , 16, 16}, "env_a", "Env A", 0xFE, true, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::env_b, 		{ rectangle<float> {55 + 38 * 1, 434 , 16, 16}, "env_b", "Env B", 0xFE, true, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::env_c, 		{ rectangle<float> {55 + 38 * 2, 434 , 16, 16}, "env_c", "Env C", 0xFE, true, false, button_descriptor::type_t::A } }, 
-	{ interface::button_list::env_d, 		{ rectangle<float> {55 + 38 * 3, 434 , 16, 16}, "env_d", "Env D", 0xFE, true, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::env_a, 		{ Rectangle<float> {55 + 38 * 0, 434 , 16, 16}, "env_a", "Env A", 0xFE, true, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::env_b, 		{ Rectangle<float> {55 + 38 * 1, 434 , 16, 16}, "env_b", "Env B", 0xFE, true, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::env_c, 		{ Rectangle<float> {55 + 38 * 2, 434 , 16, 16}, "env_c", "Env C", 0xFE, true, false, button_descriptor::type_t::A } }, 
+	{ interface::button_list::env_d, 		{ Rectangle<float> {55 + 38 * 3, 434 , 16, 16}, "env_d", "Env D", 0xFE, true, false, button_descriptor::type_t::A } }, 
 
-	{ interface::button_list::envs, 		{ rectangle<float> {88 + 38 * 4, 579 , 12, 12}, "envs", "Envelopes", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::envs, 		{ Rectangle<float> {88 + 38 * 4, 579 , 12, 12}, "envs", "Envelopes", 0xFF, true, false, button_descriptor::type_t::B } }, 
 
-	{ interface::button_list::menu, 		{ rectangle<float> {795,  224, 16, 16},         "menu", "Menu", 0xFF, true, false, button_descriptor::type_t::B } }, 
-	{ interface::button_list::scope, 		{ rectangle<float> {989,  224, 16, 16},         "scope", "Scope", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::menu, 		{ Rectangle<float> {795,  224, 16, 16},         "menu", "Menu", 0xFF, true, false, button_descriptor::type_t::B } }, 
+	{ interface::button_list::scope, 		{ Rectangle<float> {989,  224, 16, 16},         "scope", "Scope", 0xFF, true, false, button_descriptor::type_t::B } }, 
 };
 
 

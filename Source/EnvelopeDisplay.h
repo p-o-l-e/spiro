@@ -49,7 +49,7 @@ class EnvelopeDisplay  : public juce::Component
         float curve_width = 2.0f;
         core::envelope              envd;           // Displayed envelope
         juce::Rectangle<int>        area;           // Display bounds
-        core::rectangle<int>        scope_bounds;   // Scope constraints
+        core::Rectangle<int>        scope_bounds;   // Scope constraints
         b_point                     node[SEGMENTS]; // Input nodes
         std::unique_ptr<float[]>    data;
         juce::Colour colour = colour_set[10];
