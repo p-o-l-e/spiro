@@ -127,8 +127,8 @@ void core::spawner::connect_bus()
     lfo[1].ctrl[interface::lfo::ctl::form]   = bus.prm[parameter_list::lfo_b_form];
 
     // Delay //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    vcd[0].ctrl[static_cast<int>(vcd::ctrl::time)]   = bus.pot[potentiometer_list::vcd_time];
-    vcd[0].ctrl[static_cast<int>(vcd::ctrl::feed)]   = bus.pot[potentiometer_list::vcd_feed];
+    vcd[0].ctrl[interface::vcd::ctl::time]   = bus.pot[potentiometer_list::vcd_time];
+    vcd[0].ctrl[interface::vcd::ctl::feed]   = bus.pot[potentiometer_list::vcd_feed];
 
     // SNH ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     snh[0].ctrl[static_cast<int>(snh::ctrl::time)]   = bus.pot[potentiometer_list::snh_a];
@@ -171,13 +171,13 @@ void core::spawner::connect_bus()
     bay->io[socket_list::vco_d_in_ec].com    = &vco[3].in[interface::vco::cvi::detune];
 
     // Delay //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bay->io[socket_list::vcd_in_a].com       = &vcd[0].in[static_cast<int>(vcd::in::a)];
-    bay->io[socket_list::vcd_in_b].com       = &vcd[0].in[static_cast<int>(vcd::in::b)];
-    bay->io[socket_list::vcd_in_c].com       = &vcd[0].in[static_cast<int>(vcd::in::c)];
-    bay->io[socket_list::vcd_in_d].com       = &vcd[0].in[static_cast<int>(vcd::in::d)];
+    bay->io[socket_list::vcd_in_a].com       = &vcd[0].in[interface::vcd::cvi::a];
+    bay->io[socket_list::vcd_in_b].com       = &vcd[0].in[interface::vcd::cvi::b];
+    bay->io[socket_list::vcd_in_c].com       = &vcd[0].in[interface::vcd::cvi::c];
+    bay->io[socket_list::vcd_in_d].com       = &vcd[0].in[interface::vcd::cvi::d];
 
-    bay->io[socket_list::vcd_in_time].com    = &vcd[0].in[static_cast<int>(vcd::in::time)];
-    bay->io[socket_list::vcd_in_feed].com    = &vcd[0].in[static_cast<int>(vcd::in::feed)];
+    bay->io[socket_list::vcd_in_time].com    = &vcd[0].in[interface::vcd::cvi::time];
+    bay->io[socket_list::vcd_in_feed].com    = &vcd[0].in[interface::vcd::cvi::feed];
 
     // VCF ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     bay->io[socket_list::vcf_a_in_a].com     = &vcf[0].in[interface::vcf::cvi::a];
@@ -321,10 +321,10 @@ void core::spawner::connect_bus()
     bay->io[socket_list::lfo_b_out_a].data         = &lfo[1].out[interface::lfo::cvo::a];
     bay->io[socket_list::lfo_b_out_b].data         = &lfo[1].out[interface::lfo::cvo::b];
 
-    bay->io[socket_list::vcd_out_a].data           = &vcd[0].out[static_cast<int>(vcd::out::a)];
-    bay->io[socket_list::vcd_out_b].data           = &vcd[0].out[static_cast<int>(vcd::out::b)];
-    bay->io[socket_list::vcd_out_c].data           = &vcd[0].out[static_cast<int>(vcd::out::c)];
-    bay->io[socket_list::vcd_out_d].data           = &vcd[0].out[static_cast<int>(vcd::out::d)];
+    bay->io[socket_list::vcd_out_a].data           = &vcd[0].out[interface::vcd::cvo::a];
+    bay->io[socket_list::vcd_out_b].data           = &vcd[0].out[interface::vcd::cvo::b];
+    bay->io[socket_list::vcd_out_c].data           = &vcd[0].out[interface::vcd::cvo::c];
+    bay->io[socket_list::vcd_out_d].data           = &vcd[0].out[interface::vcd::cvo::d];
 
 
 

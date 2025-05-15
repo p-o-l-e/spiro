@@ -19,9 +19,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 
+#include "vcd_interface.hpp"
 #include "containers.hpp"
 #include "utility.hpp"
 #include "vcd.hpp"
@@ -31,53 +31,12 @@
 #include <map>
 #include <memory>
 
-namespace core {
-
-    namespace interface 
-    {
-        /**********************************************************************************************************************
-        * 
-        *  Descriptor
-        * 
-        **********************************************************************************************************************/
-        namespace vcd
-        {
-            const int ctrls  { 2 };
-            const int ins    { 6 };
-            const int outs   { 4 };
-
-            enum class ctrl { time, feed };
-            enum class in   { time, feed, a, b, c, d };
-            enum class out  { a, b, c, d };
-
-            const std::string prefix {"vcd_"};
-            const std::map<interface::vcd::ctrl, std::string> ctrl_postfix
-            {
-                { ctrl::time,   "_ctrl_time" },
-                { ctrl::feed,   "_ctrl_feed" },
-            };
-            const std::map<interface::vcd::in, std::string> in_postfix
-            {
-                { in::time,     "_in_time" },
-                { in::feed,     "_in_feed" },
-                { in::a,        "_in_a" },
-                { in::b,        "_in_b" },
-                { in::c,        "_in_c" },
-                { in::d,        "_in_d" }
-            };
-            const std::map<interface::vcd::out, std::string> out_postfix
-            {
-                { out::a, "_out_a" },
-                { out::b, "_out_b" },
-                { out::c, "_out_c" },
-                { out::d, "_out_d" }
-            };
-        }
-    }
-
+namespace core 
+{
     class delay: public module
     {
         private:
+            static int idc;
             onepole psf;
             allpass apf;
             std::unique_ptr<float[]> data;
@@ -87,12 +46,11 @@ namespace core {
             int   departed;
 
         public:
+            const int id;
             void process() override;
             void reset();
             delay();
            ~delay();
     };
-
-
 };
 
