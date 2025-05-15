@@ -21,7 +21,44 @@
 ******************************************************************************************************************************/
 #include "rtr.hpp"
 
-namespace core {
-    
+namespace core 
+{
+    using namespace interface::rtr;
     int rotor::idc = 0;
+
+    void rotor::process()
+    {
+        point3d<float> a 
+        { 
+            in[cvi::ax]->load() + 
+            in[cvi::bx]->load(),
+            in[cvi::ay]->load() +
+            in[cvi::by]->load(),
+            in[cvi::az]->load() +
+            in[cvi::bz]->load() 
+        };
+
+        float x = ctrl[ctl::x]->load() + pi * in[cvi::cvx]->load();
+        float y = ctrl[ctl::y]->load() + pi * in[cvi::cvy]->load();
+        float z = ctrl[ctl::z]->load() + pi * in[cvi::cvz]->load();
+
+        q.from_euler(x, y, z);
+        q.rotate_vector(a.x, a.y, a.z);
+
+        out[cvo::ax].store(a.x);
+        out[cvo::ay].store(a.y);
+        out[cvo::az].store(a.z);
+        
+        out[cvo::bx].store(a.x);
+        out[cvo::by].store(a.y);
+        out[cvo::bz].store(a.z);
+
+    }
+
+    rotor::rotor(): id(++idc)
+    { 
+        init(cc, ic, oc, module_type::rotor, id);
+    };
+    rotor::~rotor() {};
+
 }

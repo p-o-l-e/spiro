@@ -101,9 +101,9 @@ void core::spawner::connect_bus()
     vca[1].ctrl[static_cast<int>(vca::ctrl::amp)]    = bus.pot[potentiometer_list::vca_b];
     
     // Rotor //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    rot[0].ctrl[static_cast<int>(rtr::ctrl::x)]      = bus.pot[potentiometer_list::angle_x];
-    rot[0].ctrl[static_cast<int>(rtr::ctrl::y)]      = bus.pot[potentiometer_list::angle_y];
-    rot[0].ctrl[static_cast<int>(rtr::ctrl::z)]      = bus.pot[potentiometer_list::angle_z];
+    rot[0].ctrl[interface::rtr::ctl::x]      = bus.pot[potentiometer_list::angle_x];
+    rot[0].ctrl[interface::rtr::ctl::y]      = bus.pot[potentiometer_list::angle_y];
+    rot[0].ctrl[interface::rtr::ctl::z]      = bus.pot[potentiometer_list::angle_z];
 
     // Mixer //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     mix[0].ctrl[interface::mix::ctl::alpha]  = bus.pot[potentiometer_list::lc_to_l];
@@ -207,17 +207,17 @@ void core::spawner::connect_bus()
     bay->io[socket_list::vca_b_in_cv].com    = &vca[1].in[static_cast<int>(vca::in::amp)];
 
     // Rotor
-    bay->io[socket_list::lcr_cv_l].com       = &rot[0].in[static_cast<int>(rtr::in::cvx)];
-    bay->io[socket_list::lcr_cv_c].com       = &rot[0].in[static_cast<int>(rtr::in::cvy)];
-    bay->io[socket_list::lcr_cv_r].com       = &rot[0].in[static_cast<int>(rtr::in::cvx)];
+    bay->io[socket_list::lcr_cv_l].com       = &rot[0].in[interface::rtr::cvi::cvx];
+    bay->io[socket_list::lcr_cv_c].com       = &rot[0].in[interface::rtr::cvi::cvy];
+    bay->io[socket_list::lcr_cv_r].com       = &rot[0].in[interface::rtr::cvi::cvz];
 
-    bay->io[socket_list::lcr_in_l_a].com     = &rot[0].in[static_cast<int>(rtr::in::ax)];
-    bay->io[socket_list::lcr_in_c_a].com     = &rot[0].in[static_cast<int>(rtr::in::ay)];
-    bay->io[socket_list::lcr_in_r_a].com     = &rot[0].in[static_cast<int>(rtr::in::az)];
+    bay->io[socket_list::lcr_in_l_a].com     = &rot[0].in[interface::rtr::cvi::ax];
+    bay->io[socket_list::lcr_in_c_a].com     = &rot[0].in[interface::rtr::cvi::ay];
+    bay->io[socket_list::lcr_in_r_a].com     = &rot[0].in[interface::rtr::cvi::az];
 
-    bay->io[socket_list::lcr_in_l_b].com     = &rot[0].in[static_cast<int>(rtr::in::bx)];
-    bay->io[socket_list::lcr_in_c_b].com     = &rot[0].in[static_cast<int>(rtr::in::by)];
-    bay->io[socket_list::lcr_in_r_b].com     = &rot[0].in[static_cast<int>(rtr::in::bz)];
+    bay->io[socket_list::lcr_in_l_b].com     = &rot[0].in[interface::rtr::cvi::bx];
+    bay->io[socket_list::lcr_in_c_b].com     = &rot[0].in[interface::rtr::cvi::by];
+    bay->io[socket_list::lcr_in_r_b].com     = &rot[0].in[interface::rtr::cvi::bz];
 
     // Mixer
     bay->io[socket_list::mix_lc_cv].com      = &mix[0].in[interface::mix::cvi::alpha];
@@ -305,13 +305,13 @@ void core::spawner::connect_bus()
     bay->io[socket_list::vca_a_out_b].data         = &vca[0].out[1];
     bay->io[socket_list::vca_b_out_b].data         = &vca[1].out[1];
 
-    bay->io[socket_list::lcr_out_l_a].data         = &rot[0].out[static_cast<int>(rtr::out::ax)];
-    bay->io[socket_list::lcr_out_c_a].data         = &rot[0].out[static_cast<int>(rtr::out::ay)];
-    bay->io[socket_list::lcr_out_r_a].data         = &rot[0].out[static_cast<int>(rtr::out::az)];
+    bay->io[socket_list::lcr_out_l_a].data         = &rot[0].out[interface::rtr::cvo::ax];
+    bay->io[socket_list::lcr_out_c_a].data         = &rot[0].out[interface::rtr::cvo::ay];
+    bay->io[socket_list::lcr_out_r_a].data         = &rot[0].out[interface::rtr::cvo::az];
 
-    bay->io[socket_list::lcr_out_l_b].data         = &rot[0].out[static_cast<int>(rtr::out::bx)];
-    bay->io[socket_list::lcr_out_c_b].data         = &rot[0].out[static_cast<int>(rtr::out::by)];
-    bay->io[socket_list::lcr_out_r_b].data         = &rot[0].out[static_cast<int>(rtr::out::bz)];
+    bay->io[socket_list::lcr_out_l_b].data         = &rot[0].out[interface::rtr::cvo::bx];
+    bay->io[socket_list::lcr_out_c_b].data         = &rot[0].out[interface::rtr::cvo::by];
+    bay->io[socket_list::lcr_out_r_b].data         = &rot[0].out[interface::rtr::cvo::bz];
 
     bay->io[socket_list::snh_a_out].data           = &snh[0].out[static_cast<int>(snh::out::a)];
     bay->io[socket_list::snh_b_out].data           = &snh[1].out[static_cast<int>(snh::out::a)];
