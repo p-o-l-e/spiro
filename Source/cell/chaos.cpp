@@ -18,6 +18,8 @@
 
 namespace cell {
 
+int map_t::idc = 0;
+
 void map_t::process()
 {
     int f = (int)ctrl[static_cast<int>(interface::map::ctrl::form)]->load();
@@ -35,9 +37,9 @@ void map_t::switch_wave(const int& w)
     _reset = true;
 }
 
-map_t::map_t()
+map_t::map_t(): id(++idc)
 {
-    init(interface::map::ctrls, interface::map::ins, interface::map::outs);
+    init(interface::map::ctrls, interface::map::ins, interface::map::outs, module_type::map, id);
 }
 
 void map_t::sprott_reset()

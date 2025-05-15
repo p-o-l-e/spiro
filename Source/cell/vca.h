@@ -28,8 +28,11 @@ namespace cell
 
     class vca_t: public module
     {
-        public:
+        private:
+            static int idc;
 
+        public:
+            const int id = 0;
             void process() override
             {
                 float v = ctrl[static_cast<int>(interface::vca::ctrl::amp)]->load() + in[static_cast<int>(interface::vca::ctrl::amp)]->load();
@@ -41,9 +44,9 @@ namespace cell
 
             };
 
-            vca_t() 
+            vca_t(): id(++idc)
             {  
-                init(interface::vca::ctrls, interface::vca::ins, interface::vca::outs);
+                init(interface::vca::ctrls, interface::vca::ins, interface::vca::outs, module_type::vca, 0);
             };
            ~vca_t() {};
     };

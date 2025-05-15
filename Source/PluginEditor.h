@@ -58,7 +58,7 @@ class SpiroSynthEditor: public juce::AudioProcessorEditor,
         void envSwitch(int);
         void onReload();
         void resized() override;
-        void timerCallback() override { repaint(mwc.lcd_display); };
+        void timerCallback() override { repaint(juce::Rectangle<int> { mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h }); };
         void envChanged(int) override;
         void bufferDisconnected() override;
         void visibilityChanged () override { loadMatrix(); };

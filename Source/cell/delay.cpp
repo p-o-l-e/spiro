@@ -23,7 +23,7 @@ namespace cell {
 
     delay::delay()
     {
-        init(interface::vcd::ctrls, interface::vcd::ins, interface::vcd::outs);
+        init(interface::vcd::ctrls, interface::vcd::ins, interface::vcd::outs, module_type::vcd, 0);
         reset();
     }
 

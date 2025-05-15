@@ -52,8 +52,8 @@ namespace cell {
    
     struct patchcord
     {
-        point<float>* data;                 // Rendered spline
-        point<float> spline[4];             // Control points
+        point2d<float>* data;               // Rendered spline
+        point2d<float> spline[4];           // Control points
         const int segments = 4;             // # Segments
         const int iterations;               // Precision
         bool focused = false;
@@ -83,7 +83,7 @@ namespace cell {
         std::atomic<float>* data  = &zero;                  // Output
         std::atomic<float>** com  = &data;                  // Pointer to module input pointer
         constexpr void collapse();                          // Collapse to centre
-        constexpr void drag(const float&, const float&);      // Drag
+        constexpr void drag(const float&, const float&);    // Drag
         socket(int);
        ~socket();
     };
@@ -108,7 +108,7 @@ namespace cell {
 
             int inputs, outputs;            // Number of inpunts and outputs
             
-            void set_socket(const point<int>*, const int&, const unsigned&, const bool&, const int&);
+            void set_socket(const point2d<int>*, const int&, const unsigned&, const bool&, const int&);
             void drag(const float&, const float&);
             void draw();
             int  down_test(const float&, const float&, const int&);

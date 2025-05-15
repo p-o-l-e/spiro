@@ -52,6 +52,7 @@ namespace cell {
     class vcf_t: public module
     {
         private:
+            static int idc;
             float iceq[2];
             float g;
             float k;
@@ -59,6 +60,7 @@ namespace cell {
             float b;
 
         public:
+            const int id;
             void process() override;
             void reset();
             vcf_t();

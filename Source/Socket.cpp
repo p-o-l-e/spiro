@@ -96,7 +96,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
 {
     for(int j = 0; j < bay->nodes; j++)
     {
-        cell::point<float> pre , car = bay->io[j].cord.data[0];
+        cell::point2d<float> pre , car = bay->io[j].cord.data[0];
         bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {

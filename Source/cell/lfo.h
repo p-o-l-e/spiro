@@ -67,6 +67,7 @@ namespace cell {
 class lfo_t: public module
 {
     private:
+        static int idc;                                 // ID counter
         float sine();
         float ramp();
         float saw();
@@ -84,7 +85,9 @@ class lfo_t: public module
 
         float phase = 0.0f;                                 // Current phase
 
+
     public:
+        const int id = 0;
         void process() override;
         void reset();
         lfo_t();

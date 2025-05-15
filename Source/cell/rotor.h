@@ -29,11 +29,16 @@ using namespace interface::rtr;
 
 class rotor: public module
 {
+    private:
+        static int idc;
+
     public:
+        int id;
+        quaternion q;
 
         void process() override
         {
-            lcr<float> a 
+            point3d<float> a 
             { 
                 in[static_cast<int>(in::ax)]->load() + 
                 in[static_cast<int>(in::bx)]->load(),
@@ -46,20 +51,23 @@ class rotor: public module
             float x = ctrl[static_cast<int>(ctrl::x)]->load() + pi * in[static_cast<int>(in::cvx)]->load();
             float y = ctrl[static_cast<int>(ctrl::y)]->load() + pi * in[static_cast<int>(in::cvy)]->load();
             float z = ctrl[static_cast<int>(ctrl::z)]->load() + pi * in[static_cast<int>(in::cvz)]->load();
-            lcr<float> f = Rotate(a, x, y, z);
-            
-            out[static_cast<int>(out::ax)].store(f.l);
-            out[static_cast<int>(out::ay)].store(f.c);
-            out[static_cast<int>(out::az)].store(f.r);
 
-            out[static_cast<int>(out::bx)].store(f.l);
-            out[static_cast<int>(out::by)].store(f.c);
-            out[static_cast<int>(out::bz)].store(f.r);
+            q.from_euler(x, y, z);
+            q.rotate_vector(a.x, a.y, a.z);
+
+            out[static_cast<int>(out::ax)].store(a.x);
+            out[static_cast<int>(out::ay)].store(a.y);
+            out[static_cast<int>(out::az)].store(a.z);
+
+            out[static_cast<int>(out::bx)].store(a.x);
+            out[static_cast<int>(out::by)].store(a.y);
+            out[static_cast<int>(out::bz)].store(a.z);
+
         }
 
-        rotor() 
+        rotor(): id(++idc)
         { 
-            init(interface::rtr::ctrls, interface::rtr::ins, interface::rtr::outs);
+            init(interface::rtr::ctrls, interface::rtr::ins, interface::rtr::outs, module_type::rotor, id);
         };
        ~rotor() {};
 };

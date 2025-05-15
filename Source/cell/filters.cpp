@@ -23,10 +23,11 @@
 namespace cell {
 
     using namespace interface::vcf;
+    int vcf_t::idc = 0;
 
-    vcf_t::vcf_t() 
+    vcf_t::vcf_t(): id(++idc) 
     { 
-        init(interface::vcf::ctrls, interface::vcf::ins, interface::vcf::outs);
+        init(interface::vcf::ctrls, interface::vcf::ins, interface::vcf::outs, module_type::vcf, id);
         for(int i = 0; i < interface::vcf::ins; ++i) in[i] = &zero;
         for(int i = 0; i < interface::vcf::ctrls; ++i) ctrl[i] = &zero;
 

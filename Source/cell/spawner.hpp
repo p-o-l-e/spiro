@@ -43,7 +43,13 @@ namespace cell {
 
 
 class spawner
-{  
+{ 
+    private:
+        std::unordered_map<uint64_t, unsigned> input_list;
+        std::unordered_map<uint64_t, unsigned> output_list;
+        std::unordered_map<uint64_t, unsigned> control_list;
+        void fill_lists();
+
     public:
         bus_connector bus;
         oscillator  vco[settings::osc_n];

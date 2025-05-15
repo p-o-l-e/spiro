@@ -161,7 +161,7 @@ namespace cell
 
     void oscillator::reset()
     {
-        init(interface::vco::ctrls, interface::vco::ins, interface::vco::outs);
+        init(interface::vco::ctrls, interface::vco::ins, interface::vco::outs, module_type::vco, id);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;

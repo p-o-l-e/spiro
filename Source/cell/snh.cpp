@@ -24,6 +24,8 @@
 
 namespace cell {
 
+int snh_t::idc = 0;
+
 void snh_t::process()
 {
     if(in[static_cast<int>(interface::snh::in::time)] == &zero)
@@ -56,9 +58,9 @@ void snh_t::reset()
     scale = 40.0f;
 }
 
-snh_t::snh_t()
+snh_t::snh_t(): id(++idc)
 {
-    init(interface::snh::ctrls, interface::snh::ins, interface::snh::outs);
+    init(interface::snh::ctrls, interface::snh::ins, interface::snh::outs, module_type::snh, id);
     reset();
 }
 

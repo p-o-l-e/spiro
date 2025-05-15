@@ -89,7 +89,7 @@ namespace cell
                 { out::main,    "_out_main"  }
             };
             
-            const std::map<interface::vco::ctrl, point<float>> ctrl_constraints
+            const std::map<interface::vco::ctrl, point2d<float>> ctrl_constraints
             {
                 { ctrl::octave, { 0.00f, 0.000f }},
                 { ctrl::detune, { 0.25f, 0.175f }},
@@ -101,7 +101,7 @@ namespace cell
 
             };
 
-            const std::map<interface::vco::in, point<float>> in_constraints
+            const std::map<interface::vco::in, point2d<float>> in_constraints
             {
                 { in::detune, { 0.375f, 0.8f }},
                 { in::pll,    { 0.625f, 0.8f }},
@@ -110,7 +110,7 @@ namespace cell
                 { in::am,     { 0.250f, 0.9f }},
             };
 
-            const std::map<interface::vco::out, point<float>> out_constraints
+            const std::map<interface::vco::out, point2d<float>> out_constraints
             {
                 { out::main,  { 0.750f, 0.9f }},
             };
@@ -145,8 +145,7 @@ namespace cell
             static int idc;                                 // ID counter
   
         public:
-
-                        int id;                                         // Unique oscillator id
+            int id;                                         // Unique oscillator id
             envelope env    [settings::poly];
         
             float   freq    [settings::poly];               // Frequency

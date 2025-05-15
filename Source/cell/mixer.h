@@ -28,10 +28,14 @@ namespace cell
 
     class mixer: public module
     {
+        private:
+            static int idc;
+
         public:
+            int id;
             void process() override
             {
-                lcr<float> a 
+                point3d<float> a 
                 { 
                     in[static_cast<int>(interface::mxr::in::l)]->load(), 
                     in[static_cast<int>(interface::mxr::in::c)]->load(), 
@@ -39,14 +43,14 @@ namespace cell
                 };
                 float lc = ctrl[static_cast<int>(interface::mxr::ctrl::alpha)]->load() + in[static_cast<int>(interface::mxr::in::alpha)]->load();
                 float cr = ctrl[static_cast<int>(interface::mxr::ctrl::theta)]->load() + in[static_cast<int>(interface::mxr::in::theta)]->load();
-                l_r<float> lr = c3c2(a, lc, cr);
-                out[static_cast<int>(interface::mxr::out::l)].store(lr.l * ctrl[static_cast<int>(interface::mxr::ctrl::volume)]->load());
-                out[static_cast<int>(interface::mxr::out::r)].store(lr.r * ctrl[static_cast<int>(interface::mxr::ctrl::volume)]->load());
+                point2d<float> lr = c3c2(a, lc, cr);
+                out[static_cast<int>(interface::mxr::out::l)].store(lr.x * ctrl[static_cast<int>(interface::mxr::ctrl::volume)]->load());
+                out[static_cast<int>(interface::mxr::out::r)].store(lr.y * ctrl[static_cast<int>(interface::mxr::ctrl::volume)]->load());
             }
 
-            mixer()
+            mixer(): id(++idc)
             {
-                init(interface::mxr::ctrls, interface::mxr::ins, interface::mxr::outs);
+                init(interface::mxr::ctrls, interface::mxr::ins, interface::mxr::outs, module_type::mixer, id);
             }
            ~mixer() {};
     };

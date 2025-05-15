@@ -61,6 +61,7 @@ inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUC
 class map_t: public module
 { 
     private:
+        static int idc;
         float f[9];
 
         void sprott_reset();
@@ -93,6 +94,7 @@ class map_t: public module
 
 
     public:
+        const int id = 0;
         void process() override;
         void switch_wave(const int&);
 

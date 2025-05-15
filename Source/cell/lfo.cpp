@@ -20,6 +20,7 @@
 
 namespace cell{
 
+int lfo_t::idc = 0;
 
 void lfo_t::process()
 {
@@ -109,9 +110,9 @@ void lfo_t::reset()
     for(int i = 0; i < interface::lfo::outs; ++i)   out[i].store(0.0f);
 }
 
-lfo_t::lfo_t()
+lfo_t::lfo_t(): id(++idc)
 {
-    init(interface::lfo::ctrls, interface::lfo::ins, interface::lfo::outs);
+    init(interface::lfo::ctrls, interface::lfo::ins, interface::lfo::outs, module_type::lfo, id);
     reset();
 };
 

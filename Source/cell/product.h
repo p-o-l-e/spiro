@@ -27,7 +27,10 @@ namespace cell
 
     class product: public module
     {
+        private:
+            static int idc;
         public:
+            int id;
             void process() override
             {
                 bool  o = false;
@@ -44,9 +47,9 @@ namespace cell
                 out[0].store( o ? s : 0.0f);
             };
 
-            product() 
+            product(): id(++idc)
             { 
-                init(interface::pct::ctrls, interface::pct::ins, interface::pct::outs); 
+                init(interface::pct::ctrls, interface::pct::ins, interface::pct::outs, module_type::product, id); 
             };
 };
 

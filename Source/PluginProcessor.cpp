@@ -354,7 +354,7 @@ void SpiroSynth::prepareToPlay (double sampleRate, int samplesPerBlock)
     cell::settings::reset_time_multiplier();
 
     sockets->setBounds(juce::Rectangle<int> { 35, 238, 926, 198 });
-    c_buffer = std::make_unique<cell::wavering<cell::l_r<float>>>( sampleRate/cell::settings::scope_fps);
+    c_buffer = std::make_unique<cell::wavering<cell::point2d<float>>>( sampleRate/cell::settings::scope_fps);
     reset();
     reloadParameters();
     armed = true;
@@ -407,7 +407,7 @@ void SpiroSynth::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffe
     for (int i = 0; i < numSamples; i++)
 	{
         feed.renderer.process();
-        c_buffer.get()->set(cell::l_r<float> { feed.renderer.out[0], feed.renderer.out[1] });
+        c_buffer.get()->set(cell::point2d<float> { feed.renderer.out[0], feed.renderer.out[1] });
 		DataL[i] = feed.renderer.out[0] * 0.2f;
 		DataR[i] = feed.renderer.out[1] * 0.2f;
 	}

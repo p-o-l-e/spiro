@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include "constants.hpp"
+#include "node.h"
 #include <unordered_map>
 
 namespace cell 
@@ -450,14 +451,15 @@ namespace interface
 }
 
 
+
+
 	struct bus_connector
 	{
 		std::atomic<float>* pot[settings::pot_n];
 		std::atomic<float>* prm[settings::prm_n];
 		std::atomic<float>* btn[settings::btn_n];
 		std::atomic<float>* mtx[settings::ports_in * settings::ports_out];
-
-
+        
 		bus_connector()
 		{
 			for(int i = 0; i < settings::pot_n; ++i) 
@@ -483,4 +485,6 @@ namespace interface
 		}
 		~bus_connector() {};
 	};
+
+
 } // Namespace cell

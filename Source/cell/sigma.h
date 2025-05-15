@@ -28,7 +28,11 @@ namespace cell
 
     class sigma: public module
     {
+        private:
+            static int idc;
+
         public:
+            int id;
             void process() override
             {
                 out[0].store(in[0]->load() + in[1]->load());
@@ -36,9 +40,9 @@ namespace cell
             };
 
 
-            sigma() 
+            sigma(): id(++idc)
             { 
-                init(interface::sum::ctrls, interface::sum::ins, interface::sum::outs);
+                init(interface::sum::ctrls, interface::sum::ins, interface::sum::outs, module_type::sigma, id);
             };
            ~sigma() {};
 };
