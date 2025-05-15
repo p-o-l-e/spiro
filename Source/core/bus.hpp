@@ -42,7 +42,7 @@ namespace core
             public:
                 const Blueprint blueprint;
                 std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;
-                bus_connector(const Descriptor*);
+                bus_connector(const Descriptor**);
                ~bus_connector() { LOG("~BusConnector()"); };
         };
     }

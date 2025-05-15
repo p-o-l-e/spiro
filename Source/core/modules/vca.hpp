@@ -26,7 +26,7 @@
 namespace core
 {
     using namespace interface;
-    class vca_t: public module_t
+    class vca_t: public Module
     {
         private:
             static int idc;

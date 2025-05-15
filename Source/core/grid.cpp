@@ -19,6 +19,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
+#include <cstddef>
 #include "grid.hpp"
 #include "interface_headers.hpp"
 
@@ -34,15 +35,14 @@ namespace core
     
     namespace settings {
 
-        const int sectors = 26; 
         Sector sector_map[]
         {
             Sector(&interface::vca::descriptor[0]   , Point2D<float> { 228.0f, 292.0f }, 1 ),
             Sector(&interface::vca::descriptor[1]   , Point2D<float> { 228.0f, 292.0f }, 2 ),
             Sector(&interface::snh::descriptor[0]   , Point2D<float> { 532.0f, 292.0f }, 1 ),
             Sector(&interface::snh::descriptor[1]   , Point2D<float> { 532.0f, 292.0f }, 2 ),
-            Sector(&interface::sum::descriptor      , Point2D<float> {  76.0f, 292.0f }, 1 ),
-            Sector(&interface::sum::descriptor      , Point2D<float> { 152.0f, 292.0f }, 2 ),   
+            Sector(&interface::sum::descriptor[0]   , Point2D<float> {  76.0f, 292.0f }, 1 ),
+            Sector(&interface::sum::descriptor[0]   , Point2D<float> { 152.0f, 292.0f }, 2 ),   
             Sector(&interface::pdt::descriptor      , Point2D<float> {  76.0f, 351.0f }, 1 ),
             Sector(&interface::vco::descriptor      , Point2D<float> {   0.0f,   0.0f }, 1 ),
             Sector(&interface::vco::descriptor      , Point2D<float> { 152.0f,   0.0f }, 2 ),
@@ -64,7 +64,11 @@ namespace core
             Sector(&interface::com::descriptor      , Point2D<float> {   0.0f, 292.0f }, 1 ),
             Sector(&interface::cro::descriptor      , Point2D<float> { 760.0f,   0.0f }, 1 ),
         };
+
+        const int sectors = std::size(sector_map);
+        const Descriptor* descriptor_map[sectors]; 
     }
+
 
     Sector* Grid::getSector(const core::map::module::type& t, const int& index)
     {
@@ -94,8 +98,15 @@ namespace core
         }
     }
         
-    Grid::Grid(Sector* _sector, const int _sectors, Rectangle<float> _bounds): sector(_sector), sectors(_sectors), bounds(_bounds) { calculate(); };
+    Grid::Grid(Sector* _sector, const Descriptor** dmap, const int& _sectors, const Rectangle<float>& _bounds): sector(_sector), sectors(_sectors), bounds(_bounds) 
+    { 
+        calculate(); 
+        for (size_t i = 0; i < sectors; ++i) 
+        {
+            dmap[i] = sector[i].descriptor;
+        }
+    };
     
-    Grid grid(settings::sector_map, settings::sectors, Rectangle<float> { 26.0f, 0.0f, 1060.0f, 596.0f });    
+    Grid grid(settings::sector_map, settings::descriptor_map, settings::sectors, Rectangle<float> { 26.0f, 0.0f, 1060.0f, 596.0f });    
 }
 

@@ -22,7 +22,7 @@
 
 
 #include "modmatrix.hpp"
-#include "../uid.hpp"
+#include "uid.hpp"
 #include <cstdint>
 namespace core {
 
@@ -34,9 +34,9 @@ constexpr void Patchcord::process()
     float t = 0.0;
     for(int i = 0; i < iterations; i++)
     {
-        Point2D<float> car { interpolateBezier(spline[0], spline[1], spline[2], spline[3], t) };
-        data[i].x = car.x;
-        data[i].y = car.y;
+        Point2D<float> carry { interpolateBezier(spline[0], spline[1], spline[2], spline[3], t) };
+        data[i].x = carry.x;
+        data[i].y = carry.y;
         t += inc;
     }
 }

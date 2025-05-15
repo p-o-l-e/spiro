@@ -52,7 +52,7 @@ struct breakpoint
 
 
 
-class env_t: public module_t
+class env_t: public Module
 {
     private:
         float theta = 0.0f;                 // Change in value_scale

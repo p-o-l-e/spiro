@@ -28,7 +28,7 @@
 
 namespace core {
 
-    class vcd_t: public module_t
+    class vcd_t: public Module
     {
         private:
             OnePole psf;

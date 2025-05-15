@@ -6,7 +6,7 @@
 
 namespace core
 {
-    class module_t
+    class Module
     {
         public:
             const Descriptor* descriptor = &interface::fuse::descriptor;
@@ -15,24 +15,16 @@ namespace core
         public:
 
             int position;
-            std::unique_ptr<std::uint32_t[]>       uid;     // Unique IDs list
             std::unique_ptr<std::atomic<float>*[]> ccv;     // Parameters
             std::unique_ptr<std::atomic<float>*[]> icv;     // Inputs
             std::unique_ptr<std::atomic<float> []> ocv;     // Outputs
 
-            virtual void mute() {};
-            virtual void fuse() 
-            {
-                for(int i = 0; i < *descriptor->cv[map::cv::i]; ++i) icv[i] = &zero;
-                for(int i = 0; i < *descriptor->cv[map::cv::c]; ++i) ccv[i] = &zero;
-                for(int i = 0; i < *descriptor->cv[map::cv::o]; ++i) ocv[i].store(0.0f);
-            };
-
+            virtual void fuse();
             void init(const uint8_t&, const Descriptor*) noexcept;
             virtual void process() {};
 
-            module_t() {};
-            virtual ~module_t() = default;
+            Module() {};
+            virtual ~Module() = default;
             friend class rack_t;
     };
 }

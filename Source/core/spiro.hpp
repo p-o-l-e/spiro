@@ -52,13 +52,13 @@ namespace core {
             void connect_bus();
 
         public:
-            rack_t      rack;
+            Rack      rack;
             DCBlock     dcb[2];
             Patchbay*   bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
             void        midi_message(uint8_t, uint8_t, uint8_t);
             void        process();
-            Spiro(const Descriptor*);
+            Spiro(const Descriptor**);
            ~Spiro();
     };
 };

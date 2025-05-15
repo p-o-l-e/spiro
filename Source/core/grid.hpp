@@ -52,6 +52,7 @@ namespace core
 
         extern const int sectors; 
         extern Sector sector_map[];
+        extern const Descriptor* descriptor_map[]; 
     }
 
     struct Grid 
@@ -62,10 +63,10 @@ namespace core
         float scale { 1.0f };
 
         Sector* getSector(const core::map::module::type&, const int&);
+        void initDescriptorMap(const Descriptor**);
         void calculate();
-        Grid(Sector*, const int, Rectangle<float>);
+        Grid(Sector*, const Descriptor**, const int&, const Rectangle<float>&);
     };
     
     extern Grid grid;
-    
 }

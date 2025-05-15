@@ -23,7 +23,7 @@ Sockets::Sockets(int w, int h, int ins, int outs)
 {
     std::cout  <<"-- Initializing sockets...\n";
 
-    bay = new cell::patchbay(w, h, ins, outs);
+    bay = new core::Patchbay(w, h, ins, outs);
 
     unsigned position = 0; // 255 sockets max
 
@@ -47,7 +47,7 @@ Sockets::Sockets(int w, int h, int ins, int outs)
         }
         else
         {
-            cell::uid_t err = decode_uid(interface::output_list[i]);
+            core::uid_t err = decode_uid(interface::output_list[i]);
             std::cout  <<"-- Element in output list:\t"<<interface::output_list[i]<<" doesn't exists...\n";
             std::cout   <<"\t-- Module type: "<<std::hex<<(int)err.module
                         <<" -- Module position: "<<err.module_position
@@ -98,7 +98,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
 {
     for(int j = 0; j < bay->nodes; j++)
     {
-        cell::point2d<float> pre , car = bay->io[j].cord.data[0];
+        core::point2d<float> pre , car = bay->io[j].cord.data[0];
         bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {
@@ -110,7 +110,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
     }
 }
 
-cell::socket* Sockets::from_grid(int position, bool route)
+core::socket* Sockets::from_grid(int position, bool route)
 {
     if(route == SOCKET_IN)
     {
@@ -168,8 +168,8 @@ void Sockets::resized ()
 void Sockets::mouseDown(const juce::MouseEvent& event)
 {
     int mb = 0;
-    if     (event.mods.isLeftButtonDown())  mb = cell::settings::mb::lmb;
-    else if(event.mods.isRightButtonDown()) mb = cell::settings::mb::rmb;
+    if     (event.mods.isLeftButtonDown())  mb = core::settings::mb::lmb;
+    else if(event.mods.isRightButtonDown()) mb = core::settings::mb::rmb;
 
     auto t = bay->down_test(event.x, event.y, mb);
     if (t == 1)

@@ -27,7 +27,7 @@
 
 namespace core {
 
-    class vcf_t: public module_t
+    class vcf_t: public Module
     {
         private:
             static int idc;

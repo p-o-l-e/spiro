@@ -66,7 +66,7 @@ namespace core
         LOG("-- Bus connected...\n");
     }
 
-    Spiro::Spiro(const Descriptor* d): rack(d)
+    Spiro::Spiro(const Descriptor** d): rack(d)
     {
         LOG("Spiro:\n");
         connect_bus();

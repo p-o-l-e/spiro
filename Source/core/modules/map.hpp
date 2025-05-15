@@ -31,7 +31,7 @@ namespace core
     #define n_forms_chaotic 4
     inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
-    class cso_t: public module_t
+    class cso_t: public Module
     { 
         private:
             static int idc;

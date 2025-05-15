@@ -3,13 +3,19 @@
 
 namespace core
 {
-    void module_t::init(const uint8_t& id, const Descriptor* d) noexcept 
+    void Module::fuse() 
+    {
+        for(int i = 0; i < *descriptor->cv[map::cv::i]; ++i) icv[i] = &zero;
+        for(int i = 0; i < *descriptor->cv[map::cv::c]; ++i) ccv[i] = &zero;
+        for(int i = 0; i < *descriptor->cv[map::cv::o]; ++i) ocv[i].store(0.0f);
+    };
+
+    void Module::init(const uint8_t& id, const Descriptor* d) noexcept 
     {
         descriptor = d;
         ccv = std::make_unique<std::atomic<float>*[]>(*descriptor->cv[map::cv::c]);
         icv = std::make_unique<std::atomic<float>*[]>(*descriptor->cv[map::cv::i]);
         ocv = std::make_unique<std::atomic<float> []>(*descriptor->cv[map::cv::o]);
-        uid = std::make_unique<std::uint32_t[]>(*descriptor->cv[map::cv::i] + *descriptor->cv[map::cv::o] + *descriptor->cv[map::cv::c]);
 
         fuse();
         position = id;

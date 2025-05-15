@@ -23,6 +23,7 @@
 #include "modmatrix.hpp"
 #include "Constraints.hpp"
 #include "Colours.hpp"
+#include "grid.hpp"
 
 class Sockets: public juce::Component
 {
@@ -33,7 +34,7 @@ class Sockets: public juce::Component
         bool  o_armed   = false;
         bool  drag      = false;
         int   route     = -1;
-        cell::socket* from_grid(int, bool);
+        core::Socket* from_grid(int, bool);
 
     public:
         juce::Colour colour_normal = colour_set[9];

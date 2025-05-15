@@ -34,6 +34,6 @@ namespace core
 
     sum_t::sum_t(): id(++idc)
     { 
-        init(id, &interface::sum::descriptor);
+        init(id, &interface::sum::descriptor[0]);
     };
 }

@@ -27,7 +27,7 @@
 namespace core
 {
 
-class rtr_t: public module_t
+class rtr_t: public Module
 {
     private:
         static int idc;

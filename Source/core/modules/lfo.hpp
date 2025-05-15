@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 namespace core 
 {
-    class lfo_t: public module_t
+    class lfo_t: public Module
     {
         private:
             static int idc;                                 // ID counter

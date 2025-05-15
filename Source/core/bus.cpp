@@ -26,7 +26,7 @@
 namespace core {
 namespace interface { 
 
-    bus_connector::bus_connector(const Descriptor* d): blueprint(d)
+    bus_connector::bus_connector(const Descriptor** d): blueprint(d)
     {
         LOG("BusConnector() : ");
         for(int i = 0; i < map::cv::count; ++i)

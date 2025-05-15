@@ -40,21 +40,21 @@ namespace interface
         return error::invalid_index;
     }
 
-    const std::unique_ptr<int[]> Blueprint::set_relatives(const Descriptor* d) const
+    const std::unique_ptr<int[]> Blueprint::set_relatives(const Descriptor** d) const
     {
         LOG("Blueprint::set_relatives() :");
-        int n = settings::modules_n;
+        int  n = settings::sectors;
         auto r = std::make_unique<int[]>(n);
 
         for(int s = 0; s < n; ++s)
         {
             int pos = 0;
-            core::map::module::type car = d[s].type;
+            core::map::module::type car = d[s]->type;
             r[s] = pos;
 
             for(int i = s + 1; i < n; ++i)
             {
-                if(car == d[i].type) 
+                if(car == d[i]->type) 
                 {
                     r[i] = ++pos;
                     ++s;
@@ -73,9 +73,9 @@ namespace interface
             hash_table[index] = std::make_unique<uint32_t[]>(ccv[index]);
             for(int m = 0, h = 0; m < mc; ++m)
             {
-                for(int i = 0; i < *descriptor[m].cv[index]; ++i)
+                for(int i = 0; i < *descriptor[m]->cv[index]; ++i)
                 {
-                    hash_table[index][h] = core::uid_t::encode_uid(descriptor[m].type, static_cast<map::cv::index>(index), relative[m], i);
+                    hash_table[index][h] = core::uid_t::encode_uid(descriptor[m]->type, static_cast<map::cv::index>(index), relative[m], i);
                     ++h;
                 }
             }
@@ -84,10 +84,10 @@ namespace interface
     }
 
 
-    const int Blueprint::count(const core::map::cv::index& p, const Descriptor* d) const
+    const int Blueprint::count(const core::map::cv::index& p, const Descriptor** d) const
     {
         int c { 0 };
-        for(int i = 0; i < settings::modules_n; ++i) c += *d[i].cv[p];
+        for(int i = 0; i < settings::sectors; ++i) c += *d[i]->cv[p];
         return c;
     }
 
@@ -100,10 +100,10 @@ namespace interface
     //     ccv[map::cv::c](count(map::cv::c, d)) {}
 
 
-    Blueprint::Blueprint(const Descriptor* d): 
+    Blueprint::Blueprint(const Descriptor** d): 
         descriptor { d }, 
         relative { set_relatives(d) },
-        mc { settings::modules_n }, 
+        mc { settings::sectors }, 
         ccv { count(map::cv::i, d), count(map::cv::o, d), count(map::cv::c, d) }
     { 
         LOG("Blueprint : ");

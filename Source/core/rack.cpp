@@ -4,12 +4,12 @@
 
 namespace core
 {
-    module_t* rack_t::at(const int& pos) 
+    Module* Rack::at(const int& pos) 
     { 
         return node.get()[pos]; 
     }
 
-    module_t* rack_t::at(const map::module::type& t, const int& pos)
+    Module* Rack::at(const map::module::type& t, const int& pos)
     {
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
@@ -22,37 +22,37 @@ namespace core
     }
 
     
-    void rack_t::process(const int& p) 
+    void Rack::process(const int& p) 
     { 
         node[p]->process(); 
     }
 
-    void rack_t::bind(module_t* m, const unsigned& pos) 
+    void Rack::bind(Module* m, const unsigned& pos) 
     { 
         if(pos < bus.blueprint.mc) node[pos] = m; 
     }
 
-    rack_t::rack_t(const Descriptor* d): bus(d) 
+    Rack::Rack(const Descriptor** d): bus(d) 
     { 
         allocate(); 
         build(); 
     }
 
-    rack_t::~rack_t() 
+    Rack::~Rack() 
     { 
         for(int i = 0; i < bus.blueprint.mc; ++i) delete node[i]; 
     }
 
-    void rack_t::build() noexcept 
+    void Rack::build() noexcept 
     { 
         LOG("Rack::build() : ");
         for(int i = 0; i < bus.blueprint.mc; ++i)
         {
-            node[i] = create_node(bus.blueprint.descriptor[i].type);
+            node[i] = create_node(bus.blueprint.descriptor[i]->type);
         }
     }
 
-    module_t* rack_t::create_node(const map::module::type& t)
+    Module* Rack::create_node(const map::module::type& t)
     {
         switch (t)
         {
@@ -79,14 +79,14 @@ namespace core
         return new lfo_t();
     }
 
-    void rack_t::allocate() noexcept 
+    void Rack::allocate() noexcept 
     { 
         LOG("Rack::allocate() :"); 
-        node = std::make_unique<module_t*[]>(bus.blueprint.mc); 
+        node = std::make_unique<Module*[]>(bus.blueprint.mc); 
         LOG("-- Space for rack allocated...");
     }
 
-    void rack_t::connect_pin_i(const uint32_t& hash, std::atomic<float>** o)
+    void Rack::connect_pin_i(const uint32_t& hash, std::atomic<float>** o)
     {
         uid_t _uid = uid_t(hash);
         int i = 0;
@@ -103,7 +103,7 @@ namespace core
         o = &node[i]->icv[_uid.parameter_position];
     }
 
-    void rack_t::connect_pin_o(const uint32_t& hash, std::atomic<float>* o)
+    void Rack::connect_pin_o(const uint32_t& hash, std::atomic<float>* o)
     {
         uid_t _uid = uid_t(hash);
         int i = 0;
@@ -120,7 +120,7 @@ namespace core
         o = &node[i]->ocv[_uid.parameter_position];
     }
 
-    void rack_t::connect_pin_c(const uint32_t& hash, std::atomic<float>* o)
+    void Rack::connect_pin_c(const uint32_t& hash, std::atomic<float>* o)
     {
         uid_t _uid = uid_t(hash);
         int i = 0;

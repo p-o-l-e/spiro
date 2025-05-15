@@ -12,11 +12,11 @@
 
 namespace core
 {
-    class rack_t
+    class Rack
     {
         private:
-            std::unique_ptr<module_t*[]> node;
-            module_t* create_node(const map::module::type&);
+            std::unique_ptr<Module*[]> node;
+            Module* create_node(const map::module::type&);
             void allocate() noexcept;
             void build() noexcept;
 
@@ -27,12 +27,12 @@ namespace core
             void connect_pin_c(const uint32_t&, std::atomic<float>*);
 
             uint32_t get_uid(const map::module::type&, const int&, const map::cv::index&, const int&);
-            module_t* at(const int&);
-            module_t* at(const map::module::type&, const int&);
+            Module* at(const int&);
+            Module* at(const map::module::type&, const int&);
             void process(const int&);
-            void bind(module_t*, const unsigned&);
-            rack_t(const Descriptor*);
-           ~rack_t();
+            void bind(Module*, const unsigned&);
+            Rack(const Descriptor**);
+           ~Rack();
     };
 
 

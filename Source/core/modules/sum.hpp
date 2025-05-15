@@ -25,7 +25,7 @@
 
 namespace core
 {
-    class sum_t: public module_t
+    class sum_t: public Module
     {
         private:
             static int idc;

@@ -25,7 +25,7 @@
 
 namespace core
 {
-    class mix_t: public module_t
+    class mix_t: public Module
     {
         private:
             static int idc;

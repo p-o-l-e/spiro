@@ -19,8 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-
 #include "map.hpp"
 #include "interface/map_interface.hpp"
 #include "../setup/constants.hpp"

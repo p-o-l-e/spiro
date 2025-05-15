@@ -25,7 +25,7 @@
 
 namespace core
 {
-    class pdt_t: public module_t
+    class pdt_t: public Module
     {
         private:
             static int idc;

@@ -56,7 +56,7 @@ namespace core
     }
 
  
-     uid_t::uid_t(const uint32_t& data):
+    uid_t::uid_t(const uint32_t& data):
          hash(data),
          module(static_cast<map::module::type>(extract_byte(data, m_index))),
          module_position(extract_byte(data, m_position)),
@@ -64,7 +64,7 @@ namespace core
          parameter_position(extract_byte(data, p_position))
      {};
   
-     uid_t::uid_t(const map::module::type& mt, const map::cv::index& pt, const int& mp, const int& pp):
+    uid_t::uid_t(const map::module::type& mt, const map::cv::index& pt, const int& mp, const int& pp):
          module(mt), parameter(pt), module_position(mp), parameter_position(pp),
          hash(encode_uid(mt, pt, mp, pp))
      {};
