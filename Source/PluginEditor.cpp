@@ -1,20 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -43,9 +47,9 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     addAndMakeVisible(bg);
 
     display = std::make_unique<Display>(audioProcessor.c_buffer.get(), mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
-    pot = std::make_unique<SpriteSlider[]>(cell::settings::pot_n);
+    pot = std::make_unique<SpriteSlider[]>(core::settings::pot_n);
 
-    for(int i = 0; i < cell::settings::pot_n; ++i)
+    for(int i = 0; i < core::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
 
@@ -55,7 +59,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         addAndMakeVisible (pot[i]);
     }
 
-    for(int i = 0; i < cell::settings::btn_n; ++i)
+    for(int i = 0; i < core::settings::btn_n; ++i)
     {
         interface::button_list p = static_cast<interface::button_list>(i);
         auto bt = std::make_unique<juce::ImageButton>(button_list.at(p).name);
@@ -71,7 +75,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         addAndMakeVisible(button.at(i).get());
     }
 
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         env[i].id = i;
         env[i].addListener(this);
@@ -198,7 +202,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
                 break;
 
             case Display::page_t::menu:          
-                startTimerHz(cell::settings::scope_fps);
+                startTimerHz(core::settings::scope_fps);
                 display->page = Display::page_t::scope;
                 display->layer_on = false;
                 button.at(interface::button_list::scope).get()->setToggleState(true, juce::NotificationType::dontSendNotification);
@@ -260,7 +264,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
             {
                 if(display->row == 0)
                 {
-                    startTimerHz(cell::settings::scope_fps);
+                    startTimerHz(core::settings::scope_fps);
                     display->page = Display::page_t::save;
                     display->SaveMenu();
                     display->grabKeyboardFocus();
@@ -579,7 +583,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     **************************************************************************************************************************/
     button.at(interface::button_list::scope).get()->onClick = [this]
     {
-        startTimerHz(cell::settings::scope_fps);
+        startTimerHz(core::settings::scope_fps);
         display->page = Display::page_t::scope;
         display->layer_on = false;
     };
@@ -1224,7 +1228,7 @@ void SpiroSynthEditor::envLoad()
     env[3].node[5].time = (p->convertFrom0to1(p->getValue()));
 
     
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         env[i].load();
     }
@@ -1247,7 +1251,7 @@ void SpiroSynthEditor::loadCall()
 void SpiroSynthEditor::saveCall() 
 { 
     saveMatrix();
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         envBroadcast(i);
     }
@@ -1262,12 +1266,12 @@ void SpiroSynthEditor::saveCall()
 void SpiroSynthEditor::loadMatrix()
 {
     int i = 0;
-    for(int x = 0; x < cell::settings::ports_in; ++x)
+    for(int x = 0; x < core::settings::ports_in; ++x)
     {
-        for(int y = 0; y < cell::settings::ports_out; ++y)
+        for(int y = 0; y < core::settings::ports_out; ++y)
         {
             audioProcessor.matrix[i] = audioProcessor.tree.getParameter("matrix_" + juce::String(i)); 
-            audioProcessor.feed.renderer.bay->matrix.set(x, y, cell::bool_from_range(audioProcessor.matrix[i]->getValue()));
+            audioProcessor.feed.renderer.bay->matrix.set(x, y, core::bool_from_range(audioProcessor.matrix[i]->getValue()));
             ++i;
         }
     }
@@ -1278,9 +1282,9 @@ void SpiroSynthEditor::loadMatrix()
 void SpiroSynthEditor::saveMatrix()
 {
     int i = 0;
-    for(int x = 0; x < cell::settings::ports_in; ++x)
+    for(int x = 0; x < core::settings::ports_in; ++x)
     {
-        for(int y = 0; y < cell::settings::ports_out; ++y)
+        for(int y = 0; y < core::settings::ports_out; ++y)
         {
             audioProcessor.matrix[i] = audioProcessor.tree.getParameter("matrix_" + juce::String(i)); 
             audioProcessor.matrix[i]->beginChangeGesture();
@@ -1294,9 +1298,9 @@ void SpiroSynthEditor::saveMatrix()
 void SpiroSynthEditor::clearMatrix()
 {
     int i = 0;
-    for(int x = 0; x < cell::settings::ports_in; ++x)
+    for(int x = 0; x < core::settings::ports_in; ++x)
     {
-        for(int y = 0; y < cell::settings::ports_out; ++y)
+        for(int y = 0; y < core::settings::ports_out; ++y)
         {
             audioProcessor.feed.renderer.bay->matrix.set(x, y, false);
             ++i;
@@ -1315,7 +1319,7 @@ void SpiroSynthEditor::clearMatrix()
 SpiroSynthEditor::~SpiroSynthEditor()
 {
     stopTimer();
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         env[i].removeListener(this);
     }
@@ -1335,20 +1339,20 @@ void SpiroSynthEditor::resized()
 {
 	bg.setBounds(0, 0, mwc.width, mwc.height);
 
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         juce::Rectangle<int> r { mwc.env_display.x, mwc.env_display.y, mwc.env_display.w, mwc.env_display.h };
         env[i].setBounds(r);
     }
 
-    for(int i = 0; i < cell::settings::btn_n; ++i)
+    for(int i = 0; i < core::settings::btn_n; ++i)
     {
         interface::button_list p = static_cast<interface::button_list>(i);
         juce::Rectangle<int> r { button_list.at(p).pos.x, button_list.at(p).pos.y, button_list.at(p).pos.w, button_list.at(p).pos.h };
         button.at(i).get()->setBounds(r);
     }
    
-    for(int i = 0; i < cell::settings::pot_n; ++i)
+    for(int i = 0; i < core::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
         juce::Rectangle<int> r { slider_list.at(p).pos.x, slider_list.at(p).pos.y, slider_list.at(p).pos.w, slider_list.at(p).pos.h };
@@ -1356,7 +1360,7 @@ void SpiroSynthEditor::resized()
     }
 
     display->setBounds(mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
-    startTimerHz(cell::settings::scope_fps);
+    startTimerHz(core::settings::scope_fps);
 
     onReload();
 

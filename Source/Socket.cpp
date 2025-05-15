@@ -1,26 +1,30 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "Socket.h"
 
 Sockets::Sockets(int w, int h, int ins, int outs)
 {
-    bay = new cell::patchbay(w, h, ins, outs);
+    bay = new core::patchbay(w, h, ins, outs);
 
     unsigned position = 1; // 255 sockets max
 
@@ -96,7 +100,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
 {
     for(int j = 0; j < bay->nodes; j++)
     {
-        cell::point2d<float> pre , car = bay->io[j].cord.data[0];
+        core::point2d<float> pre , car = bay->io[j].cord.data[0];
         bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {
@@ -108,7 +112,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
     }
 }
 
-cell::socket* Sockets::from_grid(int position, bool route)
+core::socket* Sockets::from_grid(int position, bool route)
 {
     if(route == SOCKET_IN)
     {
@@ -166,8 +170,8 @@ void Sockets::resized ()
 void Sockets::mouseDown(const juce::MouseEvent& event)
 {
     int mb = 0;
-    if     (event.mods.isLeftButtonDown())  mb = cell::settings::mb::lmb;
-    else if(event.mods.isRightButtonDown()) mb = cell::settings::mb::rmb;
+    if     (event.mods.isLeftButtonDown())  mb = core::settings::mb::lmb;
+    else if(event.mods.isRightButtonDown()) mb = core::settings::mb::rmb;
 
     auto t = bay->down_test(event.x, event.y, mb);
     if (t == 1)

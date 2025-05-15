@@ -1,20 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -28,7 +32,7 @@ SpiroSynth::SpiroSynth():   AudioProcessor
 
 {
     suspendProcessing(true);
-    sockets = std::make_unique<Sockets>(924, 196, cell::settings::ports_in, cell::settings::ports_out );
+    sockets = std::make_unique<Sockets>(924, 196, core::settings::ports_in, core::settings::ports_out );
     feed.renderer.bay = sockets->bay;
 }
 
@@ -48,7 +52,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SpiroSynth::createParameterL
     suspendProcessing(true);
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
-    for(int i = 0; i < cell::settings::pot_n; ++i)
+    for(int i = 0; i < core::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
         layout.add (std::make_unique<juce::AudioParameterFloat> 
@@ -67,7 +71,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SpiroSynth::createParameterL
         ));
     }
 
-    for(int i = 0; i < cell::settings::prm_n; ++i)
+    for(int i = 0; i < core::settings::prm_n; ++i)
     {
         interface::parameter_list p = static_cast<interface::parameter_list>(i);
         layout.add (std::make_unique<juce::AudioParameterFloat> 
@@ -80,7 +84,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SpiroSynth::createParameterL
         ));
     }
 
-    for(int i = 0; i < cell::settings::ports_in*cell::settings::ports_out; ++i)
+    for(int i = 0; i < core::settings::ports_in*core::settings::ports_out; ++i)
     {
         layout.add (std::make_unique<juce::AudioParameterFloat> 
         (
@@ -293,19 +297,19 @@ void SpiroSynth::setStateInformation (const void* data, int sizeInBytes)
 
 void SpiroSynth::reset()
 {
-    for(int i = 0; i < cell::settings::osc_n; ++i)
+    for(int i = 0; i < core::settings::osc_n; ++i)
     {
         feed.renderer.vco[i].reset();
     }
-    for(int i = 0; i < cell::settings::env_n; ++i)
+    for(int i = 0; i < core::settings::env_n; ++i)
     {
         feed.renderer.env[i].reset();
     }
-    for(int i = 0; i < cell::settings::vcf_n; ++i)
+    for(int i = 0; i < core::settings::vcf_n; ++i)
     {
         feed.renderer.vcf[i].reset();
     }
-    for(int i = 0; i < cell::settings::vca_n; ++i)
+    for(int i = 0; i < core::settings::vca_n; ++i)
     {
         feed.renderer.vca[i].fuse();
     }
@@ -314,20 +318,20 @@ void SpiroSynth::reset()
 void SpiroSynth::reloadParameters()
 {
     suspendProcessing(true);
-    for(int i = 0; i < cell::settings::pot_n; ++i)
+    for(int i = 0; i < core::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
         feed.renderer.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
     }
 
-    for(int i = 0; i < cell::settings::prm_n; ++i)
+    for(int i = 0; i < core::settings::prm_n; ++i)
     {
         interface::parameter_list p = static_cast<interface::parameter_list>(i);
         parameter[i] = tree.getParameter (parameter_list.at(p).id); 
         feed.renderer.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
     }
 
-    for(int i = 0; i < cell::settings::ports_in*cell::settings::ports_out; ++i)
+    for(int i = 0; i < core::settings::ports_in*core::settings::ports_out; ++i)
     {
         matrix[i] = tree.getParameter("matrix_" + juce::String(i)); 
         feed.renderer.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
@@ -348,13 +352,13 @@ void SpiroSynth::reloadParameters()
 **************************************************************************************************************************/
 void SpiroSynth::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    cell::settings::buffer_size = samplesPerBlock;
-    cell::settings::sample_rate = sampleRate;
+    core::settings::buffer_size = samplesPerBlock;
+    core::settings::sample_rate = sampleRate;
 
-    cell::settings::reset_time_multiplier();
+    core::settings::reset_time_multiplier();
 
     sockets->setBounds(juce::Rectangle<int> { 35, 238, 926, 198 });
-    c_buffer = std::make_unique<cell::wavering<cell::point2d<float>>>( sampleRate/cell::settings::scope_fps);
+    c_buffer = std::make_unique<core::wavering<core::point2d<float>>>( sampleRate/core::settings::scope_fps);
     reset();
     reloadParameters();
     armed = true;
@@ -407,7 +411,7 @@ void SpiroSynth::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffe
     for (int i = 0; i < numSamples; i++)
 	{
         feed.renderer.process();
-        c_buffer.get()->set(cell::point2d<float> { feed.renderer.out[0], feed.renderer.out[1] });
+        c_buffer.get()->set(core::point2d<float> { feed.renderer.out[0], feed.renderer.out[1] });
 		DataL[i] = feed.renderer.out[0] * 0.2f;
 		DataR[i] = feed.renderer.out[1] * 0.2f;
 	}

@@ -1,20 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "Display.h"
 
@@ -50,7 +54,7 @@ void Display::Scope()
             ly = lp.y * gain + cy;
             for(unsigned i = 0; i < data->segments; i++)
             {
-                cell::point2d<float> f = data->get();
+                core::point2d<float> f = data->get();
                 float x = f.x * gain * 2.0f + cx;
                 float y = f.y * gain * 2.0f + cy;
                 lineSDFAABB(canvas.get(), lx, ly, x, y, 0.8f/(i+1), 0.01f/(i+1)) ;
@@ -99,7 +103,7 @@ void Display::Scope()
                 );
             }
         }
-        cell::blur_box(canvas.get(), 1);
+        core::blur_box(canvas.get(), 1);
         layer_on = true;
         hWind(SL, SR, MI, PL);
     }
@@ -139,15 +143,15 @@ void Display::LoadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
 	}
 
 	juce::String lp ("LOAD PAGE: "); lp += load_page;
-	cell::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(), 30, 10, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-	cell::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(), 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
 
 	for(int i = 0; i < rows_max; ++i)
 	{
 		int pos = i + rows_max * load_page;
 		if(pos >= files) break;
-		cell::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), 46, 30 + 10 * i, contrast);
+		core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), 46, 30 + 10 * i, contrast);
 	}
 
 	vWind(FU, SU, SD, FD);
@@ -164,13 +168,13 @@ void Display::MainMenu()
 	else if(row < 0) row = 0;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
-	cell::draw_text_label(layer.get(), gtFont, "PRESET:", 30, 10, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "SAVE", 46, 30, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "LOAD", 46, 40, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "INIT", 46, 50, contrast);
+	core::draw_text_label(layer.get(), gtFont, "PRESET:", 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, "SAVE", 46, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "LOAD", 46, 40, contrast);
+	core::draw_text_label(layer.get(), gtFont, "INIT", 46, 50, contrast);
 
-	cell::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(CX, OK, EM, EM);
@@ -180,30 +184,30 @@ void Display::MainMenu()
 
 void Display::vWind(int a, int b, int c, int d)
 {
-	cell::draw_glyph(layer.get(), gtFont, a, 6,  39, contrast);
-	cell::draw_glyph(layer.get(), gtFont, b, 6,  69, contrast);
-	cell::draw_glyph(layer.get(), gtFont, c, 6,  99, contrast);
-	cell::draw_glyph(layer.get(), gtFont, d, 6, 129, contrast);
+	core::draw_glyph(layer.get(), gtFont, a, 6,  39, contrast);
+	core::draw_glyph(layer.get(), gtFont, b, 6,  69, contrast);
+	core::draw_glyph(layer.get(), gtFont, c, 6,  99, contrast);
+	core::draw_glyph(layer.get(), gtFont, d, 6, 129, contrast);
 }
 
 void Display::hWind(int a, int b, int c, int d)
 {
-	cell::draw_glyph(layer.get(), gtFont, a,  49, 155, contrast);
-	cell::draw_glyph(layer.get(), gtFont, b,  79, 155, contrast);
-	cell::draw_glyph(layer.get(), gtFont, c, 109, 155, contrast);
-	cell::draw_glyph(layer.get(), gtFont, d, 139, 155, contrast);
+	core::draw_glyph(layer.get(), gtFont, a,  49, 155, contrast);
+	core::draw_glyph(layer.get(), gtFont, b,  79, 155, contrast);
+	core::draw_glyph(layer.get(), gtFont, c, 109, 155, contrast);
+	core::draw_glyph(layer.get(), gtFont, d, 139, 155, contrast);
 }
 
-void Display::ChaosMenu(cell::map_t* chs, int id)
+void Display::ChaosMenu(core::map_t* chs, int id)
 {
 	page = id == 0 ? page_t::chs_a : page_t::chs_b;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
-	cell::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
-	cell::draw_text_label(layer.get(), gtFont, cell::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -212,16 +216,16 @@ void Display::ChaosMenu(cell::map_t* chs, int id)
 	repaint();
 }
 
-void Display::LFOMenu(cell::lfo_t* lfo, int id)
+void Display::LFOMenu(core::lfo_t* lfo, int id)
 {
 	page = id == 0 ? page_t::lfo_a : page_t::lfo_b;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
-	cell::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
-	cell::draw_text_label(layer.get(), gtFont, cell::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(cell::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -234,11 +238,11 @@ void Display::About()
 {
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
-	cell::draw_text_label(layer.get(), gtFont, "SPIRO V.0.4.0-ALPHA", 0, 10, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "", 0, 20, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "COPYRIGHT (C) 2022-2023", 0, 30, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "POLE ", 0, 40, contrast);
-	cell::draw_text_label(layer.get(), gtFont, "MIT License ", 0, 50, contrast);
+	core::draw_text_label(layer.get(), gtFont, "SPIRO V.0.4.0-ALPHA", 0, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "", 0, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, "COPYRIGHT (C) 2022-2023", 0, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "POLE ", 0, 40, contrast);
+	core::draw_text_label(layer.get(), gtFont, "MIT License ", 0, 50, contrast);
   
 
 
@@ -251,47 +255,47 @@ void Display::About()
 
 
 
-void Display::VCOMenu(cell::oscillator* o, int id)
+void Display::VCOMenu(core::oscillator* o, int id)
 {
 	if     (row > 2) row = 2;
 	else if(row < 0) row = 0;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
-	cell::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
 	switch(id)
 	{
 		case 0:
-			cell::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
 			page = vco_a;
 			break;
 		case 1:
-			cell::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
 			page = vco_b;
 			break;
 		case 2:
-			cell::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
 			page = vco_c;
 			break;
 		case 3:
-			cell::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
 			page = vco_d;
 			break;
 		default: 
 			break;
 	}
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "FORM: ", 50, 30, contrast);
-	cell::draw_text_label(layer.get(), gtFont, cell::wforms_vco[(int)(o->ctrl[static_cast<int>(cell::interface::vco::ctrl::form)]->load())], 90, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "FORM: ", 50, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ctrl[static_cast<int>(core::interface::vco::ctrl::form)]->load())], 90, 30, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "MODE: ", 50, 40, contrast);
+	core::draw_text_label(layer.get(), gtFont, "MODE: ", 50, 40, contrast);
 
-    if(o->ctrl[static_cast<int>(cell::interface::vco::ctrl::freerun)]->load() > 0.5f) cell::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
-	else cell::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
+    if(o->ctrl[static_cast<int>(core::interface::vco::ctrl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
+	else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
-	juce::String oct ( *o->ctrl[static_cast<int>(cell::interface::vco::ctrl::octave)] * 10.0f);
-	cell::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
+	core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
+	juce::String oct ( *o->ctrl[static_cast<int>(core::interface::vco::ctrl::octave)] * 10.0f);
+	core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -299,27 +303,27 @@ void Display::VCOMenu(cell::oscillator* o, int id)
 	repaint();
 }
 
-void Display::EnvelopeMenu(cell::envelope* env, int id)
+void Display::EnvelopeMenu(core::envelope* env, int id)
 {
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
 	
 	switch(id)
 	{
-		case 0: cell::draw_text_label(layer.get(), gtFont, "ENVELOPE A:", 30, 10, contrast); break;
-		case 1: cell::draw_text_label(layer.get(), gtFont, "ENVELOPE B:", 30, 10, contrast); break;
-		case 2:	cell::draw_text_label(layer.get(), gtFont, "ENVELOPE C:", 30, 10, contrast); break;
-		case 3:	cell::draw_text_label(layer.get(), gtFont, "ENVELOPE D:", 30, 10, contrast); break;
+		case 0: core::draw_text_label(layer.get(), gtFont, "ENVELOPE A:", 30, 10, contrast); break;
+		case 1: core::draw_text_label(layer.get(), gtFont, "ENVELOPE B:", 30, 10, contrast); break;
+		case 2:	core::draw_text_label(layer.get(), gtFont, "ENVELOPE C:", 30, 10, contrast); break;
+		case 3:	core::draw_text_label(layer.get(), gtFont, "ENVELOPE D:", 30, 10, contrast); break;
         default: break;
 	}
-	cell::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-	cell::draw_text_label(layer.get(), gtFont, "SCALE: ", 30, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, "SCALE: ", 30, 30, contrast);
 
 	float percent = env->time_scale->load();
 	unsigned sc  = roundf(percent * 100.0f);
 	juce::String scale = juce::String::formatted("%d%%", sc);
-	cell::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -335,16 +339,16 @@ void Display::resized()
 	reset();
 }
 
-Display::Display(cell::wavering<cell::point2d<float>>* buf, int x, int y, int w, int h): data(buf)
+Display::Display(core::wavering<core::point2d<float>>* buf, int x, int y, int w, int h): data(buf)
 {
 	area.x = x;
 	area.y = y;
 	area.w = w;
 	area.h = h;
 	image = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
-	canvas = std::make_unique<cell::frame<float>>(area.w, area.h);
+	canvas = std::make_unique<core::frame<float>>(area.w, area.h);
 	canvas.get()->clr(0.0f);
-	layer = std::make_unique<cell::frame<float>>(area.w, area.h);
+	layer = std::make_unique<core::frame<float>>(area.w, area.h);
 	layer.get()->clr(0.0f);
 
 	input_box.canvas = layer.get();
@@ -375,30 +379,30 @@ void OledLabel::paint(juce::Graphics& g)
 {
 	auto area = getLocalBounds();
 	canvas->clr(0.0f);
-	cell::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, contrast);
-	cell::draw_text_label(canvas, gtFont, "-------------------", 30, 20, contrast);
-	cell::draw_text_label(canvas, gtFont, ">", 30, 40, contrast);
-	cell::draw_text_label(canvas, gtFont, getText().toRawUTF8(), 46, 40, contrast);
+	core::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, contrast);
+	core::draw_text_label(canvas, gtFont, "-------------------", 30, 20, contrast);
+	core::draw_text_label(canvas, gtFont, ">", 30, 40, contrast);
+	core::draw_text_label(canvas, gtFont, getText().toRawUTF8(), 46, 40, contrast);
 	int cp = getCaretPosition();
-	cell::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, contrast);
+	core::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, contrast);
 
-	cell::draw_glyph(canvas, gtFont, CX,  49, 155, contrast);
-	cell::draw_glyph(canvas, gtFont, OK,  79, 155, contrast);
+	core::draw_glyph(canvas, gtFont, CX,  49, 155, contrast);
+	core::draw_glyph(canvas, gtFont, OK,  79, 155, contrast);
 }
 
 
 void Display::reset()
 {
     // set attributes
-    displayLength = (int)(time_scale->load() * cell::settings::sample_rate);
+    displayLength = (int)(time_scale->load() * core::settings::sample_rate);
     ratio = (double)displayLength / (double)area.w;
     displayLength /= ratio;
     // resize buffers
-    double dataLength = cell::settings::sample_rate/cell::settings::scope_fps / ratio;
+    double dataLength = core::settings::sample_rate/core::settings::scope_fps / ratio;
     sampleData.resize(area.w);
     newData.resize(sampleData.size());
     newlyPopped.resize(dataLength);
-    notInterpolatedData.resize(cell::settings::sample_rate/cell::settings::scope_fps);
+    notInterpolatedData.resize(core::settings::sample_rate/core::settings::scope_fps);
     // fill all buffers with 0
     std::fill(sampleData.begin(), sampleData.end(), 0);
     std::fill(newlyPopped.begin(), newlyPopped.end(), 0);

@@ -1,20 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #pragma once
 
@@ -23,7 +27,7 @@
 #include "SpriteSlider.h"
 #include "Display.h"
 #include "ListSlider.h"
-#include "cell/blur.hpp"
+#include "blur.hpp"
 #include "Display.h"
 #include "Constraints.hpp"
 
@@ -71,10 +75,10 @@ class SpiroSynthEditor: public juce::AudioProcessorEditor,
         juce::AudioProcessorValueTreeState&             valueTreeState;
         int                                             envelope_shown = 0;
         std::unique_ptr<SpriteSlider[]>                 pot;
-        std::unique_ptr<SliderAttachment>               pot_attachment[cell::settings::pot_n];
+        std::unique_ptr<SliderAttachment>               pot_attachment[core::settings::pot_n];
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         
-        EnvelopeDisplay                                 env[cell::settings::env_n];
+        EnvelopeDisplay                                 env[core::settings::env_n];
         SpiroSynth&                                     audioProcessor;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SpiroSynthEditor)
 };

@@ -1,29 +1,33 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #pragma once
 #include <JuceHeader.h>
-#include "cell/containers.hpp"
-#include "cell/primitives.hpp"
-#include "cell/fonts.h"
-#include "cell/blur.hpp"
-#include "cell/chaos.hpp"
-#include "cell/oscillator.hpp"
+#include "containers.hpp"
+#include "primitives.hpp"
+#include "fonts.h"
+#include "blur.hpp"
+#include "cso.hpp"
+#include "vco.hpp"
 #include "PluginProcessor.h"
 
 #define FU 117
@@ -50,8 +54,8 @@ class OledLabel : public juce::TextEditor
 
 	public:
 		float contrast = 0.6f;
-		cell::frame<float>* canvas;
-		cell::rectangle<int> area;
+		core::frame<float>* canvas;
+		core::rectangle<int> area;
 		void paint (juce::Graphics& g) override;
 		OledLabel() {};
 	   ~OledLabel() {};
@@ -62,12 +66,12 @@ class Display : public juce::ImageComponent
 {
 	private:
 		std::unique_ptr<juce::Image> 		image;
-		std::unique_ptr<cell::frame<float>> canvas;
-		std::unique_ptr<cell::frame<float>> layer;
+		std::unique_ptr<core::frame<float>> canvas;
+		std::unique_ptr<core::frame<float>> layer;
 		int lx = 0, ly = 0;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 	public:
-		cell::wavering<cell::point2d<float>>*	data;
+		core::wavering<core::point2d<float>>*	data;
 		OledLabel input_box;
 		int load_page = 0;
 		int last_page = 0;
@@ -75,8 +79,8 @@ class Display : public juce::ImageComponent
 		int files = 0;
 
 
-		std::atomic<float>* scope_type = &cell::zero;
-		std::atomic<float>* scope_scale = &cell::zero;
+		std::atomic<float>* scope_type = &core::zero;
+		std::atomic<float>* scope_scale = &core::zero;
 		std::atomic<float>  ts { 0.02f };
 		std::atomic<float>* time_scale = &ts;
 
@@ -112,13 +116,13 @@ class Display : public juce::ImageComponent
 		page_t page = scope;
 		int   row = 0;
 		float contrast = 0.6f;
-		cell::rectangle<int> area;
+		core::rectangle<int> area;
 		void paint (juce::Graphics& g) override;
         void Scope();
-		void ChaosMenu(cell::map_t*, int);
-		void EnvelopeMenu(cell::envelope*, int);
-		void VCOMenu(cell::oscillator*, int);
-		void LFOMenu(cell::lfo_t*, int);
+		void ChaosMenu(core::map_t*, int);
+		void EnvelopeMenu(core::envelope*, int);
+		void VCOMenu(core::oscillator*, int);
+		void LFOMenu(core::lfo_t*, int);
 		void MainMenu();
 		void SaveMenu();
         void About();
@@ -127,7 +131,7 @@ class Display : public juce::ImageComponent
 		void LoadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
-		Display(cell::wavering<cell::point2d<float>>*, int, int, int, int);
+		Display(core::wavering<core::point2d<float>>*, int, int, int, int);
 	   ~Display();
 
 	   	class Listener 
