@@ -19,20 +19,35 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-#pragma once
-#include <cmath>
-#include "containers.hpp"
+#include "bus.hpp"
+#include "uid.hpp"
+#include <iostream>
 
 namespace core {
+namespace interface { 
 
-    constexpr Point2D<float> interpolate_bezier(const Point2D<float>& p0, const Point2D<float>& p1, const Point2D<float>& p2, const Point2D<float>& p3, const float& t) noexcept // t always lies between 0 and 1
+    bus_connector::bus_connector(const Descriptor** d): blueprint(d)
     {
-        return Point2D<float>
+        LOG("BusConnector() : ");
+        for(int i = 0; i < map::cv::count; ++i)
         {
-            powf(1-t, 3) * p0.x + 3 * t * powf(1 - t, 2) * p1.x + 3 * t * t * (1 - t) * p2.x + powf(t, 3) * p3.x,
-            powf(1-t, 3) * p0.y + 3 * t * powf(1 - t, 2) * p1.y + 3 * t * t * (1 - t) * p2.y + powf(t, 3) * p3.y
-        };
+            cv[i] = std::make_unique<std::atomic<float>*[]>(blueprint.ccv[i]);
+            for(int j = 0; j < blueprint.ccv[i]; ++j) cv[i][j] = &zero;
+        }
+        #ifdef DEBUG 
+            std::cout<<"---- CC: "<<blueprint.ccv[map::cv::c]<<" IC: "<<blueprint.ccv[map::cv::i]<<" OC: "<<blueprint.ccv[map::cv::o]<<"\n";
+            std::cout<<"-- Bus initialized...\n";
+        #endif
     }
 
-};
+    std::atomic<float>* bus_connector::pin(const uint32_t& o, const map::cv::index& idx) const 
+    { 
+        auto i = blueprint.get_index(o);
+        if(i >= 0) return cv[idx][i]; 
+        return &zero;
+    }
+
+} // namespace interface
+} // namespace core
+
+

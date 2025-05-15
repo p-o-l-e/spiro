@@ -32,7 +32,7 @@ constexpr void patchcord::process()
     float t = 0.0;
     for(int i = 0; i < iterations; i++)
     {
-        point2d<float> car { interpolate_bezier(spline[0], spline[1], spline[2], spline[3], t) };
+        Point2D<float> car { interpolate_bezier(spline[0], spline[1], spline[2], spline[3], t) };
         data[i].x = car.x;
         data[i].y = car.y;
         t += inc;
@@ -41,7 +41,7 @@ constexpr void patchcord::process()
 
 patchcord::patchcord(int j = 8): iterations(j)
 {
-    data = new point2d<float>[iterations];
+    data = new Point2D<float>[iterations];
 }
 
 patchcord::~patchcord()
@@ -379,7 +379,7 @@ patchbay::~patchbay()
     delete[] io;
 }
 
-void patchbay::set_socket(const point2d<int>* o, const int& radius, const unsigned& id, const bool& route, const int& p)
+void patchbay::set_socket(const Point2D<int>* o, const int& radius, const unsigned& id, const bool& route, const int& p)
 {
     int pos = (id>>24) - 1;
     if(pos >= 0)

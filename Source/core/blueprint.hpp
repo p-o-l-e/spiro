@@ -19,28 +19,44 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-#include "vca.hpp"
+#pragma once
 
-namespace core 
-{
-    using namespace interface::vca;
-    int vca_t::idc = 0;
+#include "constants.hpp"
+#include "grid.hpp"
+#include "interface_headers.hpp"
 
-        void vca_t::process()
-        {
-            float v = ccv[ctl::amp]->load() + icv[ctl::amp]->load();
-            if      (v < 0.0f) v = 0.0f;
-            else if (v > 1.0f) v = 1.0f;
-            float o = (icv[cvi::a]->load() + icv[cvi::b]->load()) * v; 
-            ocv[cvo::a].store(o);
-            ocv[cvo::b].store(o);
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
 
-        };
 
-        vca_t::vca_t(): id(++idc)
-        {  
-            init(cc, ic, oc, module_type::vca, 0);
-        };
-        vca_t::~vca_t() {};
-    
+namespace core {
+    enum error { invalid_index = -1 };
+namespace interface {
+
+	class Blueprint
+    {
+        private:
+            const int count(const map::cv::index&, const Descriptor**) const;
+            const std::unique_ptr<int[]> set_relatives(const Descriptor**) const;
+            void calculate_hash();
+            std::unique_ptr<uint32_t[]> hash_table[map::cv::count]; 
+
+
+        public:
+            const Control get_control(const uint32_t&) const;
+            const int get_index(const uint32_t&) const;
+            const uint32_t get_hash(const map::cv::index&, const int&) const;
+            const Descriptor** descriptor;
+            const std::unique_ptr<int[]> relative; 
+            const int ccv[map::cv::count];
+            const int mc;
+
+            Blueprint(const Descriptor**);
+           ~Blueprint() { LOG("~Blueprint()"); };
+    };
 }
+} // Namespace core

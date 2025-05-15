@@ -71,7 +71,7 @@ class Display : public juce::ImageComponent
 		int lx = 0, ly = 0;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 	public:
-		core::wavering<core::point2d<float>>*	data;
+		core::wavering<core::Point2D<float>>*	data;
 		OledLabel input_box;
 		int load_page = 0;
 		int last_page = 0;
@@ -131,7 +131,7 @@ class Display : public juce::ImageComponent
 		void LoadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
-		Display(core::wavering<core::point2d<float>>*, int, int, int, int);
+		Display(core::wavering<core::Point2D<float>>*, int, int, int, int);
 	   ~Display();
 
 	   	class Listener 

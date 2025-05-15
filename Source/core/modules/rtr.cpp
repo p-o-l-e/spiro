@@ -28,30 +28,30 @@ namespace core
 
     void rotor::process()
     {
-        point3d<float> a 
+        Point3D<float> lcr
         { 
-            in[cvi::ax]->load() + 
-            in[cvi::bx]->load(),
-            in[cvi::ay]->load() +
-            in[cvi::by]->load(),
-            in[cvi::az]->load() +
-            in[cvi::bz]->load() 
+            icv[cvi::ax]->load() + 
+            icv[cvi::bx]->load(),
+            icv[cvi::ay]->load() +
+            icv[cvi::by]->load(),
+            icv[cvi::az]->load() +
+            icv[cvi::bz]->load() 
         };
 
-        float x = ctrl[ctl::x]->load() + pi * in[cvi::cvx]->load();
-        float y = ctrl[ctl::y]->load() + pi * in[cvi::cvy]->load();
-        float z = ctrl[ctl::z]->load() + pi * in[cvi::cvz]->load();
+        float x = ccv[ctl::x]->load() + pi * icv[cvi::cvx]->load();
+        float y = ccv[ctl::y]->load() + pi * icv[cvi::cvy]->load();
+        float z = ccv[ctl::z]->load() + pi * icv[cvi::cvz]->load();
 
         q.from_euler(x, y, z);
-        q.rotate_vector(a.x, a.y, a.z);
+        q.rotate_vector(lcr.x, lcr.y, lcr.z);
 
-        out[cvo::ax].store(a.x);
-        out[cvo::ay].store(a.y);
-        out[cvo::az].store(a.z);
+        ocv[cvo::ax].store(lcr.x);
+        ocv[cvo::ay].store(lcr.y);
+        ocv[cvo::az].store(lcr.z);
         
-        out[cvo::bx].store(a.x);
-        out[cvo::by].store(a.y);
-        out[cvo::bz].store(a.z);
+        ocv[cvo::bx].store(lcr.x);
+        ocv[cvo::by].store(lcr.y);
+        ocv[cvo::bz].store(lcr.z);
 
     }
 

@@ -29,14 +29,14 @@ namespace core {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Point //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-struct point2d
+struct Point2D
 {
     T x;
     T y;
 };
 
 template <typename T>
-struct point3d
+struct Point3D
 {
     T x;
     T y;
@@ -242,33 +242,33 @@ constexpr void quaternion::from_axis_angle(const float& _x, const float& _y, con
 
 
 template <typename T>
-constexpr point3d<T> RotateX(const point3d<T>& o, const T& theta) noexcept
+constexpr Point3D<T> RotateX(const Point3D<T>& o, const T& theta) noexcept
 {
-    return point3d<T> { o.l, o.c * cosf(theta) - o.r * sinf(theta), o.c * sinf(theta) + o.r * cosf(theta)};
+    return Point3D<T> { o.l, o.c * cosf(theta) - o.r * sinf(theta), o.c * sinf(theta) + o.r * cosf(theta)};
 }
 
 template <typename T>
-constexpr point3d<T> RotateY(const point3d<T>& o, const T& theta) noexcept
+constexpr Point3D<T> RotateY(const Point3D<T>& o, const T& theta) noexcept
 {
-    return point3d<T> { o.l * cosf(theta) + o.r * sinf(theta), o.c, o.r * cosf(theta) - o.l * sinf(theta)};
+    return Point3D<T> { o.l * cosf(theta) + o.r * sinf(theta), o.c, o.r * cosf(theta) - o.l * sinf(theta)};
 }
 
 template <typename T>
-constexpr point3d<T> RotateZ(const point3d<T>& o, const T& theta) noexcept
+constexpr Point3D<T> RotateZ(const Point3D<T>& o, const T& theta) noexcept
 {
-    return point3d<T> { o.l * cosf(theta) - o.c * sinf(theta), o.l * sinf(theta) + o.c * cosf(theta), o.r};
+    return Point3D<T> { o.l * cosf(theta) - o.c * sinf(theta), o.l * sinf(theta) + o.c * cosf(theta), o.r};
 }
 
 template <typename T>
-constexpr point3d<T> Rotate(const point3d<T>& o, const T& x, const T& y, const T& z) noexcept
+constexpr Point3D<T> Rotate(const Point3D<T>& o, const T& x, const T& y, const T& z) noexcept
 {
     return RotateZ(RotateY(RotateX(o, x) , y), z);
 }
 
 template<typename T> 
-constexpr point3d<T> sphericalToCartesian(const T& theta, const T& phi) noexcept
+constexpr Point3D<T> sphericalToCartesian(const T& theta, const T& phi) noexcept
 { 
-    return point3d<T> { cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta) }; 
+    return Point3D<T> { cosf(phi) * sinf(theta), sinf(phi) * sinf(theta), cosf(theta) }; 
 }; 
 
 

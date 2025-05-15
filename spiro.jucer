@@ -70,34 +70,44 @@
           <FILE id="UJ5YN3" name="vco.cpp" compile="1" resource="0" file="Source/core/modules/vco.cpp"/>
           <FILE id="p8zss0" name="vco.hpp" compile="0" resource="0" file="Source/core/modules/vco.hpp"/>
         </GROUP>
-        <FILE id="oFLMYb" name="blur.cpp" compile="1" resource="0" file="Source/core/blur.cpp"/>
-        <FILE id="yVKEWL" name="blur.hpp" compile="0" resource="0" file="Source/core/blur.hpp"/>
-        <FILE id="b5Owb6" name="cell.cpp" compile="1" resource="0" file="Source/core/cell.cpp"/>
-        <FILE id="BCR3Mm" name="cell.h" compile="0" resource="0" file="Source/core/cell.h"/>
-        <FILE id="Jcfijy" name="constants.cpp" compile="1" resource="0" file="Source/core/constants.cpp"/>
-        <FILE id="nGPJgj" name="constants.hpp" compile="0" resource="0" file="Source/core/constants.hpp"/>
-        <FILE id="t1puAl" name="containers.hpp" compile="0" resource="0" file="Source/core/containers.hpp"/>
-        <FILE id="slZOho" name="curves.hpp" compile="0" resource="0" file="Source/core/curves.hpp"/>
-        <FILE id="Ncvd5U" name="feeder.cpp" compile="1" resource="0" file="Source/core/feeder.cpp"/>
-        <FILE id="lc4xIs" name="feeder.hpp" compile="0" resource="0" file="Source/core/feeder.hpp"/>
-        <FILE id="aVSnFp" name="fonts.c" compile="1" resource="0" file="Source/core/fonts.c"/>
-        <FILE id="ezqkrJ" name="fonts.h" compile="0" resource="0" file="Source/core/fonts.h"/>
-        <FILE id="ZUOzbm" name="interface.cpp" compile="1" resource="0" file="Source/core/interface.cpp"/>
-        <FILE id="w3rc2x" name="interface.h" compile="0" resource="0" file="Source/core/interface.h"/>
-        <FILE id="tsGlue" name="iospecs.cpp" compile="1" resource="0" file="Source/core/iospecs.cpp"/>
-        <FILE id="u5Lnsi" name="iospecs.hpp" compile="0" resource="0" file="Source/core/iospecs.hpp"/>
-        <FILE id="nuzxKz" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/modmatrix.cpp"/>
-        <FILE id="DL25Ms" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/modmatrix.hpp"/>
-        <FILE id="rwojbO" name="module_headers.hpp" compile="0" resource="0"
-              file="Source/core/module_headers.hpp"/>
-        <FILE id="gBEqDw" name="interface_headers.hpp" compile="0" resource="0"
+        <FILE id="Mdp8mX" name="blueprint.cpp" compile="1" resource="0" file="Source/core/blueprint.cpp"/>
+        <FILE id="tWUqPl" name="blueprint.hpp" compile="0" resource="0" file="Source/core/blueprint.hpp"/>
+        <FILE id="wwb4lP" name="blur.cpp" compile="1" resource="0" file="Source/core/blur.cpp"/>
+        <FILE id="aiJtWY" name="blur.hpp" compile="0" resource="0" file="Source/core/blur.hpp"/>
+        <FILE id="yucPiq" name="bus.cpp" compile="1" resource="0" file="Source/core/bus.cpp"/>
+        <FILE id="gd9Yxq" name="bus.hpp" compile="0" resource="0" file="Source/core/bus.hpp"/>
+        <FILE id="RlC4PU" name="cell.cpp" compile="1" resource="0" file="Source/core/cell.cpp"/>
+        <FILE id="lpaaHo" name="cell.h" compile="0" resource="0" file="Source/core/cell.h"/>
+        <FILE id="Qp640Q" name="constants.cpp" compile="1" resource="0" file="Source/core/constants.cpp"/>
+        <FILE id="gmXUwK" name="constants.hpp" compile="0" resource="0" file="Source/core/constants.hpp"/>
+        <FILE id="ZXBqyJ" name="containers.hpp" compile="0" resource="0" file="Source/core/containers.hpp"/>
+        <FILE id="lGXejF" name="curves.hpp" compile="0" resource="0" file="Source/core/curves.hpp"/>
+        <FILE id="wF3Iyi" name="feeder.cpp" compile="1" resource="0" file="Source/core/feeder.cpp"/>
+        <FILE id="JT046F" name="feeder.hpp" compile="0" resource="0" file="Source/core/feeder.hpp"/>
+        <FILE id="vZG1By" name="fonts.c" compile="1" resource="0" file="Source/core/fonts.c"/>
+        <FILE id="tzSwWr" name="fonts.h" compile="0" resource="0" file="Source/core/fonts.h"/>
+        <FILE id="zHMfiB" name="grid.cpp" compile="1" resource="0" file="Source/core/grid.cpp"/>
+        <FILE id="lg5SDd" name="grid.hpp" compile="0" resource="0" file="Source/core/grid.hpp"/>
+        <FILE id="t6OjGG" name="interface.cpp" compile="1" resource="0" file="Source/core/interface.cpp"/>
+        <FILE id="Ul7Yne" name="interface.h" compile="0" resource="0" file="Source/core/interface.h"/>
+        <FILE id="Yjk5At" name="interface_headers.hpp" compile="0" resource="0"
               file="Source/core/interface_headers.hpp"/>
-        <FILE id="aEeSFO" name="primitives.hpp" compile="0" resource="0" file="Source/core/primitives.hpp"/>
-        <FILE id="LxuYU1" name="scales.h" compile="0" resource="0" file="Source/core/scales.h"/>
-        <FILE id="eSmYzu" name="spawner.cpp" compile="1" resource="0" file="Source/core/spawner.cpp"/>
-        <FILE id="aBGXWK" name="spawner.hpp" compile="0" resource="0" file="Source/core/spawner.hpp"/>
-        <FILE id="hR0Jub" name="utility.cpp" compile="1" resource="0" file="Source/core/utility.cpp"/>
-        <FILE id="Kqobvy" name="utility.hpp" compile="0" resource="0" file="Source/core/utility.hpp"/>
+        <FILE id="bK7wlT" name="iospecs.cpp" compile="1" resource="0" file="Source/core/iospecs.cpp"/>
+        <FILE id="tVKXrT" name="iospecs.hpp" compile="0" resource="0" file="Source/core/iospecs.hpp"/>
+        <FILE id="B3W00O" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/modmatrix.cpp"/>
+        <FILE id="Dkxq1X" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/modmatrix.hpp"/>
+        <FILE id="uTeAl7" name="module_headers.hpp" compile="0" resource="0"
+              file="Source/core/module_headers.hpp"/>
+        <FILE id="fie1XH" name="primitives.hpp" compile="0" resource="0" file="Source/core/primitives.hpp"/>
+        <FILE id="zmkbwk" name="rack.cpp" compile="1" resource="0" file="Source/core/rack.cpp"/>
+        <FILE id="Krjc6g" name="rack.hpp" compile="0" resource="0" file="Source/core/rack.hpp"/>
+        <FILE id="GnlEBb" name="scales.h" compile="0" resource="0" file="Source/core/scales.h"/>
+        <FILE id="ZflM2H" name="spawner.cpp" compile="1" resource="0" file="Source/core/spawner.cpp"/>
+        <FILE id="OLGt4z" name="spawner.hpp" compile="0" resource="0" file="Source/core/spawner.hpp"/>
+        <FILE id="zq2NEh" name="uid.cpp" compile="1" resource="0" file="Source/core/uid.cpp"/>
+        <FILE id="eDBacB" name="uid.hpp" compile="0" resource="0" file="Source/core/uid.hpp"/>
+        <FILE id="xYBxYT" name="utility.cpp" compile="1" resource="0" file="Source/core/utility.cpp"/>
+        <FILE id="SolIaS" name="utility.hpp" compile="0" resource="0" file="Source/core/utility.hpp"/>
       </GROUP>
       <GROUP id="{22DBE737-6B22-673F-F2EE-8E243637B1D5}" name="assets">
         <FILE id="WHBRTE" name="bg.png" compile="0" resource="1" file="Source/assets/bg.png"/>

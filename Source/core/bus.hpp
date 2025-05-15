@@ -19,20 +19,31 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
-#include <cmath>
-#include "containers.hpp"
+#include "blueprint.hpp"
+#ifdef DEBUG_MODE
+    #include <iostream>
+    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
+#else
+    #define LOG(x)
+#endif
 
-namespace core {
 
-    constexpr Point2D<float> interpolate_bezier(const Point2D<float>& p0, const Point2D<float>& p1, const Point2D<float>& p2, const Point2D<float>& p3, const float& t) noexcept // t always lies between 0 and 1
-    {
-        return Point2D<float>
+
+namespace core 
+{
+    namespace interface
+    {   
+        struct bus_connector
         {
-            powf(1-t, 3) * p0.x + 3 * t * powf(1 - t, 2) * p1.x + 3 * t * t * (1 - t) * p2.x + powf(t, 3) * p3.x,
-            powf(1-t, 3) * p0.y + 3 * t * powf(1 - t, 2) * p1.y + 3 * t * t * (1 - t) * p2.y + powf(t, 3) * p3.y
+            private:
+                std::unique_ptr<std::atomic<float>*[]> cv[map::cv::count];
+
+            public:
+                const Blueprint blueprint;
+                std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;
+                bus_connector(const Descriptor**);
+               ~bus_connector() { LOG("~BusConnector()"); };
         };
     }
-
-};
+}

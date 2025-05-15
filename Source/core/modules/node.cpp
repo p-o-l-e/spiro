@@ -24,34 +24,27 @@
 
 namespace core
 {
-
-    void module::set_uid(const module_type& t, const uint8_t& id)
-    {
-        int i { 0 };
-        int n { 0 };
-        uint32_t mi = get_module_index(module_type::vco, id);
-        mi <<= 16;
-        for(; i < _cs; ++i) 
-        {
-            uint32_t f { mi + get_parameter_index(parameter_type::ctrl, n) };
-            uid[n] = f;
-            ++n;
-        }
-        for(; i < _is; ++i) 
-        {
-            uint32_t f { mi + get_parameter_index(parameter_type::in, n) };
-            uid[n] = f;
-            ++n;
-        }
-        for(; i < _os; ++i) 
-        {
-            uint32_t f { mi + get_parameter_index(parameter_type::out, n) };
-            uid[n] = f;
-            ++n;
-        }
-    }
-
     module::~module() = default;
+
+    void module::fuse() 
+    {
+        for(int i = 0; i < _is; ++i) icv[i] = &zero;
+        for(int i = 0; i < _cs; ++i) ccv[i] = &zero;
+        for(int i = 0; i < _os; ++i) ocv[i].store(0.0f);
+    };
+
+    void module::init(const size_t& ctrls, const size_t& ins, const size_t& outs, const module_type& t, const uint8_t& id) noexcept 
+    {
+        ccv = std::make_unique<std::atomic<float>*[]>(ctrls);
+        icv = std::make_unique<std::atomic<float>*[]>(ins);
+        ocv = std::make_unique<std::atomic<float> []>(outs);
+        _cs = ctrls;
+        _is = ins;
+        _os = outs;
+        fuse();
+        type = t;
+        position = id;
+    }
 
     std::atomic<float>* rack_t::get_output_pin(const uint32_t&) const
     {
@@ -71,7 +64,7 @@ namespace core
                 }
             }
         }
-        return &node[i]->out[pin_pos];
+        return &node[i]->ocv[pin_pos];
     }
 
     std::atomic<float>** rack_t::get_input_pin(const uint32_t&) const
@@ -91,7 +84,7 @@ namespace core
                 }
             }
         }
-        return &node[i]->in[pin_pos];
+        return &node[i]->icv[pin_pos];
     }
 
     std::atomic<float>** rack_t::get_ctrl_pin(const uint32_t&) const
@@ -111,7 +104,7 @@ namespace core
                 }
             }
         }
-        return &node[i]->ctrl[pin_pos];
+        return &node[i]->ccv[pin_pos];
     }
 
 

@@ -28,17 +28,17 @@ namespace core
 
             void mixer::process()
             {
-                point3d<float> lcr
+                Point3D<float> lcr
                 { 
-                    in[cvi::l]->load(), 
-                    in[cvi::c]->load(), 
-                    in[cvi::r]->load() 
+                    icv[cvi::l]->load(), 
+                    icv[cvi::c]->load(), 
+                    icv[cvi::r]->load() 
                 };
-                float lc = ctrl[ctl::alpha]->load() + in[cvi::alpha]->load();
-                float cr = ctrl[ctl::theta]->load() + in[cvi::theta]->load();
-                point2d<float> lr = c3c2(lcr, lc, cr);
-                out[cvo::l].store(lr.x * ctrl[ctl::amp]->load());
-                out[cvo::r].store(lr.y * ctrl[ctl::amp]->load());
+                float lc = ccv[ctl::alpha]->load() + icv[cvi::alpha]->load();
+                float cr = ccv[ctl::theta]->load() + icv[cvi::theta]->load();
+                Point2D<float> lr = c3c2(lcr, lc, cr);
+                ocv[cvo::l].store(lr.x * ccv[ctl::amp]->load());
+                ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
             }
 
             mixer::mixer(): id(++idc)

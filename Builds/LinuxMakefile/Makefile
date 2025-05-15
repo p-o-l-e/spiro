@@ -100,15 +100,20 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/vcd_1d9c7148.o \
   $(JUCE_OBJDIR)/vcf_1db8a04a.o \
   $(JUCE_OBJDIR)/vco_1e3773d3.o \
+  $(JUCE_OBJDIR)/blueprint_401eea0c.o \
   $(JUCE_OBJDIR)/blur_b7d1ded8.o \
+  $(JUCE_OBJDIR)/bus_6fe60279.o \
   $(JUCE_OBJDIR)/cell_9db74253.o \
   $(JUCE_OBJDIR)/constants_d4612c8.o \
   $(JUCE_OBJDIR)/feeder_ca02003c.o \
   $(JUCE_OBJDIR)/fonts_391b6c3d.o \
+  $(JUCE_OBJDIR)/grid_e75db237.o \
   $(JUCE_OBJDIR)/interface_cf62e9b2.o \
   $(JUCE_OBJDIR)/iospecs_a43213ab.o \
   $(JUCE_OBJDIR)/modmatrix_4978dcbc.o \
+  $(JUCE_OBJDIR)/rack_d0e64148.o \
   $(JUCE_OBJDIR)/spawner_b3369b61.o \
+  $(JUCE_OBJDIR)/uid_47aee049.o \
   $(JUCE_OBJDIR)/utility_eb187d65.o \
   $(JUCE_OBJDIR)/EnvelopeDisplay_4e196233.o \
   $(JUCE_OBJDIR)/ListSlider_790c9528.o \
@@ -231,9 +236,19 @@ $(JUCE_OBJDIR)/vco_1e3773d3.o: ../../Source/core/modules/vco.cpp
 	@echo "Compiling vco.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/blueprint_401eea0c.o: ../../Source/core/blueprint.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling blueprint.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/blur_b7d1ded8.o: ../../Source/core/blur.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling blur.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/bus_6fe60279.o: ../../Source/core/bus.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling bus.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/cell_9db74253.o: ../../Source/core/cell.cpp
@@ -256,6 +271,11 @@ $(JUCE_OBJDIR)/fonts_391b6c3d.o: ../../Source/core/fonts.c
 	@echo "Compiling fonts.c"
 	$(V_AT)$(CC) $(JUCE_CFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/grid_e75db237.o: ../../Source/core/grid.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling grid.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/interface_cf62e9b2.o: ../../Source/core/interface.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling interface.cpp"
@@ -271,9 +291,19 @@ $(JUCE_OBJDIR)/modmatrix_4978dcbc.o: ../../Source/core/modmatrix.cpp
 	@echo "Compiling modmatrix.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/rack_d0e64148.o: ../../Source/core/rack.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling rack.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/spawner_b3369b61.o: ../../Source/core/spawner.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling spawner.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/uid_47aee049.o: ../../Source/core/uid.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling uid.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/utility_eb187d65.o: ../../Source/core/utility.cpp

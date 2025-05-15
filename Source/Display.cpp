@@ -55,7 +55,7 @@ void Display::Scope()
             ly = lp.y * gain + cy;
             for(unsigned i = 0; i < data->segments; i++)
             {
-                core::point2d<float> f = data->get();
+                core::Point2D<float> f = data->get();
                 float x = f.x * gain * 2.0f + cx;
                 float y = f.y * gain * 2.0f + cy;
                 lineSDFAABB(canvas.get(), lx, ly, x, y, 0.8f/(i+1), 0.01f/(i+1)) ;
@@ -208,7 +208,7 @@ void Display::ChaosMenu(core::map_t* chs, int id)
 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
-	core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::cso::ctrl::form)]->load()], 70, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ccv[static_cast<int>(interface::cso::ctrl::form)]->load()], 70, 30, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -226,7 +226,7 @@ void Display::LFOMenu(core::lfo_t* lfo, int id)
 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
-	core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctl::form)]->load())], 70, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ccv[static_cast<int>(core::interface::lfo::ctl::form)]->load())], 70, 30, contrast);
 
 	vWind(FU, SU, SD, FD);
 	hWind(FL, SL, SR, FR);
@@ -287,15 +287,15 @@ void Display::VCOMenu(core::oscillator* o, int id)
 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "FORM: ", 50, 30, contrast);
-	core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ctrl[static_cast<int>(core::interface::vco::ctl::form)]->load())], 90, 30, contrast);
+	core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ccv[static_cast<int>(core::interface::vco::ctl::form)]->load())], 90, 30, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "MODE: ", 50, 40, contrast);
 
-    if(o->ctrl[static_cast<int>(core::interface::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
+    if(o->ccv[static_cast<int>(core::interface::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
 	else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
-	juce::String oct ( *o->ctrl[static_cast<int>(core::interface::vco::ctl::octave)] * 10.0f);
+	juce::String oct ( *o->ccv[static_cast<int>(core::interface::vco::ctl::octave)] * 10.0f);
 	core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
 
 	vWind(FU, SU, SD, FD);
@@ -340,7 +340,7 @@ void Display::resized()
 	reset();
 }
 
-Display::Display(core::wavering<core::point2d<float>>* buf, int x, int y, int w, int h): data(buf)
+Display::Display(core::wavering<core::Point2D<float>>* buf, int x, int y, int w, int h): data(buf)
 {
 	area.x = x;
 	area.y = y;

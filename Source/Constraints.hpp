@@ -79,8 +79,8 @@ struct main_window_constraints
 
 struct window
 {
-    core::point2d<float>     pot_a { 48, 48 };
-    core::point2d<float>     pot_b { 32, 32 };
+    core::Point2D<float>     pot_a { 48, 48 };
+    core::Point2D<float>     pot_b { 32, 32 };
 
     core::Rectangle<float> vco_a { 26,  6, 152, 304 };
     core::Rectangle<float> vco_b { 20, 20, 100, 200 };
@@ -345,9 +345,9 @@ const std::map<interface::parameter_list, parameter_descriptor> parameter_list
 
 const int col[7] = { 8, 38, 68, 98, 128, 158, 188 };
 
-inline core::point2d<int> place_socket(const window* w, int x, int y)
+inline core::Point2D<int> place_socket(const window* w, int x, int y)
 {
-    return core::point2d<int>
+    return core::Point2D<int>
     {
         w->sck_offset_x + w->sck_gap_x * x,
         w->sck_offset_y + w->sck_gap_y * y
@@ -355,7 +355,7 @@ inline core::point2d<int> place_socket(const window* w, int x, int y)
 }
 
 
-const std::map<interface::socket_list, core::point2d<int>> socket_pos
+const std::map<interface::socket_list, core::Point2D<int>> socket_pos
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Inputs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,34 +386,34 @@ const std::map<interface::socket_list, core::point2d<int>> socket_pos
 	{ interface::socket_list::chs_b_in_wm, place_socket(&mw, 38,  0) },
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LCR ins ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::socket_list::lcr_in_l_a, 	core::point2d<int> 	{14 + 38 * 20, col[3] }},  
-	{ interface::socket_list::lcr_in_c_a, 	core::point2d<int> 	{14 + 38 * 21, col[3] }},  
-	{ interface::socket_list::lcr_in_r_a, 	core::point2d<int> 	{14 + 38 * 22, col[3] }}, 
+	{ interface::socket_list::lcr_in_l_a, 	core::Point2D<int> 	{14 + 38 * 20, col[3] }},  
+	{ interface::socket_list::lcr_in_c_a, 	core::Point2D<int> 	{14 + 38 * 21, col[3] }},  
+	{ interface::socket_list::lcr_in_r_a, 	core::Point2D<int> 	{14 + 38 * 22, col[3] }}, 
 
-	{ interface::socket_list::lcr_in_l_b, 	core::point2d<int> 	{14 + 38 * 20, col[2] }},  
-	{ interface::socket_list::lcr_in_c_b, 	core::point2d<int> 	{14 + 38 * 21, col[2] }},
-	{ interface::socket_list::lcr_in_r_b, 	core::point2d<int> 	{14 + 38 * 22, col[2] }},
+	{ interface::socket_list::lcr_in_l_b, 	core::Point2D<int> 	{14 + 38 * 20, col[2] }},  
+	{ interface::socket_list::lcr_in_c_b, 	core::Point2D<int> 	{14 + 38 * 21, col[2] }},
+	{ interface::socket_list::lcr_in_r_b, 	core::Point2D<int> 	{14 + 38 * 22, col[2] }},
 
-	{ interface::socket_list::lcr_out_l_a, 	core::point2d<int> 	{33 + 38 * 20, col[5] }},  
-	{ interface::socket_list::lcr_out_c_a, 	core::point2d<int> 	{33 + 38 * 21, col[5] }},
-	{ interface::socket_list::lcr_out_r_a, 	core::point2d<int> 	{33 + 38 * 22, col[5] }},
+	{ interface::socket_list::lcr_out_l_a, 	core::Point2D<int> 	{33 + 38 * 20, col[5] }},  
+	{ interface::socket_list::lcr_out_c_a, 	core::Point2D<int> 	{33 + 38 * 21, col[5] }},
+	{ interface::socket_list::lcr_out_r_a, 	core::Point2D<int> 	{33 + 38 * 22, col[5] }},
 
-	{ interface::socket_list::lcr_out_l_b, 	core::point2d<int> 	{33 + 38 * 20, col[4] }},  
-	{ interface::socket_list::lcr_out_c_b, 	core::point2d<int> 	{33 + 38 * 21, col[4] }},
-	{ interface::socket_list::lcr_out_r_b, 	core::point2d<int> 	{33 + 38 * 22, col[4] }},
+	{ interface::socket_list::lcr_out_l_b, 	core::Point2D<int> 	{33 + 38 * 20, col[4] }},  
+	{ interface::socket_list::lcr_out_c_b, 	core::Point2D<int> 	{33 + 38 * 21, col[4] }},
+	{ interface::socket_list::lcr_out_r_b, 	core::Point2D<int> 	{33 + 38 * 22, col[4] }},
 
-	{ interface::socket_list::lcr_cv_l, 	core::point2d<int> 	{14 + 38 * 20, col[6] }},  
-	{ interface::socket_list::lcr_cv_c, 	core::point2d<int> 	{14 + 38 * 21, col[6] }},
-	{ interface::socket_list::lcr_cv_r, 	core::point2d<int> 	{14 + 38 * 22, col[6] }},
+	{ interface::socket_list::lcr_cv_l, 	core::Point2D<int> 	{14 + 38 * 20, col[6] }},  
+	{ interface::socket_list::lcr_cv_c, 	core::Point2D<int> 	{14 + 38 * 21, col[6] }},
+	{ interface::socket_list::lcr_cv_r, 	core::Point2D<int> 	{14 + 38 * 22, col[6] }},
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Mix ins ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	{ interface::socket_list::mix_in_l, 	core::point2d<int> 	{918,  53}},  
-	{ interface::socket_list::mix_in_c, 	core::point2d<int> 	{918,  83}},  
-	{ interface::socket_list::mix_in_r, 	core::point2d<int> 	{918, 113}}, 
+	{ interface::socket_list::mix_in_l, 	core::Point2D<int> 	{918,  53}},  
+	{ interface::socket_list::mix_in_c, 	core::Point2D<int> 	{918,  83}},  
+	{ interface::socket_list::mix_in_r, 	core::Point2D<int> 	{918, 113}}, 
 
-	{ interface::socket_list::mix_lc_cv, 	core::point2d<int> 	{888,  col[2] }},
-	{ interface::socket_list::mix_cr_cv, 	core::point2d<int> 	{888,  col[3] }},
+	{ interface::socket_list::mix_lc_cv, 	core::Point2D<int> 	{888,  col[2] }},
+	{ interface::socket_list::mix_cr_cv, 	core::Point2D<int> 	{888,  col[3] }},
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VCFs ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

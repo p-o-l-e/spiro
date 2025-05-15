@@ -28,8 +28,8 @@ namespace core
 
     void sigma::process()
     {
-        out[cvo::a].store(in[cvi::a]->load() + in[cvi::b]->load());
-        out[cvo::b].store(out[cvo::a]);
+        ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
+        ocv[cvo::b].store(ocv[cvo::a]);
     };
 
     sigma::sigma(): id(++idc)

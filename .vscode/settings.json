@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "atomic": "cpp"
+        "atomic": "cpp",
+        "format": "cpp",
+        "*.mm": "cpp"
     }
 }

@@ -28,7 +28,7 @@ int map_t::idc = 0;
 
 void map_t::process()
 {
-    int f = (int)ctrl[static_cast<int>(interface::cso::ctrl::form)]->load();
+    int f = (int)ccv[static_cast<int>(interface::cso::ctrl::form)]->load();
 
     if(_reset)
     {
@@ -63,9 +63,9 @@ void map_t::sprott_reset()
 
 void map_t::sprott() 
 {
-    f[4] = (ctrl[static_cast<int>(interface::cso::ctrl::tune)]->load() + ctrl[static_cast<int>(interface::cso::in::fm)]->load() * 0.1f ) * 0.2f + 0.0001f;
-    if(ctrl[static_cast<int>(interface::cso::in::warp)] == &zero) f[2] = 0.1f + ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load();
-    else f[2] = 0.1f + ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() * ctrl[static_cast<int>(interface::cso::in::warp)]->load();
+    f[4] = (ccv[static_cast<int>(interface::cso::ctrl::tune)]->load() + ccv[static_cast<int>(interface::cso::in::fm)]->load() * 0.1f ) * 0.2f + 0.0001f;
+    if(ccv[static_cast<int>(interface::cso::in::warp)] == &zero) f[2] = 0.1f + ccv[static_cast<int>(interface::cso::ctrl::warp)]->load();
+    else f[2] = 0.1f + ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() * ccv[static_cast<int>(interface::cso::in::warp)]->load();
 
     f[5] += f[4] * f[6] * f[0];
     f[6] += f[4] * (- f[6] * f[7] - f[5]);
@@ -79,9 +79,9 @@ void map_t::sprott()
     }
     else
     {
-        out[static_cast<int>(interface::cso::out::x)].store(f[5] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
-        out[static_cast<int>(interface::cso::out::y)].store(f[6] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
-        out[static_cast<int>(interface::cso::out::z)].store(f[7] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
+        ocv[static_cast<int>(interface::cso::out::x)].store(f[5] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
+        ocv[static_cast<int>(interface::cso::out::y)].store(f[6] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
+        ocv[static_cast<int>(interface::cso::out::z)].store(f[7] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.4f);
     }
 }
 
@@ -98,9 +98,9 @@ void map_t::helmholz_reset()
 
 void map_t::helmholz() 
 {
-    f[2] = (ctrl[static_cast<int>(interface::cso::ctrl::tune)]->load() + ctrl[static_cast<int>(interface::cso::in::fm)]->load() * 0.1f ) * 0.2f + 0.01f;
-    if(ctrl[static_cast<int>(interface::cso::in::warp)] == &zero) f[1] = ((ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() - 0.5f) * 0.03f) + 0.55f;
-    else f[1] = ((ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ctrl[static_cast<int>(interface::cso::in::warp)]->load()) - 0.5f) * 0.03f) + 0.55f;
+    f[2] = (ccv[static_cast<int>(interface::cso::ctrl::tune)]->load() + ccv[static_cast<int>(interface::cso::in::fm)]->load() * 0.1f ) * 0.2f + 0.01f;
+    if(ccv[static_cast<int>(interface::cso::in::warp)] == &zero) f[1] = ((ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() - 0.5f) * 0.03f) + 0.55f;
+    else f[1] = ((ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ccv[static_cast<int>(interface::cso::in::warp)]->load()) - 0.5f) * 0.03f) + 0.55f;
 
         f[5] += f[2] * f[6];
         f[6] += f[2] * f[0] * f[7];
@@ -114,9 +114,9 @@ void map_t::helmholz()
     }
     else
     {     
-        out[static_cast<int>(interface::cso::out::x)].store(f[5] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
-        out[static_cast<int>(interface::cso::out::y)].store(f[6] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
-        out[static_cast<int>(interface::cso::out::z)].store(f[7] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
+        ocv[static_cast<int>(interface::cso::out::x)].store(f[5] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
+        ocv[static_cast<int>(interface::cso::out::y)].store(f[6] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
+        ocv[static_cast<int>(interface::cso::out::z)].store(f[7] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 3.0f);
     }
 }
 
@@ -133,9 +133,9 @@ void map_t::halvorsen_reset()
 
 void map_t::halvorsen()
 {
-    f[1] = (ctrl[static_cast<int>(interface::cso::ctrl::tune)]->load() + ctrl[static_cast<int>(interface::cso::in::fm)]->load() * 0.01f) * 0.02f + 0.00001f;
-    if(ctrl[static_cast<int>(interface::cso::in::warp)] == &zero) f[0] = 1.4f + ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load();
-    else f[0] = 1.4f + ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ctrl[static_cast<int>(interface::cso::in::warp)]->load());
+    f[1] = (ccv[static_cast<int>(interface::cso::ctrl::tune)]->load() + ccv[static_cast<int>(interface::cso::in::fm)]->load() * 0.01f) * 0.02f + 0.00001f;
+    if(ccv[static_cast<int>(interface::cso::in::warp)] == &zero) f[0] = 1.4f + ccv[static_cast<int>(interface::cso::ctrl::warp)]->load();
+    else f[0] = 1.4f + ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ccv[static_cast<int>(interface::cso::in::warp)]->load());
 
     f[5] += f[1] * ( - f[0] * f[5] - 4.0f * f[6] - 4.0f * f[7] - f[6] * f[6]);
     f[6] += f[1] * ( - f[0] * f[6] - 4.0f * f[7] - 4.0f * f[5] - f[7] * f[7]);
@@ -149,9 +149,9 @@ void map_t::halvorsen()
     }
     else
     {
-        out[static_cast<int>(interface::cso::out::x)].store(f[5] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
-        out[static_cast<int>(interface::cso::out::y)].store(f[6] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
-        out[static_cast<int>(interface::cso::out::z)].store(f[7] * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
+        ocv[static_cast<int>(interface::cso::out::x)].store(f[5] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
+        ocv[static_cast<int>(interface::cso::out::y)].store(f[6] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
+        ocv[static_cast<int>(interface::cso::out::z)].store(f[7] * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.5f);
     }
 
 }
@@ -173,10 +173,10 @@ void map_t::tsucs_reset()
 
 void map_t::tsucs()
 {
-    if(ctrl[static_cast<int>(interface::cso::in::warp)] == &zero) f[7] = ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() / 8.0f + 0.55f;
-    else f[7] = ctrl[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ctrl[static_cast<int>(interface::cso::in::warp)]->load())  / 8.0f + 0.55f;
+    if(ccv[static_cast<int>(interface::cso::in::warp)] == &zero) f[7] = ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() / 8.0f + 0.55f;
+    else f[7] = ccv[static_cast<int>(interface::cso::ctrl::warp)]->load() * fabsf(ccv[static_cast<int>(interface::cso::in::warp)]->load())  / 8.0f + 0.55f;
 
-    f[8] = (ctrl[static_cast<int>(interface::cso::ctrl::tune)]->load() + ctrl[static_cast<int>(interface::cso::in::fm)]->load() * 0.01f) / 100.0f + 0.00001f;
+    f[8] = (ccv[static_cast<int>(interface::cso::ctrl::tune)]->load() + ccv[static_cast<int>(interface::cso::in::fm)]->load() * 0.01f) / 100.0f + 0.00001f;
 
         f[0] += f[8] * (f[3] * (f[1] - f[0]) + f[4] * f[0] * f[2]);
         f[1] += f[8] * (f[5] *  f[1] - f[0]  * f[2]);
@@ -190,9 +190,9 @@ void map_t::tsucs()
     }
     else
     {
-        out[static_cast<int>(interface::cso::out::x)].store((f[0]) * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
-        out[static_cast<int>(interface::cso::out::y)].store((f[1]) * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
-        out[static_cast<int>(interface::cso::out::z)].store((f[2] - 45.0f) * ctrl[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
+        ocv[static_cast<int>(interface::cso::out::x)].store((f[0]) * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
+        ocv[static_cast<int>(interface::cso::out::y)].store((f[1]) * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
+        ocv[static_cast<int>(interface::cso::out::z)].store((f[2] - 45.0f) * ccv[static_cast<int>(interface::cso::ctrl::amp)]->load() * 0.05f);
     }
 }
 

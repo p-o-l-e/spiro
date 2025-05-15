@@ -52,8 +52,8 @@ namespace core {
    
     struct patchcord
     {
-        point2d<float>* data;               // Rendered spline
-        point2d<float> spline[4];           // Control points
+        Point2D<float>* data;               // Rendered spline
+        Point2D<float> spline[4];           // Control points
         const int segments = 4;             // # Segments
         const int iterations;               // Precision
         bool focused = false;
@@ -108,7 +108,7 @@ namespace core {
 
             int inputs, outputs;            // Number of inpunts and outputs
             
-            void set_socket(const point2d<int>*, const int&, const unsigned&, const bool&, const int&);
+            void set_socket(const Point2D<int>*, const int&, const unsigned&, const bool&, const int&);
             void drag(const float&, const float&);
             void draw();
             int  down_test(const float&, const float&, const int&);

@@ -93,7 +93,7 @@ class SpiroSynth: public juce::AudioProcessor
         core::feeder feed;
         std::unique_ptr<Sockets> sockets;
 
-        std::unique_ptr<core::wavering<core::point2d<float>>> c_buffer;
+        std::unique_ptr<core::wavering<core::Point2D<float>>> c_buffer;
         
         bool armed = false;
 

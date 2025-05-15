@@ -30,8 +30,8 @@ namespace core
     vcf_t::vcf_t(): id(++idc) 
     { 
         init(cc, ic, oc, module_type::vcf, id);
-        for(int i = 0; i < interface::vcf::ic; ++i) in[i] = &zero;
-        for(int i = 0; i < interface::vcf::cc; ++i) ctrl[i] = &zero;
+        for(int i = 0; i < interface::vcf::ic; ++i) icv[i] = &zero;
+        for(int i = 0; i < interface::vcf::cc; ++i) ccv[i] = &zero;
 
         reset(); 
     }
@@ -49,11 +49,11 @@ namespace core
 
     void vcf_t::process()
     {
-        float cutoff = ctrl[ctl::cutoff]->load() + in[cvi::cutoff]->load();
+        float cutoff = ccv[ctl::cutoff]->load() + icv[cvi::cutoff]->load();
         if      (cutoff < 0.0f) cutoff = 0.0f;
         else if (cutoff > 1.0f) cutoff = 1.0f;
 
-        float Q = ctrl[ctl::Q]->load() + in[ctl::Q]->load();
+        float Q = ccv[ctl::Q]->load() + icv[ctl::Q]->load();
         if      (Q < 0.0f) Q = 0.0f;
         else if (Q > 1.0f) Q = 1.0f;
 
@@ -62,14 +62,14 @@ namespace core
         a = 1.0f / (1.0f + g * (g + k));
         b = g * a;
 
-        float is = in[cvi::a]->load() + in[cvi::b]->load() + in[cvi::c]->load();
+        float is = icv[cvi::a]->load() + icv[cvi::b]->load() + icv[cvi::c]->load();
         float va = a * iceq[0] + b * (is - iceq[1]);
         float vb = iceq[1] + g * va;
         iceq[0]  = 2.0f * va - iceq[0];
         iceq[1]  = 2.0f * vb - iceq[1];
 
-        out[cvo::lp].store(vb);
-        out[cvo::bp].store(va);
-        out[cvo::hp].store(is - k * va - vb);
+        ocv[cvo::lp].store(vb);
+        ocv[cvo::bp].store(va);
+        ocv[cvo::hp].store(is - k * va - vb);
     }
 };

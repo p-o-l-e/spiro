@@ -28,26 +28,26 @@ int snh_t::idc = 0;
 
 void snh_t::process()
 {
-    if(in[static_cast<int>(interface::snh::in::time)] == &zero)
+    if(icv[static_cast<int>(interface::snh::in::time)] == &zero)
     {
         if (t > (scale * float(settings::sample_rate) / 1000.0f))
         {
             t = 0.0f;
-            out[static_cast<int>(interface::snh::out::a)].store(in[static_cast<int>(interface::snh::in::a)]->load() 
-                                                              + in[static_cast<int>(interface::snh::in::b)]->load());
+            ocv[static_cast<int>(interface::snh::out::a)].store(icv[static_cast<int>(interface::snh::in::a)]->load() 
+                                                              + icv[static_cast<int>(interface::snh::in::b)]->load());
         }
-        t += (1.0f - ctrl[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f);
+        t += (1.0f - ccv[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f);
     }
     else
     {
         if (t > (scale * float(settings::sample_rate) / 1000.0f))
         {
             t = 0.0f;
-            out[static_cast<int>(interface::snh::out::a)].store(in[static_cast<int>(interface::snh::in::a)]->load() 
-                                                              + in[static_cast<int>(interface::snh::in::b)]->load());
+            ocv[static_cast<int>(interface::snh::out::a)].store(icv[static_cast<int>(interface::snh::in::a)]->load() 
+                                                              + icv[static_cast<int>(interface::snh::in::b)]->load());
         }
-        t += ((1.0f - ctrl[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f)
-                    * fabsf(in[static_cast<int>(interface::snh::in::time)]->load()));
+        t += ((1.0f - ccv[static_cast<int>(interface::snh::ctrl::time)]->load() * 0.99f)
+                    * fabsf(icv[static_cast<int>(interface::snh::in::time)]->load()));
     }
 }
 

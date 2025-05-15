@@ -53,47 +53,19 @@ namespace core
     class module
     {
         private:
-            // std::unique_ptr<uid_t[]> uid;     // Unique ID
             size_t _cs = 0; // Controls
             size_t _is = 0; // Inputs
             size_t _os = 0; // Outputs
             module_type type = module_type::disconnected;
 
         public:
-            size_t controls() const { return _cs; }
-            size_t inputs()   const { return _is; }
-            size_t outputs()  const { return _os; }
             int position;
-            std::unique_ptr<std::uint32_t[]>       uid;     // Unique ID
-            std::unique_ptr<std::atomic<float>*[]> ctrl;    // Parameters
-            std::unique_ptr<std::atomic<float>*[]> in;      // Inputs
-            std::unique_ptr<std::atomic<float> []> out;     // Outputs
-
-            void set_uid(const module_type&, const uint8_t&);
-            // uid_t get_uid(const int& pin) const { return uid[pin]; }
-
-                                                           
-            virtual void fuse() 
-            {
-                for(int i = 0; i < _is; ++i)  in[i] = &zero;
-                for(int i = 0; i < _cs; ++i)  ctrl[i] = &zero;
-                for(int i = 0; i < _os; ++i)  out[i].store(0.0f);
-            };
-
-            void init(const size_t& ctrls, const size_t& ins, const size_t& outs, const module_type& t, const uint8_t& id) noexcept 
-            {
-                ctrl = std::make_unique<std::atomic<float>*[]>(ctrls);
-                in   = std::make_unique<std::atomic<float>*[]>(ins);
-                out  = std::make_unique<std::atomic<float> []>(outs);
-                uid  = std::make_unique<std::uint32_t[]>(ctrls + ins + outs);
-                _cs = ctrls;
-                _is = ins;
-                _os = outs;
-                fuse();
-                type = t;
-                position = id;
-                set_uid(type, id);
-            }
+            std::unique_ptr<std::atomic<float>*[]> ccv;         // Controls
+            std::unique_ptr<std::atomic<float>*[]> icv;         // Inputs
+            std::unique_ptr<std::atomic<float> []> ocv;         // Outputs
+                                    
+            virtual void fuse();
+            void init(const size_t&, const size_t&, const size_t&, const module_type&, const uint8_t&) noexcept;
             virtual void process() {};
 
             module() {};

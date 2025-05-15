@@ -32,14 +32,14 @@ using namespace interface::pdt;
         float s = 1.0f;
         for(int i = 0; i < ic; ++i)
         {
-            if(in[i] == &zero) continue;
+            if(icv[i] == &zero) continue;
             else 
             {
-                s *= in[i]->load();
+                s *= icv[i]->load();
                 o = true;
             }
         }
-        out[0].store( o ? s : 0.0f);
+        ocv[0].store( o ? s : 0.0f);
     };
 
     product::product(): id(++idc)
