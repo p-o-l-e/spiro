@@ -45,7 +45,7 @@ void map_t::switch_wave(const int& w)
 
 map_t::map_t(): id(++idc)
 {
-    init(interface::cso::ctrls, interface::cso::ins, interface::cso::outs, module_type::cso, id);
+    init(interface::cso::ctrls, interface::cso::ins, interface::cso::outs, map::module::type::cso, id);
 }
 
 void map_t::sprott_reset()

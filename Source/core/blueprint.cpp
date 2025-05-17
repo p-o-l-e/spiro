@@ -37,7 +37,7 @@ namespace interface
     {
         auto j = static_cast<core::map::cv::index>(core::extract_byte(hash, shift::mt));
         for(int i = 0; i < ccv[j]; ++i) if(hash_table[j][i] == hash) return i;    
-        return error::invalid_index;
+        return -1;
     }
 
     const std::unique_ptr<int[]> Blueprint::set_relatives(const Descriptor** d) const
@@ -49,12 +49,12 @@ namespace interface
         for(int s = 0; s < n; ++s)
         {
             int pos = 0;
-            core::map::module::type car = d[s]->type;
+            core::map::module::type carry = d[s]->type;
             r[s] = pos;
 
             for(int i = s + 1; i < n; ++i)
             {
-                if(car == d[i]->type) 
+                if(carry == d[i]->type) 
                 {
                     r[i] = ++pos;
                     ++s;

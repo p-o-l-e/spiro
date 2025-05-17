@@ -160,7 +160,7 @@ namespace core
 
     void oscillator::reset()
     {
-        init(cc, ic, oc, module_type::vco, id);
+        init(cc, ic, oc, map::module::vco, id);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;

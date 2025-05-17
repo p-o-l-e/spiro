@@ -24,14 +24,14 @@
 
 namespace core
 {
-    void module::fuse() 
+    void Module::fuse() 
     {
         for(int i = 0; i < _is; ++i) icv[i] = &zero;
         for(int i = 0; i < _cs; ++i) ccv[i] = &zero;
         for(int i = 0; i < _os; ++i) ocv[i].store(0.0f);
     };
 
-    void module::init(const size_t& ctrls, const size_t& ins, const size_t& outs, const module_type& t, const uint8_t& id) noexcept 
+    void Module::init(const size_t& ctrls, const size_t& ins, const size_t& outs, const map::module::type& t, const uint8_t& id) noexcept 
     {
         ccv = std::make_unique<std::atomic<float>*[]>(ctrls);
         icv = std::make_unique<std::atomic<float>*[]>(ins);
@@ -43,117 +43,4 @@ namespace core
         type = t;
         position = id;
     }
-
-    std::atomic<float>* rack_t::get_output_pin(const uint32_t&) const
-    {
-
-    }
-
-    std::atomic<float>* rack_t::get_output_pin(const module_type& t, const int& module_pos, const int& pin_pos)
-    {
-        int i = 0;
-        for(; i < _size; ++i)
-        {
-            if(node[i]->type == t)
-            {
-                if(node[i]->position == module_pos)
-                {
-                    break;
-                }
-            }
-        }
-        return &node[i]->ocv[pin_pos];
-    }
-
-    std::atomic<float>** rack_t::get_input_pin(const uint32_t&) const
-    {
-    }
-
-    std::atomic<float>** rack_t::get_input_pin(const module_type& t, const int& module_pos, const int& pin_pos)
-    {
-        int i = 0;
-        for(; i < _size; ++i)
-        {
-            if(node[i]->type == t)
-            {
-                if(node[i]->position == module_pos)
-                {
-                    break;
-                }
-            }
-        }
-        return &node[i]->icv[pin_pos];
-    }
-
-    std::atomic<float>** rack_t::get_ctrl_pin(const uint32_t&) const
-    {
-    }
-
-    std::atomic<float>** rack_t::get_ctrl_pin(const module_type& t, const int& module_pos, const int& pin_pos)
-    {
-        int i = 0;
-        for(; i < _size; ++i)
-        {
-            if(node[i]->type == t)
-            {
-                if(node[i]->position == module_pos)
-                {
-                    break;
-                }
-            }
-        }
-        return &node[i]->ccv[pin_pos];
-    }
-
-
-    /**************************************************************************************************************************
-     * Returns 16-bit index [ MSB LSB ]
-     * MSB : Module type
-     * LSB : Module id/position
-     * ***********************************************************************************************************************/
-    constexpr uint16_t get_module_index(const module_type& t, const uint8_t& id)
-    {
-        uint16_t r = static_cast<uint8_t>(t);
-
-        if(r)
-        {
-            r <<= 8;
-            r += id;
-        }
-        return r;
-    }
-    
-    /**************************************************************************************************************************
-     * Returns 16-bit index [ MSB LSB ]
-     * MSB : Parameter type
-     * LSB : Parameter id/position
-     * ***********************************************************************************************************************/
-    constexpr uint16_t get_parameter_index(const parameter_type& t, const uint8_t& id)
-    {
-        uint16_t r = static_cast<uint8_t>(t);
-
-        if(r)
-        {
-            r <<= 8;
-            r += id;
-        }
-        return r;
-    }
-
-    void  encode_uid(uid_t* uid) noexcept
-    {
-        uint16_t msb = get_module_index(uid->module, uid->module_position);
-        uint16_t lsb = get_parameter_index(uid->parameter, uid->parameter_position);
-        uid->key = 0;
-        uid->key <<= msb;
-        uid->key <<= lsb;
-    }
-
-    uid_t decode_uid(const uint64_t) noexcept
-    {
-
-    }
-
-
-
 }

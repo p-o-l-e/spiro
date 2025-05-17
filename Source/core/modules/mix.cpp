@@ -43,7 +43,7 @@ namespace core
 
             mixer::mixer(): id(++idc)
             {
-                init(cc, ic, oc, module_type::mixer, id);
+                init(cc, ic, oc, map::module::type::mix, id);
             }
             mixer::~mixer() {};
 

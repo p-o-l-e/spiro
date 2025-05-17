@@ -480,7 +480,8 @@ namespace interface
 		std::atomic<float>* prm[settings::prm_n];
 		std::atomic<float>* btn[settings::btn_n];
 		std::atomic<float>* mtx[settings::ports_in * settings::ports_out];
-        
+		std::unique_ptr<std::atomic<float>*[]> cv[4];
+
 		bus_connector()
 		{
 			for(int i = 0; i < settings::pot_n; ++i) 

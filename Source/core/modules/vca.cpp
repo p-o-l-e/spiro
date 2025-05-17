@@ -39,7 +39,7 @@ namespace core
 
         vca_t::vca_t(): id(++idc)
         {  
-            init(cc, ic, oc, module_type::vca, 0);
+            init(cc, ic, oc, map::module::vca, 0);
         };
         vca_t::~vca_t() {};
     

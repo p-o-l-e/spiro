@@ -34,7 +34,7 @@ namespace core
 
     sigma::sigma(): id(++idc)
     { 
-        init(cc, ic, oc, module_type::sigma, id);
+        init(cc, ic, oc, map::module::sum, id);
     };
     sigma::~sigma() {};
 }

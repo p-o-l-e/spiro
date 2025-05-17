@@ -6,12 +6,35 @@
     #define LOG(x)
 #endif
 
+#include "node.hpp"
+
+
+
 // #include "bus.hpp"
-// #include "node.hpp"
+
 // #include "module_headers.hpp"
 
 namespace core
 {
+
+    class Rack
+    {
+        private:
+            std::unique_ptr<Module*[]>      node;
+            // std::unique_ptr<uid_t[]>        pin;
+            size_t _size = 0;
+            void build() noexcept;
+
+        public:
+
+
+            void process(const int& p) { node[p]->process(); }
+            void allocate(const int& n) noexcept { node = std::make_unique<Module*[]>(n); _size = n; }
+            void bind(Module* m, const unsigned& pos) { if(pos < _size) node[pos] = m; }
+            size_t size() const { return _size; }
+            Rack() {};
+           ~Rack() {};
+    };
     // class Rack
     // {
     //     private:

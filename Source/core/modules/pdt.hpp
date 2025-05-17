@@ -26,7 +26,7 @@
 
 namespace core
 {
-    class product: public module
+    class product: public Module
     {
         private:
             static int idc;

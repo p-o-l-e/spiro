@@ -29,7 +29,7 @@ namespace core
 
     vcf_t::vcf_t(): id(++idc) 
     { 
-        init(cc, ic, oc, module_type::vcf, id);
+        init(cc, ic, oc, map::module::vcf, id);
         for(int i = 0; i < interface::vcf::ic; ++i) icv[i] = &zero;
         for(int i = 0; i < interface::vcf::cc; ++i) ccv[i] = &zero;
 

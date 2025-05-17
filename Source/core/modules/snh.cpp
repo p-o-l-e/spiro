@@ -58,7 +58,7 @@ namespace core
 
     snh_t::snh_t(): id(++idc)
     {
-        init(cc, ic, oc, module_type::snh, id);
+        init(cc, ic, oc, map::module::snh, id);
         reset();
     }
 

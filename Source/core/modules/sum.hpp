@@ -28,7 +28,7 @@ namespace core
 {
     using namespace interface::sum;
 
-    class sigma: public module
+    class sigma: public Module
     {
         private:
             static int idc;

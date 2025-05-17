@@ -28,7 +28,7 @@ namespace core
 
     delay::delay(): id(++idc)
     {
-        init(cc, ic, oc, module_type::vcd, 0);
+        init(cc, ic, oc, map::module::vcd, 0);
         reset();
     }
 

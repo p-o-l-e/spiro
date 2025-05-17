@@ -33,7 +33,7 @@
 
 namespace core 
 {
-    class delay: public module
+    class delay: public Module
     {
         private:
             static int idc;

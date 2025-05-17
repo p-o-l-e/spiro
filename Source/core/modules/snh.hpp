@@ -31,7 +31,7 @@
 
 namespace core 
 {
-    class snh_t: public module
+    class snh_t: public Module
     {
         private:
             static int idc;

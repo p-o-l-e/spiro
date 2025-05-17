@@ -37,32 +37,41 @@ namespace core
 
         Sector sector_map[]
         {
-            Sector(&interface::vca::descriptor[0]   , Point2D<float> { 228.0f, 292.0f }, 1 ),
-            Sector(&interface::vca::descriptor[1]   , Point2D<float> { 228.0f, 292.0f }, 2 ),
-            Sector(&interface::snh::descriptor[0]   , Point2D<float> { 532.0f, 292.0f }, 1 ),
-            Sector(&interface::snh::descriptor[1]   , Point2D<float> { 532.0f, 292.0f }, 2 ),
-            Sector(&interface::sum::descriptor[0]   , Point2D<float> {  76.0f, 292.0f }, 1 ),
-            Sector(&interface::sum::descriptor[0]   , Point2D<float> { 152.0f, 292.0f }, 2 ),   
-            Sector(&interface::pdt::descriptor      , Point2D<float> {  76.0f, 351.0f }, 1 ),
             Sector(&interface::vco::descriptor      , Point2D<float> {   0.0f,   0.0f }, 1 ),
             Sector(&interface::vco::descriptor      , Point2D<float> { 152.0f,   0.0f }, 2 ),
             Sector(&interface::vco::descriptor      , Point2D<float> { 304.0f,   0.0f }, 3 ),
             Sector(&interface::vco::descriptor      , Point2D<float> { 456.0f,   0.0f }, 4 ),
-            Sector(&interface::cso::descriptor      , Point2D<float> { 608.0f,   0.0f }, 1 ),
-            Sector(&interface::cso::descriptor      , Point2D<float> { 684.0f,   0.0f }, 2 ),    
-            Sector(&interface::vcd::descriptor      , Point2D<float> { 304.0f, 292.0f }, 1 ),
-            Sector(&interface::vcf::descriptor      , Point2D<float> { 380.0f, 292.0f }, 1 ),
-            Sector(&interface::vcf::descriptor      , Point2D<float> { 456.0f, 292.0f }, 2 ),
-            Sector(&interface::lfo::descriptor      , Point2D<float> { 608.0f, 352.0f }, 1 ),
-            Sector(&interface::lfo::descriptor      , Point2D<float> { 684.0f, 352.0f }, 2 ),
-            Sector(&interface::rtr::descriptor      , Point2D<float> { 760.0f, 270.0f }, 1 ),
-            Sector(&interface::mix::descriptor      , Point2D<float> { 888.0f, 270.0f }, 1 ),
+
             Sector(&interface::env::descriptor[0]   , Point2D<float> {   0.0f, 381.0f }, 1 ),
             Sector(&interface::env::descriptor[1]   , Point2D<float> {   0.0f, 381.0f }, 2 ),
             Sector(&interface::env::descriptor[2]   , Point2D<float> {   0.0f, 381.0f }, 3 ),
             Sector(&interface::env::descriptor[3]   , Point2D<float> {   0.0f, 381.0f }, 4 ),
-            Sector(&interface::com::descriptor      , Point2D<float> {   0.0f, 292.0f }, 1 ),
-            Sector(&interface::cro::descriptor      , Point2D<float> { 760.0f,   0.0f }, 1 ),
+
+            Sector(&interface::vcf::descriptor      , Point2D<float> { 380.0f, 292.0f }, 1 ),
+            Sector(&interface::vcf::descriptor      , Point2D<float> { 456.0f, 292.0f }, 2 ),
+
+            Sector(&interface::vca::descriptor[0]   , Point2D<float> { 228.0f, 292.0f }, 1 ),
+            Sector(&interface::vca::descriptor[1]   , Point2D<float> { 228.0f, 292.0f }, 2 ),
+
+            Sector(&interface::rtr::descriptor      , Point2D<float> { 760.0f, 270.0f }, 1 ),
+
+            Sector(&interface::vcd::descriptor      , Point2D<float> { 304.0f, 292.0f }, 1 ),
+
+            Sector(&interface::mix::descriptor      , Point2D<float> { 888.0f, 270.0f }, 1 ),
+
+            Sector(&interface::cso::descriptor      , Point2D<float> { 608.0f,   0.0f }, 1 ),
+            Sector(&interface::cso::descriptor      , Point2D<float> { 684.0f,   0.0f }, 2 ),  
+
+            Sector(&interface::snh::descriptor[0]   , Point2D<float> { 532.0f, 292.0f }, 1 ),
+            Sector(&interface::snh::descriptor[1]   , Point2D<float> { 532.0f, 292.0f }, 2 ),
+
+            Sector(&interface::lfo::descriptor      , Point2D<float> { 608.0f, 352.0f }, 1 ),
+            Sector(&interface::lfo::descriptor      , Point2D<float> { 684.0f, 352.0f }, 2 ),
+
+            Sector(&interface::sum::descriptor[0]   , Point2D<float> {  76.0f, 292.0f }, 1 ),
+            Sector(&interface::sum::descriptor[0]   , Point2D<float> { 152.0f, 292.0f }, 2 ),   
+
+            Sector(&interface::pdt::descriptor      , Point2D<float> {  76.0f, 351.0f }, 1 ),
         };
 
         const int sectors = std::size(sector_map);

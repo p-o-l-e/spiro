@@ -24,7 +24,7 @@
 
 #include <JuceHeader.h>
 #include <vector>
-#include "feeder.hpp"
+#include "spiro.hpp"
 #include "Socket.h"
 #include "EnvelopeDisplay.h"
 
@@ -90,7 +90,7 @@ class SpiroSynth: public juce::AudioProcessor
         void handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
-        core::feeder feed;
+        core::Spiro spiro;
         std::unique_ptr<Sockets> sockets;
 
         std::unique_ptr<core::wavering<core::Point2D<float>>> c_buffer;

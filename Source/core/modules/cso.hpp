@@ -58,7 +58,7 @@ namespace core
 inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
 
-class map_t: public module
+class map_t: public Module
 { 
     private:
         static int idc;

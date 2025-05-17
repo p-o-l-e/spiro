@@ -30,7 +30,7 @@
 
 namespace core {
 
-    class lfo_t: public module
+    class lfo_t: public Module
     {
         private:
             static int idc;                                 // ID counter

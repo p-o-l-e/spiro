@@ -57,7 +57,7 @@ namespace core
 
     rotor::rotor(): id(++idc)
     { 
-        init(cc, ic, oc, module_type::rotor, id);
+        init(cc, ic, oc, map::module::rtr, id);
     };
     rotor::~rotor() {};
 

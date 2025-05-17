@@ -103,28 +103,28 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     {
         stopTimer();
         display->page = Display::page_t::vco_a;
-        display->VCOMenu(&audioProcessor.feed.renderer.vco[0], 0);
+        display->VCOMenu(&audioProcessor.spiro.vco[0], 0);
     };
 
     button.at(interface::button_list::vco_b).get()->onClick = [this]
     {
         stopTimer();
         display->page = Display::page_t::vco_b;
-        display->VCOMenu(&audioProcessor.feed.renderer.vco[1], 1);
+        display->VCOMenu(&audioProcessor.spiro.vco[1], 1);
     };
 
     button.at(interface::button_list::vco_c).get()->onClick = [this]
     {
         stopTimer();
         display->page = Display::page_t::vco_c;
-        display->VCOMenu(&audioProcessor.feed.renderer.vco[2], 2);
+        display->VCOMenu(&audioProcessor.spiro.vco[2], 2);
     };
 
     button.at(interface::button_list::vco_d).get()->onClick = [this]
     {
         stopTimer();
         display->page = Display::page_t::vco_d;
-        display->VCOMenu(&audioProcessor.feed.renderer.vco[3], 3);
+        display->VCOMenu(&audioProcessor.spiro.vco[3], 3);
     };
 
    /***************************************************************************************************************************
@@ -138,14 +138,14 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     {
         stopTimer();
         display->page = Display::page_t::chs_a;
-        display->ChaosMenu(&audioProcessor.feed.renderer.chs[0], 0);
+        display->ChaosMenu(&audioProcessor.spiro.chs[0], 0);
     };
 
     button.at(interface::button_list::chs_b).get()->onClick = [this]
     {
         stopTimer();
         display->page = Display::page_t::chs_b;
-        display->ChaosMenu(&audioProcessor.feed.renderer.chs[1], 1);
+        display->ChaosMenu(&audioProcessor.spiro.chs[1], 1);
     };
 
     /***************************************************************************************************************************
@@ -159,14 +159,14 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     {
         stopTimer();
         display->page = Display::page_t::lfo_a;
-        display->LFOMenu(&audioProcessor.feed.renderer.lfo[0], 0);
+        display->LFOMenu(&audioProcessor.spiro.lfo[0], 0);
     };
 
     button.at(interface::button_list::lfo_b).get()->onClick = [this]
     {
         stopTimer();
         display->page = Display::page_t::lfo_b;
-        display->LFOMenu(&audioProcessor.feed.renderer.lfo[1], 1);
+        display->LFOMenu(&audioProcessor.spiro.lfo[1], 1);
     };
 
    /***************************************************************************************************************************
@@ -371,22 +371,22 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         {
             case Display::page_t::vco_a:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[0], 0);
+                display->VCOMenu(&audioProcessor.spiro.vco[0], 0);
                 break;
 
             case Display::page_t::vco_b:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[1], 1);
+                display->VCOMenu(&audioProcessor.spiro.vco[1], 1);
                 break;
 
             case Display::page_t::vco_c:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[2], 2);
+                display->VCOMenu(&audioProcessor.spiro.vco[2], 2);
                 break;
 
             case Display::page_t::vco_d:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[3], 3);
+                display->VCOMenu(&audioProcessor.spiro.vco[3], 3);
                 break;
 
             case Display::page_t::load:
@@ -396,7 +396,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
 
             case Display::page_t::envs:
                 display->row = 0;
-                display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+                display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
                 break;
 
             case Display::page_t::menu:
@@ -422,22 +422,22 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         {
             case Display::page_t::vco_a:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[0], 0);
+                display->VCOMenu(&audioProcessor.spiro.vco[0], 0);
                 break;
 
             case Display::page_t::vco_b:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[1], 1);
+                display->VCOMenu(&audioProcessor.spiro.vco[1], 1);
                 break;
 
             case Display::page_t::vco_c:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[2], 2);
+                display->VCOMenu(&audioProcessor.spiro.vco[2], 2);
                 break;
 
             case Display::page_t::vco_d:
                 display->row--;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[3], 3);
+                display->VCOMenu(&audioProcessor.spiro.vco[3], 3);
                 break;
 
             case Display::page_t::load:
@@ -447,7 +447,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
 
             case Display::page_t::envs:
                 display->row--;
-                display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+                display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
                 break;
 
             case Display::page_t::menu:
@@ -473,22 +473,22 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         {
             case Display::page_t::vco_a:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[0], 0);
+                display->VCOMenu(&audioProcessor.spiro.vco[0], 0);
                 break;
 
             case Display::page_t::vco_b:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[1], 1);
+                display->VCOMenu(&audioProcessor.spiro.vco[1], 1);
                 break;
 
             case Display::page_t::vco_c:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[2], 2);
+                display->VCOMenu(&audioProcessor.spiro.vco[2], 2);
                 break;
 
             case Display::page_t::vco_d:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[3], 3);
+                display->VCOMenu(&audioProcessor.spiro.vco[3], 3);
                 break;
 
             case Display::page_t::load:
@@ -498,7 +498,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
 
             case Display::page_t::envs:
                 display->row++;
-                display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+                display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
                 break;
 
             case Display::page_t::menu:
@@ -524,22 +524,22 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
         {
             case Display::page_t::vco_a:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[0], 0);
+                display->VCOMenu(&audioProcessor.spiro.vco[0], 0);
                 break;
 
             case Display::page_t::vco_b:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[1], 1);
+                display->VCOMenu(&audioProcessor.spiro.vco[1], 1);
                 break;
 
             case Display::page_t::vco_c:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[2], 2);
+                display->VCOMenu(&audioProcessor.spiro.vco[2], 2);
                 break;
 
             case Display::page_t::vco_d:
                 display->row++;
-                display->VCOMenu(&audioProcessor.feed.renderer.vco[3], 3);
+                display->VCOMenu(&audioProcessor.spiro.vco[3], 3);
                 break;
 
             case Display::page_t::load:
@@ -549,7 +549,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
 
             case Display::page_t::envs:
                 display->row++;
-                display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+                display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
                 break;
 
             case Display::page_t::menu:
@@ -604,7 +604,7 @@ SpiroSynthEditor::SpiroSynthEditor(SpiroSynth& p, juce::AudioProcessorValueTreeS
     button.at(interface::button_list::envs).get()->onClick  = [this]
     {
         display->page = Display::page_t::envs;
-        display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+        display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
     };
 
     setResizable(false, false);
@@ -704,7 +704,7 @@ void SpiroSynthEditor::vcoOptions(int id, bool plus)
         audioProcessor.parameter[o_param]->setValueNotifyingHost(v);
         audioProcessor.parameter[o_param]->endChangeGesture();
     }
-    display->VCOMenu(&audioProcessor.feed.renderer.vco[id], id);
+    display->VCOMenu(&audioProcessor.spiro.vco[id], id);
 }
 /*****************************************************************************************************************************
 * 
@@ -742,8 +742,8 @@ void SpiroSynthEditor::chsOptions(int id, bool plus)
     audioProcessor.parameter[f_param]->setValueNotifyingHost(audioProcessor.parameter[f_param]->convertTo0to1(v));
     audioProcessor.parameter[f_param]->endChangeGesture();  
 
-    audioProcessor.feed.renderer.chs[id].switch_wave(0);
-    display->ChaosMenu(&audioProcessor.feed.renderer.chs[id], id);
+    audioProcessor.spiro.chs[id].switch_wave(0);
+    display->ChaosMenu(&audioProcessor.spiro.chs[id], id);
 }
 
 /*****************************************************************************************************************************
@@ -783,7 +783,7 @@ void SpiroSynthEditor::lfoOptions(int id, bool plus)
     audioProcessor.parameter[f_param]->setValueNotifyingHost(audioProcessor.parameter[f_param]->convertTo0to1(v));
     audioProcessor.parameter[f_param]->endChangeGesture();  
 
-    display->LFOMenu(&audioProcessor.feed.renderer.lfo[id], id);
+    display->LFOMenu(&audioProcessor.spiro.lfo[id], id);
 }
 
 
@@ -854,7 +854,7 @@ void SpiroSynthEditor::envSwitch(int id)
     env[id].setVisible(true);
 
     if(button.at(interface::button_list::envs).get()->getToggleState()) 
-        display->EnvelopeMenu(&audioProcessor.feed.renderer.env[id], id);
+        display->EnvelopeMenu(&audioProcessor.spiro.env[id], id);
 
     envelope_shown = id;
 }
@@ -891,7 +891,7 @@ void SpiroSynthEditor::envOptions(float value, bool plus)
     audioProcessor.parameter[a]->setValueNotifyingHost(v);
     audioProcessor.parameter[a]->endChangeGesture();
     
-    display->EnvelopeMenu(&audioProcessor.feed.renderer.env[envelope_shown], envelope_shown);
+    display->EnvelopeMenu(&audioProcessor.spiro.env[envelope_shown], envelope_shown);
 }
 
 /*****************************************************************************************************************************
@@ -1271,7 +1271,7 @@ void SpiroSynthEditor::loadMatrix()
         for(int y = 0; y < core::settings::ports_out; ++y)
         {
             audioProcessor.matrix[i] = audioProcessor.tree.getParameter("matrix_" + juce::String(i)); 
-            audioProcessor.feed.renderer.bay->matrix.set(x, y, core::bool_from_range(audioProcessor.matrix[i]->getValue()));
+            audioProcessor.spiro.bay->matrix.set(x, y, core::bool_from_range(audioProcessor.matrix[i]->getValue()));
             ++i;
         }
     }
@@ -1288,7 +1288,7 @@ void SpiroSynthEditor::saveMatrix()
         {
             audioProcessor.matrix[i] = audioProcessor.tree.getParameter("matrix_" + juce::String(i)); 
             audioProcessor.matrix[i]->beginChangeGesture();
-            audioProcessor.matrix[i]->setValueNotifyingHost(audioProcessor.feed.renderer.bay->matrix.get(x, y) ? 1.0f : 0.0f);
+            audioProcessor.matrix[i]->setValueNotifyingHost(audioProcessor.spiro.bay->matrix.get(x, y) ? 1.0f : 0.0f);
             audioProcessor.matrix[i]->endChangeGesture();
             ++i;
         }
@@ -1302,7 +1302,7 @@ void SpiroSynthEditor::clearMatrix()
     {
         for(int y = 0; y < core::settings::ports_out; ++y)
         {
-            audioProcessor.feed.renderer.bay->matrix.set(x, y, false);
+            audioProcessor.spiro.bay->matrix.set(x, y, false);
             ++i;
         }
     }
@@ -1369,7 +1369,7 @@ void SpiroSynthEditor::resized()
     env[2].setVisible(false);
     env[3].setVisible(false);
 
-    audioProcessor.feed.renderer.connect_bus();
+    audioProcessor.spiro.connect_bus();
     loadMatrix();
     envLoad();
     audioProcessor.suspendProcessing(false);

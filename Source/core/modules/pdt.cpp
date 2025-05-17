@@ -44,7 +44,7 @@ using namespace interface::pdt;
 
     product::product(): id(++idc)
     { 
-        init(cc, ic, oc, module_type::product, id); 
+        init(cc, ic, oc, map::module::pdt, id); 
     };
 
 }

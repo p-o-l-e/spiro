@@ -30,6 +30,7 @@
 
 #include "primitives.hpp"
 #include "descriptor.hxx"
+#include "uid.hpp"
 
 namespace core
 {

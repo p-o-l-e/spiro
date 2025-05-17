@@ -27,7 +27,7 @@
 
 namespace core
 {
-    class rotor: public module
+    class rotor: public Module
     {
         private:
             static int idc;

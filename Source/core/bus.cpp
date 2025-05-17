@@ -20,7 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "bus.hpp"
-#include "uid.hpp"
+// #include "uid.hpp"
 #include <iostream>
 
 namespace core {

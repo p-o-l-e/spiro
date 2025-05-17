@@ -28,7 +28,7 @@
 
 namespace core
 {
-    class mixer: public module
+    class mixer: public Module
     {
         private:
             static int idc;

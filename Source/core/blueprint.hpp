@@ -32,9 +32,7 @@
     #define LOG(x)
 #endif
 
-
 namespace core {
-    enum error { invalid_index = -1 };
 namespace interface {
 
 	class Blueprint
@@ -45,9 +43,8 @@ namespace interface {
             void calculate_hash();
             std::unique_ptr<uint32_t[]> hash_table[map::cv::count]; 
 
-
         public:
-            const Control get_control(const uint32_t&) const;
+            const Control* get_control(const uint32_t&) const;
             const int get_index(const uint32_t&) const;
             const uint32_t get_hash(const map::cv::index&, const int&) const;
             const Descriptor** descriptor;

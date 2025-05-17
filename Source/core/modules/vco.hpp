@@ -52,7 +52,7 @@ namespace core
     *  VCO
     * 
     **************************************************************************************************************************/
-    class oscillator: public module
+    class oscillator: public Module
     {   
         private:
             float   phase   [settings::poly];               // Current phase

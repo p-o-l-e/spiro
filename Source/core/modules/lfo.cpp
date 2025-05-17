@@ -82,7 +82,7 @@ void lfo_t::reset()
 
 lfo_t::lfo_t(): id(++idc)
 {
-    init(cc, ic, oc, module_type::lfo, id);
+    init(cc, ic, oc, map::module::type::lfo, id);
     reset();
 };
 

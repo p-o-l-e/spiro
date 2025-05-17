@@ -28,12 +28,13 @@ SpiroSynth::SpiroSynth():   AudioProcessor
                                 BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                                                  .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
                                                  tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
-                            )
+                            ),
+                            spiro(core::settings::descriptor_map)
 
 {
     suspendProcessing(true);
     sockets = std::make_unique<Sockets>(924, 196, core::settings::ports_in, core::settings::ports_out );
-    feed.renderer.bay = sockets->bay;
+    spiro.bay = sockets->bay;
 }
 
 SpiroSynth::~SpiroSynth()
@@ -299,19 +300,19 @@ void SpiroSynth::reset()
 {
     for(int i = 0; i < core::settings::osc_n; ++i)
     {
-        feed.renderer.vco[i].reset();
+        spiro.vco[i].reset();
     }
     for(int i = 0; i < core::settings::env_n; ++i)
     {
-        feed.renderer.env[i].reset();
+        spiro.env[i].reset();
     }
     for(int i = 0; i < core::settings::vcf_n; ++i)
     {
-        feed.renderer.vcf[i].reset();
+        spiro.vcf[i].reset();
     }
     for(int i = 0; i < core::settings::vca_n; ++i)
     {
-        feed.renderer.vca[i].fuse();
+        spiro.vca[i].fuse();
     }
 }
 
@@ -321,23 +322,23 @@ void SpiroSynth::reloadParameters()
     for(int i = 0; i < core::settings::pot_n; ++i)
     {
         interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
-        feed.renderer.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
+        spiro.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
     }
 
     for(int i = 0; i < core::settings::prm_n; ++i)
     {
         interface::parameter_list p = static_cast<interface::parameter_list>(i);
         parameter[i] = tree.getParameter (parameter_list.at(p).id); 
-        feed.renderer.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
+        spiro.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
     }
 
     for(int i = 0; i < core::settings::ports_in*core::settings::ports_out; ++i)
     {
         matrix[i] = tree.getParameter("matrix_" + juce::String(i)); 
-        feed.renderer.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
+        spiro.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
     }
 
-    feed.renderer.connect_bus();
+    spiro.connect_bus();
     suspendProcessing(false);
 }
 
@@ -386,7 +387,7 @@ void SpiroSynth::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& 
         uint8_t status  = metadata.data[0];
         uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
         uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
-        feed.midi_message(status, msb, lsb);
+        spiro.midi_message(status, msb, lsb);
     }
     midiMessages.clear();
 }
@@ -410,10 +411,10 @@ void SpiroSynth::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffe
 
     for (int i = 0; i < numSamples; i++)
 	{
-        feed.renderer.process();
-        c_buffer.get()->set(core::Point2D<float> { feed.renderer.out[0], feed.renderer.out[1] });
-		DataL[i] = feed.renderer.out[0] * 0.2f;
-		DataR[i] = feed.renderer.out[1] * 0.2f;
+        spiro.process();
+        c_buffer.get()->set(core::Point2D<float> { spiro.out[0], spiro.out[1] });
+		DataL[i] = spiro.out[0] * 0.2f;
+		DataR[i] = spiro.out[1] * 0.2f;
 	}
 }
 

@@ -1,4 +1,4 @@
-// #include "rack.hpp"
+#include "rack.hpp"
 // #include "uid.hpp"
 
 
@@ -51,6 +51,7 @@ namespace core
     //         node[i] = create_node(bus.blueprint.descriptor[i]->type);
     //     }
     // }
+
 
     // Module* Rack::create_node(const map::module::type& t)
     // {
