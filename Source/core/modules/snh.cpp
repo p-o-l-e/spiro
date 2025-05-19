@@ -25,9 +25,9 @@
 namespace core 
 {
     using namespace interface::snh;
-    int snh_t::idc = 0;
+    int SNH::idc = 0;
 
-    void snh_t::process()
+    void SNH::process()
     {
         if(icv[cvi::time] == &zero)
         {
@@ -49,14 +49,14 @@ namespace core
         }
     }
 
-    void snh_t::reset()
+    void SNH::reset()
     {
         t     = 0.0f;
         value = 0.0f;
         scale = 40.0f;
     }
 
-    snh_t::snh_t(): id(++idc)
+    SNH::SNH(): id(++idc)
     {
         init(cc, ic, oc, map::module::snh, id);
         reset();

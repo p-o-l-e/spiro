@@ -30,7 +30,7 @@
 
 namespace core 
 {
-    class vcf_t: public Module
+    class VCF: public Module
     {
         private:
             static int idc;
@@ -44,7 +44,7 @@ namespace core
             const int id;
             void process() override;
             void reset();
-            vcf_t();
-           ~vcf_t() {};
+            VCF();
+           ~VCF() {};
     };
 };

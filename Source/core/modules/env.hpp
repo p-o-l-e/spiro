@@ -50,7 +50,7 @@ struct breakpoint
 
 
 
-class envelope
+class EGM
 {
     private:
         float theta = 0.0f;                 // Change in value_scale
@@ -73,9 +73,9 @@ class envelope
         float value_scale = (1.0f / 100.0f);
         bool  regenerate = false;
         bool  freerun = true;
-        void  generate(float*, int);        // Compute envelope to given array
-        envelope();
-       ~envelope();
+        void  generate(float*, int);        // Compute EGM to given array
+        EGM();
+       ~EGM();
 };
 
 
@@ -111,7 +111,7 @@ constexpr float fCubicIO(float t, float b, float c, float d)
         return c * 0.5f * (t*t*t + 2.0f) + b;
 }
 
-inline float (*formEnvelope[])(float, float, float, float) = 
+inline float (*formEGM[])(float, float, float, float) = 
 { 
     fLinear,
     fCubicOut,

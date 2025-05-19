@@ -24,15 +24,15 @@
 namespace core 
 {
     using namespace interface::vcd;
-    int delay::idc = 0;
+    int VCD::idc = 0;
 
-    delay::delay(): id(++idc)
+    VCD::VCD(): id(++idc)
     {
         init(cc, ic, oc, map::module::vcd, 0);
         reset();
     }
 
-    void delay::reset() 
+    void VCD::reset() 
     {
         psf.reset(10.0f);
         apf.a   = 0.6f;
@@ -48,9 +48,9 @@ namespace core
         for(int i = 0; i < oc; ++i) ocv[i].store(0.0f);
     }
 
-    delay::~delay() {}
+    VCD::~VCD() {}
 
-    void delay::process()
+    void VCD::process()
     {
         if (departed >= length) departed = 0;
         float time = icv[cvi::time]->load() + ccv[ctl::time]->load();

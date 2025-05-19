@@ -21,7 +21,9 @@
 ******************************************************************************************************************************/
 
 #include "Display.h"
+#include "env.hpp"
 #include "lfo_interface.hpp"
+#include "vco.hpp"
 
 void Display::paint(juce::Graphics& g)
 {
@@ -199,7 +201,7 @@ void Display::hWind(int a, int b, int c, int d)
 	core::draw_glyph(layer.get(), gtFont, d, 139, 155, contrast);
 }
 
-void Display::ChaosMenu(core::map_t* chs, int id)
+void Display::ChaosMenu(core::CSO* chs, int id)
 {
 	page = id == 0 ? page_t::chs_a : page_t::chs_b;
 	input_box.setVisible(false);
@@ -217,7 +219,7 @@ void Display::ChaosMenu(core::map_t* chs, int id)
 	repaint();
 }
 
-void Display::LFOMenu(core::lfo_t* lfo, int id)
+void Display::LFOMenu(core::LFO* lfo, int id)
 {
 	page = id == 0 ? page_t::lfo_a : page_t::lfo_b;
 	input_box.setVisible(false);
@@ -256,7 +258,7 @@ void Display::About()
 
 
 
-void Display::VCOMenu(core::oscillator* o, int id)
+void Display::VCOMenu(core::VCO* o, int id)
 {
 	if     (row > 2) row = 2;
 	else if(row < 0) row = 0;
@@ -304,7 +306,7 @@ void Display::VCOMenu(core::oscillator* o, int id)
 	repaint();
 }
 
-void Display::EnvelopeMenu(core::envelope* env, int id)
+void Display::EnvelopeMenu(core::EGM* env, int id)
 {
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);

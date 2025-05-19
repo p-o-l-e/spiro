@@ -28,7 +28,7 @@ namespace core
 {
     using namespace interface::sum;
 
-    class sigma: public Module
+    class SUM: public Module
     {
         private:
             static int idc;
@@ -36,7 +36,7 @@ namespace core
         public:
             int id;
             void process() override;
-            sigma();
-           ~sigma();
+            SUM();
+           ~SUM();
     };
 }

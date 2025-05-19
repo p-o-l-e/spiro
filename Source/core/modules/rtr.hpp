@@ -27,7 +27,7 @@
 
 namespace core
 {
-    class rotor: public Module
+    class RTR: public Module
     {
         private:
             static int idc;
@@ -36,7 +36,7 @@ namespace core
             int id;
             quaternion q;
             void process() override;
-            rotor();
-        ~rotor();
+            RTR();
+           ~RTR();
     };
 }

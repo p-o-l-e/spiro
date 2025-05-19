@@ -26,14 +26,14 @@
 
 namespace core
 {
-    class product: public Module
+    class PDT: public Module
     {
         private:
             static int idc;
         public:
             int id;
             void process() override;
-            product();
+            PDT();
     };
 
 }; // Namespace

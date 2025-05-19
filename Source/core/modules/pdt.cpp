@@ -24,9 +24,9 @@
 namespace core {
 using namespace interface::pdt;
     
-    int product::idc = 0;
+    int PDT::idc = 0;
 
-    void product::process()
+    void PDT::process()
     {
         bool  o = false;
         float s = 1.0f;
@@ -42,7 +42,7 @@ using namespace interface::pdt;
         ocv[0].store( o ? s : 0.0f);
     };
 
-    product::product(): id(++idc)
+    PDT::PDT(): id(++idc)
     { 
         init(cc, ic, oc, map::module::pdt, id); 
     };

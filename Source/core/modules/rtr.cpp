@@ -24,9 +24,9 @@
 namespace core 
 {
     using namespace interface::rtr;
-    int rotor::idc = 0;
+    int RTR::idc = 0;
 
-    void rotor::process()
+    void RTR::process()
     {
         Point3D<float> lcr
         { 
@@ -55,10 +55,10 @@ namespace core
 
     }
 
-    rotor::rotor(): id(++idc)
+    RTR::RTR(): id(++idc)
     { 
         init(cc, ic, oc, map::module::rtr, id);
     };
-    rotor::~rotor() {};
+    RTR::~RTR() {};
 
 }

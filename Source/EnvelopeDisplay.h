@@ -47,7 +47,7 @@ class EnvelopeDisplay  : public juce::Component
         int   diameter = gap * 2 + 1;
         float opacity = 0.2f;
         float curve_width = 2.0f;
-        core::envelope              envd;           // Displayed envelope
+        core::EGM              envd;           // Displayed EGM
         juce::Rectangle<int>        area;           // Display bounds
         core::Rectangle<int>        scope_bounds;   // Scope constraints
         b_point                     node[SEGMENTS]; // Input nodes

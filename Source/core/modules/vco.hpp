@@ -52,7 +52,7 @@ namespace core
     *  VCO
     * 
     **************************************************************************************************************************/
-    class oscillator: public Module
+    class VCO: public Module
     {   
         private:
             float   phase   [settings::poly];               // Current phase
@@ -62,17 +62,17 @@ namespace core
             float tomisawa(const int&);
             float pulse(const int&);
             float hexagon(const int&);
-            float (oscillator::*form[3])(const int&) = 
+            float (VCO::*form[3])(const int&) = 
             { 
-                &oscillator::tomisawa, 
-                &oscillator::pulse, 
-                &oscillator::hexagon 
+                &VCO::tomisawa, 
+                &VCO::pulse, 
+                &VCO::hexagon 
             };
             static int idc;                                 // ID counter
   
         public:
             int id;                                         // Unique oscillator id
-            envelope env    [settings::poly];
+            EGM env    [settings::poly];
         
             float   freq    [settings::poly];               // Frequency
             bool    gate    [settings::poly];               // Gate ON ?
@@ -86,8 +86,8 @@ namespace core
             void set_fine(const unsigned&);
 
             void reset();
-            oscillator();
-           ~oscillator();
+            VCO();
+           ~VCO();
     };
 
 
@@ -100,9 +100,9 @@ namespace core
     *  Map generators
     * 
     **************************************************************************************************************************/
-    std::map<std::string, std::atomic<float>*> vco_create_controls_map(oscillator* o);
-    std::map<std::string, std::atomic<float>*> vco_create_inputs_map(oscillator* o);
-    std::map<std::string, std::atomic<float>*> vco_create_outputs_map(oscillator* o);
+    std::map<std::string, std::atomic<float>*> vco_create_controls_map(VCO* o);
+    std::map<std::string, std::atomic<float>*> vco_create_inputs_map(VCO* o);
+    std::map<std::string, std::atomic<float>*> vco_create_outputs_map(VCO* o);
     
 
 

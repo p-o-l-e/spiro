@@ -32,7 +32,7 @@ namespace settings {
         }
     };
 
-void envelope::start()
+void EGM::start()
 {
     stage = 1;
     departed = 0;
@@ -46,7 +46,7 @@ void envelope::start()
     delta = time[stage] - time[stage - 1];
 }
 
-void envelope::reset()
+void EGM::reset()
 {
     stage    = 0;
     departed = 0;
@@ -59,7 +59,7 @@ void envelope::reset()
     settings::reset_time_multiplier();
 }
 
-void envelope::next_stage()
+void EGM::next_stage()
 {
     stage++;
     departed = 0;
@@ -71,7 +71,7 @@ void envelope::next_stage()
     }
 }
 
-void envelope::jump(int to)
+void EGM::jump(int to)
 {
     departed = 0;
     stage = to;
@@ -80,11 +80,11 @@ void envelope::jump(int to)
     delta = time[stage] - time[stage - 1];
 }
 
-float envelope::iterate()
+float EGM::iterate()
 {
     if(stage > 0)
     {
-        out.store(formEnvelope[(int)curve[stage]](float(departed), value[stage - 1], theta, float(delta)));
+        out.store(formEGM[(int)curve[stage]](float(departed), value[stage - 1], theta, float(delta)));
         departed++;
         if (departed >= delta) next_stage();
         if (std::isnan(out.load())) out.store(0.0f);
@@ -93,7 +93,7 @@ float envelope::iterate()
     return 0.0f;
 }
 
-void envelope::generate(float* data, int width)
+void EGM::generate(float* data, int width)
 {
     reset();
     start();
@@ -102,12 +102,12 @@ void envelope::generate(float* data, int width)
 }
 
 
-core::envelope::envelope()
+core::EGM::EGM()
 {
     reset();
 }
 
-core::envelope::~envelope()
+core::EGM::~EGM()
 {
 }
 

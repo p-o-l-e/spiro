@@ -148,7 +148,7 @@
                JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;-DDEBUG">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="spiro" optimisation="6"

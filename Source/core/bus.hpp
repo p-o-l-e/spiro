@@ -34,7 +34,7 @@ namespace core
 {
     namespace interface
     {   
-        struct bus_connector
+        struct BusConnector
         {
             private:
                 std::unique_ptr<std::atomic<float>*[]> cv[map::cv::count];
@@ -42,8 +42,8 @@ namespace core
             public:
                 const Blueprint blueprint;
                 std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;
-                bus_connector(const Descriptor**);
-               ~bus_connector() { LOG("~BusConnector()"); };
+                BusConnector(const Descriptor**);
+               ~BusConnector() { LOG("~BusConnector()"); };
         };
     }
 }

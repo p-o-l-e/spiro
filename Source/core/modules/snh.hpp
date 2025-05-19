@@ -31,7 +31,7 @@
 
 namespace core 
 {
-    class snh_t: public Module
+    class SNH: public Module
     {
         private:
             static int idc;
@@ -44,7 +44,7 @@ namespace core
             void process() override;
             void reset();
 
-            snh_t();
-           ~snh_t() {};
+            SNH();
+           ~SNH() {};
     };
 }

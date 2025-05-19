@@ -24,17 +24,17 @@
 namespace core
 {
     using namespace interface::sum;
-    int sigma::idc = 0;
+    int SUM::idc = 0;
 
-    void sigma::process()
+    void SUM::process()
     {
         ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
         ocv[cvo::b].store(ocv[cvo::a]);
     };
 
-    sigma::sigma(): id(++idc)
+    SUM::SUM(): id(++idc)
     { 
         init(cc, ic, oc, map::module::sum, id);
     };
-    sigma::~sigma() {};
+    SUM::~SUM() {};
 }

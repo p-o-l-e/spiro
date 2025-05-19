@@ -25,9 +25,9 @@
 namespace core 
 {
     using namespace interface::vcf;
-    int vcf_t::idc = 0;
+    int VCF::idc = 0;
 
-    vcf_t::vcf_t(): id(++idc) 
+    VCF::VCF(): id(++idc) 
     { 
         init(cc, ic, oc, map::module::vcf, id);
         for(int i = 0; i < interface::vcf::ic; ++i) icv[i] = &zero;
@@ -36,7 +36,7 @@ namespace core
         reset(); 
     }
 
-    void vcf_t::reset()
+    void VCF::reset()
     {
         iceq[0]  = 0.0f;
         iceq[1]  = 0.0f;
@@ -47,7 +47,7 @@ namespace core
         b = 0.0f;
     }
 
-    void vcf_t::process()
+    void VCF::process()
     {
         float cutoff = ccv[ctl::cutoff]->load() + icv[cvi::cutoff]->load();
         if      (cutoff < 0.0f) cutoff = 0.0f;

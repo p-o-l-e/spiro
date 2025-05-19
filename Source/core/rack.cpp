@@ -32,11 +32,11 @@ namespace core
     //     if(pos < bus.blueprint.mc) node[pos] = m; 
     // }
 
-    // Rack::Rack(const Descriptor** d): bus(d) 
-    // { 
-    //     allocate(); 
-    //     build(); 
-    // }
+    Rack::Rack(const Descriptor** d): bus(d) 
+    { 
+        // allocate(); 
+        // build(); 
+    }
 
     // Rack::~Rack() 
     // { 
@@ -69,12 +69,12 @@ namespace core
     //         case map::module::type::vca: return new vca_t(); break;
     //         case map::module::type::vcd: return new vcd_t(); break;
     //         case map::module::type::vcf: return new vcf_t(); break;
-            
+    //
     //         // case map::module::type::com: return new lfo_t(); break;
     //         // case map::module::type::cro: return new lfo_t(); break;
     //         // case map::module::type::fuse: return new lfo_t(); break;
-
-            
+    //
+    //
     //         default: break;
     //     }
     //     return new lfo_t();
@@ -82,7 +82,8 @@ namespace core
 
     // void Rack::allocate() noexcept 
     // { 
-    //     LOG("Rack::allocate() :"); 
+    //     LOG("Rack::allocate() :");
+    //     std::cout<<bus.blueprint.mc<<" : Module count\n";
     //     node = std::make_unique<Module*[]>(bus.blueprint.mc); 
     //     LOG("-- Space for rack allocated...");
     // }

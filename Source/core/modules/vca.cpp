@@ -24,9 +24,9 @@
 namespace core 
 {
     using namespace interface::vca;
-    int vca_t::idc = 0;
+    int VCA::idc = 0;
 
-        void vca_t::process()
+        void VCA::process()
         {
             float v = ccv[ctl::amp]->load() + icv[ctl::amp]->load();
             if      (v < 0.0f) v = 0.0f;
@@ -37,10 +37,10 @@ namespace core
 
         };
 
-        vca_t::vca_t(): id(++idc)
+        VCA::VCA(): id(++idc)
         {  
             init(cc, ic, oc, map::module::vca, 0);
         };
-        vca_t::~vca_t() {};
+        VCA::~VCA() {};
     
 }

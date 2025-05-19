@@ -33,7 +33,7 @@
 
 namespace core 
 {
-    class delay: public Module
+    class VCD: public Module
     {
         private:
             static int idc;
@@ -49,8 +49,8 @@ namespace core
             const int id;
             void process() override;
             void reset();
-            delay();
-           ~delay();
+            VCD();
+           ~VCD();
     };
 };
 

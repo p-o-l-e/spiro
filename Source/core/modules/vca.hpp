@@ -27,7 +27,7 @@
 
 namespace core
 {
-    class vca_t: public Module
+    class VCA: public Module
     {
         private:
             static int idc;
@@ -35,7 +35,7 @@ namespace core
         public:
             const int id = 0;
             void process() override;
-            vca_t();
-           ~vca_t();
+            VCA();
+           ~VCA();
     };
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "descriptor.hxx"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -7,10 +8,7 @@
 #endif
 
 #include "node.hpp"
-
-
-
-// #include "bus.hpp"
+#include "bus.hpp"
 
 // #include "module_headers.hpp"
 
@@ -20,19 +18,22 @@ namespace core
     class Rack
     {
         private:
-            std::unique_ptr<Module*[]>      node;
+            std::unique_ptr<Module*[]> node;
+            Module* create_node(const map::module::type&);
             // std::unique_ptr<uid_t[]>        pin;
             size_t _size = 0;
             void build() noexcept;
 
         public:
+            const interface::BusConnector bus;
 
+            const int ccv(const map::cv::index& i) const { return bus.blueprint.ccv[i]; };              // Get CV[type] count
 
             void process(const int& p) { node[p]->process(); }
             void allocate(const int& n) noexcept { node = std::make_unique<Module*[]>(n); _size = n; }
             void bind(Module* m, const unsigned& pos) { if(pos < _size) node[pos] = m; }
             size_t size() const { return _size; }
-            Rack() {};
+            Rack(const Descriptor**);
            ~Rack() {};
     };
     // class Rack

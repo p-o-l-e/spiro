@@ -26,9 +26,9 @@
 namespace core 
 {
     using namespace interface::vco;
-    int oscillator::idc = 0;
+    int VCO::idc = 0;
 
-    void oscillator::set_delta(const unsigned& voice)
+    void VCO::set_delta(const unsigned& voice)
     {
         int n = note[voice] + 12 * roundf(ccv[ctl::octave]->load() * 10.0f);
         freq[voice]  = chromatic[n];
@@ -36,13 +36,13 @@ namespace core
         set_fine(voice);
     }
 
-    void oscillator::set_fine(const unsigned& voice)
+    void VCO::set_fine(const unsigned& voice)
     {
         float range   = (freq[voice] * chromatic_ratio - freq[voice] / chromatic_ratio) * tao / settings::sample_rate;
         delta[voice] += (ccv[ctl::detune]->load() + icv[cvi::detune]->load() - 0.5f) * range * 2.0f;
     }
 
-    inline float oscillator::tomisawa(const int& voice)
+    inline float VCO::tomisawa(const int& voice)
     {
         float oa = cosf(phase[voice] + eax[0][voice]);
         eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
@@ -56,7 +56,7 @@ namespace core
         return oa - ob;
     }
 
-    inline float oscillator::pulse(const int& voice)
+    inline float VCO::pulse(const int& voice)
     {
         float pw =  icv[cvi::pwm] == &zero ?
             (0.5f - ccv[ctl::pwm]->load()) * 2.0f :
@@ -65,7 +65,7 @@ namespace core
         return fPulse(phase[voice], pw, 0.0001f);
     }
 
-    inline float oscillator::hexagon(const int& voice)
+    inline float VCO::hexagon(const int& voice)
     {
         float pw = icv[cvi::pwm] == &zero ?
             (0.5f - ccv[ctl::pwm]->load()) * pi :
@@ -75,7 +75,7 @@ namespace core
         return feed * (pi - fabsf(pw));
     }
 
-    void oscillator::process()
+    void VCO::process()
     {
         float accu = 0.0f;
         
@@ -158,7 +158,7 @@ namespace core
 
     
 
-    void oscillator::reset()
+    void VCO::reset()
     {
         init(cc, ic, oc, map::module::vco, id);
         for(int i = 0; i < settings::poly; ++i)
@@ -176,13 +176,13 @@ namespace core
     }
 
 
-    oscillator::oscillator()
+    VCO::VCO()
     {
         id = ++idc;
         reset();
     }
 
-    oscillator::~oscillator() = default;
+    VCO::~VCO() = default;
 
 
 

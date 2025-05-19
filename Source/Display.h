@@ -119,10 +119,10 @@ class Display : public juce::ImageComponent
 		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
         void Scope();
-		void ChaosMenu(core::map_t*, int);
-		void EnvelopeMenu(core::envelope*, int);
-		void VCOMenu(core::oscillator*, int);
-		void LFOMenu(core::lfo_t*, int);
+		void ChaosMenu(core::CSO*, int);
+		void EnvelopeMenu(core::EGM*, int);
+		void VCOMenu(core::VCO*, int);
+		void LFOMenu(core::LFO*, int);
 		void MainMenu();
 		void SaveMenu();
         void About();

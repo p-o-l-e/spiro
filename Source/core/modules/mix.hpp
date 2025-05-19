@@ -28,7 +28,7 @@
 
 namespace core
 {
-    class mixer: public Module
+    class MIX: public Module
     {
         private:
             static int idc;
@@ -37,8 +37,8 @@ namespace core
             int id;
             void process() override;
 
-            mixer();
-           ~mixer();
+            MIX();
+           ~MIX();
     };
 
 }; // Namespace

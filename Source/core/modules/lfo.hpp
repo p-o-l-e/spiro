@@ -30,7 +30,7 @@
 
 namespace core {
 
-    class lfo_t: public Module
+    class LFO: public Module
     {
         private:
             static int idc;                                 // ID counter
@@ -40,13 +40,13 @@ namespace core {
             float square();
             float triangle();
 
-            float (lfo_t::*form[5])() = 
+            float (LFO::*form[5])() = 
             { 
-                &lfo_t::sine,
-                &lfo_t::square,
-                &lfo_t::ramp,
-                &lfo_t::saw,
-                &lfo_t::triangle
+                &LFO::sine,
+                &LFO::square,
+                &LFO::ramp,
+                &LFO::saw,
+                &LFO::triangle
             };
 
             float phase = 0.0f;                                 // Current phase
@@ -55,8 +55,8 @@ namespace core {
             const int id = 0;
             void process() override;
             void reset();
-            lfo_t();
-           ~lfo_t(){};
+            LFO();
+           ~LFO(){};
     }; 
 
     inline const char* wforms_lfo[]     = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };

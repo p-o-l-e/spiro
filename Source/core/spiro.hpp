@@ -53,18 +53,18 @@ class Spiro
     public:
     
         bus_connector bus;
-        oscillator  vco[settings::osc_n];
-        envelope    env[settings::env_n];
-        vcf_t       vcf[settings::vcf_n];
-        vca_t       vca[settings::vca_n];
-        rotor       rot[settings::rtr_n];
-        delay       vcd[settings::vcd_n];
-        mixer       mix[settings::mix_n];
-        map_t       chs[settings::map_n];
-        snh_t       snh[settings::snh_n];
-        lfo_t       lfo[settings::lfo_n];
-        sigma       sum[settings::sum_n];
-        product     pct[settings::pct_n];
+        VCO vco[settings::osc_n];
+        EGM env[settings::env_n];
+        VCF vcf[settings::vcf_n];
+        VCA vca[settings::vca_n];
+        RTR rot[settings::rtr_n];
+        VCD vcd[settings::vcd_n];
+        MIX mix[settings::mix_n];
+        CSO chs[settings::map_n];
+        SNH snh[settings::snh_n];
+        LFO lfo[settings::lfo_n];
+        SUM sum[settings::sum_n];
+        PDT pct[settings::pct_n];
         dcb_t       dcb[2];
         Rack      rack;
         patchbay*   bay = nullptr;

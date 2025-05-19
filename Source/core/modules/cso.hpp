@@ -58,7 +58,7 @@ namespace core
 inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
 
-class map_t: public Module
+class CSO: public Module
 { 
     private:
         static int idc;
@@ -71,12 +71,12 @@ class map_t: public Module
 
         bool _reset = true; // Reset flag
 
-        void (map_t::*reset[4])() = 
+        void (CSO::*reset[4])() = 
         { 
-            &map_t::sprott_reset,
-            &map_t::helmholz_reset,
-            &map_t::halvorsen_reset,
-            &map_t::tsucs_reset
+            &CSO::sprott_reset,
+            &CSO::helmholz_reset,
+            &CSO::halvorsen_reset,
+            &CSO::tsucs_reset
         };
         
         void sprott();
@@ -84,12 +84,12 @@ class map_t: public Module
         void halvorsen();
         void tsucs();
 
-        void (map_t::*form[4])() = 
+        void (CSO::*form[4])() = 
         { 
-            &map_t::sprott,
-            &map_t::helmholz,
-            &map_t::halvorsen,
-            &map_t::tsucs
+            &CSO::sprott,
+            &CSO::helmholz,
+            &CSO::halvorsen,
+            &CSO::tsucs
         };
 
 
@@ -98,8 +98,8 @@ class map_t: public Module
         void process() override;
         void switch_wave(const int&);
 
-        map_t();
-       ~map_t() {};
+        CSO();
+       ~CSO() {};
 }; 
 
 

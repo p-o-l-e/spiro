@@ -26,7 +26,7 @@
 namespace core {
 namespace interface { 
 
-    bus_connector::bus_connector(const Descriptor** d): blueprint(d)
+    BusConnector::BusConnector(const Descriptor** d): blueprint(d)
     {
         LOG("BusConnector() : ");
         for(int i = 0; i < map::cv::count; ++i)
@@ -40,7 +40,7 @@ namespace interface {
         #endif
     }
 
-    std::atomic<float>* bus_connector::pin(const uint32_t& o, const map::cv::index& idx) const 
+    std::atomic<float>* BusConnector::pin(const uint32_t& o, const map::cv::index& idx) const 
     { 
         auto i = blueprint.get_index(o);
         if(i >= 0) return cv[idx][i]; 

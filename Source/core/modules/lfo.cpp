@@ -28,51 +28,51 @@ namespace core
 {
 using namespace interface::lfo;
 
-int lfo_t::idc = 0;
+int LFO::idc = 0;
 
-void lfo_t::process()
+void LFO::process()
 {
     float o = (this->*form[(int)ccv[ctl::form]->load()])();
     ocv[cvo::a].store(o);
     ocv[cvo::b].store(o);
 }
 
-float lfo_t::sine()
+float LFO::sine()
 {
     phase += (*ccv[ctl::delta] + fabsf(*icv[cvi::fm])) * tao / settings::sample_rate;
     if(phase > pi) phase -= tao;
     return cosf(phase) * ccv[ctl::amp]->load() * (icv[cvi::am] == &zero ? 1.0f : icv[cvi::am]->load());
 }
 
-float lfo_t::ramp()
+float LFO::ramp()
 {
     phase += (*ccv[ctl::delta] + fabsf(*icv[cvi::fm])) * tao / settings::sample_rate;
     if(phase > pi) phase -= tao;
     return atanf(tanf(phase * 0.5f)) * ccv[ctl::amp]->load() * (icv[cvi::am] == &zero ? 1.0f : icv[cvi::am]->load());
 }
 
-float lfo_t::saw()
+float LFO::saw()
 {
     phase += (*ccv[ctl::delta] + fabsf(*icv[cvi::fm])) * tao / settings::sample_rate;
     if(phase > pi) phase -= tao;
     return atanf(tanf(pi - phase * 0.5f)) * ccv[ctl::amp]->load() * (icv[cvi::am] == &zero ? 1.0f : icv[cvi::am]->load());
 }
 
-float lfo_t::square()
+float LFO::square()
 {
     phase += (*ccv[ctl::delta] + fabsf(*icv[cvi::fm])) * tao / settings::sample_rate;
     if(phase > pi) phase -= tao;
     return (phase > 0.0f ? 1.0f : 0.0f) * ccv[ctl::amp]->load() * (icv[cvi::am] == &zero ? 1.0f : icv[cvi::am]->load());
 }
 
-float lfo_t::triangle()
+float LFO::triangle()
 {
     phase += (*ccv[ctl::delta] + fabsf(*icv[cvi::fm])) * tao / settings::sample_rate;
     if(phase > pi) phase -= tao;
     return tan(sin(phase)) * ccv[ctl::amp]->load() * (icv[cvi::am] == &zero ? 1.0f : icv[cvi::am]->load()) * 0.65f;
 }
 
-void lfo_t::reset()
+void LFO::reset()
 {
     phase = 0.0f;
     for(int i = 0; i < cc; ++i) ccv[i] = &zero;
@@ -80,7 +80,7 @@ void lfo_t::reset()
     for(int i = 0; i < oc; ++i) ocv[i].store(0.0f);
 }
 
-lfo_t::lfo_t(): id(++idc)
+LFO::LFO(): id(++idc)
 {
     init(cc, ic, oc, map::module::type::lfo, id);
     reset();

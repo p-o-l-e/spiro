@@ -24,9 +24,9 @@
 namespace core
 {
     using namespace interface::mix;
-    int mixer::idc = 0;
+    int MIX::idc = 0;
 
-            void mixer::process()
+            void MIX::process()
             {
                 Point3D<float> lcr
                 { 
@@ -41,11 +41,11 @@ namespace core
                 ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
             }
 
-            mixer::mixer(): id(++idc)
+            MIX::MIX(): id(++idc)
             {
                 init(cc, ic, oc, map::module::type::mix, id);
             }
-            mixer::~mixer() {};
+            MIX::~MIX() {};
 
 
 }; // Namespace core

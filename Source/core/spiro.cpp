@@ -448,7 +448,7 @@ void core::Spiro::connect_bus()
 
 }
 
-core::Spiro::Spiro(const Descriptor** d)
+core::Spiro::Spiro(const Descriptor** d): rack(d)
 {
     int modules_n = 
         settings::osc_n +
