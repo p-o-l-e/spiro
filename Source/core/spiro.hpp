@@ -52,7 +52,7 @@ namespace core {
             void connect_bus();
 
         public:
-            Rack      rack;
+            Rack        rack;
             DCBlock     dcb[2];
             Patchbay*   bay = nullptr;
             std::atomic<float> out[2];                       // LR Output

@@ -47,6 +47,7 @@ namespace interface {
 
 
         public:
+            const Control get_control(const uint32_t&) const;
             const int get_index(const uint32_t&) const;
             const uint32_t get_hash(const map::cv::index&, const int&) const;
             const Descriptor** descriptor;

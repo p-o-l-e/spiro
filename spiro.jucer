@@ -22,8 +22,6 @@
           <FILE id="Y6w7Lx" name="constants.hpp" compile="0" resource="0" file="Source/core/setup/constants.hpp"/>
           <FILE id="Dp5IbA" name="iospecs.cpp" compile="1" resource="0" file="Source/core/setup/iospecs.cpp"/>
           <FILE id="eeGDhx" name="iospecs.hpp" compile="0" resource="0" file="Source/core/setup/iospecs.hpp"/>
-          <FILE id="QhCjlk" name="map.cpp" compile="1" resource="0" file="Source/core/setup/map.cpp"/>
-          <FILE id="Wvrhjh" name="map.hpp" compile="0" resource="0" file="Source/core/setup/map.hpp"/>
           <FILE id="URqNK0" name="scales.h" compile="0" resource="0" file="Source/core/setup/scales.h"/>
         </GROUP>
         <GROUP id="{884B736B-1C4F-C175-B966-9770C7AAAD0C}" name="utility">

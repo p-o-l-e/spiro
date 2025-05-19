@@ -62,6 +62,8 @@ namespace core
         Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
         float scale { 1.0f };
 
+        const Point2D<float> get_position(const uint32_t&);
+
         Sector* getSector(const core::map::module::type&, const int&);
         void initDescriptorMap(const Descriptor**);
         void calculate();

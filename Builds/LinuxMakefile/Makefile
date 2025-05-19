@@ -91,7 +91,6 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/fonts_43e512b1.o \
   $(JUCE_OBJDIR)/constants_246efb6.o \
   $(JUCE_OBJDIR)/iospecs_50015419.o \
-  $(JUCE_OBJDIR)/map_1dec02c3.o \
   $(JUCE_OBJDIR)/canvas_fbd7cccc.o \
   $(JUCE_OBJDIR)/modmatrix_12cd0159.o \
   $(JUCE_OBJDIR)/quaternion_5db29812.o \
@@ -190,11 +189,6 @@ $(JUCE_OBJDIR)/constants_246efb6.o: ../../Source/core/setup/constants.cpp
 $(JUCE_OBJDIR)/iospecs_50015419.o: ../../Source/core/setup/iospecs.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling iospecs.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/map_1dec02c3.o: ../../Source/core/setup/map.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling map.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/canvas_fbd7cccc.o: ../../Source/core/utility/canvas.cpp

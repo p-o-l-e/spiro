@@ -1,49 +1,54 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "Socket.h"
 #include <iostream>
 
-Sockets::Sockets(int w, int h, int ins, int outs)
+Sockets::Sockets(const int& w, const int& h, const core::Spiro& o)
 {
     std::cout  <<"-- Initializing sockets...\n";
 
-    bay = new core::Patchbay(w, h, ins, outs);
+    
+    bay = new core::Patchbay(w, h, o.rack.ccv(core::map::cv::i), o.rack.ccv(core::map::cv::o));
 
     unsigned position = 0; // 255 sockets max
 
-    for(int i = 0; i < ins; ++i)
+    for(int i = 0; i < o.rack.ccv(core::map::cv::i); ++i)
     {    
-        //unsigned id = (position<<24) + i;
+        auto hash = o.rack.bus.blueprint.get_hash(core::map::cv::i, i);
         if(socket_pos.count(interface::input_list[i]))
         {
-            bay->set_socket(&socket_pos.at(interface::input_list[i]), SOCKET_RADIUS, interface::input_list[i], SOCKET_IN, position);
+            bay->set_socket(&socket_pos.at(interface::input_list[i]), SOCKET_RADIUS, hash, SOCKET_IN, position);
         }
         else std::cout  <<"-- Element in input list:\t"<<interface::input_list[i]<<" doesn't exists...\n";
         ++position;
     }
 
-    for(int i = 0; i < outs; ++i)
+    for(int i = 0; i < o.rack.ccv(core::map::cv::o); ++i)
     {
-        //unsigned id = (position<<24) + i;
+        auto hash = o.rack.bus.blueprint.get_hash(core::map::cv::o, i);
         if(socket_pos.count(interface::output_list[i]))
         {
-            bay->set_socket(&socket_pos.at(interface::output_list[i]), SOCKET_RADIUS, interface::output_list[i], SOCKET_OUT, position);
+            bay->set_socket(&socket_pos.at(interface::output_list[i]), SOCKET_RADIUS, hash, SOCKET_OUT, position);
         }
         else
         {
