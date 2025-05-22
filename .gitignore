@@ -37,6 +37,6 @@
 *.png
 
 build/
-
+.cache/
 compile_commands.json
 .vscode
