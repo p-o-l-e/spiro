@@ -24,7 +24,7 @@
 
 namespace core 
 {
-    using namespace interface::rtr;
+    using namespace rtr;
     
     void rtr_t::process()
     {
@@ -56,7 +56,7 @@ namespace core
 
     rtr_t::rtr_t(): id(++idc)
     { 
-        init(id, &interface::rtr::descriptor);
+        init(id, &rtr::descriptor);
     };
 
     int rtr_t::idc = 0;

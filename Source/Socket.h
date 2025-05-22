@@ -29,31 +29,31 @@
 #include "Colours.hpp"
 #include "spiro.hpp"
 
-class Sockets: public juce::Component
-{
-    private:
-        juce::Rectangle<int> area;
-        float opacity   = 0.8f;
-        bool  i_armed   = false;
-        bool  o_armed   = false;
-        bool  drag      = false;
-        int   route     = -1;
-        core::Socket* from_grid(int, bool);
-
-    public:
-        juce::Colour colour_normal = colour_set[9];
-        juce::Colour colour_highlighted = colour_set[26];
-        core::Patchbay* bay = nullptr;
-        void drawMask(juce::Graphics&, juce::Colour);
-        void drawCords(juce::Graphics&, float);
-        void load();
-        void mouseUp   (const juce::MouseEvent&) override;
-        void mouseDrag (const juce::MouseEvent&) override;
-        void mouseDown (const juce::MouseEvent&) override;
-        void mouseMove (const juce::MouseEvent&) override;
-
-        void resized() override;
-        void paint(juce::Graphics& g) override;
-        Sockets(const int&, const int&, const core::Spiro&);
-       ~Sockets();
-};
+// class Sockets: public juce::Component
+// {
+//     private:
+//         juce::Rectangle<int> area;
+//         float opacity   = 0.8f;
+//         bool  i_armed   = false;
+//         bool  o_armed   = false;
+//         bool  drag      = false;
+//         int   route     = -1;
+//         core::Socket* from_grid(int, bool);
+//
+//     public:
+//         juce::Colour colour_normal = colour_set[9];
+//         juce::Colour colour_highlighted = colour_set[26];
+//         core::Patchbay* bay = nullptr;
+//         void drawMask(juce::Graphics&, juce::Colour);
+//         void drawCords(juce::Graphics&, float);
+//         void load();
+//         void mouseUp   (const juce::MouseEvent&) override;
+//         void mouseDrag (const juce::MouseEvent&) override;
+//         void mouseDown (const juce::MouseEvent&) override;
+//         void mouseMove (const juce::MouseEvent&) override;
+//
+//         void resized() override;
+//         void paint(juce::Graphics& g) override;
+//         Sockets(const int&, const int&, const core::Spiro&);
+//        ~Sockets();
+// };

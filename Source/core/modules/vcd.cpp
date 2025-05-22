@@ -24,11 +24,11 @@
 
 namespace core 
 {
-    using namespace interface::vcd;
+    using namespace vcd;
 
     vcd_t::vcd_t()
     {
-        init(0, &interface::vcd::descriptor);
+        init(0, &vcd::descriptor);
         reset();
     }
 

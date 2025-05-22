@@ -27,7 +27,7 @@
 #include <iostream>
 
 namespace core {
-    using namespace interface::cso;
+using namespace cso;
 
 int cso_t::idc = 0;
 
@@ -50,7 +50,7 @@ void cso_t::switch_wave(const int& w)
 
 cso_t::cso_t(): id(++idc)
 {
-    init(id, &interface::cso::descriptor);
+    init(id, &cso::descriptor);
 }
 
 void cso_t::sprott_reset()

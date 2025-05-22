@@ -35,10 +35,11 @@ namespace interface
 
     const int Blueprint::get_index(const uint32_t& hash) const
     {
-        auto j = static_cast<core::map::cv::index>(core::extract_byte(hash, uid_t::shift::m_index));
+        auto j = static_cast<core::map::cv::index>(core::extract_byte(hash, shift::mp));
         for(int i = 0; i < ccv[j]; ++i) if(hash_table[j][i] == hash) return i;    
         return error::invalid_index;
     }
+
 
     const std::unique_ptr<int[]> Blueprint::set_relatives(const Descriptor** d) const
     {
@@ -75,7 +76,7 @@ namespace interface
             {
                 for(int i = 0; i < *descriptor[m]->cv[index]; ++i)
                 {
-                    hash_table[index][h] = core::uid_t::encode_uid(descriptor[m]->type, static_cast<map::cv::index>(index), relative[m], i);
+                    hash_table[index][h] = core::encode_uid(descriptor[m]->type, relative[m], static_cast<map::cv::index>(index),  i);
                     ++h;
                 }
             }
@@ -90,15 +91,6 @@ namespace interface
         for(int i = 0; i < settings::sectors; ++i) c += *d[i]->cv[p];
         return c;
     }
-
-    // Blueprint::Blueprint(): 
-    //     descriptor(nullptr), 
-    //     relative(set_relatives(d)),
-    //     mc(settings::modules_n), 
-    //     ccv[map::cv::i](count(map::cv::i, d)),
-    //     ccv[map::cv::o](count(map::cv::o, d)),
-    //     ccv[map::cv::c](count(map::cv::c, d)) {}
-
 
     Blueprint::Blueprint(const Descriptor** d): 
         descriptor { d }, 

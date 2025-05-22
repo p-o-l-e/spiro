@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #pragma once
 
+#include <memory>
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -28,8 +29,11 @@
     #define LOG(x)
 #endif
 
+#include <array>
 #include "primitives.hpp"
 #include "descriptor.hxx"
+#include "interface_headers.hpp"
+#include "uid.hpp"
 
 namespace core
 {
@@ -43,32 +47,42 @@ namespace core
     {
         const Descriptor* const descriptor;
         Point2D<float> offset { 0.0f, 0.0f };
-        const int index { 0 };
+        int index { 0 };
         std::unique_ptr<Rectangle<float>[]> bounds[map::cv::count];
-        Sector(const Descriptor*, const Point2D<float>&, const int&);
+        Sector(const Descriptor*, const Point2D<float>&);
+       ~Sector() = default;
     };
     
-    namespace settings {
-
-        extern const int sectors; 
-        extern Sector sector_map[];
-        extern const Descriptor* descriptor_map[]; 
-    }
-
-    struct Grid 
+   /**********************************************************************************************************************
+    * 
+    *  Grid
+    *
+    **********************************************************************************************************************/
+    class Grid 
     {
-        Sector* sector;
-        const int sectors;
-        Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
-        float scale { 1.0f };
+        private:
+            Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
+            float scale { 1.0f };
+            const std::unique_ptr<int[]> relative;
+            const std::unique_ptr<int[]> elements; 
+            const std::unique_ptr<int[]> setRelatives(const Sector*) const;
+            const std::unique_ptr<int[]> countElements(const Sector*) const;
+        public:
+            const Sector* const sector;
+            const int sectors;
 
-        const Point2D<float> get_position(const uint32_t&);
-
-        Sector* getSector(const core::map::module::type&, const int&);
-        void initDescriptorMap(const Descriptor**);
-        void calculate();
-        Grid(Sector*, const Descriptor**, const int&, const Rectangle<float>&);
+            const Sector* getSector(const core::map::module::type&, const int&) const;
+            Grid(const Sector*, const int&, const Rectangle<float>&);
+           ~Grid() = default;
     };
     
     extern Grid grid;
+
+    namespace settings 
+    {
+        extern Sector sector_map[];
+        extern const int sectors;
+    }
+
 }
+

@@ -24,6 +24,9 @@
 #include "constants.hpp"
 #include "grid.hpp"
 #include "interface_headers.hpp"
+#include "modules/interface/descriptor.hxx"
+#include "uid.hpp"
+#include <memory>
 
 #ifdef DEBUG_MODE
     #include <iostream>
@@ -45,10 +48,10 @@ namespace interface {
             void calculate_hash();
             std::unique_ptr<uint32_t[]> hash_table[map::cv::count]; 
 
-
         public:
             const Control get_control(const uint32_t&) const;
             const int get_index(const uint32_t&) const;
+            constexpr int get_index(const uid_t&) const;
             const uint32_t get_hash(const map::cv::index&, const int&) const;
             const Descriptor** descriptor;
             const std::unique_ptr<int[]> relative; 
@@ -58,5 +61,23 @@ namespace interface {
             Blueprint(const Descriptor**);
            ~Blueprint() { LOG("~Blueprint()"); };
     };
+    
+    constexpr int Blueprint::get_index(const uid_t& uid) const
+    {
+        int index = 0;
+        for(int i = 0; i < mc; ++i)
+        {
+            for(int j = 0; j < *descriptor[i]->cv[map::cv::c]; ++j)
+            {
+                if(uid.mt == descriptor[i]->type 
+                && uid.mp == relative[i] 
+                && static_cast<Control::type>(uid.pt) == descriptor[i]->set[j]->is 
+                && uid.pp == j) return index;
+                ++index;
+            }
+        }
+        return 0;
+    }
+
 }
 } // Namespace core

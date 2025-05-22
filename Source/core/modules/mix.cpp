@@ -26,9 +26,7 @@
 #include "../utility/primitives.hpp"
 
 namespace core {
-
-    using namespace interface::mix;
-
+using namespace mix;
     int mix_t::idc = 0;
 
     void mix_t::process()
@@ -48,6 +46,6 @@ namespace core {
 
     mix_t::mix_t(): id(++idc)
     {
-        init(id, &interface::mix::descriptor);
+        init(id, &mix::descriptor);
     }
 }

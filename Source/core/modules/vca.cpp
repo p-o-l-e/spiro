@@ -23,7 +23,7 @@
 
 namespace core 
 {
-    using namespace interface::vca;
+    using namespace vca;
 
     int vca_t::idc = 0;
 
@@ -39,6 +39,6 @@ namespace core
 
     vca_t::vca_t(): id(++idc)
     {  
-        init(id, &descriptor[0]);
+        init(id, &vca::descriptor[0]);
     };
 }

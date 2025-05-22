@@ -27,7 +27,7 @@
 
 namespace core 
 {
-    using namespace interface::snh;
+    using namespace snh;
 
 int snh_t::idc = 0;
 
@@ -62,7 +62,7 @@ void snh_t::reset()
 
 snh_t::snh_t(): id(++idc)
 {
-    init(id, &descriptor[0]);
+    init(id, &snh::descriptor[0]);
     reset();
 }
 

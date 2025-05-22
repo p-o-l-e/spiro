@@ -24,7 +24,6 @@
 
 namespace core
 {
-    using namespace core::interface;
 
     int lfo_t::idc = 0;
 
@@ -80,7 +79,7 @@ namespace core
 
     lfo_t::lfo_t(): id(++idc)
     {
-        init(id, &interface::lfo::descriptor);
+        init(id, &lfo::descriptor);
         reset();
     };
 }

@@ -41,7 +41,7 @@ namespace core
 
     struct Control
     {
-        enum class type                   { fuse, slider, encoder, push, momentary, radio, parameter, socket, pin };
+        enum  type                        { fuse, slider, encoder, toggle, momentary, radio, parameter, socket, pin, count };
         const Control::type     is        { Control::type::fuse };
         const Rectangle<float>  constrain { 0.0f, 0.0f, 0.0f, 0.0f };
         const std::string       postfix   { "fuse" };
@@ -58,8 +58,6 @@ namespace core
 
         const uint32_t flag     { 0     };                      // Control specific settings
     };
-
-
 
     struct Descriptor 
     {

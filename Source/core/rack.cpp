@@ -92,15 +92,15 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->type == _uid.module)
+            if(node[i]->descriptor->type == _uid.mt)
             {
-                if(node[i]->position == _uid.module_position)
+                if(node[i]->position == _uid.mp)
                 {
                     break;
                 }
             }
         }
-        o = &node[i]->icv[_uid.parameter_position];
+        o = &node[i]->icv[_uid.pp];
     }
 
     void Rack::connect_pin_o(const uint32_t& hash, std::atomic<float>* o)
@@ -109,15 +109,15 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->type == _uid.module)
+            if(node[i]->descriptor->type == _uid.mt)
             {
-                if(node[i]->position == _uid.module_position)
+                if(node[i]->position == _uid.mp)
                 {
                     break;
                 }
             }
         }
-        o = &node[i]->ocv[_uid.parameter_position];
+        o = &node[i]->ocv[_uid.pp];
     }
 
     void Rack::connect_pin_c(const uint32_t& hash, std::atomic<float>* o)
@@ -126,15 +126,15 @@ namespace core
         int i = 0;
         for(; i < bus.blueprint.mc; ++i)
         {
-            if(node[i]->descriptor->type == _uid.module)
+            if(node[i]->descriptor->type == _uid.mt)
             {
-                if(node[i]->position == _uid.module_position)
+                if(node[i]->position == _uid.mp)
                 {
                     break;
                 }
             }
         }
-        node[i]->ccv[_uid.parameter_position] = o;
+        node[i]->ccv[_uid.pp] = o;
     }
 
 }

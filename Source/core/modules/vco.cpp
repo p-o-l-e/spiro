@@ -30,7 +30,7 @@
 
 namespace core
 {
-    using namespace interface::vco;
+    using namespace vco;
     int vco_t::idc = 0;
 
     void vco_t::set_delta(const unsigned& voice)
@@ -116,7 +116,7 @@ namespace core
 
     void vco_t::reset()
     {
-        init(id, &interface::vco::descriptor);
+        init(id, &vco::descriptor);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;

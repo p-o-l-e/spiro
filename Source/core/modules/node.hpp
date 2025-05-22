@@ -9,7 +9,7 @@ namespace core
     class Module
     {
         public:
-            const Descriptor* descriptor = &interface::fuse::descriptor;
+            const Descriptor* descriptor = &fuse::descriptor;
         private:
             bool standby = false;
         public:

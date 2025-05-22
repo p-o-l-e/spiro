@@ -20,19 +20,18 @@
 
 #include <JuceHeader.h>
 #include <vector>
-#include "cell/feeder.hpp"
 #include "Socket.h"
 #include "EnvelopeDisplay.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class SpiroSynth: public juce::AudioProcessor
+class Processor: public juce::AudioProcessor
 {
     public:
         juce::AudioProcessorEditor* createEditor() override;
         juce::AudioProcessorValueTreeState tree;
-        juce::RangedAudioParameter* parameter[cell::settings::prm_n];
-        juce::AudioProcessorParameter* matrix[cell::settings::ports_in * cell::settings::ports_out];
+        juce::RangedAudioParameter* parameter[0];
+        juce::AudioProcessorParameter* matrix[0];
         
         juce::CriticalSection localResourcesLock;
         juce::CriticalSection parametersLock;
@@ -86,10 +85,10 @@ class SpiroSynth: public juce::AudioProcessor
         void handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
-        cell::feeder feed;
-        std::unique_ptr<Sockets> sockets;
+        // core::Spiro spiro;
+        // std::unique_ptr<Sockets> sockets;
 
-        std::unique_ptr<cell::wavering<cell::point2d<float>>> c_buffer;
+        std::unique_ptr<core::wavering<core::Point2D<float>>> c_buffer;
         
         bool armed = false;
 
@@ -105,12 +104,12 @@ class SpiroSynth: public juce::AudioProcessor
         void addListener(Listener *l)       { listeners.add(l);     }
         void removeListener(Listener *l)    { listeners.remove(l);  }
 
-        SpiroSynth();
-       ~SpiroSynth() override;
+        Processor();
+       ~Processor() override;
 
     private:
         juce::ListenerList<Listener> listeners;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SpiroSynth)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor)
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

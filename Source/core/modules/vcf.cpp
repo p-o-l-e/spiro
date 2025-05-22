@@ -26,12 +26,12 @@
 
 namespace core 
 {
-    using namespace interface::vcf;
+    using namespace vcf;
     int vcf_t::idc = 0;
 
     vcf_t::vcf_t(): id(++idc) 
     { 
-        init(id, &interface::vcf::descriptor);
+        init(id, &vcf::descriptor);
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;
 

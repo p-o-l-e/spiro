@@ -31,7 +31,7 @@ namespace core {
     {
         bool  o = false;
         float s = 1.0f;
-        for(int i = 0; i < interface::pdt::ic; ++i)
+        for(int i = 0; i < pdt::ic; ++i)
         {
             if(icv[i] == &zero) continue;
             else 
@@ -45,6 +45,6 @@ namespace core {
 
     pdt_t::pdt_t(): id(++idc)
     { 
-        init(id, &interface::pdt::descriptor); 
+        init(id, &pdt::descriptor); 
     };
 }

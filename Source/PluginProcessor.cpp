@@ -18,21 +18,23 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "core/grid.hpp"
 
-SpiroSynth::SpiroSynth():   AudioProcessor
+Processor::Processor():   AudioProcessor
                             (
                                 BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                                                  .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
                                                  tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
                             )
+                            // spiro(core::settings::descriptor_map)
 
 {
     suspendProcessing(true);
-    sockets = std::make_unique<Sockets>(924, 196, cell::settings::ports_in, cell::settings::ports_out );
-    feed.renderer.bay = sockets->bay;
+    // sockets = std::make_unique<Sockets>(924, 196, cell::settings::ports_in, cell::settings::ports_out );
+    // feed.renderer.bay = sockets->bay;
 }
 
-SpiroSynth::~SpiroSynth()
+Processor::~Processor()
 {
 }
 
@@ -43,54 +45,12 @@ SpiroSynth::~SpiroSynth()
 * 
 * 
 ******************************************************************************************************************************/
-juce::AudioProcessorValueTreeState::ParameterLayout SpiroSynth::createParameterLayout()
+juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLayout()
 {
     suspendProcessing(true);
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
-    for(int i = 0; i < cell::settings::pot_n; ++i)
-    {
-        interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
-        layout.add (std::make_unique<juce::AudioParameterFloat> 
-        (
-            slider_list.at(p).id, 
-            slider_list.at(p).name, 
-            juce::NormalisableRange<float>
-            (
-                slider_list.at(p).min,
-                slider_list.at(p).max,
-                slider_list.at(p).interval,
-                slider_list.at(p).skew,
-                slider_list.at(p).symmetric
-            ),
-            slider_list.at(p).def
-        ));
-    }
 
-    for(int i = 0; i < cell::settings::prm_n; ++i)
-    {
-        interface::parameter_list p = static_cast<interface::parameter_list>(i);
-        layout.add (std::make_unique<juce::AudioParameterFloat> 
-        (
-            parameter_list.at(p).id, 
-            parameter_list.at(p).name, 
-            parameter_list.at(p).min,
-            parameter_list.at(p).max,
-            parameter_list.at(p).def
-        ));
-    }
-
-    for(int i = 0; i < cell::settings::ports_in*cell::settings::ports_out; ++i)
-    {
-        layout.add (std::make_unique<juce::AudioParameterFloat> 
-        (
-            "matrix_" + juce::String(i), 
-            "Matrix_" + juce::String(i), 
-            0.0f,
-            1.0f,
-            0.0f
-        ));
-    }
 
     suspendProcessing(false);
     return layout;
@@ -103,13 +63,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout SpiroSynth::createParameterL
 * 
 * 
 **************************************************************************************************************************/
-int SpiroSynth::getNumPrograms() { return presets.size(); }
-int SpiroSynth::getCurrentProgram() { return 0; }
-void SpiroSynth::setCurrentProgram (int index) {}
-const juce::String SpiroSynth::getProgramName (int index) { return {}; }
-void SpiroSynth::changeProgramName (int index, const juce::String& newName) {}
+int Processor::getNumPrograms() { return presets.size(); }
+int Processor::getCurrentProgram() { return 0; }
+void Processor::setCurrentProgram (int index) {}
+const juce::String Processor::getProgramName (int index) { return {}; }
+void Processor::changeProgramName (int index, const juce::String& newName) {}
 
-juce::Result SpiroSynth::getPresetsFolder()
+juce::Result Processor::getPresetsFolder()
 {
     preset_directory = juce::File::getSpecialLocation(juce::File::SpecialLocationType::userDocumentsDirectory);
     preset_directory = preset_directory.getChildFile("Spiro").getChildFile("Presets");
@@ -124,7 +84,7 @@ juce::Result SpiroSynth::getPresetsFolder()
 * 
 * 
 **************************************************************************************************************************/
-bool SpiroSynth::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
+bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
 {
 
     suspendProcessing(true);
@@ -180,7 +140,7 @@ bool SpiroSynth::savePreset(juce::String presetName, bool skipIfPresetWithThisNa
 * 
 * 
 **************************************************************************************************************************/
-bool SpiroSynth::loadPreset(juce::String presetName)
+bool Processor::loadPreset(juce::String presetName)
 {
 
     suspendProcessing(true);
@@ -202,7 +162,7 @@ bool SpiroSynth::loadPreset(juce::String presetName)
     return false;
 }
 
-void SpiroSynth::presetFilesAvailableChanged()
+void Processor::presetFilesAvailableChanged()
 {
     presets.clear();
 
@@ -212,7 +172,7 @@ void SpiroSynth::presetFilesAvailableChanged()
     }
 }
 
-const juce::File SpiroSynth::findPresetFile (const juce::String& presetNameToLookFor)
+const juce::File Processor::findPresetFile (const juce::String& presetNameToLookFor)
 {
     auto presetFile = std::find_if 
     (
@@ -228,7 +188,7 @@ const juce::File SpiroSynth::findPresetFile (const juce::String& presetNameToLoo
     return {};
 }
 
-juce::StringArray SpiroSynth::getPresetList()
+juce::StringArray Processor::getPresetList()
 {
     juce::StringArray presetList;
     presetList.ensureStorageAllocated (int (presets.size()));
@@ -236,7 +196,7 @@ juce::StringArray SpiroSynth::getPresetList()
     return presetList;
 }
 
-void SpiroSynth::scanPresetDir()
+void Processor::scanPresetDir()
 {
     getPresetsFolder();
     if (!preset_directory.exists()) preset_directory.createDirectory();
@@ -258,7 +218,7 @@ void SpiroSynth::scanPresetDir()
 * 
 * 
 **************************************************************************************************************************/
-void SpiroSynth::getStateInformation (juce::MemoryBlock& destData)
+void Processor::getStateInformation (juce::MemoryBlock& destData)
 {
     listeners.call([this](Listener &l) { l.saveCall(); });
     auto state = tree.copyState();
@@ -276,7 +236,7 @@ void SpiroSynth::getStateInformation (juce::MemoryBlock& destData)
 * 
 * 
 **************************************************************************************************************************/
-void SpiroSynth::setStateInformation (const void* data, int sizeInBytes)
+void Processor::setStateInformation (const void* data, int sizeInBytes)
 {
     auto xmlState = getXmlFromBinary (data, sizeInBytes);
 
@@ -291,49 +251,15 @@ void SpiroSynth::setStateInformation (const void* data, int sizeInBytes)
     listeners.call([this](Listener &l) { l.loadCall(); });
 }
 
-void SpiroSynth::reset()
+void Processor::reset()
 {
-    for(int i = 0; i < cell::settings::osc_n; ++i)
-    {
-        feed.renderer.vco[i].reset();
-    }
-    for(int i = 0; i < cell::settings::env_n; ++i)
-    {
-        feed.renderer.env[i].reset();
-    }
-    for(int i = 0; i < cell::settings::vcf_n; ++i)
-    {
-        feed.renderer.vcf[i].reset();
-    }
-    for(int i = 0; i < cell::settings::vca_n; ++i)
-    {
-        feed.renderer.vca[i].fuse();
-    }
+
 }
 
-void SpiroSynth::reloadParameters()
+void Processor::reloadParameters()
 {
     suspendProcessing(true);
-    for(int i = 0; i < cell::settings::pot_n; ++i)
-    {
-        interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
-        feed.renderer.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
-    }
 
-    for(int i = 0; i < cell::settings::prm_n; ++i)
-    {
-        interface::parameter_list p = static_cast<interface::parameter_list>(i);
-        parameter[i] = tree.getParameter (parameter_list.at(p).id); 
-        feed.renderer.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
-    }
-
-    for(int i = 0; i < cell::settings::ports_in*cell::settings::ports_out; ++i)
-    {
-        matrix[i] = tree.getParameter("matrix_" + juce::String(i)); 
-        feed.renderer.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
-    }
-
-    feed.renderer.connect_bus();
     suspendProcessing(false);
 }
 
@@ -346,25 +272,15 @@ void SpiroSynth::reloadParameters()
 * 
 * 
 **************************************************************************************************************************/
-void SpiroSynth::prepareToPlay (double sampleRate, int samplesPerBlock)
+void Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    cell::settings::buffer_size = samplesPerBlock;
-    cell::settings::sample_rate = sampleRate;
 
-    cell::settings::reset_time_multiplier();
-
-    sockets->setBounds(juce::Rectangle<int> { 35, 238, 926, 198 });
-    c_buffer = std::make_unique<cell::wavering<cell::point2d<float>>>( sampleRate/cell::settings::scope_fps);
-    reset();
-    reloadParameters();
-    armed = true;
 
     suspendProcessing(false);
 }
 
-void SpiroSynth::releaseResources()
+void Processor::releaseResources()
 {
-    armed = false;
     suspendProcessing(true);
 }
 
@@ -375,14 +291,14 @@ void SpiroSynth::releaseResources()
 * 
 * 
 ******************************************************************************************************************************/
-void SpiroSynth::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     for (const auto metadata : midiMessages) 
     {
         uint8_t status  = metadata.data[0];
         uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
         uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
-        feed.midi_message(status, msb, lsb);
+        // feed.midi_message(status, msb, lsb);
     }
     midiMessages.clear();
 }
@@ -394,7 +310,7 @@ void SpiroSynth::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& 
 * 
 * 
 ******************************************************************************************************************************/
-void SpiroSynth::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     handleMIDI(buffer, midiMessages);
     
@@ -406,22 +322,22 @@ void SpiroSynth::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffe
 
     for (int i = 0; i < numSamples; i++)
 	{
-        feed.renderer.process();
-        c_buffer.get()->set(cell::point2d<float> { feed.renderer.out[0], feed.renderer.out[1] });
-		DataL[i] = feed.renderer.out[0] * 0.2f;
-		DataR[i] = feed.renderer.out[1] * 0.2f;
+		//       feed.renderer.process();
+		//       c_buffer.get()->set(cell::point2d<float> { feed.renderer.out[0], feed.renderer.out[1] });
+		// DataL[i] = feed.renderer.out[0] * 0.2f;
+		// DataR[i] = feed.renderer.out[1] * 0.2f;
 	}
 }
 
 
-juce::AudioProcessorEditor* SpiroSynth::createEditor()
+juce::AudioProcessorEditor* Processor::createEditor()
 {
     suspendProcessing(true);
-    return new SpiroSynthEditor (*this, tree);
+    return new Editor (*this, tree);
 }
 
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new SpiroSynth();
+    return new Processor();
 }

@@ -25,7 +25,6 @@
 
 namespace core
 {
-    using namespace interface;
     class vca_t: public Module
     {
         private:

@@ -23,7 +23,7 @@
 
 namespace core
 {
-    using namespace interface::sum;
+    using namespace sum;
     int sum_t::idc = 0;
 
     void sum_t::process()
@@ -34,6 +34,6 @@ namespace core
 
     sum_t::sum_t(): id(++idc)
     { 
-        init(id, &interface::sum::descriptor[0]);
+        init(id, &sum::descriptor[0]);
     };
 }
