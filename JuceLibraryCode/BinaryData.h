@@ -8,29 +8,29 @@
 
 namespace BinaryData
 {
-    extern const char*   bg_png;
-    const int            bg_pngSize = 2532263;
+    extern const char*   BGd_png;
+    const int            BGd_pngSize = 2532263;
 
-    extern const char*   button_16_off_png;
-    const int            button_16_off_pngSize = 1567;
+    extern const char*   B16f_png;
+    const int            B16f_pngSize = 1567;
 
-    extern const char*   button_16_y_png;
-    const int            button_16_y_pngSize = 1567;
+    extern const char*   B16n_png;
+    const int            B16n_pngSize = 1567;
 
-    extern const char*   encoder_32_w_png;
-    const int            encoder_32_w_pngSize = 404428;
+    extern const char*   E32d_png;
+    const int            E32d_pngSize = 404428;
 
-    extern const char*   pot_32_png;
-    const int            pot_32_pngSize = 195548;
+    extern const char*   P32d_png;
+    const int            P32d_pngSize = 195548;
 
-    extern const char*   pot_48_png;
-    const int            pot_48_pngSize = 371366;
+    extern const char*   P48d_png;
+    const int            P48d_pngSize = 371366;
 
-    extern const char*   round_button_12_off_png;
-    const int            round_button_12_off_pngSize = 1436;
+    extern const char*   R12f_png;
+    const int            R12f_pngSize = 1436;
 
-    extern const char*   round_button_12_y_png;
-    const int            round_button_12_y_pngSize = 1116;
+    extern const char*   R12n_png;
+    const int            R12n_pngSize = 1116;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 8;

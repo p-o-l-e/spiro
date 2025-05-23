@@ -23,6 +23,7 @@
 #include <cstddef>
 #include "grid.hpp"
 #include "descriptor.hxx"
+#include "primitives.hpp"
 #include "uid.hpp"
 #include <cstdint>
 #include <iostream>
@@ -59,19 +60,14 @@ namespace core
 
     Grid::Grid(const Sector* s, const int& size, const Rectangle<float>& b): 
     sector(s), sectors(size), bounds(b), relative(setRelatives(s)), elements(countElements(s)),
-    pots(elements[Control::encoder] + elements[Control::slider]),
-    buttons(elements[Control::momentary] + elements[Control::toggle] + elements[Control::radio])
+    pots(elements[Control::slider]),
+    buttons(elements[Control::button])
     {
         std::cout<<"Potentiometers N : "<<pots<<"\n";
         std::cout<<"Buttons        N : "<<buttons<<"\n\n";
         pot_index = std::make_unique<uint32_t[]>(pots);
         button_index = std::make_unique<uint32_t[]>(buttons);
-        std::cout<<"momentary      N : "<<elements[Control::momentary]<<"\n";
-        std::cout<<"toggle         N : "<<elements[Control::toggle]<<"\n";
-        std::cout<<"radio          N : "<<elements[Control::radio]<<"\n";
-        std::cout<<"encoder        N : "<<elements[Control::encoder]<<"\n";
-        std::cout<<"slider         N : "<<elements[Control::slider]<<"\n\n";
-
+        calculateUIDs();
     };
 
     void Grid::calculateUIDs()
@@ -87,14 +83,11 @@ namespace core
                 {
                     switch(sector[i].descriptor->set[pt][pp].is) 
                     {
-                        case Control::type::encoder:
                         case Control::type::slider:
                             pot_index[pot] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
                             ++pot;
                             break;
-                        case Control::type::momentary:
-                        case Control::type::toggle:
-                        case Control::type::radio:
+                        case Control::type::button:
                             button_index[button] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
                             ++button;
                             break;
@@ -112,7 +105,11 @@ namespace core
 
         for(int i = 0; i < buttons; ++i)
         {
-            if(button_index[i] == hash) return i;
+            if(button_index[i] == hash) 
+            {
+                std::cout<<"Button index : "<<i<<"\n";
+                return i;
+            }
         }
         for(int i = 0; i < pots; ++i) 
         {
@@ -121,9 +118,47 @@ namespace core
         return -1;
     }
 
-    const uid_t Grid::getUID(const int& index) const
+    const Control* Grid::control(const uid_t& uid) const
     {
-        return decode_uid(pot_index[index]);
+        for(int i = 0; i < sectors; ++i)
+        {
+            if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
+            {
+                if(relative[i] == uid.mp) return &sector[i].descriptor->set[uid.pt][uid.pp];
+            }
+        }
+        return nullptr;
+    }
+
+    const uid_t Grid::getUID(const int& index, const Control::type& type) const
+    {
+        switch(type) 
+        {
+            case Control::type::slider: return decode_uid(pot_index[index]);
+            case Control::type::button: return decode_uid(button_index[index]);
+            default: return uid_t { 0xFF, 0xFF, 0xFF, 0xFF };
+        }
+        return uid_t { 0xFF, 0xFF, 0xFF, 0xFF };
+    }
+
+    const Rectangle<float>* Grid::getBounds(const uid_t& uid) const
+    {
+        // std::cout<<"Grid::getBounds()\n";
+        // std::cout<<"UID: mt = "<<uid.mt<<" mp = "<<uid.mp<<" pt = "<<uid.pt<<" pp = "<<uid.pp<<"\n";
+
+        for(int i = 0; i < sectors; ++i)
+        {
+            if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
+            {
+                if(relative[i] == uid.mp) 
+                {
+                    // std::cout<<"Found  X:"<<sector[i].bounds[uid.pt][uid.pp].x<<"\n";
+                    return &sector[i].bounds[uid.pt][uid.pp];
+                }
+            }
+        }
+
+        return nullptr;
     }
     
     const std::unique_ptr<int[]> Grid::setRelatives(const Sector* d) const
@@ -185,8 +220,8 @@ namespace core
             Sector(&vco::descriptor   , Point2D<float>{ 152.0f,   0.0f } ),
             Sector(&vco::descriptor   , Point2D<float>{ 304.0f,   0.0f } ),
             Sector(&vco::descriptor   , Point2D<float>{ 456.0f,   0.0f } ),
-            Sector(&cso::descriptor   , Point2D<float>{ 608.0f,   0.0f } ),
-            Sector(&cso::descriptor   , Point2D<float>{ 684.0f,   0.0f } ),    
+            Sector(&cso::descriptor[0], Point2D<float>{ 608.0f,   0.0f } ),
+            Sector(&cso::descriptor[1], Point2D<float>{ 684.0f,   0.0f } ),    
             Sector(&vcd::descriptor   , Point2D<float>{ 304.0f, 292.0f } ),
             Sector(&vcf::descriptor   , Point2D<float>{ 380.0f, 292.0f } ),
             Sector(&vcf::descriptor   , Point2D<float>{ 456.0f, 292.0f } ),
@@ -206,7 +241,7 @@ namespace core
     }
 
 
-    Grid grid(settings::sector_map, settings::sectors, Rectangle<float> { 26.0f, 0.0f, 1060.0f, 596.0f });   
+    Grid grid(settings::sector_map, settings::sectors, Rectangle<float> { 27.0f, 0.0f, 1060.0f, 596.0f });   
 }
 
 

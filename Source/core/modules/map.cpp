@@ -50,7 +50,7 @@ void cso_t::switch_wave(const int& w)
 
 cso_t::cso_t(): id(++idc)
 {
-    init(id, &cso::descriptor);
+    init(id, &cso::descriptor[0]);
 }
 
 void cso_t::sprott_reset()

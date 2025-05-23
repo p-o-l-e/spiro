@@ -155,7 +155,7 @@
  #define JucePlugin_ARAFactoryID           "com.pole.spiro.factory"
 #endif
 #ifndef  JucePlugin_ARADocumentArchiveID
- #define JucePlugin_ARADocumentArchiveID   "com.pole.spiro.aradocumentarchive.1.0.0"
+ #define JucePlugin_ARADocumentArchiveID   "com.pole.spiro.aradocumentarchive.0.5.0"
 #endif
 #ifndef  JucePlugin_ARACompatibleArchiveIDs
  #define JucePlugin_ARACompatibleArchiveIDs  ""

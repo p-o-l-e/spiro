@@ -37,11 +37,24 @@ namespace core
             };
             static const int count { 16 };
         };
+        
+        struct flag 
+        {
+            enum type 
+            {
+                A           = 1 << 0,
+                B           = 1 << 1,
+                encoder     = 1 << 2,
+                toggle      = 1 << 3,
+                momentary   = 1 << 4,
+                radio       = 1 << 5,
+            };
+        };
     }
 
     struct Control
     {
-        enum  type                        { fuse, slider, encoder, toggle, momentary, radio, parameter, socket, pin, count };
+        enum  type                        { fuse, slider, button, parameter, socket, pin, count };
         const Control::type     is        { Control::type::fuse };
         const Rectangle<float>  constrain { 0.0f, 0.0f, 0.0f, 0.0f };
         const std::string       postfix   { "fuse" };

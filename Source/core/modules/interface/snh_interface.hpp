@@ -54,11 +54,11 @@ namespace core
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "time"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+                { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "time"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
             },
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { Control::type::slider   , {  22.00f, 226.00f,  32.00f,  32.00f }, "time"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+                { Control::type::slider   , {  22.00f, 226.00f,  32.00f,  32.00f }, "time"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
             }
         };
         

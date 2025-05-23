@@ -118,18 +118,14 @@
         <FILE id="wbT7zX" name="uid.hpp" compile="0" resource="0" file="Source/core/uid.hpp"/>
       </GROUP>
       <GROUP id="{22DBE737-6B22-673F-F2EE-8E243637B1D5}" name="assets">
-        <FILE id="WHBRTE" name="bg.png" compile="0" resource="1" file="Source/assets/bg.png"/>
-        <FILE id="PoqWZE" name="button_16_off.png" compile="0" resource="1"
-              file="Source/assets/button_16_off.png"/>
-        <FILE id="g7GrUO" name="button_16_y.png" compile="0" resource="1" file="Source/assets/button_16_y.png"/>
-        <FILE id="W36bBW" name="encoder_32_w.png" compile="0" resource="1"
-              file="Source/assets/encoder_32_w.png"/>
-        <FILE id="pMEoDw" name="pot_32.png" compile="0" resource="1" file="Source/assets/pot_32.png"/>
-        <FILE id="RNbNBl" name="pot_48.png" compile="0" resource="1" file="Source/assets/pot_48.png"/>
-        <FILE id="z8HtpQ" name="round_button_12_off.png" compile="0" resource="1"
-              file="Source/assets/round_button_12_off.png"/>
-        <FILE id="hPI48x" name="round_button_12_y.png" compile="0" resource="1"
-              file="Source/assets/round_button_12_y.png"/>
+        <FILE id="qcbEtU" name="BGd.png" compile="0" resource="1" file="Source/assets/BGd.png"/>
+        <FILE id="htj8CL" name="B16f.png" compile="0" resource="1" file="Source/assets/B16f.png"/>
+        <FILE id="RzhF0h" name="B16n.png" compile="0" resource="1" file="Source/assets/B16n.png"/>
+        <FILE id="m2SCvX" name="E32d.png" compile="0" resource="1" file="Source/assets/E32d.png"/>
+        <FILE id="EktE5K" name="P32d.png" compile="0" resource="1" file="Source/assets/P32d.png"/>
+        <FILE id="PMxeOa" name="P48d.png" compile="0" resource="1" file="Source/assets/P48d.png"/>
+        <FILE id="ZbiohT" name="R12f.png" compile="0" resource="1" file="Source/assets/R12f.png"/>
+        <FILE id="kWOnl7" name="R12n.png" compile="0" resource="1" file="Source/assets/R12n.png"/>
       </GROUP>
       <FILE id="e1PigC" name="EnvelopeDisplay.cpp" compile="1" resource="0"
             file="Source/EnvelopeDisplay.cpp"/>
@@ -158,11 +154,10 @@
                JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;-DDEBUG">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="spiro" optimisation="6"
-                       linkTimeOptimisation="1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="spiro" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../git/JUCE-8.0.7/modules"/>

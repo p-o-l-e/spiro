@@ -42,8 +42,8 @@ namespace core
         const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::slider   , {  22.00f, 167.00f,  32.00f,  32.00f }, "cutoff" , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
-            { Control::type::slider   , {  22.00f, 228.00f,  32.00f,  32.00f }, "Q"      , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+            { Control::type::slider   , {  22.00f, 167.00f,  32.00f,  32.00f }, "cutoff" , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
+            { Control::type::slider   , {  22.00f, 228.00f,  32.00f,  32.00f }, "Q"      , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
         };
         
         const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 304.0f };

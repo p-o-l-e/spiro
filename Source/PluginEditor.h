@@ -34,22 +34,25 @@ typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 class Editor: public juce::AudioProcessorEditor, public juce::Timer
 {
     public:
-        std::unique_ptr<juce::Image> pot_sprite[3];
-        std::unique_ptr<juce::Image> btn_sprite[2][3];
-        std::unique_ptr<juce::Image> bg_texture;
 
+
+		std::unique_ptr<Display>     display;
         juce::ImageComponent bg; 	 // Background layer
         main_window_constraints mwc;
 
          
 
         void resized() override;
-        void timerCallback() override {};
+        void timerCallback() override;
         void visibilityChanged () override {};
         Editor (Processor&, juce::AudioProcessorValueTreeState&);
        ~Editor() override;
 
     private:
+        std::unique_ptr<juce::Image> pot_sprite[3];
+        std::unique_ptr<juce::Image> btn_sprite[2][3];
+        std::unique_ptr<juce::Image> bg_texture;
+
         juce::AudioProcessorValueTreeState& valueTreeState;
         std::unique_ptr<SpriteSlider[]> pot;
         std::unique_ptr<SliderAttachment> pot_attachment[0];//cell::settings::pot_n];

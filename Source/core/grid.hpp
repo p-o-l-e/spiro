@@ -79,9 +79,11 @@ namespace core
             const int pots;
             const int buttons;
             const Sector* getSector(const core::map::module::type&, const int&) const;
+            const Rectangle<float>* getBounds(const uid_t&) const;
+            const Control* control(const uid_t&) const;
             const int getIndex(const uint32_t&) const;
             const int getIndex(const uid_t&) const;
-            const uid_t getUID(const int&) const;
+            const uid_t getUID(const int&, const Control::type&) const;
             Grid(const Sector*, const int&, const Rectangle<float>&);
            ~Grid() = default;
     };

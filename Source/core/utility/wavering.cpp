@@ -23,37 +23,37 @@
 #include "wavering.hpp"
 
 namespace core {
-
-template <typename T>
-constexpr void wavering<T>::set(const T& value) noexcept
-{
-    i++;
-    if (i >= segments) i = 0;
-    data[i] = value;
-}
-
-template <typename T>
-constexpr void wavering<T>::set(const unsigned& pos, const T& value) noexcept
-{
-    data[pos % segments] = value;
-}
-
-template <typename T>
-constexpr T wavering<T>::get() noexcept
-{
-    o++;
-    if (o >= segments) o = 0;
-    return data[o];
-}
-
-template <typename T>
-constexpr T wavering<T>::get(const int& offset) noexcept
-{
-    o += offset;
-    if(o < 0) o = segments - o;
-    else o %= segments;
-    return data[o];
-}
+//
+// template <typename T>
+// constexpr void wavering<T>::set(const T& value) noexcept
+// {
+//     i++;
+//     if (i >= segments) i = 0;
+//     data[i] = value;
+// }
+//
+// template <typename T>
+// constexpr void wavering<T>::set(const unsigned& pos, const T& value) noexcept
+// {
+//     data[pos % segments] = value;
+// }
+//
+// template <typename T>
+// constexpr T wavering<T>::get() noexcept
+// {
+//     o++;
+//     if (o >= segments) o = 0;
+//     return data[o];
+// }
+//
+// template <typename T>
+// constexpr T wavering<T>::get(const int& offset) noexcept
+// {
+//     o += offset;
+//     if(o < 0) o = segments - o;
+//     else o %= segments;
+//     return data[o];
+// }
 
 
 }; // namespace core

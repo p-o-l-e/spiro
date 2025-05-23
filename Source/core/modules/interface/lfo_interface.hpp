@@ -40,10 +40,10 @@ namespace core
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN --- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::slider   , {  22.00f, 106.00f,  32.00f,  32.00f }, "delta"  , 0.001f, 1.00f, 0.01f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
-            { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "amp"    , 0.000f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
+            { Control::type::slider   , {  22.00f, 106.00f,  32.00f,  32.00f }, "delta"  , 0.001f, 1.00f, 0.01f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
+            { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "amp"    , 0.000f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.000f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::radio    , {  60.00f, 228.00f,  12.00f,  12.00f }, "options", 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, 0x00000000  },
+            { Control::type::button   , {  60.00f, 227.00f,  12.00f,  12.00f }, "options", 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio   },
         };
         
         const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 244.0f };
