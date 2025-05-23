@@ -49,7 +49,7 @@ namespace core
             { Control::type::slider   , {  98.00f, 177.00f,  32.00f,  32.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000B  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "freerun", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::toggle   , { 130.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, 0x00000000  },
+            { Control::type::radio    , { 130.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, 0x00000000  },
         };
         
         const Rectangle<float> constrain { 0.0f, 0.0f, 152.0f, 292.0f };

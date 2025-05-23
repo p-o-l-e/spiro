@@ -41,9 +41,9 @@ namespace core
         const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::slider   , {  67.00f,  17.00f,  32.00f,  32.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
-            { Control::type::slider   , {  67.00f,  53.00f,  32.00f,  32.00f }, "theta"  , 0.00f, 1.00f, 0.50f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
-            { Control::type::slider   , {  57.00f, 179.00f,  48.00f,  48.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000A  },
+            { Control::type::encoder  , {  67.00f,  17.00f,  32.00f,  32.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
+            { Control::type::encoder  , {  67.00f,  53.00f,  32.00f,  32.00f }, "theta"  , 0.00f, 1.00f, 0.50f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
+            { Control::type::encoder  , {  57.00f, 179.00f,  48.00f,  48.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, 0x0000000A  },
         };
         
         const Rectangle<float> constrain { 0.0f, 0.0f, 119.0f, 326.0f };

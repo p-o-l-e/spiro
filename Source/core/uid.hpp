@@ -66,6 +66,20 @@ namespace core
         return hash;
     }
 
+    constexpr uint32_t encode_uid(const uid_t& uid) noexcept
+    {
+        uint32_t hash = uid.mt;
+        hash <<= 8;
+        hash += uid.mp;
+        hash <<= 8;
+        hash += uid.pt;
+        hash <<= 8;
+        hash += uid.pp;
+
+        return hash;
+    }
+
+
     constexpr uid_t decode_uid(const uint32_t& data) noexcept
     {
         return uid_t

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_MODE")
 
-add_compile_options(-Wfatal-errors)
+add_compile_options(-g -Wfatal-errors)
 
 # Adding Raylib
 include(FetchContent)
@@ -33,7 +33,7 @@ file(GLOB SOURCES   ${CMAKE_SOURCE_DIR}/*.cpp
 add_library(spiro STATIC ${SOURCES})
 
 
-add_executable(core_test ${CMAKE_SOURCE_DIR}/core-test/core_test.cpp)
+#add_executable(core_test ${CMAKE_SOURCE_DIR}/core-test/core_test.cpp)
 add_executable(ui_test   ${CMAKE_SOURCE_DIR}/ui-test/ui_test.cpp)
 
 
@@ -44,14 +44,14 @@ include_directories(${CMAKE_SOURCE_DIR}/
                     ${CMAKE_SOURCE_DIR}/modules/ 
                     ${CMAKE_SOURCE_DIR}/modules/interface/ )
 
-target_link_libraries(core_test PRIVATE spiro)
+                #target_link_libraries(core_test PRIVATE spiro)
 target_link_libraries(ui_test   PRIVATE raylib spiro)
 
 
-set_target_properties(core_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
+#set_target_properties(core_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set_target_properties(ui_test   PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
-add_custom_command(TARGET core_test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/core_test ${CMAKE_SOURCE_DIR}/bin )
+#add_custom_command(TARGET core_test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/core_test ${CMAKE_SOURCE_DIR}/bin )
 add_custom_command(TARGET   ui_test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/ui_test   ${CMAKE_SOURCE_DIR}/bin )
 
 

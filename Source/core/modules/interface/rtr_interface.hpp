@@ -50,9 +50,9 @@ namespace core
         const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::slider   , {   8.00f, 187.00f,  32.00f,  32.00f }, "x"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
-            { Control::type::slider   , {  46.00f, 187.00f,  32.00f,  32.00f }, "y"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
-            { Control::type::slider   , {  84.00f, 187.00f,  32.00f,  32.00f }, "z"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
+            { Control::type::encoder  , {   8.00f, 187.00f,  32.00f,  32.00f }, "x"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
+            { Control::type::encoder  , {  46.00f, 187.00f,  32.00f,  32.00f }, "y"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
+            { Control::type::encoder  , {  84.00f, 187.00f,  32.00f,  32.00f }, "z"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000E  },
         };
         
         const Rectangle<float> constrain { 0.0f, 0.0f, 128.0f, 326.0f };

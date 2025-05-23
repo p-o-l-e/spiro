@@ -46,17 +46,17 @@ namespace core
         const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "at"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "ht"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "st"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "rt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "at"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ht"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "dt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "st"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
 
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "aa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "ha"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "da"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "sa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
-            { Control::type::slider   , {   0.00f,   0.00f,   0.00f,   0.00f }, "ra"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "aa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ha"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "da"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ra"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
 
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "af"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "hf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },

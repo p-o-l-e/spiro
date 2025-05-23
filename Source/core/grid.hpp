@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #ifdef DEBUG_MODE
     #include <iostream>
@@ -61,17 +62,26 @@ namespace core
     class Grid 
     {
         private:
-            Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
             float scale { 1.0f };
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
+            std::unique_ptr<uint32_t[]> pot_index;
+            std::unique_ptr<uint32_t[]> button_index;
+            
             const std::unique_ptr<int[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;
+            void  calculateUIDs();
+            
         public:
+            Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
             const Sector* const sector;
             const int sectors;
-
+            const int pots;
+            const int buttons;
             const Sector* getSector(const core::map::module::type&, const int&) const;
+            const int getIndex(const uint32_t&) const;
+            const int getIndex(const uid_t&) const;
+            const uid_t getUID(const int&) const;
             Grid(const Sector*, const int&, const Rectangle<float>&);
            ~Grid() = default;
     };

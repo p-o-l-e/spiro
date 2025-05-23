@@ -21,7 +21,7 @@ int main ()
 		ClearBackground(Color { 20, 20, 20, 00 } );
         DrawTextureEx(bg, Vector2 { 0, 0 }, 0.0f, SCALE, WHITE );
 	    
-        for(int u = 0; u < 26/*core::grid.sectors*/; ++u)
+        for(int u = 0; u < core::grid.sectors; ++u)
         {
             DrawRectangleLines
             (
@@ -37,8 +37,8 @@ int main ()
                 {
                     DrawRectangle     
                     (
-                        core::grid.sector[u].bounds[j][i].x * SCALE,
-                        core::grid.sector[u].bounds[j][i].y * SCALE,
+                        core::grid.sector[u].bounds[j][i].x * SCALE + core::grid.bounds.x * SCALE,
+                        core::grid.sector[u].bounds[j][i].y * SCALE + core::grid.bounds.y * SCALE,
                         core::grid.sector[u].bounds[j][i].w * SCALE,
                         core::grid.sector[u].bounds[j][i].h * SCALE,
                         col[j]

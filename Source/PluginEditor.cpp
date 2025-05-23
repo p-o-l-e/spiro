@@ -50,17 +50,17 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     // o.spiro.
 
     // display = std::make_unique<Display>(audioProcessor.c_buffer.get(), mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
-    // pot = std::make_unique<SpriteSlider[]>(cell::settings::pot_n);
+    pot = std::make_unique<SpriteSlider[]>(core::grid.pots);
 
-    // for(int i = 0; i < processor.spiro.rack.ccv(core::map::cv::c); ++i)
-    // {
+    for(int i = 0; i < core::grid.pots; ++i)
+    {
     //     interface::potentiometer_list p = static_cast<interface::potentiometer_list>(i);
     //
     //     pot[i].setPaintingIsUnclipped(true);
     //     pot[i].init(pot_sprite[(int)slider_list.at(p).type].get(), slider_list.at(p).type == slider_descriptor::type_t::Encoder);
     //     pot_attachment[i].reset (new SliderAttachment(valueTreeState, slider_list.at(p).id, pot[i]));
     //     addAndMakeVisible (pot[i]);
-    // }
+    }
     //
     // for(int i = 0; i < cell::settings::btn_n; ++i)
     // {
