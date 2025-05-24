@@ -24,17 +24,17 @@ namespace core
         const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::socket   , {  50.00f, 238.00f,  16.00f,  16.00f }, "detune" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  88.00f, 238.00f,  16.00f,  16.00f }, "pll"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  12.00f, 238.00f,  16.00f,  16.00f }, "pwm"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , { 126.00f, 238.00f,  16.00f,  16.00f }, "fm"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  31.00f, 268.00f,  16.00f,  16.00f }, "am"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  50.00f, 238.00f,  16.00f,  16.00f }, "detune" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  88.00f, 238.00f,  16.00f,  16.00f }, "pll"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  12.00f, 238.00f,  16.00f,  16.00f }, "pwm"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , { 126.00f, 238.00f,  16.00f,  16.00f }, "fm"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  31.00f, 268.00f,  16.00f,  16.00f }, "am"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::socket   , { 107.00f, 268.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , { 107.00f, 268.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
         const core::Control set_c[cc]

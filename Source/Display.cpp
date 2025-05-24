@@ -350,22 +350,7 @@ Display::Display(core::wavering<core::Point2D<float>>* buf, int x, int y, int w,
 	canvas.get()->clr(0.0f);
 	layer = std::make_unique<core::Canvas<float>>(area.w, area.h);
 	layer.get()->clr(0.0f);
-
-	input_box.canvas = layer.get();
-	input_box.setMultiLine(false, false);
-	input_box.setTabKeyUsedAsCharacter(false);
-	input_box.setBorder(juce::BorderSize(0));
-
-	input_box.setCaretVisible(false);
-	input_box.setInputRestrictions(16, "");
-
-	input_box.setColour(juce::TextEditor::ColourIds::backgroundColourId,        juce::Colour::fromRGBA(0,0,0,0));
-	input_box.setColour(juce::TextEditor::ColourIds::highlightColourId,         juce::Colour::fromRGBA(0,0,0,0));
-	input_box.setColour(juce::TextEditor::ColourIds::highlightedTextColourId,   juce::Colour::fromRGBA(0,0,0,0));
-	input_box.setColour(juce::TextEditor::ColourIds::outlineColourId,           juce::Colour::fromRGBA(0,0,0,0));
-	input_box.setColour(juce::TextEditor::ColourIds::focusedOutlineColourId,    juce::Colour::fromRGBA(0,0,0,0));
-	input_box.setColour(juce::TextEditor::ColourIds::shadowColourId,            juce::Colour::fromRGBA(0,0,0,0));
-
+    input_box.canvas = layer.get();
 	addAndMakeVisible(input_box);
 	reset();
 }
@@ -374,20 +359,37 @@ Display::~Display()
 {
 }
 
+OledLabel::OledLabel(const float* c): contrast(c) 
+{
+	setMultiLine(false, false);
+	setTabKeyUsedAsCharacter(false);
+	setBorder(juce::BorderSize(0));
+
+	setCaretVisible(false);
+	setInputRestrictions(16, "");
+
+	setColour(juce::TextEditor::ColourIds::backgroundColourId,        juce::Colour::fromRGBA(0,0,0,0));
+	setColour(juce::TextEditor::ColourIds::highlightColourId,         juce::Colour::fromRGBA(0,0,0,0));
+	setColour(juce::TextEditor::ColourIds::highlightedTextColourId,   juce::Colour::fromRGBA(0,0,0,0));
+	setColour(juce::TextEditor::ColourIds::outlineColourId,           juce::Colour::fromRGBA(0,0,0,0));
+	setColour(juce::TextEditor::ColourIds::focusedOutlineColourId,    juce::Colour::fromRGBA(0,0,0,0));
+	setColour(juce::TextEditor::ColourIds::shadowColourId,            juce::Colour::fromRGBA(0,0,0,0));
+}
+
 
 void OledLabel::paint(juce::Graphics& g)
 {
 	auto area = getLocalBounds();
 	canvas->clr(0.0f);
-	core::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, contrast);
-	core::draw_text_label(canvas, gtFont, "-------------------", 30, 20, contrast);
-	core::draw_text_label(canvas, gtFont, ">", 30, 40, contrast);
-	core::draw_text_label(canvas, gtFont, getText().toRawUTF8(), 46, 40, contrast);
+	core::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, *contrast);
+	core::draw_text_label(canvas, gtFont, "-------------------", 30, 20, *contrast);
+	core::draw_text_label(canvas, gtFont, ">", 30, 40, *contrast);
+	core::draw_text_label(canvas, gtFont, getText().toRawUTF8(), 46, 40, *contrast);
 	int cp = getCaretPosition();
-	core::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, contrast);
+	core::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, *contrast);
 
-	core::draw_glyph(canvas, gtFont, CX,  49, 155, contrast);
-	core::draw_glyph(canvas, gtFont, OK,  79, 155, contrast);
+	core::draw_glyph(canvas, gtFont, CX,  49, 155, *contrast);
+	core::draw_glyph(canvas, gtFont, OK,  79, 155, *contrast);
 }
 
 

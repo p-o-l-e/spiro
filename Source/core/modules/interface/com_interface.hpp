@@ -28,8 +28,8 @@ namespace core
         const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::socket   , {  31.00f,   6.00f,  16.00f,  16.00f }, "p_wheel", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  31.00f,  36.00f,  16.00f,  16.00f }, "m_wheel", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  31.00f,   6.00f,  16.00f,  16.00f }, "p_wheel", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  31.00f,  36.00f,  16.00f,  16.00f }, "m_wheel", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
         const core::Control set_c[cc]

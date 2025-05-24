@@ -31,10 +31,10 @@
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 
-class Editor: public juce::AudioProcessorEditor, public juce::Timer
+class Editor: public juce::AudioProcessorEditor, public juce::Timer, public EnvelopeDisplay::Listener, public Processor::Listener, public Display::Listener
 {
     public:
-
+        enum Sprite { Momentary, Radio, Slider };
 
 		std::unique_ptr<Display>     display;
         juce::ImageComponent bg; 	 // Background layer
@@ -49,8 +49,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer
        ~Editor() override;
 
     private:
-        std::unique_ptr<juce::Image> pot_sprite[3];
-        std::unique_ptr<juce::Image> btn_sprite[2][3];
+        std::unique_ptr<juce::Image> sprite[3][3];
         std::unique_ptr<juce::Image> bg_texture;
 
         juce::AudioProcessorValueTreeState& valueTreeState;
@@ -58,7 +57,8 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer
         std::unique_ptr<SliderAttachment> pot_attachment[0];//cell::settings::pot_n];
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         
-        EnvelopeDisplay env[0];//cell::settings::env_n];
+        int envelope_shown = 0;
+        EnvelopeDisplay env[4];//cell::settings::env_n];
         Processor& processor;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Editor)
 };

@@ -1,25 +1,27 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
-
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 #include "EnvelopeDisplay.h"
 
-
-EnvelopeDisplay::EnvelopeDisplay (): npa(this), npd(this), nps(this), npr(this)
+EnvelopeDisplay::EnvelopeDisplay (): A(this), D(this), S(this), R(this)
 {
     for(int i = 0; i < SEGMENTS; ++i)
     {
@@ -31,10 +33,10 @@ EnvelopeDisplay::EnvelopeDisplay (): npa(this), npd(this), nps(this), npr(this)
     envd.time_multiplier = 1.0f;
     envd.value_scale = 1.0f;
 
-    addAndMakeVisible(npa);
-    addAndMakeVisible(npd);
-    addAndMakeVisible(nps);
-    addAndMakeVisible(npr);
+    addAndMakeVisible(A);
+    addAndMakeVisible(D);
+    addAndMakeVisible(S);
+    addAndMakeVisible(R);
 }
 
 EnvelopeDisplay::~EnvelopeDisplay()
@@ -48,17 +50,17 @@ void EnvelopeDisplay::updateNodes()
     node[0].time.store(0.0f);   
     node[0].value.store(0.0f);
 
-    node[1].value.store(scope_bounds.h - npa.y + gap);
-    node[1].time.store(npa.x - gap);
+    node[1].value.store(scope_bounds.h - A.y + gap);
+    node[1].time.store(A.x - gap);
 
-    node[2].value.store(scope_bounds.h - npd.y + gap);
-    node[2].time.store(npd.x - gap);
+    node[2].value.store(scope_bounds.h - D.y + gap);
+    node[2].time.store(D.x - gap);
 
-    node[3].value.store(scope_bounds.h - nps.y + gap);
-    node[3].time.store(nps.x - gap);
+    node[3].value.store(scope_bounds.h - S.y + gap);
+    node[3].time.store(S.x - gap);
 
-    node[4].value.store(scope_bounds.h - npr.y + gap);
-    node[4].time.store(npr.x - gap);
+    node[4].value.store(scope_bounds.h - R.y + gap);
+    node[4].time.store(R.x - gap);
 
     node[5].time.store(scope_bounds.w);
     node[5].value.store(0.0f);
@@ -66,21 +68,21 @@ void EnvelopeDisplay::updateNodes()
 
 void EnvelopeDisplay::load()
 {
-    npa.y = area.getHeight() - node[1].value.load() - gap;
-    npa.x = node[1].time.load() + gap;
-    npa.setCentrePosition(npa.x, npa.y);
+    A.y = area.getHeight() - node[1].value.load() - gap;
+    A.x = node[1].time.load() + gap;
+    A.setCentrePosition(A.x, A.y);
 
-    npd.y = area.getHeight() - node[2].value.load() - gap;
-    npd.x = node[2].time.load() + gap;
-    npd.setCentrePosition(npd.x, npd.y);
+    D.y = area.getHeight() - node[2].value.load() - gap;
+    D.x = node[2].time.load() + gap;
+    D.setCentrePosition(D.x, D.y);
 
-    nps.y = area.getHeight() - node[3].value.load() - gap;
-    nps.x = node[3].time.load() + gap;
-    nps.setCentrePosition(nps.x, nps.y);
+    S.y = area.getHeight() - node[3].value.load() - gap;
+    S.x = node[3].time.load() + gap;
+    S.setCentrePosition(S.x, S.y);
 
-    npr.y = area.getHeight() - node[4].value.load() - gap;
-    npr.x = node[4].time.load() + gap;
-    npr.setCentrePosition(npr.x, npr.y);
+    R.y = area.getHeight() - node[4].value.load() - gap;
+    R.x = node[4].time.load() + gap;
+    R.setCentrePosition(R.x, R.y);
 
     repaint();
 }
@@ -88,22 +90,22 @@ void EnvelopeDisplay::load()
 void EnvelopeDisplay::paint (juce::Graphics& g)
 {
     // Reset individual points left/right constraints
-    npa.cl = gap;
-    npa.cr = npd.x - gap;
-    npd.cl = npa.x + gap;
-    npd.cr = nps.x - gap;
-    nps.cl = npd.x + gap;
-    nps.cr = npr.x - gap;
-    npr.cl = nps.x + gap;
-    npr.cr = scope_bounds.w  + gap; 
+    A.cL = gap;
+    A.cR = D.x - gap;
+    D.cL = A.x + gap;
+    D.cR = S.x - gap;
+    S.cL = D.x + gap;
+    S.cR = R.x - gap;
+    R.cL = S.x + gap;
+    R.cR = scope_bounds.w  + gap; 
 
     updateNodes();
     plot(g, 0.0f);
     g.setColour(colour);
-    g.drawLine(npa.x, npa.y, npa.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(npd.x, npd.y, npd.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(nps.x, nps.y, nps.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(npr.x, npr.y, npr.x, area.getHeight() - gap, 1.0f);
+    g.drawLine(A.x, A.y, A.x, area.getHeight() - gap, 1.0f);
+    g.drawLine(D.x, D.y, D.x, area.getHeight() - gap, 1.0f);
+    g.drawLine(S.x, S.y, S.x, area.getHeight() - gap, 1.0f);
+    g.drawLine(R.x, R.y, R.x, area.getHeight() - gap, 1.0f);
     g.drawHorizontalLine
     (
         area.getY() + area.getHeight() - gap, 
@@ -121,23 +123,23 @@ void EnvelopeDisplay::resized()
     scope_bounds.h = area.getHeight() - gap * 2;
 
     data = std::make_unique<float[]>(scope_bounds.w);
-    npa.cb = npd.cb = nps.cb = npr.cb = area.getHeight() - gap;
+    A.cB = D.cB = S.cB = R.cB = area.getHeight() - gap;
 
-    npa.setBounds ( 20, 20, diameter, diameter);
-    npa.cr = area.getWidth() / 4 - gap;
-    npa.cl = gap;
+    A.setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
+    A.cR = area.getWidth() / 4 - gap;
+    A.cL = gap;
 
-    npd.setBounds ( 70, 40, diameter, diameter);
-    npd.cr = area.getWidth() /2 - gap;
-    npd.cl = area.getWidth() /4 + gap;
+    D.setBounds(area.getWidth() / 6, area.getHeight() / 3, diameter, diameter);
+    D.cR = area.getWidth() /2 - gap;
+    D.cL = area.getWidth() /4 + gap;
 
-    nps.setBounds (120, 60, diameter, diameter);
-    nps.cr = area.getWidth() /4 * 3 - gap;
-    nps.cl = area.getWidth() /2 + gap;
+    S.setBounds(area.getWidth() / 3, area.getHeight() / 3, diameter, diameter);
+    S.cR = area.getWidth() /4 * 3 - gap;
+    S.cL = area.getWidth() /2 + gap;
 
-    npr.setBounds (170, 80, diameter, diameter);
-    npr.cr = area.getWidth()  - gap;
-    npr.cl = area.getWidth() /4 * 3 + gap;
+    R.setBounds(area.getWidth() / 2, area.getHeight() / 2, diameter, diameter);
+    R.cR = area.getWidth()  - gap;
+    R.cL = area.getWidth() /4 * 3 + gap;
 
     updateNodes();
     repaint();
@@ -178,23 +180,23 @@ void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
 void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
 {
     float incr = 1.0f;
-    if( (event.x > 0) && (event.x < npa.x) )
+    if( (event.x > 0) && (event.x < A.x) )
     {
         node[1].curve.load() >= 3.0f ? node[1].curve.store(0.0f) : node[1].curve.store(envd.node[1].curve->load() + incr);
     }
-    else if( (event.x > npa.x) && (event.x < npd.x) )
+    else if( (event.x > A.x) && (event.x < D.x) )
     {
         node[2].curve.load() >= 3.0f ? node[2].curve.store(0.0f) : node[2].curve.store(envd.node[2].curve->load() + incr);
     }
-    else if( (event.x > npd.x) && (event.x < nps.x) )
+    else if( (event.x > D.x) && (event.x < S.x) )
     {
         node[3].curve.load() >= 3.0f ? node[3].curve.store(0.0f) : node[3].curve.store(envd.node[3].curve->load() + incr);
     }
-    else if( (event.x > nps.x) && (event.x < npr.x) )
+    else if( (event.x > S.x) && (event.x < R.x) )
     {
         node[4].curve.load() >= 3.0f ? node[4].curve.store(0.0f) : node[4].curve.store(envd.node[4].curve->load() + incr);
     }
-    else if( (event.x > npr.x) && (event.x < area.getWidth()) )
+    else if( (event.x > R.x) && (event.x < area.getWidth()) )
     {
         node[5].curve.load() >= 3.0f ? node[5].curve.store(0.0f) : node[5].curve.store(envd.node[5].curve->load() + incr);
     }

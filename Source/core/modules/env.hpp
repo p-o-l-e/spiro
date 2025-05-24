@@ -30,9 +30,10 @@
 #include "constants.hpp"
 #include "iospecs.hpp"
 
-namespace core {
-
-    namespace settings {
+namespace core 
+{
+    namespace settings 
+    {
         extern unsigned env_time_max_ms;
         extern float env_time_multiplier;
         void reset_time_multiplier();
@@ -95,22 +96,22 @@ constexpr float fLinear(float t, float b, float c, float d)
 constexpr float fCubicIn(float t, float b, float c, float d)
 {
         t /= d;
-        return c*t*t*t + b;
+        return c * t * t * t + b;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
 constexpr float fCubicOut(float t, float b, float c, float d)
 {
         t /= d;
         t--;
-        return c * (t*t*t + 1.0f) + b;
+        return c * (t * t * t + 1.0f) + b;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////
 constexpr float fCubicIO(float t, float b, float c, float d)
 {
         t /= (d * 0.5f);
-        if (t < 1.0f) return c * 0.5f * t*t*t + b;
+        if (t < 1.0f) return c * 0.5f * t * t * t + b;
         t -= 2;
-        return c * 0.5f * (t*t*t + 2.0f) + b;
+        return c * 0.5f * (t * t * t + 2.0f) + b;
 }
 
 inline float (*formenv_t[])(float, float, float, float) = 

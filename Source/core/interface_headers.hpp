@@ -1,5 +1,3 @@
-// Master include file
-
 #pragma once
 
 #include "modules/interface/pdt_interface.hpp"
@@ -17,3 +15,5 @@
 #include "modules/interface/vcf_interface.hpp"
 #include "modules/interface/vcd_interface.hpp"
 #include "modules/interface/rtr_interface.hpp"
+
+#define  MODULE_TYPES 15 

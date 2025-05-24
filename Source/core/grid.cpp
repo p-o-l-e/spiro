@@ -21,13 +21,10 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include <cstddef>
+#include <iostream>
 #include "grid.hpp"
 #include "descriptor.hxx"
 #include "primitives.hpp"
-#include "uid.hpp"
-#include <cstdint>
-#include <iostream>
-#include <memory>
 
 namespace core
 {
@@ -59,21 +56,17 @@ namespace core
     }
 
     Grid::Grid(const Sector* s, const int& size, const Rectangle<float>& b): 
-    sector(s), sectors(size), bounds(b), relative(setRelatives(s)), elements(countElements(s)),
-    pots(elements[Control::slider]),
-    buttons(elements[Control::button])
+    sector(s), sectors(size), bounds(b), relative(setRelatives(s)), elements(countElements(s))
     {
-        std::cout<<"Potentiometers N : "<<pots<<"\n";
-        std::cout<<"Buttons        N : "<<buttons<<"\n\n";
-        pot_index = std::make_unique<uint32_t[]>(pots);
-        button_index = std::make_unique<uint32_t[]>(buttons);
+        for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
     };
 
     void Grid::calculateUIDs()
     {
-        int pot = 0;
-        int button = 0;
+        int count[Control::count];
+        for(int i = 0; i < Control::count; ++i) count[i] = 0;
+
         for(int i = 0; i < sectors; ++i)
         {
             auto mp = relative[i];
@@ -81,19 +74,9 @@ namespace core
             {
                 for(int pp = 0; pp < *sector[i].descriptor->cv[pt]; ++pp)
                 {
-                    switch(sector[i].descriptor->set[pt][pp].is) 
-                    {
-                        case Control::type::slider:
-                            pot_index[pot] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
-                            ++pot;
-                            break;
-                        case Control::type::button:
-                            button_index[button] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
-                            ++button;
-                            break;
-                            
-                        default: break;
-                    }
+                    auto t = sector[i].descriptor->set[pt][pp].is;
+                    indices[t][count[t]] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
+                    ++count[t];
                 }
             }
         }
@@ -102,18 +85,10 @@ namespace core
     const int Grid::getIndex(const uid_t& uid) const
     {
         uint32_t hash = encode_uid(uid);
-
-        for(int i = 0; i < buttons; ++i)
+        auto t = control(uid)->is;
+        for(int i = 0; i < elements[t]; ++i)
         {
-            if(button_index[i] == hash) 
-            {
-                std::cout<<"Button index : "<<i<<"\n";
-                return i;
-            }
-        }
-        for(int i = 0; i < pots; ++i) 
-        {
-            if(pot_index[i] == hash) return i;
+            if(indices[t][i] == hash) return i;
         }
         return -1;
     }
@@ -132,32 +107,21 @@ namespace core
 
     const uid_t Grid::getUID(const int& index, const Control::type& type) const
     {
-        switch(type) 
-        {
-            case Control::type::slider: return decode_uid(pot_index[index]);
-            case Control::type::button: return decode_uid(button_index[index]);
-            default: return uid_t { 0xFF, 0xFF, 0xFF, 0xFF };
-        }
-        return uid_t { 0xFF, 0xFF, 0xFF, 0xFF };
+        return decode_uid(indices[type][index]);
     }
 
     const Rectangle<float>* Grid::getBounds(const uid_t& uid) const
     {
-        // std::cout<<"Grid::getBounds()\n";
-        // std::cout<<"UID: mt = "<<uid.mt<<" mp = "<<uid.mp<<" pt = "<<uid.pt<<" pp = "<<uid.pp<<"\n";
-
         for(int i = 0; i < sectors; ++i)
         {
             if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
             {
                 if(relative[i] == uid.mp) 
                 {
-                    // std::cout<<"Found  X:"<<sector[i].bounds[uid.pt][uid.pp].x<<"\n";
                     return &sector[i].bounds[uid.pt][uid.pp];
                 }
             }
         }
-
         return nullptr;
     }
     
@@ -209,32 +173,32 @@ namespace core
     {
         Sector sector_map[]
         {
-            Sector(&vca::descriptor[0], Point2D<float>{ 228.0f, 292.0f } ),
-            Sector(&vca::descriptor[1], Point2D<float>{ 228.0f, 292.0f } ),
-            Sector(&snh::descriptor[0], Point2D<float>{ 532.0f, 292.0f } ),
-            Sector(&snh::descriptor[1], Point2D<float>{ 532.0f, 292.0f } ),
-            Sector(&sum::descriptor[0], Point2D<float>{  76.0f, 292.0f } ),
-            Sector(&sum::descriptor[0], Point2D<float>{ 152.0f, 292.0f } ),   
-            Sector(&pdt::descriptor   , Point2D<float>{  76.0f, 351.0f } ),
-            Sector(&vco::descriptor   , Point2D<float>{   0.0f,   0.0f } ),
-            Sector(&vco::descriptor   , Point2D<float>{ 152.0f,   0.0f } ),
-            Sector(&vco::descriptor   , Point2D<float>{ 304.0f,   0.0f } ),
-            Sector(&vco::descriptor   , Point2D<float>{ 456.0f,   0.0f } ),
-            Sector(&cso::descriptor[0], Point2D<float>{ 608.0f,   0.0f } ),
-            Sector(&cso::descriptor[1], Point2D<float>{ 684.0f,   0.0f } ),    
-            Sector(&vcd::descriptor   , Point2D<float>{ 304.0f, 292.0f } ),
-            Sector(&vcf::descriptor   , Point2D<float>{ 380.0f, 292.0f } ),
-            Sector(&vcf::descriptor   , Point2D<float>{ 456.0f, 292.0f } ),
-            Sector(&lfo::descriptor   , Point2D<float>{ 608.0f, 352.0f } ),
-            Sector(&lfo::descriptor   , Point2D<float>{ 684.0f, 352.0f } ),
-            Sector(&rtr::descriptor   , Point2D<float>{ 760.0f, 270.0f } ),
-            Sector(&mix::descriptor   , Point2D<float>{ 888.0f, 270.0f } ),
-            Sector(&env::descriptor[0], Point2D<float>{   0.0f, 381.0f } ),
-            Sector(&env::descriptor[1], Point2D<float>{   0.0f, 381.0f } ),
-            Sector(&env::descriptor[2], Point2D<float>{   0.0f, 381.0f } ),
-            Sector(&env::descriptor[3], Point2D<float>{   0.0f, 381.0f } ),
-            Sector(&com::descriptor   , Point2D<float>{   0.0f, 292.0f } ),
-            Sector(&cro::descriptor   , Point2D<float>{ 760.0f,   0.0f } ),
+            Sector(&vca::descriptor[0], Point2D<float>{ 228.0f, 292.0f }),
+            Sector(&vca::descriptor[1], Point2D<float>{ 228.0f, 292.0f }),
+            Sector(&snh::descriptor[0], Point2D<float>{ 532.0f, 292.0f }),
+            Sector(&snh::descriptor[1], Point2D<float>{ 532.0f, 292.0f }),
+            Sector(&sum::descriptor[0], Point2D<float>{  76.0f, 292.0f }),
+            Sector(&sum::descriptor[0], Point2D<float>{ 152.0f, 292.0f }),   
+            Sector(&pdt::descriptor   , Point2D<float>{  76.0f, 351.0f }),
+            Sector(&vco::descriptor   , Point2D<float>{   0.0f,   0.0f }),
+            Sector(&vco::descriptor   , Point2D<float>{ 152.0f,   0.0f }),
+            Sector(&vco::descriptor   , Point2D<float>{ 304.0f,   0.0f }),
+            Sector(&vco::descriptor   , Point2D<float>{ 456.0f,   0.0f }),
+            Sector(&cso::descriptor[0], Point2D<float>{ 608.0f,   0.0f }),
+            Sector(&cso::descriptor[1], Point2D<float>{ 684.0f,   0.0f }),    
+            Sector(&vcd::descriptor   , Point2D<float>{ 304.0f, 292.0f }),
+            Sector(&vcf::descriptor   , Point2D<float>{ 380.0f, 292.0f }),
+            Sector(&vcf::descriptor   , Point2D<float>{ 456.0f, 292.0f }),
+            Sector(&lfo::descriptor   , Point2D<float>{ 608.0f, 352.0f }),
+            Sector(&lfo::descriptor   , Point2D<float>{ 684.0f, 352.0f }),
+            Sector(&rtr::descriptor   , Point2D<float>{ 760.0f, 270.0f }),
+            Sector(&mix::descriptor   , Point2D<float>{ 888.0f, 270.0f }),
+            Sector(&env::descriptor[0], Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[1], Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[2], Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[3], Point2D<float>{   0.0f, 381.0f }),
+            Sector(&com::descriptor   , Point2D<float>{   0.0f, 292.0f }),
+            Sector(&cro::descriptor   , Point2D<float>{ 760.0f,   0.0f }),
         };
 
         const int sectors = std::size(sector_map);

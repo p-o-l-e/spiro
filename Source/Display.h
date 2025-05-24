@@ -54,11 +54,11 @@ class OledLabel : public juce::TextEditor
 	private:
 
 	public:
-		float contrast = 0.6f;
+		const float* contrast;
 		core::Canvas<float>* canvas;
 		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
-		OledLabel() {};
+		OledLabel(const float*);
 	   ~OledLabel() {};
 };
 
@@ -72,8 +72,9 @@ class Display : public juce::ImageComponent
 		int lx = 0, ly = 0;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 	public:
+        float contrast = 0.6f;
 		core::wavering<core::Point2D<float>>*	data;
-		OledLabel input_box;
+		OledLabel input_box { &contrast };
 		int load_page = 0;
 		int last_page = 0;
 		int rows_max = 10;
@@ -116,7 +117,6 @@ class Display : public juce::ImageComponent
 		bool layer_on = false;
 		page_t page = scope;
 		int   row = 0;
-		float contrast = 0.6f;
 		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
         void Scope();

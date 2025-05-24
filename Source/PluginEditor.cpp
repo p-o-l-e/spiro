@@ -30,18 +30,19 @@
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor (&o), processor (o), valueTreeState (tree)
 {
     std::cout<<"Editor::Editor()\n";
-    // audioProcessor.suspendProcessing(true);
-    pot_sprite[0]       = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P48d_png, BinaryData::P48d_pngSize));
-    pot_sprite[1]       = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
-	pot_sprite[2]       = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
+    processor.suspendProcessing(true);
 
-    btn_sprite[0][0]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16n_png, BinaryData::B16n_pngSize));
-    btn_sprite[0][1]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
-    btn_sprite[0][2]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
+    sprite[Sprite::Momentary][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16n_png, BinaryData::B16n_pngSize));
+    sprite[Sprite::Momentary][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
+    sprite[Sprite::Momentary][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
 
-    btn_sprite[1][0]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12n_png, BinaryData::R12n_pngSize));
-    btn_sprite[1][1]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
-    btn_sprite[1][2]    = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
+    sprite[Sprite::Radio][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12n_png, BinaryData::R12n_pngSize));
+    sprite[Sprite::Radio][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
+    sprite[Sprite::Radio][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
+
+    sprite[Sprite::Slider][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P48d_png, BinaryData::P48d_pngSize));
+    sprite[Sprite::Slider][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
+	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
 	bg_texture          = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
 	
@@ -54,9 +55,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     // o.spiro.
 
     display = std::make_unique<Display>(processor.c_buffer.get(), mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
-    pot = std::make_unique<SpriteSlider[]>(core::grid.pots);
+    pot = std::make_unique<SpriteSlider[]>(core::grid.count(Control::slider));
 
-    for(int i = 0; i < core::grid.pots; ++i)
+    for(int i = 0; i < core::grid.count(Control::slider); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
         const core::Control* c = grid.control(uid);
@@ -68,22 +69,22 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             default: break;
         }
         pot[i].setPaintingIsUnclipped(true);
-        pot[i].init(pot_sprite[type].get(), c->flag & map::flag::encoder);
+        pot[i].init(sprite[Sprite::Slider][type].get(), c->flag & map::flag::encoder);
         // pot_attachment[i].reset (new SliderAttachment(valueTreeState, slider_list.at(p).id, pot[i]));
         addAndMakeVisible (pot[i]);
     }
 
-    for(int i = 0; i < core::grid.buttons; ++i)
+    for(int i = 0; i < core::grid.count(Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
         const core::Control* c = grid.control(uid);
     //     interface::button_list p = static_cast<interface::button_list>(i);
         auto bt = std::make_unique<juce::ImageButton>(c->postfix);
         button.emplace_back (std::move(bt));
-        int type = 0;
+        auto type = Sprite::Momentary;
         switch(c->flag) 
         {
-            case core::map::flag::radio: type = 1; break;
+            case core::map::flag::radio: type = Sprite::Radio; break;
             default: break;
         }
 
@@ -93,12 +94,24 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         button.at(i).get()->setImages 
         (
             false, false, true, 
-            *btn_sprite[type][2], 1.0f, {}, 
-            *btn_sprite[type][1], 1.0f, {}, 
-            *btn_sprite[type][0], 1.0f, {}
+            *sprite[type][2], 1.0f, {}, 
+            *sprite[type][1], 1.0f, {}, 
+            *sprite[type][0], 1.0f, {}
         );
         addAndMakeVisible(button.at(i).get());
     }
+    
+    for(int i = 0; i < 4; ++i)
+    {
+        env[i].id = i;
+        env[i].addListener(this);
+        env[i].setOpaque(true);
+        env[i].setPaintingIsUnclipped(true);
+        addAndMakeVisible(env[i]);
+    }
+    processor.addListener(this);
+    display->addListener(this);
+    
 
     display->setOpaque(true); // MUST
 	display->setPaintingIsUnclipped(true);
@@ -161,7 +174,7 @@ void Editor::resized()
 {
 	bg.setBounds(0, 0, mwc.width, mwc.height);
 
-    for(int i = 0; i < core::grid.pots; ++i)
+    for(int i = 0; i < core::grid.count(Control::slider); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
         auto bounds = grid.getBounds(uid);
@@ -175,7 +188,7 @@ void Editor::resized()
         };
         pot[i].setBounds(r);
     }
-    for(int i = 0; i < core::grid.buttons; ++i)
+    for(int i = 0; i < core::grid.count(Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
         auto bounds = grid.getBounds(uid);
@@ -188,6 +201,18 @@ void Editor::resized()
         };
         button.at(i).get()->setBounds(r);
     }
+
+    for(int i = 0; i < 4; ++i)
+    {
+        juce::Rectangle<int> r { mwc.env_display.x, mwc.env_display.y, mwc.env_display.w, mwc.env_display.h };
+        env[i].setBounds(r);
+    }
+    env[0].setVisible(true);
+    env[1].setVisible(false);
+    env[2].setVisible(false);
+    env[3].setVisible(false);
+
+
     display->setBounds(mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
     startTimerHz(core::settings::scope_fps);
 

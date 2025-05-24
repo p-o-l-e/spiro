@@ -24,26 +24,26 @@ namespace core
         const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::socket   , {  15.00f,  28.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  53.00f,  28.00f,  16.00f,  16.00f }, "ay"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  91.00f,  28.00f,  16.00f,  16.00f }, "az"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  15.00f,  58.00f,  16.00f,  16.00f }, "bx"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  53.00f,  58.00f,  16.00f,  16.00f }, "by"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  91.00f,  58.00f,  16.00f,  16.00f }, "bz"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  15.00f, 148.00f,  16.00f,  16.00f }, "cvx"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  53.00f, 148.00f,  16.00f,  16.00f }, "cvy"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  91.00f, 148.00f,  16.00f,  16.00f }, "cvz"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  15.00f,  28.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  53.00f,  28.00f,  16.00f,  16.00f }, "ay"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  91.00f,  28.00f,  16.00f,  16.00f }, "az"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  15.00f,  58.00f,  16.00f,  16.00f }, "bx"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  53.00f,  58.00f,  16.00f,  16.00f }, "by"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  91.00f,  58.00f,  16.00f,  16.00f }, "bz"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  15.00f, 148.00f,  16.00f,  16.00f }, "cvx"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  53.00f, 148.00f,  16.00f,  16.00f }, "cvy"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input    , {  91.00f, 148.00f,  16.00f,  16.00f }, "cvz"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::socket   , {  34.00f,  88.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  72.00f,  88.00f,  16.00f,  16.00f }, "ay"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , { 110.00f,  88.00f,  16.00f,  16.00f }, "az"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  34.00f, 118.00f,  16.00f,  16.00f }, "bx"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , {  72.00f, 118.00f,  16.00f,  16.00f }, "by"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::socket   , { 110.00f, 118.00f,  16.00f,  16.00f }, "bz"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  34.00f,  88.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  72.00f,  88.00f,  16.00f,  16.00f }, "ay"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , { 110.00f,  88.00f,  16.00f,  16.00f }, "az"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  34.00f, 118.00f,  16.00f,  16.00f }, "bx"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , {  72.00f, 118.00f,  16.00f,  16.00f }, "by"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::output   , { 110.00f, 118.00f,  16.00f,  16.00f }, "bz"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
 
         };
 
