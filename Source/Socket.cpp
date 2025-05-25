@@ -21,52 +21,55 @@
 ******************************************************************************************************************************/
 
 #include "Socket.h"
+#include "Constraints.hpp"
+#include "descriptor.hxx"
+#include "modmatrix.hpp"
+#include "primitives.hpp"
 #include <iostream>
+#include <iomanip>
+#define SR core::constraints::SR
 
-// Sockets::Sockets(const int& w, const int& h, const core::Spiro& o)
-// {
-//     std::cout  <<"-- Initializing sockets...\n";
-//
-//
-//     bay = new core::Patchbay(w, h, o.rack.ccv(core::map::cv::i), o.rack.ccv(core::map::cv::o));
-//
-//     unsigned position = 0; // 255 sockets max
-//
-//     for(int i = 0; i < o.rack.ccv(core::map::cv::i); ++i)
-//     {    
-//         auto hash = o.rack.bus.blueprint.get_hash(core::map::cv::i, i);
-//         if(socket_pos.count(interface::input_list[i]))
-//         {
-//             bay->set_socket(&socket_pos.at(interface::input_list[i]), SOCKET_RADIUS, hash, SOCKET_IN, position);
-//         }
-//         else std::cout  <<"-- Element in input list:\t"<<interface::input_list[i]<<" doesn't exists...\n";
-//         ++position;
-//     }
-//
-//     for(int i = 0; i < o.rack.ccv(core::map::cv::o); ++i)
-//     {
-//         auto hash = o.rack.bus.blueprint.get_hash(core::map::cv::o, i);
-//         if(socket_pos.count(interface::output_list[i]))
-//         {
-//             bay->set_socket(&socket_pos.at(interface::output_list[i]), SOCKET_RADIUS, hash, SOCKET_OUT, position);
-//         }
-//         else
-//         {
-//             core::uid_t err = decode_uid(interface::output_list[i]);
-//             std::cout  <<"-- Element in output list:\t"<<interface::output_list[i]<<" doesn't exists...\n";
-//             std::cout   <<"\t-- Module type: "<<std::hex<<(int)err.module
-//                         <<" -- Module position: "<<err.module_position
-//                         <<" -- Parameter type: "<<(int)err.parameter
-//                         <<" -- Parameter position: "<<err.parameter_position
-//                         <<"\n";
-//
-//         }
-//         ++position;
-//     }
-//     bay->draw();
-//     std::cout  <<"-- Sockets initialized!\n";
-//
-// };
+Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
+{
+    std::cout  <<"-- Initializing sockets...\n";
+    auto inputs = o.count(core::Control::input);
+    auto outputs = o.count(core::Control::output);
+
+    bay = new core::Patchbay(bounds.w, bounds.h, inputs, outputs);
+
+    unsigned position = 0; // 255 sockets max
+    std::cout  <<"---- Outputs...\n";
+    for(int i = 0; i < inputs; ++i)
+    {   
+        auto hash = o.getHash(i, core::Control::input);
+        auto f = o.getBounds(o.getUID(i, core::Control::input));
+        core::Point2D<int> offset 
+        {
+            static_cast<int>(f.x - bounds.x + o.bounds.x + SR),
+            static_cast<int>(f.y - bounds.y + SR)
+        };
+        std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
+        bay->set_socket(&offset, SR, hash, SOCKET_IN, position);
+        ++position;
+    }
+    std::cout  <<"---- Outputs...\n";
+    for(int i = 0; i < outputs; ++i)
+    {
+        auto hash = o.getHash(i, core::Control::output);
+        auto f = o.getBounds(o.getUID(i, core::Control::output));
+        core::Point2D<int> offset 
+        {
+            static_cast<int>(f.x - bounds.x + o.bounds.x + SR),
+            static_cast<int>(f.y - bounds.y + SR)
+        };
+        std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
+        bay->set_socket(&offset, SR, hash, SOCKET_OUT, position);
+        ++position;
+    }
+    bay->draw();
+    std::cout  <<"-- Sockets initialized!\n";
+
+};
 
 Sockets::~Sockets()
 {

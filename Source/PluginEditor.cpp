@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************************************************************/
 
+#include "Constraints.hpp"
 #include "PluginProcessor.h"
 #include "cro_interface.hpp"
 #include "descriptor.hxx"
@@ -44,23 +45,24 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     sprite[Sprite::Slider][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
 	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
-	bg_texture          = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
+	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
 	
+    sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
+   
     bg.setImage(*bg_texture);
     bg.setOpaque(true);
     bg.setPaintingIsUnclipped(true);
     addAndMakeVisible(bg);
 
-    core::grid.getSector(core::map::module::lfo, 0);
-    // o.spiro.
 
-    display = std::make_unique<Display>(processor.c_buffer.get(), mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
-    pot = std::make_unique<SpriteSlider[]>(core::grid.count(Control::slider));
 
-    for(int i = 0; i < core::grid.count(Control::slider); ++i)
+    display = std::make_unique<Display>(processor.c_buffer.get(), core::constraints::oled.x, core::constraints::oled.y, core::constraints::oled.w, core::constraints::oled.h);
+    pot = std::make_unique<SpriteSlider[]>(core::grid.count(core::Control::slider));
+
+    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
-        const core::Control* c = grid.control(uid);
+        const core::Control* c = core::grid.control(uid);
         int type = 0;
         switch(c->flag) 
         {
@@ -69,16 +71,15 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             default: break;
         }
         pot[i].setPaintingIsUnclipped(true);
-        pot[i].init(sprite[Sprite::Slider][type].get(), c->flag & map::flag::encoder);
+        pot[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
         // pot_attachment[i].reset (new SliderAttachment(valueTreeState, slider_list.at(p).id, pot[i]));
         addAndMakeVisible (pot[i]);
     }
 
-    for(int i = 0; i < core::grid.count(Control::button); ++i)
+    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
-        const core::Control* c = grid.control(uid);
-    //     interface::button_list p = static_cast<interface::button_list>(i);
+        const core::Control* c = core::grid.control(uid);
         auto bt = std::make_unique<juce::ImageButton>(c->postfix);
         button.emplace_back (std::move(bt));
         auto type = Sprite::Momentary;
@@ -115,8 +116,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
     display->setOpaque(true); // MUST
 	display->setPaintingIsUnclipped(true);
+
     addAndMakeVisible(display.get());
-    // addAndMakeVisible(audioProcessor.sockets.get());
+    addAndMakeVisible(sockets.get());
 
 
     /***************************************************************************************************************************
@@ -146,7 +148,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     };
 
     setResizable(false, false);
-    setSize (mwc.width, mwc.height);
+    setSize (core::constraints::W, core::constraints::H);
     setWantsKeyboardFocus (true);
 } 
 
@@ -162,7 +164,13 @@ Editor::~Editor()
 
 void Editor::timerCallback()  
 { 
-    repaint(juce::Rectangle<int> { mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h }); 
+    repaint(juce::Rectangle<int>
+    {
+        core::constraints::oled.x,
+        core::constraints::oled.y, 
+        core::constraints::oled.w,
+        core::constraints::oled.h
+    }); 
 }
 
 /*****************************************************************************************************************************
@@ -172,48 +180,69 @@ void Editor::timerCallback()
 ******************************************************************************************************************************/
 void Editor::resized()
 {
-	bg.setBounds(0, 0, mwc.width, mwc.height);
+	bg.setBounds(0, 0, core::constraints::W, core::constraints::H);
 
-    for(int i = 0; i < core::grid.count(Control::slider); ++i)
+    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
-        auto bounds = grid.getBounds(uid);
+        auto bounds = core::grid.getBounds(uid);
 
         juce::Rectangle<int> r 
         { 
-            static_cast<int>(bounds->x + grid.bounds.x), 
-            static_cast<int>(bounds->y + grid.bounds.y), 
-            static_cast<int>(bounds->w), 
-            static_cast<int>(bounds->h) 
+            static_cast<int>(bounds.x + core::grid.bounds.x), 
+            static_cast<int>(bounds.y + core::grid.bounds.y), 
+            static_cast<int>(bounds.w), 
+            static_cast<int>(bounds.h) 
         };
         pot[i].setBounds(r);
     }
-    for(int i = 0; i < core::grid.count(Control::button); ++i)
+
+    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
-        auto bounds = grid.getBounds(uid);
+        auto bounds = core::grid.getBounds(uid);
         juce::Rectangle<int> r 
         { 
-            static_cast<int>(bounds->x + grid.bounds.x), 
-            static_cast<int>(bounds->y + grid.bounds.y), 
-            static_cast<int>(bounds->w), 
-            static_cast<int>(bounds->h) 
+            static_cast<int>(bounds.x + core::grid.bounds.x), 
+            static_cast<int>(bounds.y + core::grid.bounds.y), 
+            static_cast<int>(bounds.w), 
+            static_cast<int>(bounds.h) 
         };
         button.at(i).get()->setBounds(r);
     }
 
     for(int i = 0; i < 4; ++i)
     {
-        juce::Rectangle<int> r { mwc.env_display.x, mwc.env_display.y, mwc.env_display.w, mwc.env_display.h };
+        juce::Rectangle<int> r 
+        {
+            core::constraints::envd.x,
+            core::constraints::envd.y,
+            core::constraints::envd.w,
+            core::constraints::envd.h 
+        };
         env[i].setBounds(r);
     }
+
     env[0].setVisible(true);
     env[1].setVisible(false);
     env[2].setVisible(false);
     env[3].setVisible(false);
 
+    sockets->setBounds(juce::Rectangle<int> 
+    {
+        core::constraints::pbay.x,
+        core::constraints::pbay.y,
+        core::constraints::pbay.w,
+        core::constraints::pbay.h 
+    });
 
-    display->setBounds(mwc.lcd_display.x, mwc.lcd_display.y, mwc.lcd_display.w, mwc.lcd_display.h);
+    display->setBounds
+    (
+       core::constraints::oled.x,
+       core::constraints::oled.y,
+       core::constraints::oled.w,
+       core::constraints::oled.h
+    );
     startTimerHz(core::settings::scope_fps);
 
 

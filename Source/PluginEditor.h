@@ -38,9 +38,6 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
 
 		std::unique_ptr<Display>     display;
         juce::ImageComponent bg; 	 // Background layer
-        main_window_constraints mwc;
-
-         
 
         void resized() override;
         void timerCallback() override;
@@ -56,7 +53,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         std::unique_ptr<SpriteSlider[]> pot;
         std::unique_ptr<SliderAttachment> pot_attachment[0];//cell::settings::pot_n];
         std::vector<std::unique_ptr<juce::ImageButton>> button;
-        
+        std::unique_ptr<Sockets> sockets;
         int envelope_shown = 0;
         EnvelopeDisplay env[4];//cell::settings::env_n];
         Processor& processor;

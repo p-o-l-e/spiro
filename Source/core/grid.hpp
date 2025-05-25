@@ -47,10 +47,9 @@ namespace core
     struct Sector
     {
         const Descriptor* const descriptor;
-        Point2D<float> offset { 0.0f, 0.0f };
-        int index { 0 };
-        std::unique_ptr<Rectangle<float>[]> bounds[map::cv::count];
-        Sector(const Descriptor*, const Point2D<float>&);
+        const Point2D<float> offset;
+        constexpr Sector(const Descriptor* d, const Point2D<float>& f): 
+            descriptor(d), offset(f) {};
        ~Sector() = default;
     };
     
@@ -65,8 +64,7 @@ namespace core
             float scale { 1.0f };
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
-            std::unique_ptr<uint32_t[]> indices[Control::count];
-            
+            std::unique_ptr<uint32_t[]>  indices[Control::count];
             const std::unique_ptr<int[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;
             void  calculateUIDs();
@@ -76,12 +74,12 @@ namespace core
             const Sector* const sector;
             const int sectors;
             const int count(const Control::type& t) const { return elements[t]; }
-            const Sector* getSector(const core::map::module::type&, const int&) const;
-            const Rectangle<float>* getBounds(const uid_t&) const;
+            const Rectangle<float> getBounds(const uid_t&) const;
             const Control* control(const uid_t&) const;
             const int getIndex(const uint32_t&) const;
             const int getIndex(const uid_t&) const;
             const uid_t getUID(const int&, const Control::type&) const;
+            const uint32_t getHash(const int&, const Control::type&) const;
             Grid(const Sector*, const int&, const Rectangle<float>&);
            ~Grid() = default;
     };
@@ -90,7 +88,7 @@ namespace core
 
     namespace settings 
     {
-        extern Sector sector_map[];
+        extern const Sector sector_map[];
         extern const int sectors;
     }
 

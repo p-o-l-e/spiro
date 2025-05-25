@@ -27,7 +27,8 @@
 #include "modmatrix.hpp"
 #include "Constraints.hpp"
 #include "Colours.hpp"
-#include "spiro.hpp"
+#include "grid.hpp"
+#include "primitives.hpp"
 
 class Sockets: public juce::Component
 {
@@ -54,6 +55,6 @@ class Sockets: public juce::Component
 
         void resized() override;
         void paint(juce::Graphics& g) override;
-        Sockets(const int&, const int&, const core::Spiro&);
+        Sockets(const core::Rectangle<int>&, const core::Grid&);
        ~Sockets();
 };

@@ -23,38 +23,12 @@
 #include <cstddef>
 #include <iostream>
 #include "grid.hpp"
+#include "cro_interface.hpp"
 #include "descriptor.hxx"
 #include "primitives.hpp"
 
 namespace core
 {
-    Sector::Sector(const Descriptor* d, const Point2D<float>& fs): descriptor(d), offset(fs)
-    {
-        for(int j = 0; j < map::cv::count; ++j)
-        {
-            bounds[j] = std::make_unique<Rectangle<float>[]>(*descriptor->cv[j]);
-
-            for(int i = 0; i < *descriptor->cv[j]; ++i)
-            {
-                bounds[j][i].x = offset.x + descriptor->set[j][i].constrain.x;
-                bounds[j][i].y = offset.y + descriptor->set[j][i].constrain.y;
-                bounds[j][i].w = descriptor->set[j][i].constrain.w;
-                bounds[j][i].h = descriptor->set[j][i].constrain.h;
-            }
-        }
-    }
-
-    const Sector* Grid::getSector(const core::map::module::type& t, const int& index) const
-    {
-        for(int i = 0; i < sectors; ++i)
-        {
-            if(sector[i].index == index)
-                if(sector[i].descriptor->type == t)
-                    return &sector[i];
-        }
-        return nullptr;
-    }
-
     Grid::Grid(const Sector* s, const int& size, const Rectangle<float>& b): 
     sector(s), sectors(size), bounds(b), relative(setRelatives(s)), elements(countElements(s))
     {
@@ -110,43 +84,57 @@ namespace core
         return decode_uid(indices[type][index]);
     }
 
-    const Rectangle<float>* Grid::getBounds(const uid_t& uid) const
+    const uint32_t Grid::getHash(const int& index, const Control::type& type) const
     {
+        return indices[type][index];
+    }
+
+    const Rectangle<float> Grid::getBounds(const uid_t& uid) const
+    {
+        Rectangle<float> bounds { 0, 0, 0, 0 };
         for(int i = 0; i < sectors; ++i)
         {
             if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
             {
                 if(relative[i] == uid.mp) 
                 {
-                    return &sector[i].bounds[uid.pt][uid.pp];
+                    bounds.x = sector[i].offset.x + sector[i].descriptor->set[uid.pt][uid.pp].constrain.x;
+                    bounds.y = sector[i].offset.y + sector[i].descriptor->set[uid.pt][uid.pp].constrain.y;
+                    bounds.w = sector[i].descriptor->set[uid.pt][uid.pp].constrain.w;
+                    bounds.h = sector[i].descriptor->set[uid.pt][uid.pp].constrain.h;
+                    return bounds;
                 }
             }
         }
-        return nullptr;
+        return bounds;
     }
-    
+
+
     const std::unique_ptr<int[]> Grid::setRelatives(const Sector* d) const
     {
-        LOG("Grid::set_relatives() :");
         int  n = settings::sectors;
         auto r = std::make_unique<int[]>(n);
+        bool check[n];
+        for(int i = 0; i < n; ++i) check[i] = false;
 
         for(int s = 0; s < n; ++s)
         {
             int pos = 0;
             auto carry = d[s].descriptor->type;
-            r[s] = pos;
 
-            for(int i = s + 1; i < n; ++i)
+            for(int i = s; i < n; ++i)
             {
-                if(carry == d[i].descriptor->type) 
+                if(!check[i])
                 {
-                    r[i] = ++pos;
-                    ++s;
+                    if(carry == d[i].descriptor->type) 
+                    {
+                        r[i] = pos;
+                        check[i] = true;
+                        ++pos;
+                    }
                 }
             }
         }
-        LOG("---- Relatives set...");
         return r;
     }
     
@@ -171,7 +159,7 @@ namespace core
 
     namespace settings 
     {
-        Sector sector_map[]
+        const Sector sector_map[]
         {
             Sector(&vca::descriptor[0], Point2D<float>{ 228.0f, 292.0f }),
             Sector(&vca::descriptor[1], Point2D<float>{ 228.0f, 292.0f }),
