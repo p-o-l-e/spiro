@@ -58,7 +58,7 @@ namespace core {
             std::atomic<float> out[2];                       // LR Output
             void        midi_message(uint8_t, uint8_t, uint8_t);
             void        process();
-            Spiro(const Descriptor**);
+            Spiro(const Grid*);
            ~Spiro();
     };
 };

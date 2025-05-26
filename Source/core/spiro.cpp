@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 
 #include "spiro.hpp"
+#include "grid.hpp"
 #include <cstdint>
 
 namespace core
@@ -66,7 +67,7 @@ namespace core
         LOG("-- Bus connected...\n");
     }
 
-    Spiro::Spiro(const Descriptor** d): rack(d)
+    Spiro::Spiro(const Grid* d)
     {
         LOG("Spiro:\n");
         connect_bus();

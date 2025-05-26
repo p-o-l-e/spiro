@@ -1,4 +1,5 @@
 #pragma once
+#include "grid.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -33,7 +34,7 @@ namespace core
             Module* at(const map::module::type&, const int&);
             void process(const int&);
             void bind(Module*, const unsigned&);
-            Rack(const Descriptor**);
+            Rack(const Grid*);
            ~Rack();
     };
 

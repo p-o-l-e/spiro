@@ -50,7 +50,8 @@ class EnvelopeDisplay  : public juce::Component
         void plot(juce::Graphics&, float);
         void load();                                // Load from memory
         void updateNodes();
-        void paint (juce::Graphics& g) override;
+        void setDefaults();
+        void paint(juce::Graphics& g) override;
         void resized() override;
        /***********************************************************************************************************************
         * 
@@ -65,7 +66,6 @@ class EnvelopeDisplay  : public juce::Component
             juce::Rectangle<int> area;
             int  x,  y;
             int cL, cR;                             // Left/Right constrain
-            int cT, cB;                             // Top/Bottom constrain
 
             void paint(juce::Graphics& g) override
             {
@@ -86,7 +86,6 @@ class EnvelopeDisplay  : public juce::Component
 
                 if(x >= cR) setCentrePosition(x = cR, y);
                 if(x <= cL) setCentrePosition(x = cL, y);
-                if(y >= cB) setCentrePosition(x, y = cB);
 
                 parent->envd.regenerate = true;
                 parent->repaint();

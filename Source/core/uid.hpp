@@ -52,33 +52,15 @@ namespace core
      * CC : Parameter type
      * DD : Parameter id/position
      * ***********************************************************************************************************************/
-
-    constexpr uint32_t encode_uid(const map::module::type& mt, const int& mp, const map::cv::index& pt, const int& pp) noexcept
+    constexpr uint32_t encode_uid(const map::module::type& mt, const int& mp, const map::cv::index& pt, const int& pp) noexcept 
     {
-        uint32_t hash = static_cast<uint8_t>(mt);
-        hash <<= 8;
-        hash += mp;
-        hash <<= 8;
-        hash += static_cast<uint8_t>(pt);
-        hash <<= 8;
-        hash += pp;
-
-        return hash;
+        return (static_cast<uint8_t>(mt) << 24) | (mp << 16) | (static_cast<uint8_t>(pt) << 8) | pp;
     }
 
-    constexpr uint32_t encode_uid(const uid_t& uid) noexcept
+    constexpr uint32_t encode_uid(const uid_t& uid) noexcept 
     {
-        uint32_t hash = uid.mt;
-        hash <<= 8;
-        hash += uid.mp;
-        hash <<= 8;
-        hash += uid.pt;
-        hash <<= 8;
-        hash += uid.pp;
-
-        return hash;
+        return (uid.mt << 24) | (uid.mp << 16) | (uid.pt << 8) | uid.pp;
     }
-
 
     constexpr uid_t decode_uid(const uint32_t& data) noexcept
     {

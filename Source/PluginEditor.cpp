@@ -189,8 +189,8 @@ void Editor::resized()
 
         juce::Rectangle<int> r 
         { 
-            static_cast<int>(bounds.x + core::grid.bounds.x), 
-            static_cast<int>(bounds.y + core::grid.bounds.y), 
+            static_cast<int>(bounds.x + core::constraints::gap_x), 
+            static_cast<int>(bounds.y + core::constraints::gap_y), 
             static_cast<int>(bounds.w), 
             static_cast<int>(bounds.h) 
         };
@@ -203,8 +203,8 @@ void Editor::resized()
         auto bounds = core::grid.getBounds(uid);
         juce::Rectangle<int> r 
         { 
-            static_cast<int>(bounds.x + core::grid.bounds.x), 
-            static_cast<int>(bounds.y + core::grid.bounds.y), 
+            static_cast<int>(bounds.x + core::constraints::gap_x), 
+            static_cast<int>(bounds.y + core::constraints::gap_y), 
             static_cast<int>(bounds.w), 
             static_cast<int>(bounds.h) 
         };

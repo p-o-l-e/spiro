@@ -19,15 +19,16 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "Socket.h"
 #include "Constraints.hpp"
 #include "descriptor.hxx"
 #include "modmatrix.hpp"
 #include "primitives.hpp"
+#include "uid.hpp"
 #include <iostream>
 #include <iomanip>
 #define SR core::constraints::SR
+#define XG core::constraints::gap_x
 
 Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
 {
@@ -45,9 +46,10 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
         auto f = o.getBounds(o.getUID(i, core::Control::input));
         core::Point2D<int> offset 
         {
-            static_cast<int>(f.x - bounds.x + o.bounds.x + SR),
+            static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
+        std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
         std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
         bay->set_socket(&offset, SR, hash, SOCKET_IN, position);
         ++position;
@@ -59,16 +61,16 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
         auto f = o.getBounds(o.getUID(i, core::Control::output));
         core::Point2D<int> offset 
         {
-            static_cast<int>(f.x - bounds.x + o.bounds.x + SR),
+            static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
+        std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
         std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
         bay->set_socket(&offset, SR, hash, SOCKET_OUT, position);
         ++position;
     }
     bay->draw();
     std::cout  <<"-- Sockets initialized!\n";
-
 };
 
 Sockets::~Sockets()
@@ -76,16 +78,12 @@ Sockets::~Sockets()
     delete bay;
 }
 
-
 void Sockets::drawMask(juce::Graphics& g, juce::Colour colour)
 {
-    auto yo = area.getY();
-    auto xo = area.getX();
-
     auto h  = area.getHeight();
     auto w  = area.getWidth();
 
-    static auto layer = juce::Image (juce::Image::PixelFormat::ARGB, w, h, true);
+    static auto layer = juce::Image(juce::Image::PixelFormat::ARGB, w, h, true);
     static juce::Image::BitmapData bmp(layer, juce::Image::BitmapData::ReadWriteMode::readWrite);
 
     for(int y = 0; y < h; y++)
@@ -94,27 +92,27 @@ void Sockets::drawMask(juce::Graphics& g, juce::Colour colour)
         {
             auto c = bay->canvas.get(x, y);
             float alpha = c ? 1.0f : 0.0f;
-            bmp.setPixelColour (x, y, colour_set[c&0xFF].withAlpha(alpha));
+            bmp.setPixelColour(x, y, colour_set[c&0xFF].withAlpha(alpha));
         }
     }
-    g.setOpacity (1.0f);
+    g.setOpacity(1.0f);
     g.drawRect(area);
-    g.drawImageAt(layer, xo, yo);
+    g.drawImageAt(layer, area.getX(), area.getY());
 }
 
 void Sockets::drawCords(juce::Graphics& g, float alpha)
 {
     for(int j = 0; j < bay->nodes; j++)
     {
-        core::Point2D<float> pre , car = bay->io[j].cord.data[0];
+        core::Point2D<float> prior, current = bay->io[j].cord.data[0];
         bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {
-            pre = car;
-            car = bay->io[j].cord.data[i];
-            g.drawLine(pre.x, pre.y, car.x, car.y, 2.0f);
+            prior = current;
+            current = bay->io[j].cord.data[i];
+            g.drawLine(prior.x, prior.y, current.x, current.y, 2.0f);
         }
-        if(bay->io[j].on) g.fillEllipse(bay->io[j].cord.data[0].x - 2, bay->io[j].cord.data[0].y - 2, 5, 5);
+        if(bay->io[j].on) g.fillEllipse(bay->io[j].cord.data[0].x - 3, bay->io[j].cord.data[0].y - 3, 6, 6);
     }
 }
 
@@ -160,12 +158,10 @@ void Sockets::load()
     bay->deselect();
 }
 
-
-
-void Sockets::paint (juce::Graphics& g)
+void Sockets::paint(juce::Graphics& g)
 {
     drawCords(g, 1.0f);
-    drawMask(g, colour_set[0]);
+    // drawMask(g, colour_set[0]);
 }
 
 void Sockets::resized ()
@@ -180,35 +176,35 @@ void Sockets::mouseDown(const juce::MouseEvent& event)
     else if(event.mods.isRightButtonDown()) mb = core::settings::mb::rmb;
 
     auto t = bay->down_test(event.x, event.y, mb);
-    if (t == 1)
+    if(t == 1)
     {
         i_armed = true;
-        setMouseCursor (juce::MouseCursor::CrosshairCursor);
+        setMouseCursor(juce::MouseCursor::CrosshairCursor);
     }
-    else if (t == -1)
+    else if(t == -1)
     {
         o_armed = true;
-        setMouseCursor (juce::MouseCursor::CrosshairCursor);
+        setMouseCursor(juce::MouseCursor::CrosshairCursor);
     }
     repaint();
 }
 
-void Sockets::mouseDrag (const juce::MouseEvent& event)
+void Sockets::mouseDrag(const juce::MouseEvent& event)
 {
     bay->drag(event.x, event.y);
     repaint();
 }
 
-void Sockets::mouseUp (const juce::MouseEvent& event)
+void Sockets::mouseUp(const juce::MouseEvent& event)
 {
     bay->up_test(event.x, event.y, 0);
     i_armed = false;
     o_armed = false;
-    setMouseCursor (juce::MouseCursor::NormalCursor);
+    setMouseCursor(juce::MouseCursor::NormalCursor);
     repaint();
 }
 
-void Sockets::mouseMove (const juce::MouseEvent& event)
+void Sockets::mouseMove(const juce::MouseEvent& event)
 {
     bay->move_test(event.x, event.y, 0);
     repaint();

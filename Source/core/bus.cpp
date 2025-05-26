@@ -20,13 +20,14 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "bus.hpp"
+#include "grid.hpp"
 #include "uid.hpp"
 #include <iostream>
 
 namespace core {
 namespace interface { 
 
-    bus_connector::bus_connector(const Descriptor** d): blueprint(d)
+    bus_connector::bus_connector(const Grid* gr): blueprint(d)
     {
         LOG("BusConnector() : ");
         for(int i = 0; i < map::cv::count; ++i)

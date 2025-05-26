@@ -1,4 +1,5 @@
 #include "rack.hpp"
+#include "grid.hpp"
 #include "uid.hpp"
 
 
@@ -32,7 +33,7 @@ namespace core
         if(pos < bus.blueprint.mc) node[pos] = m; 
     }
 
-    Rack::Rack(const Descriptor** d): bus(d) 
+    Rack::Rack(const Grid* gris): bus(grid) 
     { 
         allocate(); 
         build(); 

@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #pragma once
 #include "blueprint.hpp"
+#include "grid.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -40,9 +41,9 @@ namespace core
                 std::unique_ptr<std::atomic<float>*[]> cv[map::cv::count];
 
             public:
-                const Blueprint blueprint;
+                const Grid* const blueprint;
                 std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;
-                bus_connector(const Descriptor**);
+                bus_connector(const Grid*);
                ~bus_connector() { LOG("~BusConnector()"); };
         };
     }

@@ -23,6 +23,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -61,7 +62,6 @@ namespace core
     class Grid 
     {
         private:
-            float scale { 1.0f };
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
             std::unique_ptr<uint32_t[]>  indices[Control::count];
@@ -70,17 +70,17 @@ namespace core
             void  calculateUIDs();
             
         public:
-            Rectangle<float> bounds { 0.0f, 0.0f, 0.0f, 0.0f };
             const Sector* const sector;
             const int sectors;
             const int count(const Control::type& t) const { return elements[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
+            const std::string name(const uid_t&, const bool&) const;
             const Control* control(const uid_t&) const;
             const int getIndex(const uint32_t&) const;
             const int getIndex(const uid_t&) const;
             const uid_t getUID(const int&, const Control::type&) const;
             const uint32_t getHash(const int&, const Control::type&) const;
-            Grid(const Sector*, const int&, const Rectangle<float>&);
+            Grid(const Sector*, const int&);
            ~Grid() = default;
     };
     

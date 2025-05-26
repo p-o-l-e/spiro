@@ -1,21 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
-
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 #pragma once
 
 #include <JuceHeader.h>
@@ -23,9 +26,8 @@
 #include "Socket.h"
 #include "wavering.hpp"
 #include "EnvelopeDisplay.h"
+#include "spiro.hpp"
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Processor: public juce::AudioProcessor
 {
     public:
@@ -57,7 +59,11 @@ class Processor: public juce::AudioProcessor
         int getNumPrograms() override;
         int getCurrentProgram() override;
 
-        // Presets ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       /**********************************************************************************************************************
+        * 
+        *  Presets
+        *
+        **********************************************************************************************************************/
         std::vector<std::pair<juce::String, const juce::File>> presets;
         std::pair<juce::String, const juce::File> current_preset;
         juce::String currentPresetName;
@@ -82,11 +88,10 @@ class Processor: public juce::AudioProcessor
 
         const juce::String getName() const override { return JucePlugin_Name; };
         const juce::String getProgramName (int index) override;
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
-        // core::Spiro spiro;
+        core::Spiro spiro;
         // std::unique_ptr<Sockets> sockets;
 
         std::unique_ptr<core::wavering<core::Point2D<float>>> c_buffer;
@@ -99,7 +104,6 @@ class Processor: public juce::AudioProcessor
                 virtual ~Listener() = default;
                 virtual void saveCall() {};
                 virtual void loadCall() {};
-
         };
     
         void addListener(Listener *l)       { listeners.add(l);     }
@@ -112,5 +116,3 @@ class Processor: public juce::AudioProcessor
         juce::ListenerList<Listener> listeners;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor)
 };
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,12 @@
 
 EnvelopeDisplay::EnvelopeDisplay (): A(this), D(this), S(this), R(this)
 {
+    node[1].curve.store(1.0f);
+    node[2].curve.store(3.0f);
+    node[3].curve.store(0.0f);
+    node[4].curve.store(2.0f);
+    node[5].curve.store(1.0f);
+
     for(int i = 0; i < SEGMENTS; ++i)
     {
         envd.node[i].time  = &node[i].time;
@@ -123,37 +129,16 @@ void EnvelopeDisplay::resized()
     scope_bounds.h = area.getHeight() - gap * 2;
 
     data = std::make_unique<float[]>(scope_bounds.w);
-    A.cB = D.cB = S.cB = R.cB = area.getHeight() - gap;
 
-    A.setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
-    A.cR = area.getWidth() / 4 - gap;
-    A.cL = gap;
-
-    D.setBounds(area.getWidth() / 6, area.getHeight() / 3, diameter, diameter);
-    D.cR = area.getWidth() /2 - gap;
-    D.cL = area.getWidth() /4 + gap;
-
-    S.setBounds(area.getWidth() / 3, area.getHeight() / 3, diameter, diameter);
-    S.cR = area.getWidth() /4 * 3 - gap;
-    S.cL = area.getWidth() /2 + gap;
-
-    R.setBounds(area.getWidth() / 2, area.getHeight() / 2, diameter, diameter);
-    R.cR = area.getWidth()  - gap;
-    R.cL = area.getWidth() /4 * 3 + gap;
-
+    setDefaults();
     updateNodes();
     repaint();
 }
-
-
 
 void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
 {
     sync();
     float h  = area.getHeight();
-    
-    static auto layer = juce::Image (juce::Image::PixelFormat::ARGB, scope_bounds.w, scope_bounds.h , true);
-    static juce::Image::BitmapData bmp(layer, juce::Image::BitmapData::ReadWriteMode::readWrite);
     
     envd.generate(data.get(), scope_bounds.w);
 
@@ -174,31 +159,25 @@ void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
     g.drawLine(cx, h - cy - gap, scope_bounds.w + gap, h - gap, curve_width);
 }
 
-
-
-
 void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
 {
+    auto l = [this](const int p) 
+    {
+        node[p].curve.load() >= 3.0f ? node[p].curve.store(0.0f) : node[p].curve.store(envd.node[p].curve->load() + 1.0f);
+    };
     float incr = 1.0f;
-    if( (event.x > 0) && (event.x < A.x) )
-    {
-        node[1].curve.load() >= 3.0f ? node[1].curve.store(0.0f) : node[1].curve.store(envd.node[1].curve->load() + incr);
-    }
-    else if( (event.x > A.x) && (event.x < D.x) )
-    {
-        node[2].curve.load() >= 3.0f ? node[2].curve.store(0.0f) : node[2].curve.store(envd.node[2].curve->load() + incr);
-    }
-    else if( (event.x > D.x) && (event.x < S.x) )
-    {
-        node[3].curve.load() >= 3.0f ? node[3].curve.store(0.0f) : node[3].curve.store(envd.node[3].curve->load() + incr);
-    }
-    else if( (event.x > S.x) && (event.x < R.x) )
-    {
-        node[4].curve.load() >= 3.0f ? node[4].curve.store(0.0f) : node[4].curve.store(envd.node[4].curve->load() + incr);
-    }
-    else if( (event.x > R.x) && (event.x < area.getWidth()) )
-    {
-        node[5].curve.load() >= 3.0f ? node[5].curve.store(0.0f) : node[5].curve.store(envd.node[5].curve->load() + incr);
-    }
+    if     ((event.x >   0) && (event.x < A.x)) l(1);
+    else if((event.x > A.x) && (event.x < D.x)) l(2);
+    else if((event.x > D.x) && (event.x < S.x)) l(3);
+    else if((event.x > S.x) && (event.x < R.x)) l(4);
+    else if((event.x > R.x) && (event.x < area.getWidth())) l(5);
     repaint();
+}
+
+void EnvelopeDisplay::setDefaults()
+{
+    A.setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
+    D.setBounds(area.getWidth() /  5, area.getHeight() /  3, diameter, diameter);
+    S.setBounds(area.getWidth() /  3, area.getHeight() /  3, diameter, diameter);
+    R.setBounds(area.getWidth() /  2, area.getHeight() /  2, diameter, diameter);
 }

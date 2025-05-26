@@ -1,31 +1,35 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "core/grid.hpp"
 
-Processor::Processor():   AudioProcessor
-                            (
-                                BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                                                 .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
-                                                 tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
-                            )
+Processor::Processor(): AudioProcessor
+                        (
+                            BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+                                             .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
+                                              tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
+                        )
                             // spiro(core::settings::descriptor_map)
 
 {
@@ -40,9 +44,7 @@ Processor::~Processor()
 
 /******************************************************************************************************************************
 * 
-* 
 *  Value tree setter
-* 
 * 
 ******************************************************************************************************************************/
 juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLayout()
@@ -58,9 +60,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
 
 /***************************************************************************************************************************
 * 
-* 
 *  Preset routines
-* 
 * 
 **************************************************************************************************************************/
 int Processor::getNumPrograms() { return presets.size(); }
@@ -79,9 +79,7 @@ juce::Result Processor::getPresetsFolder()
 
 /***************************************************************************************************************************
 * 
-* 
 *  Save preset
-* 
 * 
 **************************************************************************************************************************/
 bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
@@ -99,7 +97,7 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
 
     auto file = presetFile.create();
 
-    jassert (file.wasOk());
+    jassert(file.wasOk());
     if (file.failed())
     {
         suspendProcessing(false);
@@ -107,14 +105,14 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
     }
     file = tempFile.create();
 
-    jassert (file.wasOk());
+    jassert(file.wasOk());
     if (file.failed()) 
     {
         suspendProcessing(false);
         return false;
     }
 
-    if (auto stream = std::unique_ptr<juce::FileOutputStream> (tempFile.createOutputStream()))
+    if(auto stream = std::unique_ptr<juce::FileOutputStream> (tempFile.createOutputStream()))
     {
         stream->setPosition(0);
         stream->truncate();
@@ -135,9 +133,7 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
 
 /***************************************************************************************************************************
 * 
-* 
 *  Load preset
-* 
 * 
 **************************************************************************************************************************/
 bool Processor::loadPreset(juce::String presetName)
@@ -213,9 +209,7 @@ void Processor::scanPresetDir()
 
 /***************************************************************************************************************************
 * 
-* 
 *  On save
-* 
 * 
 **************************************************************************************************************************/
 void Processor::getStateInformation (juce::MemoryBlock& destData)
@@ -231,9 +225,7 @@ void Processor::getStateInformation (juce::MemoryBlock& destData)
 
 /***************************************************************************************************************************
 * 
-* 
 *  On load
-* 
 * 
 **************************************************************************************************************************/
 void Processor::setStateInformation (const void* data, int sizeInBytes)
@@ -267,9 +259,7 @@ void Processor::reloadParameters()
 
 /***************************************************************************************************************************
 * 
-* 
 *  Prepare to play 
-* 
 * 
 **************************************************************************************************************************/
 void Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -286,9 +276,7 @@ void Processor::releaseResources()
 
 /******************************************************************************************************************************
 * 
-* 
 *  MIDI
-* 
 * 
 ******************************************************************************************************************************/
 void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -305,9 +293,7 @@ void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
 
 /******************************************************************************************************************************
 * 
-* 
 *  Processing
-* 
 * 
 ******************************************************************************************************************************/
 void Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)

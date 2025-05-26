@@ -55,7 +55,7 @@ namespace core
     struct Control
     {
         enum  type                        { slider, button, parameter, input, output, pin, count };
-        const Control::type     is;
+        const Control::type     is        { parameter };
         const Rectangle<float>  constrain { 0.0f, 0.0f, 0.0f, 0.0f };
         const std::string       postfix   { "fuse" };
         

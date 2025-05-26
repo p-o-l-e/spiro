@@ -22,15 +22,17 @@
 ******************************************************************************************************************************/
 #include <cstddef>
 #include <iostream>
+#include <string>
 #include "grid.hpp"
 #include "cro_interface.hpp"
 #include "descriptor.hxx"
 #include "primitives.hpp"
+#include "uid.hpp"
 
 namespace core
 {
-    Grid::Grid(const Sector* s, const int& size, const Rectangle<float>& b): 
-    sector(s), sectors(size), bounds(b), relative(setRelatives(s)), elements(countElements(s))
+    Grid::Grid(const Sector* s, const int& size): 
+    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s))
     {
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
@@ -107,6 +109,44 @@ namespace core
             }
         }
         return bounds;
+    }
+
+    const std::string Grid::name(const uid_t& uid, const bool& snake) const
+    {
+        std::string r {};
+
+        if(snake)
+        {
+            for(int i = 0; i < sectors; ++i)
+            {
+                if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
+                {
+                    if(relative[i] == uid.mp) 
+                    {
+                        r += *sector[i].descriptor->prefix + "_";
+                        r += std::to_string(uid.mp) + "_";
+                        r += sector[i].descriptor->set[uid.pt][uid.pp].postfix;
+                    }
+                }
+            }
+        }
+        else 
+        {
+            auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
+            for(int i = 0; i < sectors; ++i)
+            {
+                if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
+                {
+                    if(relative[i] == uid.mp) 
+                    {
+                        r += caps(*sector[i].descriptor->prefix) + " ";
+                        r += std::string(1, uid.mp + 'A') + " ";
+                        r += caps(sector[i].descriptor->set[uid.pt][uid.pp].postfix);
+                    }
+                }
+            }
+        }
+        return r;
     }
 
 
@@ -193,7 +233,7 @@ namespace core
     }
 
 
-    Grid grid(settings::sector_map, settings::sectors, Rectangle<float> { 27.0f, 0.0f, 1060.0f, 596.0f });   
+    Grid grid(settings::sector_map, settings::sectors);   
 }
 
 
