@@ -30,6 +30,7 @@
 #include "Constraints.hpp"
 #include "core/grid.hpp"
 #include "descriptor.hxx"
+#include "juce_core/juce_core.h"
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
@@ -40,7 +41,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         enum Sprite { Momentary, Radio, Slider };
 
 		std::unique_ptr<Display> display;
-        juce::ImageComponent bg; 	 // Background layer
+        juce::ImageComponent bg;
 
         void resized() override;
         void timerCallback() override;
@@ -49,14 +50,15 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
        ~Editor() override;
 
     private:
-        std::unique_ptr<juce::Image> sprite[3][3];
+        std::shared_ptr<juce::Image> sprite[3][3];
         std::unique_ptr<juce::Image> bg_texture;
 
         juce::AudioProcessorValueTreeState& valueTreeState;
-        std::unique_ptr<SpriteSlider[]> slider;
+        juce::OwnedArray<SpriteSlider> slider;
+        juce::OwnedArray<juce::ImageButton> button;
+        std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
-        std::vector<std::unique_ptr<juce::ImageButton>> button;
-        std::unique_ptr<Sockets> sockets;
+        std::shared_ptr<Sockets> sockets;
         int envelope_shown = 0;
         EnvelopeDisplay env[4];
         Processor& processor;

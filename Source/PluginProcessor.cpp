@@ -23,9 +23,12 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "core/grid.hpp"
+#include "descriptor.hxx"
+#include "juce_audio_processors/juce_audio_processors.h"
 #include "spiro.hpp"
 #include "utility.hpp"
 #include <iostream>
+#include <memory>
 
 Processor::Processor(): AudioProcessor
                         (
@@ -77,23 +80,40 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
         ));
     }
 
-  // for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
-  //   {
-  //       auto uid = core::grid.getUID(i, core::Control::slider);
-  //       const core::Control* c = core::grid.control(uid);
-  //       int type = 0;
-  //       switch(c->flag) 
-  //       {
-  //           case core::map::flag::encoder: type = 2; break;
-  //           case core::map::flag::B:  type = 1; break;
-  //           default: break;
-  //       }
-  //       pot[i].setPaintingIsUnclipped(true);
-  //       pot[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-  //       std::cout<<core::grid.name(uid, false)<<"\n";
-  //       sliderAttachment[i].reset(new SliderAttachment(valueTreeState, core::grid.name(uid, false), pot[i]));
-  //       addAndMakeVisible (pot[i]);
-  //   }
+    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::button);
+        layout.add(std::make_unique<juce::AudioParameterBool>
+        (
+            core::grid.name(uid, true), 
+            core::grid.name(uid, false),
+            false
+        ));
+    }
+
+    for(int i = 0; i < core::grid.count(core::Control::input); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::input);
+        layout.add(std::make_unique<juce::AudioParameterBool>
+        (
+            "mmi" + juce::String(i),
+            "MMI" + juce::String(i),
+            false
+
+        ));
+    }
+
+    for(int i = 0; i < core::grid.count(core::Control::output); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::output);
+        layout.add(std::make_unique<juce::AudioParameterBool>
+        (
+            "mmo" + juce::String(i),
+            "MMO" + juce::String(i),
+            false
+
+        ));
+    }
 
     suspendProcessing(false);
     return layout;
@@ -125,7 +145,6 @@ juce::Result Processor::getPresetsFolder()
 **************************************************************************************************************************/
 bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
 {
-
     // suspendProcessing(true);
     // getPresetsFolder();
     //
@@ -179,7 +198,6 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
 **************************************************************************************************************************/
 bool Processor::loadPreset(juce::String presetName)
 {
-
     // suspendProcessing(true);
     // scanPresetDir();
     // auto presetFile = findPresetFile (presetName);
@@ -202,7 +220,6 @@ bool Processor::loadPreset(juce::String presetName)
 void Processor::presetFilesAvailableChanged()
 {
     // presets.clear();
-    //
     // for (auto& presetFile : presets_available)
     // {
     //     presets.emplace_back (std::make_pair (presetFile.getFileNameWithoutExtension(), presetFile));

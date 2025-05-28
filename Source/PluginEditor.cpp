@@ -18,6 +18,7 @@
 
 #include "Constraints.hpp"
 #include "PluginProcessor.h"
+#include "SpriteSlider.h"
 #include "cro_interface.hpp"
 #include "descriptor.hxx"
 #include "env_interface.hpp"
@@ -39,21 +40,21 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Sprites and Textures
     * 
     **************************************************************************************************************************/
-    sprite[Sprite::Momentary][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16n_png, BinaryData::B16n_pngSize));
-    sprite[Sprite::Momentary][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
-    sprite[Sprite::Momentary][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
+    sprite[Sprite::Momentary][0] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16n_png, BinaryData::B16n_pngSize));
+    sprite[Sprite::Momentary][1] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
+    sprite[Sprite::Momentary][2] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
 
-    sprite[Sprite::Radio][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12n_png, BinaryData::R12n_pngSize));
-    sprite[Sprite::Radio][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
-    sprite[Sprite::Radio][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
+    sprite[Sprite::Radio][0] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12n_png, BinaryData::R12n_pngSize));
+    sprite[Sprite::Radio][1] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
+    sprite[Sprite::Radio][2] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::R12f_png, BinaryData::R12f_pngSize));
 
-    sprite[Sprite::Slider][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P48d_png, BinaryData::P48d_pngSize));
-    sprite[Sprite::Slider][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
-	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
+    sprite[Sprite::Slider][0] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P48d_png, BinaryData::P48d_pngSize));
+    sprite[Sprite::Slider][1] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
+	sprite[Sprite::Slider][2] = std::make_shared<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
 	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
 	
-    sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
+    sockets = std::make_shared<Sockets>(core::constraints::pbay, core::grid);
    
     bg.setImage(*bg_texture);
     bg.setOpaque(true);
@@ -68,7 +69,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Sliders initialization
     * 
     **************************************************************************************************************************/
-    slider = std::make_unique<SpriteSlider[]>(core::grid.count(core::Control::slider));
+    slider.ensureStorageAllocated(core::grid.count(core::Control::slider));
     sliderAttachment.reserve(core::grid.count(core::Control::slider));
 
     for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
@@ -82,10 +83,11 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             case core::map::flag::B:  type = 1; break;
             default: break;
         }
-        slider[i].setPaintingIsUnclipped(true);
-        slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
+        slider.add(new SpriteSlider {});
+        slider[i]->setPaintingIsUnclipped(true);
+        slider[i]->init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
         std::cout<<core::grid.name(uid, true)<<"\n";
-        sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+        sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), *slider[i]));
         addAndMakeVisible (slider[i]);
     }
 
@@ -94,11 +96,14 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Buttons initialization
     * 
     **************************************************************************************************************************/
+    button.ensureStorageAllocated(core::grid.count(core::Control::button));
+    buttonAttachment.reserve(core::grid.count(core::Control::button));
+
     for(int i = 0; i < core::grid.count(core::Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
         const core::Control* c = core::grid.control(uid);
-        button.emplace_back(std::make_unique<juce::ImageButton>(c->postfix));
+        button.add(new juce::ImageButton(c->postfix));
         auto type = Sprite::Momentary;
         switch(c->flag) 
         {
@@ -106,17 +111,18 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             default: break;
         }
 
-        button.at(i).get()->setPaintingIsUnclipped(true);
-        button.at(i).get()->setClickingTogglesState(type);
-        button.at(i).get()->setRadioGroupId(c->radio_id, juce::dontSendNotification);
-        button.at(i).get()->setImages 
+        button[i]->setPaintingIsUnclipped(true);
+        button[i]->setClickingTogglesState(type);
+        button[i]->setRadioGroupId(c->radio_id, juce::dontSendNotification);
+        button[i]->setImages 
         (
             false, false, true, 
             *sprite[type][2], 1.0f, {}, 
             *sprite[type][1], 1.0f, {}, 
             *sprite[type][0], 1.0f, {}
         );
-        addAndMakeVisible(button.at(i).get());
+        buttonAttachment.emplace_back(std::make_unique<ButtonAttachment>(valueTreeState, core::grid.name(uid, true), *button[i]));
+        addAndMakeVisible(button[i]);
     }
     
     for(int i = 0; i < 4; ++i)
@@ -143,7 +149,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Menu Button
     * 
     **************************************************************************************************************************/
-    button.at(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu })).get()->onClick = [this]
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
         std::cout<<"Main Menu button pressed...\n";
         stopTimer();
@@ -155,7 +161,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Scope Button
     * 
     **************************************************************************************************************************/
-    button.at(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope })).get()->onClick = [this]
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
     {
         std::cout<<"Scope button pressed...\n";
 
@@ -212,7 +218,7 @@ void Editor::resized()
             static_cast<int>(bounds.w), 
             static_cast<int>(bounds.h) 
         };
-        slider[i].setBounds(r);
+        slider[i]->setBounds(r);
     }
 
     for(int i = 0; i < core::grid.count(core::Control::button); ++i)
@@ -226,7 +232,7 @@ void Editor::resized()
             static_cast<int>(bounds.w), 
             static_cast<int>(bounds.h) 
         };
-        button.at(i).get()->setBounds(r);
+        button[i]->setBounds(r);
     }
 
     for(int i = 0; i < 4; ++i)

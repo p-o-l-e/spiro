@@ -34,11 +34,11 @@ void SpriteSlider::paint(juce::Graphics& g)
     {
         double rotation = (getValue() - getMinimum())/(getMaximum() - getMinimum());
         int frame_id = (int)round(rotation * ((double)frames - 1.0));
-        g.drawImage(*sprite, (int)x, (int)y, 2 * (int)radius, 2 * (int)radius, 0, frame_id*width, width, width);
+        g.drawImage(*sprite, (int)x, (int)y, 2 * (int)radius, 2 * (int)radius, 0, frame_id * width, width, width);
     }
 }
 
-void SpriteSlider::init(const juce::Image* img, bool encoder)
+void SpriteSlider::init(const juce::Image* img, const bool& encoder)
 {
     sprite = img;
     width  = sprite->getWidth();
@@ -57,7 +57,7 @@ void SpriteSlider::init(const juce::Image* img, bool encoder)
 }
 
 
-SpriteSlider::SpriteSlider(const juce::Image* img)
+SpriteSlider::SpriteSlider(const juce::Image* img, const bool& enc)
 {   
-    init(img, false);
+    init(img, enc);
 }
