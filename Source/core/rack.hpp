@@ -27,7 +27,7 @@ namespace core
             void connect_pin_o(const uint32_t&, std::atomic<float>*);
             void connect_pin_c(const uint32_t&, std::atomic<float>*);
             
-            const int ccv(const map::cv::index& i) const { return bus.blueprint.ccv[i]; };              // Get CV[type] count
+            const int ccv(const map::cv::index& i) const { /*return bus.blueprint.ccv[i];*/ };              // Get CV[type] count
 
             uint32_t get_uid(const map::module::type&, const int&, const map::cv::index&, const int&);
             Module* at(const int&);

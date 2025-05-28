@@ -41,17 +41,22 @@ void Display::paint(juce::Graphics& g)
 
 void Display::Scope()
 {
+    // std::cout<<"Display::Scope()\n";
     if(data)
     {
         layer.get()->clr(0.0f);
         float cy = area.h /2;
         float cx = area.w /2;
-        auto gain = area.h * scope_scale->load();
+        // auto gain = area.h * scope_scale->load();
+        auto gain = 30.0f;
         if(scope_type->load() < 0.5f)
         {
+            
             auto lp = data->get();
             lx = lp.x * gain + cx;
             ly = lp.y * gain + cy;
+            // std::cout<<"Scope type A | x: "<<lp.x<<"\t| y: "<<lp.y<<"\n";
+
             for(unsigned i = 0; i < data->segments; i++)
             {
                 core::Point2D<float> f = data->get();

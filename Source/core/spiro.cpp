@@ -22,52 +22,63 @@
 
 #include "spiro.hpp"
 #include "grid.hpp"
+#include <cmath>
 #include <cstdint>
 
 namespace core
 {
     using namespace interface;
+    float sinewave(float freq, float sr) 
+    {
+        static float phase = 0.0f;  // Persistent time tracking
+        float delta = freq * M_PI * 2.0f / sr; 
+        phase += delta;
+        if(phase > (M_PI*2.0f)) phase -= (M_PI*2.0f);
+        return sinf(phase);
+    }
 
     void Spiro::process()
     {
-        for(int o = 0; o < rack.bus.blueprint.mc; ++o) rack.process(o);
-
-        out[stereo::l].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::l]);
-        out[stereo::r].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::r]);
-        
-        out[stereo::l].store(dcb[0].process(out[stereo::l].load()));
-        out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
+        out[stereo::l].store(sinewave(110.0f, 44100));
+        out[stereo::r].store(sinewave(55.0f, 44100));
+        // for(int o = 0; o < rack.bus.blueprint->sectors; ++o) rack.process(o);
+        //
+        // out[stereo::l].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::l]);
+        // out[stereo::r].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::r]);
+        //
+        // out[stereo::l].store(dcb[0].process(out[stereo::l].load()));
+        // out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
     }
 
     void Spiro::connect_bus()
     {
         LOG("Spiro::connect_bus : \n");
 
-        for(int o = 0; o < rack.bus.blueprint.mc; ++o)
-        {
-            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::c]; ++i)
-            {
-                auto hash = rack.bus.blueprint.get_hash(map::cv::index::c, i);
-                // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
-                
-                // rack.bus.pin_c(0);
-            }
-            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
-            {
-                auto hash = rack.bus.blueprint.get_hash(map::cv::index::i, i);
-                // rack.connect_pin_i(hash, bay->io[rack.bus.blueprint.get_index(hash)].com);
-            }
-            for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::o]; ++i)
-            {
-                auto hash = rack.bus.blueprint.get_hash(map::cv::index::o, i);
-                // rack.connect_pin_o(hash, bay->io[rack.bus.blueprint.get_index(hash)].data);
-            }
-        }
+        // for(int o = 0; o < rack.bus.blueprint.mc; ++o)
+        // {
+        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::c]; ++i)
+        //     {
+        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::c, i);
+        //         // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
+        //
+        //         // rack.bus.pin_c(0);
+        //     }
+        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
+        //     {
+        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::i, i);
+        //         // rack.connect_pin_i(hash, bay->io[rack.bus.blueprint.get_index(hash)].com);
+        //     }
+        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::o]; ++i)
+        //     {
+        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::o, i);
+        //         // rack.connect_pin_o(hash, bay->io[rack.bus.blueprint.get_index(hash)].data);
+        //     }
+        // }
 
         LOG("-- Bus connected...\n");
     }
 
-    Spiro::Spiro(const Grid* d)
+    Spiro::Spiro(const Grid* d): grid(d)//: rack(d)
     {
         LOG("Spiro:\n");
         connect_bus();

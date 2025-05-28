@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #pragma once
 #include "blueprint.hpp"
+#include "descriptor.hxx"
 #include "grid.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
@@ -39,7 +40,7 @@ namespace core
         {
             private:
                 std::unique_ptr<std::atomic<float>*[]> cv[map::cv::count];
-
+                int ccv[map::cv::count];
             public:
                 const Grid* const blueprint;
                 std::atomic<float>* pin(const uint32_t&, const map::cv::index&) const;

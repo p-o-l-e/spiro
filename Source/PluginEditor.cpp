@@ -20,6 +20,7 @@
 #include "PluginProcessor.h"
 #include "cro_interface.hpp"
 #include "descriptor.hxx"
+#include "env_interface.hpp"
 #include "grid.hpp"
 #include "node.hpp"
 #include "primitives.hpp"
@@ -27,12 +28,17 @@
 #include "PluginEditor.h"
 #include <cstddef>
 #include <iostream>
+#include <memory>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor (&o), processor (o), valueTreeState (tree)
 {
     std::cout<<"Editor::Editor()\n";
-    processor.suspendProcessing(true);
-
+    // processor.suspendProcessing(true);
+   /***************************************************************************************************************************
+    * 
+    *  Sprites and Textures
+    * 
+    **************************************************************************************************************************/
     sprite[Sprite::Momentary][0] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16n_png, BinaryData::B16n_pngSize));
     sprite[Sprite::Momentary][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
     sprite[Sprite::Momentary][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::B16f_png, BinaryData::B16f_pngSize));
@@ -55,9 +61,15 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     addAndMakeVisible(bg);
 
 
-
-    display = std::make_unique<Display>(processor.c_buffer.get(), core::constraints::oled.x, core::constraints::oled.y, core::constraints::oled.w, core::constraints::oled.h);
-    pot = std::make_unique<SpriteSlider[]>(core::grid.count(core::Control::slider));
+    display = std::make_unique<Display>(processor.buffer.get(), core::constraints::oled.x, core::constraints::oled.y, core::constraints::oled.w, core::constraints::oled.h);
+   
+   /***************************************************************************************************************************
+    * 
+    *  Sliders initialization
+    * 
+    **************************************************************************************************************************/
+    slider = std::make_unique<SpriteSlider[]>(core::grid.count(core::Control::slider));
+    sliderAttachment.reserve(core::grid.count(core::Control::slider));
 
     for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
     {
@@ -70,18 +82,23 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             case core::map::flag::B:  type = 1; break;
             default: break;
         }
-        pot[i].setPaintingIsUnclipped(true);
-        pot[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-        // pot_attachment[i].reset (new SliderAttachment(valueTreeState, slider_list.at(p).id, pot[i]));
-        addAndMakeVisible (pot[i]);
+        slider[i].setPaintingIsUnclipped(true);
+        slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
+        std::cout<<core::grid.name(uid, true)<<"\n";
+        sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+        addAndMakeVisible (slider[i]);
     }
 
+   /***************************************************************************************************************************
+    * 
+    *  Buttons initialization
+    * 
+    **************************************************************************************************************************/
     for(int i = 0; i < core::grid.count(core::Control::button); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::button);
         const core::Control* c = core::grid.control(uid);
-        auto bt = std::make_unique<juce::ImageButton>(c->postfix);
-        button.emplace_back (std::move(bt));
+        button.emplace_back(std::make_unique<juce::ImageButton>(c->postfix));
         auto type = Sprite::Momentary;
         switch(c->flag) 
         {
@@ -164,6 +181,7 @@ Editor::~Editor()
 
 void Editor::timerCallback()  
 { 
+    // std::cout<<"timerCallback - X : "<<processor.buffer.get()->get().x<<"\n";
     repaint(juce::Rectangle<int>
     {
         core::constraints::oled.x,
@@ -194,7 +212,7 @@ void Editor::resized()
             static_cast<int>(bounds.w), 
             static_cast<int>(bounds.h) 
         };
-        pot[i].setBounds(r);
+        slider[i].setBounds(r);
     }
 
     for(int i = 0; i < core::grid.count(core::Control::button); ++i)

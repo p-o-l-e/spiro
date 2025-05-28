@@ -233,7 +233,7 @@ namespace core
     }
 
 
-    Grid grid(settings::sector_map, settings::sectors);   
+    const Grid grid(settings::sector_map, settings::sectors);   
 }
 
 

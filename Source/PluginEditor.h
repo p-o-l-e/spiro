@@ -19,6 +19,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <memory>
+#include <vector>
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
 #include "Display.h"
@@ -27,6 +29,7 @@
 #include "Display.h"
 #include "Constraints.hpp"
 #include "core/grid.hpp"
+#include "descriptor.hxx"
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
@@ -36,13 +39,13 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
     public:
         enum Sprite { Momentary, Radio, Slider };
 
-		std::unique_ptr<Display>     display;
+		std::unique_ptr<Display> display;
         juce::ImageComponent bg; 	 // Background layer
 
         void resized() override;
         void timerCallback() override;
         void visibilityChanged () override {};
-        Editor (Processor&, juce::AudioProcessorValueTreeState&);
+        Editor(Processor&, juce::AudioProcessorValueTreeState&);
        ~Editor() override;
 
     private:
@@ -50,12 +53,12 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         std::unique_ptr<juce::Image> bg_texture;
 
         juce::AudioProcessorValueTreeState& valueTreeState;
-        std::unique_ptr<SpriteSlider[]> pot;
-        std::unique_ptr<SliderAttachment> pot_attachment[0];//cell::settings::pot_n];
+        std::unique_ptr<SpriteSlider[]> slider;
+        std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         std::unique_ptr<Sockets> sockets;
         int envelope_shown = 0;
-        EnvelopeDisplay env[4];//cell::settings::env_n];
+        EnvelopeDisplay env[4];
         Processor& processor;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Editor)
 };

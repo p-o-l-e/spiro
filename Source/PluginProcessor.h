@@ -92,9 +92,9 @@ class Processor: public juce::AudioProcessor
 
         juce::AudioDeviceManager deviceManager;
         core::Spiro spiro;
-        // std::unique_ptr<Sockets> sockets;
+        std::unique_ptr<Sockets> sockets;
 
-        std::unique_ptr<core::wavering<core::Point2D<float>>> c_buffer;
+        std::unique_ptr<core::wavering<core::Point2D<float>>> buffer;
         
         bool armed = false;
 

@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "grid.hpp"
+#include "map.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -52,7 +54,9 @@ namespace core {
             void connect_bus();
 
         public:
-            Rack        rack;
+            const Grid* grid;
+            cso_t cso;
+            // Rack        rack;
             DCBlock     dcb[2];
             Patchbay*   bay = nullptr;
             std::atomic<float> out[2];                       // LR Output

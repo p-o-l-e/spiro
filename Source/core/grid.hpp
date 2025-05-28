@@ -64,6 +64,7 @@ namespace core
         private:
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
+            // const int cvs[map::cv::count];
             std::unique_ptr<uint32_t[]>  indices[Control::count];
             const std::unique_ptr<int[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;
@@ -84,7 +85,7 @@ namespace core
            ~Grid() = default;
     };
     
-    extern Grid grid;
+    extern const Grid grid;
 
     namespace settings 
     {

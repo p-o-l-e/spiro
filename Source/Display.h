@@ -66,14 +66,15 @@ class OledLabel : public juce::TextEditor
 class Display : public juce::ImageComponent
 {
 	private:
-		std::unique_ptr<juce::Image> 		image;
+		std::unique_ptr<juce::Image> image;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
 		int lx = 0, ly = 0;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
+
 	public:
         float contrast = 0.6f;
-		core::wavering<core::Point2D<float>>*	data;
+		core::wavering<core::Point2D<float>>* data;
 		OledLabel input_box { &contrast };
 		int load_page = 0;
 		int last_page = 0;
