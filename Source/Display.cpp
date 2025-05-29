@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 
 #include "Display.h"
+#include <memory>
 
 void Display::paint(juce::Graphics& g)
 {
@@ -41,8 +42,8 @@ void Display::paint(juce::Graphics& g)
 
 void Display::Scope()
 {
-    // std::cout<<"Display::Scope()\n";
-    if(data)
+    std::cout<<"Display::Scope()\n";
+    if(auto data = _data.lock())
     {
         layer.get()->clr(0.0f);
         float cy = area.h /2;
@@ -113,6 +114,8 @@ void Display::Scope()
         hWind(SL, SR, MI, PL);
     }
     else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
+    std::cout<<"eof Display::Scope()\n";
+
 }
 
 
@@ -344,7 +347,7 @@ void Display::resized()
 	reset();
 }
 
-Display::Display(core::wavering<core::Point2D<float>>* buf, int x, int y, int w, int h): data(buf)
+    Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, int x, int y, int w, int h): _data(buf)
 {
 	area.x = x;
 	area.y = y;

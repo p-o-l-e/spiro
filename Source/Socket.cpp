@@ -49,8 +49,8 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
             static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
-        std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
-        std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
+        // std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
+        // std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
         bay->set_socket(&offset, SR, hash, SOCKET_IN, position);
         ++position;
     }
@@ -64,8 +64,8 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
             static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
-        std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
-        std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
+        // std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
+        // std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
         bay->set_socket(&offset, SR, hash, SOCKET_OUT, position);
         ++position;
     }

@@ -32,46 +32,28 @@ namespace core {
             int  i = 0; // Write Pointer
             int  o = 0; // Read Pointer
         public:
-            const int segments = 1024;
+            const int segments;
             constexpr void set(const T&) noexcept;
-            constexpr void set(const unsigned&, const T&) noexcept;
-            constexpr T get() noexcept;
-            constexpr T get(const int&) noexcept;
+            constexpr T  get() noexcept;
             constexpr T* raw() const noexcept { return data; }
-            constexpr wavering() noexcept { data = new T[segments]; }
-            constexpr wavering(const int& n): segments(n) { data = new T[segments]; }
+            constexpr wavering(const int& n): segments(n) { data = new T[segments]{}; }
            ~wavering() { delete[] data; }
     };
 
 template <typename T>
 constexpr void wavering<T>::set(const T& value) noexcept
 {
-    i++;
-    if (i >= segments) i = 0;
     data[i] = value;
+    if (++i >= segments) i = 0;
 }
 
-template <typename T>
-constexpr void wavering<T>::set(const unsigned& pos, const T& value) noexcept
-{
-    data[pos % segments] = value;
-}
 
 template <typename T>
 constexpr T wavering<T>::get() noexcept
 {
-    o++;
-    if (o >= segments) o = 0;
-    return data[o];
-}
-
-template <typename T>
-constexpr T wavering<T>::get(const int& offset) noexcept
-{
-    o += offset;
-    if(o < 0) o = segments - o;
-    else o %= segments;
-    return data[o];
+    auto value = data[o];
+    if (++o >= segments) o = 0;
+    return value;
 }
 
 

@@ -138,8 +138,8 @@ void Patchbay::connect(Socket* a, Socket* b)
     uid_t id_a = decode_uid(a->id);
     uid_t id_b = decode_uid(b->id);
 
-    std::cout<<"Module A: "<<std::hex<<a->id<<"\t"<<"\tModule position: "<<(int)id_a.mp<<"\tParameter: "<<(int)id_a.pt<<"\tParameter position: "<<(int)id_a.pp<<"\n";
-    std::cout<<"Module B: "<<std::hex<<b->id<<"\t"<<"\tModule position: "<<(int)id_b.mp<<"\tParameter: "<<(int)id_b.pt<<"\tParameter position: "<<(int)id_b.pp<<"\n\n";
+    // std::cout<<"Module A: "<<std::hex<<a->id<<"\t"<<"\tModule position: "<<(int)id_a.mp<<"\tParameter: "<<(int)id_a.pt<<"\tParameter position: "<<(int)id_a.pp<<"\n";
+    // std::cout<<"Module B: "<<std::hex<<b->id<<"\t"<<"\tModule position: "<<(int)id_b.mp<<"\tParameter: "<<(int)id_b.pt<<"\tParameter position: "<<(int)id_b.pp<<"\n\n";
 
 }
 

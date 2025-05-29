@@ -50,15 +50,15 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
        ~Editor() override;
 
     private:
-        std::shared_ptr<juce::Image> sprite[3][3];
+        std::unique_ptr<juce::Image> sprite[3][3];
         std::unique_ptr<juce::Image> bg_texture;
 
         juce::AudioProcessorValueTreeState& valueTreeState;
-        juce::OwnedArray<SpriteSlider> slider;
-        juce::OwnedArray<juce::ImageButton> button;
+        std::unique_ptr<SpriteSlider[]> slider;
+        std::vector<std::unique_ptr<juce::ImageButton>> button;
         std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
-        std::shared_ptr<Sockets> sockets;
+        std::unique_ptr<Sockets> sockets;
         int envelope_shown = 0;
         EnvelopeDisplay env[4];
         Processor& processor;

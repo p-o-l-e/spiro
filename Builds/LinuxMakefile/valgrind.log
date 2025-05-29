@@ -1,0 +1,81 @@
+==6429== Memcheck, a memory error detector
+==6429== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==6429== Using Valgrind-3.24.0 and LibVEX; rerun with -h for copyright info
+==6429== Command: ./build/spiro_dbg
+==6429== Parent PID: 4789
+==6429== 
+==6429== Conditional jump or move depends on uninitialised value(s)
+==6429==    at 0x606A46: BidiChainIsSingle (BidiChain.c:55)
+==6429==    by 0x606A46: ResolveWeakTypes (IsolatingRun.c:148)
+==6429==    by 0x606A46: IsolatingRunResolve (IsolatingRun.c:498)
+==6429==    by 0x606A46: ProcessRun (SBParagraph.c:540)
+==6429==    by 0x606A46: DetermineLevels (SBParagraph.c:501)
+==6429==    by 0x606A46: ResolveParagraph (SBParagraph.c:591)
+==6429==    by 0x606A46: SBParagraphCreate (SBParagraph.c:641)
+==6429==    by 0x606A46: SBAlgorithmCreateParagraph (SBAlgorithm.c:183)
+==6429==    by 0x510F45: createParagraph (juce_UnicodeBidi.cpp:187)
+==6429==    by 0x510F45: juce::detail::Shaper::Shaper(juce::String const&, juce::Range<long long>, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:890)
+==6429==    by 0x491BC2: juce::detail::SimpleShapedText::shape(juce::String const&, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:1273)
+==6429==    by 0x495588: juce::detail::SimpleShapedText::SimpleShapedText(juce::String const*, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:119)
+==6429==    by 0x498D8D: Impl (juce_ShapedText.cpp:43)
+==6429==    by 0x498D8D: _Construct<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (stl_construct.h:119)
+==6429==    by 0x498D8D: construct<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (alloc_traits.h:706)
+==6429==    by 0x498D8D: _Sp_counted_ptr_inplace<juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:607)
+==6429==    by 0x498D8D: __shared_count<juce::detail::ShapedText::Impl, std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:969)
+==6429==    by 0x498D8D: __shared_ptr<std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:1713)
+==6429==    by 0x498D8D: shared_ptr<std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr.h:463)
+==6429==    by 0x498D8D: make_shared<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (shared_ptr.h:1008)
+==6429==    by 0x498D8D: juce::detail::ShapedText::ShapedText(juce::String, juce::detail::ShapedTextOptions) (juce_ShapedText.cpp:160)
+==6429==    by 0x49E14C: juce::GlyphArrangement::addCurtailedLineOfText(juce::Font const&, juce::String const&, float, float, float, bool) (juce_GlyphArrangement.cpp:216)
+==6429==    by 0x73F905: juce::GlyphArrangement::getStringBounds(juce::Font const&, juce::StringRef) (juce_GlyphArrangement.h:322)
+==6429==    by 0x6E5D29: getStringWidth (juce_GlyphArrangement.h:331)
+==6429==    by 0x6E5D29: getStringWidthInt (juce_GlyphArrangement.h:340)
+==6429==    by 0x6E5D29: juce::LookAndFeel_V4::drawDocumentWindowTitleBar(juce::DocumentWindow&, juce::Graphics&, int, int, int, int, juce::Image const*, bool) (juce_LookAndFeel_V4.cpp:250)
+==6429==    by 0x6FF3B2: juce::DocumentWindow::paint(juce::Graphics&) (juce_DocumentWindow.cpp:233)
+==6429==    by 0x6858EF: juce::Component::paintComponentAndChildren(juce::Graphics&) (juce_Component.cpp:1713)
+==6429==    by 0x68529A: juce::Component::paintEntireComponent(juce::Graphics&, bool) (juce_Component.cpp:1794)
+==6429==    by 0x6872B4: juce::ComponentPeer::handlePaint(juce::LowLevelGraphicsContext&) (juce_ComponentPeer.cpp:144)
+==6429==  Uninitialised value was created by a heap allocation
+==6429==    at 0x4844818: malloc (vg_replace_malloc.c:446)
+==6429==    by 0x6063CD: CreateParagraphContext (SBParagraph.c:52)
+==6429==    by 0x6063CD: ResolveParagraph (SBParagraph.c:576)
+==6429==    by 0x6063CD: SBParagraphCreate (SBParagraph.c:641)
+==6429==    by 0x6063CD: SBAlgorithmCreateParagraph (SBAlgorithm.c:183)
+==6429==    by 0x510F45: createParagraph (juce_UnicodeBidi.cpp:187)
+==6429==    by 0x510F45: juce::detail::Shaper::Shaper(juce::String const&, juce::Range<long long>, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:890)
+==6429==    by 0x491BC2: juce::detail::SimpleShapedText::shape(juce::String const&, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:1273)
+==6429==    by 0x495588: juce::detail::SimpleShapedText::SimpleShapedText(juce::String const*, juce::detail::ShapedTextOptions const&) (juce_SimpleShapedText.cpp:119)
+==6429==    by 0x498D8D: Impl (juce_ShapedText.cpp:43)
+==6429==    by 0x498D8D: _Construct<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (stl_construct.h:119)
+==6429==    by 0x498D8D: construct<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (alloc_traits.h:706)
+==6429==    by 0x498D8D: _Sp_counted_ptr_inplace<juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:607)
+==6429==    by 0x498D8D: __shared_count<juce::detail::ShapedText::Impl, std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:969)
+==6429==    by 0x498D8D: __shared_ptr<std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr_base.h:1713)
+==6429==    by 0x498D8D: shared_ptr<std::allocator<void>, juce::String, juce::detail::ShapedTextOptions> (shared_ptr.h:463)
+==6429==    by 0x498D8D: make_shared<juce::detail::ShapedText::Impl, juce::String, juce::detail::ShapedTextOptions> (shared_ptr.h:1008)
+==6429==    by 0x498D8D: juce::detail::ShapedText::ShapedText(juce::String, juce::detail::ShapedTextOptions) (juce_ShapedText.cpp:160)
+==6429==    by 0x49E14C: juce::GlyphArrangement::addCurtailedLineOfText(juce::Font const&, juce::String const&, float, float, float, bool) (juce_GlyphArrangement.cpp:216)
+==6429==    by 0x73F905: juce::GlyphArrangement::getStringBounds(juce::Font const&, juce::StringRef) (juce_GlyphArrangement.h:322)
+==6429==    by 0x6E5D29: getStringWidth (juce_GlyphArrangement.h:331)
+==6429==    by 0x6E5D29: getStringWidthInt (juce_GlyphArrangement.h:340)
+==6429==    by 0x6E5D29: juce::LookAndFeel_V4::drawDocumentWindowTitleBar(juce::DocumentWindow&, juce::Graphics&, int, int, int, int, juce::Image const*, bool) (juce_LookAndFeel_V4.cpp:250)
+==6429==    by 0x6FF3B2: juce::DocumentWindow::paint(juce::Graphics&) (juce_DocumentWindow.cpp:233)
+==6429==    by 0x6858EF: juce::Component::paintComponentAndChildren(juce::Graphics&) (juce_Component.cpp:1713)
+==6429==    by 0x68529A: juce::Component::paintEntireComponent(juce::Graphics&, bool) (juce_Component.cpp:1794)
+==6429== 
+==6429== 
+==6429== HEAP SUMMARY:
+==6429==     in use at exit: 120,460 bytes in 1,107 blocks
+==6429==   total heap usage: 195,145 allocs, 194,038 frees, 211,702,105 bytes allocated
+==6429== 
+==6429== LEAK SUMMARY:
+==6429==    definitely lost: 0 bytes in 0 blocks
+==6429==    indirectly lost: 0 bytes in 0 blocks
+==6429==      possibly lost: 0 bytes in 0 blocks
+==6429==    still reachable: 120,460 bytes in 1,107 blocks
+==6429==         suppressed: 0 bytes in 0 blocks
+==6429== Reachable blocks (those to which a pointer was found) are not shown.
+==6429== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==6429== 
+==6429== For lists of detected and suppressed errors, rerun with: -s
+==6429== ERROR SUMMARY: 10 errors from 1 contexts (suppressed: 0 from 0)

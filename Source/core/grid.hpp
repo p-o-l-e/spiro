@@ -1,3 +1,4 @@
+
 /*****************************************************************************************************************************
 * Copyright (c) 2022-2025 POLE
 * 
@@ -73,7 +74,7 @@ namespace core
         public:
             const Sector* const sector;
             const int sectors;
-            const int count(const Control::type& t) const { return elements[t]; }
+            constexpr int count(const Control::type& t) const { return elements[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
             const std::string name(const uid_t&, const bool&) const;
             const Control* control(const uid_t&) const;

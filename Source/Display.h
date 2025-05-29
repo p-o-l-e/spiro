@@ -22,6 +22,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include <memory>
 #include "canvas.hpp"
 #include "wavering.hpp"
 #include "primitives.hpp"
@@ -74,7 +75,7 @@ class Display : public juce::ImageComponent
 
 	public:
         float contrast = 0.6f;
-		core::wavering<core::Point2D<float>>* data;
+        std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
 		OledLabel input_box { &contrast };
 		int load_page = 0;
 		int last_page = 0;
@@ -133,7 +134,7 @@ class Display : public juce::ImageComponent
 		void LoadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
-		Display(core::wavering<core::Point2D<float>>*, int, int, int, int);
+		Display(std::shared_ptr<core::wavering<core::Point2D<float>>>, int, int, int, int);
 	   ~Display();
 
 	   	class Listener 

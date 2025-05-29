@@ -195,8 +195,7 @@ namespace core
         }
         return r;
     }
-
-
+    
     namespace settings 
     {
         const Sector sector_map[]
@@ -231,7 +230,6 @@ namespace core
 
         const int sectors = std::size(sector_map);
     }
-
 
     const Grid grid(settings::sector_map, settings::sectors);   
 }
