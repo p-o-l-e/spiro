@@ -43,7 +43,7 @@ namespace core {
         ocv[0].store( o ? s : 0.0f);
     };
 
-    pdt_t::pdt_t(): id(++idc)
+    pdt_t::pdt_t(): id(idc++)
     { 
         init(id, &pdt::descriptor); 
     };

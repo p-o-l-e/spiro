@@ -30,7 +30,7 @@ namespace core
         private:
             static int idc;
         public:
-            int id;
+            const int id;
             void process() override;
             pdt_t();
            ~pdt_t(){};

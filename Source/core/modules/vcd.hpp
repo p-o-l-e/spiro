@@ -31,6 +31,7 @@ namespace core {
     class vcd_t: public Module
     {
         private:
+            static int idc;
             OnePole psf;
             AllPass apf;
             std::unique_ptr<float[]> data;
@@ -40,6 +41,7 @@ namespace core {
             int   departed;
 
         public:
+            const int id;
             void process() override;
             void reset();
             vcd_t();

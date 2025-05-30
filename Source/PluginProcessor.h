@@ -51,13 +51,13 @@ class Processor: public juce::AudioProcessor
         void setStateInformation(const void* data, int sizeInBytes) override;
 
         double getTailLengthSeconds() const override { return 0.0; };
-        bool isBusesLayoutSupported (const BusesLayout& layouts) const override { return true; };
+        bool isBusesLayoutSupported(const BusesLayout& layouts) const override { return true; };
         bool hasEditor() const override { return true; }
         bool acceptsMidi() const override { return true; };
         bool producesMidi() const override { return false; };
         bool isMidiEffect() const override { return false; };
-        int getNumPrograms() override;
-        int getCurrentProgram() override;
+        int  getNumPrograms() override;
+        int  getCurrentProgram() override;
 
        /**********************************************************************************************************************
         * 
@@ -77,7 +77,7 @@ class Processor: public juce::AudioProcessor
 
         juce::StringArray getPresetList();
         void scanPresetDir();
-        const juce::File findPresetFile (const juce::String&);
+        const juce::File findPresetFile(const juce::String&);
         void presetFilesAvailableChanged();
         juce::Result getPresetsFolder();
         void saveMatrix();

@@ -19,11 +19,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 
-#include "grid.hpp"
-#include "map.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -34,13 +31,15 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "grid.hpp"
 #include "modmatrix.hpp"
 #include "utility.hpp"
 #include "rack.hpp"
 #include "iospecs.hpp"
 #include "module_headers.hpp"
 
-namespace core {
+namespace core 
+{
     using namespace interface;
 
     class Spiro
@@ -55,8 +54,7 @@ namespace core {
 
         public:
             const Grid* grid;
-            cso_t cso;
-            // Rack        rack;
+            Rack        rack;
             DCBlock     dcb[2];
             Patchbay*   bay = nullptr;
             std::atomic<float> out[2];                       // LR Output

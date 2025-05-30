@@ -56,9 +56,11 @@ struct breakpoint
 class env_t: public Module
 {
     private:
+        static int idc;  
         float theta = 0.0f;                 // Change in value_scale
         unsigned delta = 0;
     public:
+        const int id = 0;
         breakpoint  node[SEGMENTS];
         unsigned    time[SEGMENTS];
         float      value[SEGMENTS];

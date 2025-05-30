@@ -25,16 +25,11 @@
           <FILE id="URqNK0" name="scales.h" compile="0" resource="0" file="Source/core/setup/scales.h"/>
         </GROUP>
         <GROUP id="{884B736B-1C4F-C175-B966-9770C7AAAD0C}" name="utility">
-          <FILE id="Etq0lw" name="canvas.cpp" compile="1" resource="0" file="Source/core/utility/canvas.cpp"/>
           <FILE id="t5sLwL" name="canvas.hpp" compile="0" resource="0" file="Source/core/utility/canvas.hpp"/>
-          <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
-          <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>
           <FILE id="vRZTrq" name="primitives.hpp" compile="0" resource="0" file="Source/core/utility/primitives.hpp"/>
-          <FILE id="mShCRl" name="quaternion.cpp" compile="1" resource="0" file="Source/core/utility/quaternion.cpp"/>
           <FILE id="kLoSYr" name="quaternion.hpp" compile="0" resource="0" file="Source/core/utility/quaternion.hpp"/>
           <FILE id="arfwQM" name="utility.cpp" compile="1" resource="0" file="Source/core/utility/utility.cpp"/>
           <FILE id="ohp4IW" name="utility.hpp" compile="0" resource="0" file="Source/core/utility/utility.hpp"/>
-          <FILE id="GhVMeq" name="wavering.cpp" compile="1" resource="0" file="Source/core/utility/wavering.cpp"/>
           <FILE id="NA6UPK" name="wavering.hpp" compile="0" resource="0" file="Source/core/utility/wavering.hpp"/>
         </GROUP>
         <GROUP id="{93DD0B26-41C7-8874-C096-A794A29986BB}" name="modules">
@@ -50,8 +45,8 @@
                   file="Source/core/modules/interface/fus_interface.hpp"/>
             <FILE id="weUjND" name="lfo_interface.hpp" compile="0" resource="0"
                   file="Source/core/modules/interface/lfo_interface.hpp"/>
-            <FILE id="tJuGMi" name="map_interface.hpp" compile="0" resource="0"
-                  file="Source/core/modules/interface/map_interface.hpp"/>
+            <FILE id="tJuGMi" name="cso_interface.hpp" compile="0" resource="0"
+                  file="Source/core/modules/interface/cso_interface.hpp"/>
             <FILE id="uwrImq" name="mix_interface.hpp" compile="0" resource="0"
                   file="Source/core/modules/interface/mix_interface.hpp"/>
             <FILE id="S6CxTl" name="pdt_interface.hpp" compile="0" resource="0"
@@ -71,12 +66,14 @@
             <FILE id="vTMENC" name="vco_interface.hpp" compile="0" resource="0"
                   file="Source/core/modules/interface/vco_interface.hpp"/>
           </GROUP>
+          <FILE id="kme0ME" name="cro.cpp" compile="1" resource="0" file="Source/core/modules/cro.cpp"/>
+          <FILE id="YO0pqh" name="cro.hpp" compile="0" resource="0" file="Source/core/modules/cro.hpp"/>
           <FILE id="XZRHPq" name="env.cpp" compile="1" resource="0" file="Source/core/modules/env.cpp"/>
           <FILE id="fFLllZ" name="env.hpp" compile="0" resource="0" file="Source/core/modules/env.hpp"/>
           <FILE id="pkqFgs" name="lfo.cpp" compile="1" resource="0" file="Source/core/modules/lfo.cpp"/>
           <FILE id="W5yCHL" name="lfo.hpp" compile="0" resource="0" file="Source/core/modules/lfo.hpp"/>
-          <FILE id="vqBKY7" name="map.cpp" compile="1" resource="0" file="Source/core/modules/map.cpp"/>
-          <FILE id="ZAwLfA" name="map.hpp" compile="0" resource="0" file="Source/core/modules/map.hpp"/>
+          <FILE id="vqBKY7" name="cso.cpp" compile="1" resource="0" file="Source/core/modules/cso.cpp"/>
+          <FILE id="ZAwLfA" name="cso.hpp" compile="0" resource="0" file="Source/core/modules/cso.hpp"/>
           <FILE id="vZoxBw" name="mix.cpp" compile="1" resource="0" file="Source/core/modules/mix.cpp"/>
           <FILE id="nG2FNP" name="mix.hpp" compile="0" resource="0" file="Source/core/modules/mix.hpp"/>
           <FILE id="YGbmXw" name="node.cpp" compile="1" resource="0" file="Source/core/modules/node.cpp"/>
@@ -98,9 +95,8 @@
           <FILE id="Jitj1T" name="vco.cpp" compile="1" resource="0" file="Source/core/modules/vco.cpp"/>
           <FILE id="HYr9fR" name="vco.hpp" compile="0" resource="0" file="Source/core/modules/vco.hpp"/>
         </GROUP>
-        <FILE id="UlG9G2" name="blueprint.cpp" compile="1" resource="0" file="Source/core/blueprint.cpp"
-              skipPCH="0"/>
-        <FILE id="hKHAG5" name="blueprint.hpp" compile="0" resource="0" file="Source/core/blueprint.hpp"/>
+        <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
+        <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>
         <FILE id="H1QYEH" name="bus.cpp" compile="1" resource="0" file="Source/core/bus.cpp"/>
         <FILE id="DMybCa" name="bus.hpp" compile="0" resource="0" file="Source/core/bus.hpp"/>
         <FILE id="IS4uMt" name="grid.cpp" compile="1" resource="0" file="Source/core/grid.cpp"/>

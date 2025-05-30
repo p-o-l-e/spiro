@@ -31,7 +31,7 @@ namespace core
             static int idc;
 
         public:
-            const int id = 0;
+            const int id;
             void process() override;
             vca_t();
            ~vca_t(){};

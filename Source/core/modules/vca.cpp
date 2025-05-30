@@ -37,7 +37,7 @@ namespace core
         ocv[cvo::b].store(o);
     };
 
-    vca_t::vca_t(): id(++idc)
+    vca_t::vca_t(): id(idc++)
     {  
         init(id, &vca::descriptor[0]);
     };

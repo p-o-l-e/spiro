@@ -16,26 +16,22 @@ namespace core
     class Rack
     {
         private:
-            std::unique_ptr<Module*[]> node;
+            const Grid* const grid;
+            Module** node;
             Module* create_node(const map::module::type&);
-            void allocate() noexcept;
-            void build() noexcept;
 
         public:
             const interface::bus_connector bus;
-            void connect_pin_i(const uint32_t&, std::atomic<float>**);
-            void connect_pin_o(const uint32_t&, std::atomic<float>*);
-            void connect_pin_c(const uint32_t&, std::atomic<float>*);
+            void connectInput(const uint32_t&, std::atomic<float>**);
+            void connectOutput(const uint32_t&, std::atomic<float>*);
+            void connectControl(const uint32_t&, std::atomic<float>*);
             
             const int ccv(const map::cv::index& i) const { /*return bus.blueprint.ccv[i];*/ };              // Get CV[type] count
 
-            uint32_t get_uid(const map::module::type&, const int&, const map::cv::index&, const int&);
-            Module* at(const int&);
-            Module* at(const map::module::type&, const int&);
-            void process(const int&);
-            void bind(Module*, const unsigned&);
+            Module* at(const map::module::type&, const int&) const noexcept;
+            void process(const int&) noexcept;
             Rack(const Grid*);
-           ~Rack();
+           ~Rack() noexcept;
     };
 
 

@@ -18,11 +18,23 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
-*
-* https://github.com/rawify/Quaternion.cpp
 ******************************************************************************************************************************/
-#include "quaternion.hpp"
 
-namespace core {
+#include "cro.hpp"
+#include "cro_interface.hpp"
 
-} // namespace core
+namespace core 
+{
+    using namespace cro;
+    int cro_t::idc = 0;
+
+    void cro_t::process()
+    {
+
+    }
+
+    cro_t::cro_t(): id(idc++)
+    {
+        init(id, &cro::descriptor);
+    }
+}

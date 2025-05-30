@@ -22,11 +22,12 @@
 
 
 #include "vco.hpp"
-#include "../setup/constants.hpp"
-#include "../utility/utility.hpp"
+#include <iostream>
+#include "constants.hpp"
+#include "utility.hpp"
 
-#include "../setup/iospecs.hpp"
-#include "../setup/scales.h"
+#include "iospecs.hpp"
+#include "scales.h"
 
 namespace core
 {
@@ -116,7 +117,6 @@ namespace core
 
     void vco_t::reset()
     {
-        init(id, &vco::descriptor);
         for(int i = 0; i < settings::poly; ++i)
         {
             phase[i]    = 0;
@@ -129,9 +129,10 @@ namespace core
     }
 
 
-    vco_t::vco_t()
+    vco_t::vco_t(): id(idc++)
     {
-        id = ++idc;
+        std::cout<<"VCO: "<<id<<"\n";
+        init(id, &vco::descriptor);
         reset();
     }
 

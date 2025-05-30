@@ -21,16 +21,20 @@
 ******************************************************************************************************************************/
 
 #include "spiro.hpp"
+#include "constants.hpp"
+#include "cso_interface.hpp"
+#include "descriptor.hxx"
 #include "grid.hpp"
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 
 namespace core
 {
     using namespace interface;
     float sinewave(float freq, float sr) 
     {
-        static float phase = 0.0f;  // Persistent time tracking
+        static float phase = 0.0f;
         float delta = freq * M_PI * 2.0f / sr; 
         phase += delta;
         if(phase > (M_PI*2.0f)) phase -= (M_PI*2.0f);
@@ -41,10 +45,16 @@ namespace core
     {
         out[stereo::l].store(sinewave(110.0f, 44100));
         out[stereo::r].store(sinewave(55.0f, 44100));
-        // for(int o = 0; o < rack.bus.blueprint->sectors; ++o) rack.process(o);
-        //
-        // out[stereo::l].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::l]);
-        // out[stereo::r].store(rack.at(map::module::type::mix, 0)->ocv[mix::cvo::r]);
+
+
+        for(int o = 0; o < grid->sectors; ++o) rack.process(o);
+        // if(rack.at(map::module::type::cso, 1) == nullptr) std::cout<<"nullptr\n";
+        rack.at(map::module::type::cso, 0)->ccv[cso::ctl::amp] = &core::one;
+        out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
+        out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
+
+        // out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
+        // out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
         //
         // out[stereo::l].store(dcb[0].process(out[stereo::l].load()));
         // out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
@@ -78,7 +88,7 @@ namespace core
         LOG("-- Bus connected...\n");
     }
 
-    Spiro::Spiro(const Grid* d): grid(d)//: rack(d)
+    Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
     {
         LOG("Spiro:\n");
         connect_bus();
@@ -117,19 +127,12 @@ namespace core
                 break;
 
             case 0xB0: // Control change
-                // controlChange(msb, lsb);
                 break;
 
             case 0xD0: // Channel aftertouch
-                // This maps the pressure value to a parabolic curve starting at
-                // 0.0 (position 0) up to 1.61 (position 127).
-                // pressure = 0.0001f * float(msb * msb);
                 break;
 
-            // Pitch bend
-            case 0xE0:
-                // The pitch wheel can shift the tone up or down by 2 semitones.
-                // pitchBend = std::exp(-0.000014102f * float(msb + 128 * lsb - 8192));
+            case 0xE0: // Pitch bend
                 break;
 
             default:

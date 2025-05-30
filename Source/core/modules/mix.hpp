@@ -31,7 +31,7 @@ namespace core
             static int idc;
 
         public:
-            int id;
+            const int id;
             void process() override;
 
             mix_t();

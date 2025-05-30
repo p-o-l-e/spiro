@@ -24,5 +24,5 @@
 
 namespace core
 {
-}
+} /// DELETE
 

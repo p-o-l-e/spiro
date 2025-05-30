@@ -26,7 +26,6 @@
 #include "iospecs.hpp"
 #include "node.hpp"
 
-#include <map>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +57,7 @@ namespace core
             void process() override;
             void reset();
             lfo_t();
-           ~lfo_t(){};
+           ~lfo_t() = default;
     }; 
 
     inline const char* wforms_lfo[]     = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };

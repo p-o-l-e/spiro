@@ -42,7 +42,7 @@ void Display::paint(juce::Graphics& g)
 
 void Display::Scope()
 {
-    std::cout<<"Display::Scope()\n";
+    // std::cout<<"Display::Scope()\n";
     if(auto data = _data.lock())
     {
         layer.get()->clr(0.0f);
@@ -114,7 +114,7 @@ void Display::Scope()
         hWind(SL, SR, MI, PL);
     }
     else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
-    std::cout<<"eof Display::Scope()\n";
+    // std::cout<<"eof Display::Scope()\n";
 
 }
 

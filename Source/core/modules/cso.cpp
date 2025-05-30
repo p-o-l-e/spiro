@@ -19,14 +19,15 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-#include "map.hpp"
-#include "interface/map_interface.hpp"
-#include "../setup/constants.hpp"
-#include "../setup/iospecs.hpp"
+#include "cso.hpp"
+#include "interface/cso_interface.hpp"
+#include "constants.hpp"
+#include "iospecs.hpp"
 #include <cmath>
 #include <iostream>
 
-namespace core {
+namespace core 
+{
 using namespace cso;
 
 int cso_t::idc = 0;
@@ -46,11 +47,6 @@ void cso_t::process()
 void cso_t::switch_wave(const int& w)
 {
     _reset = true;
-}
-
-cso_t::cso_t(): id(++idc)
-{
-    init(id, &cso::descriptor[0]);
 }
 
 void cso_t::sprott_reset()
@@ -200,5 +196,12 @@ void cso_t::tsucs()
         ocv[cvo::z].store((f[2] - 45.0f) * ccv[ctl::amp]->load() * 0.05f);
     }
 }
+
+cso_t::cso_t(): id(idc++)
+{
+    std::cout<<"CSO: "<<id<<"\n";
+    init(id, &cso::descriptor[0]);
+}
+
 
 }

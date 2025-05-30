@@ -1,88 +1,73 @@
 #include "rack.hpp"
+#include "descriptor.hxx"
 #include "grid.hpp"
 #include "uid.hpp"
 
 
 namespace core
 {
-    Module* Rack::at(const int& pos) 
-    { 
-        // return node.get()[pos]; 
-    }
-
-    Module* Rack::at(const map::module::type& t, const int& pos)
+    Module* Rack::at(const map::module::type& type, const int& pos) const noexcept
     {
-        // for(int i = 0; i < bus.blueprint->sectors; ++i)
-        // {
-        //     if(node.get()[i]->descriptor->type == t)
-        //     {
-        //         if(node.get()[i]->position == pos) return node.get()[i];
-        //     }
-        // }
+        for(int i = 0; i < grid->sectors; ++i)
+        {
+            if(node[i]->descriptor->type == type)
+            {
+                std::cout<<"Type: "<<node[i]->descriptor->type<<" - Position : "<<node[i]->position<<"\n";
+                if(node[i]->position == pos) return node[i];
+            }
+        }
         return nullptr;
     }
 
-    
-    void Rack::process(const int& p) 
+    void Rack::process(const int& p) noexcept 
     { 
         node[p]->process(); 
     }
 
-    void Rack::bind(Module* m, const unsigned& pos) 
+    Rack::Rack(const Grid* grid): grid(grid), bus(grid) 
     { 
-        // if(pos < bus.blueprint->sectors) node[pos] = m; 
-    }
+        std::cout<<"Rack::Rack()\n"; 
+        node = new Module*[grid->sectors]; 
+        std::cout<<"-- Space for rack allocated...\n";
+        for(int i = 0; i < grid->sectors; ++i)
+        {
+            node[i] = create_node(grid->sector[i].descriptor->type);
+            std::cout<<"---- Node type : "<<std::hex<<node[i]->descriptor->type<<"\n";
 
-    Rack::Rack(const Grid* grid): bus(grid) 
-    { 
-        // allocate(); 
-        // build(); 
-    }
-
-    Rack::~Rack() 
-    { 
-        for(int i = 0; i < bus.blueprint->sectors; ++i) delete node[i]; 
-    }
-
-    void Rack::build() noexcept 
-    { 
-        // LOG("Rack::build() : ");
-        // for(int i = 0; i < bus.blueprint->sectors; ++i)
-        // {
-        //     node[i] = create_node(bus.blueprint->sector->descriptor[i].type);
-        // }
+        }
+        std::cout<<"-- Rack built...\n";
     }
 
     Module* Rack::create_node(const map::module::type& t)
     {
-        // switch (t)
-        // {
-        //     case map::module::type::vco: return new vco_t(); break;
-        //     case map::module::type::env: return new env_t(); break;
-        //     case map::module::type::lfo: return new lfo_t(); break;
-        //     case map::module::type::cso: return new cso_t(); break;
-        //     case map::module::type::mix: return new mix_t(); break;
-        //     case map::module::type::pdt: return new pdt_t(); break;
-        //     case map::module::type::rtr: return new rtr_t(); break;
-        //     case map::module::type::snh: return new snh_t(); break;
-        //     case map::module::type::sum: return new sum_t(); break;
-        //     case map::module::type::vca: return new vca_t(); break;
-        //     case map::module::type::vcd: return new vcd_t(); break;
-        //     case map::module::type::vcf: return new vcf_t(); break;
-        //
-        //     default: break;
-        // }
-        // return new lfo_t();
+        switch (t)
+        {
+            case map::module::type::env: return new env_t(); break;
+            case map::module::type::lfo: return new lfo_t(); break;
+            case map::module::type::cso: return new cso_t(); break;
+            case map::module::type::mix: return new mix_t(); break;
+            case map::module::type::pdt: return new pdt_t(); break;
+            case map::module::type::rtr: return new rtr_t(); break;
+            case map::module::type::snh: return new snh_t(); break;
+            case map::module::type::sum: return new sum_t(); break;
+            case map::module::type::vca: return new vca_t(); break;
+            case map::module::type::vcd: return new vcd_t(); break;
+            case map::module::type::vcf: return new vcf_t(); break;
+            case map::module::type::vco: return new vco_t(); break;
+            case map::module::type::cro: return new cro_t(); break;
+            default: break;
+        }
+        return nullptr;
     }
-
-    void Rack::allocate() noexcept 
+   
+    Rack::~Rack() noexcept
     { 
-        // LOG("Rack::allocate() :"); 
-        // node = std::make_unique<Module*[]>(bus.blueprint->sectors); 
-        // LOG("-- Space for rack allocated...");
+        std::cout<<"Rack::~Rack()\n";
+        for(int i = 0; i < grid->sectors; ++i) delete node[i]; 
+        delete[] node;
     }
-
-    void Rack::connect_pin_i(const uint32_t& hash, std::atomic<float>** o)
+    
+    void Rack::connectInput(const uint32_t& hash, std::atomic<float>** o)
     {
         // uid_t _uid = uid_t(hash);
         // int i = 0;
@@ -99,7 +84,7 @@ namespace core
         // o = &node[i]->icv[_uid.pp];
     }
 
-    void Rack::connect_pin_o(const uint32_t& hash, std::atomic<float>* o)
+    void Rack::connectOutput(const uint32_t& hash, std::atomic<float>* o)
     {
         // uid_t _uid = uid_t(hash);
         // int i = 0;
@@ -116,7 +101,7 @@ namespace core
         // o = &node[i]->ocv[_uid.pp];
     }
 
-    void Rack::connect_pin_c(const uint32_t& hash, std::atomic<float>* o)
+    void Rack::connectControl(const uint32_t& hash, std::atomic<float>* o)
     {
         // uid_t _uid = uid_t(hash);
         // int i = 0;

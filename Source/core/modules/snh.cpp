@@ -60,7 +60,7 @@ void snh_t::reset()
     scale = 40.0f;
 }
 
-snh_t::snh_t(): id(++idc)
+snh_t::snh_t(): id(idc++)
 {
     init(id, &snh::descriptor[0]);
     reset();

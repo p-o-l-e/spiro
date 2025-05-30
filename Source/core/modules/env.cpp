@@ -22,7 +22,7 @@
 
 #include "env.hpp"
 namespace core {
-
+    
 namespace settings {
         unsigned env_time_max_ms = 120 /* seconds */ * 1000;
         float env_time_multiplier = 1;
@@ -31,6 +31,8 @@ namespace settings {
             env_time_multiplier = float(env_time_max_ms) * 1000.0f / float(sample_rate);
         }
     };
+
+int env_t::idc = 0;
 
 void env_t::start()
 {
@@ -102,8 +104,9 @@ void env_t::generate(float* data, int width)
 }
 
 
-core::env_t::env_t()
+core::env_t::env_t(): id(idc++)
 {
+    init(id, &env::descriptor[0]);
     reset();
 }
 

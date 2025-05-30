@@ -91,14 +91,11 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/fonts_43e512b1.o \
   $(JUCE_OBJDIR)/constants_246efb6.o \
   $(JUCE_OBJDIR)/iospecs_50015419.o \
-  $(JUCE_OBJDIR)/canvas_fbd7cccc.o \
-  $(JUCE_OBJDIR)/modmatrix_12cd0159.o \
-  $(JUCE_OBJDIR)/quaternion_5db29812.o \
   $(JUCE_OBJDIR)/utility_d1772542.o \
-  $(JUCE_OBJDIR)/wavering_afeebdd.o \
+  $(JUCE_OBJDIR)/cro_4ab9bf51.o \
   $(JUCE_OBJDIR)/env_ae1577de.o \
   $(JUCE_OBJDIR)/lfo_1257ad26.o \
-  $(JUCE_OBJDIR)/map_3ec3c4cd.o \
+  $(JUCE_OBJDIR)/cso_4c6e97f0.o \
   $(JUCE_OBJDIR)/mix_4cdb45cd.o \
   $(JUCE_OBJDIR)/node_d4a1dc7b.o \
   $(JUCE_OBJDIR)/pdt_e2cd5e71.o \
@@ -109,7 +106,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/vcd_1d9c7148.o \
   $(JUCE_OBJDIR)/vcf_1db8a04a.o \
   $(JUCE_OBJDIR)/vco_1e3773d3.o \
-  $(JUCE_OBJDIR)/blueprint_401eea0c.o \
+  $(JUCE_OBJDIR)/modmatrix_12cd0159.o \
   $(JUCE_OBJDIR)/bus_6fe60279.o \
   $(JUCE_OBJDIR)/grid_e75db237.o \
   $(JUCE_OBJDIR)/rack_d0e64148.o \
@@ -191,29 +188,14 @@ $(JUCE_OBJDIR)/iospecs_50015419.o: ../../Source/core/setup/iospecs.cpp
 	@echo "Compiling iospecs.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/canvas_fbd7cccc.o: ../../Source/core/utility/canvas.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling canvas.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/modmatrix_12cd0159.o: ../../Source/core/utility/modmatrix.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling modmatrix.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/quaternion_5db29812.o: ../../Source/core/utility/quaternion.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling quaternion.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/utility_d1772542.o: ../../Source/core/utility/utility.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling utility.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/wavering_afeebdd.o: ../../Source/core/utility/wavering.cpp
+$(JUCE_OBJDIR)/cro_4ab9bf51.o: ../../Source/core/modules/cro.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling wavering.cpp"
+	@echo "Compiling cro.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/env_ae1577de.o: ../../Source/core/modules/env.cpp
@@ -226,9 +208,9 @@ $(JUCE_OBJDIR)/lfo_1257ad26.o: ../../Source/core/modules/lfo.cpp
 	@echo "Compiling lfo.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/map_3ec3c4cd.o: ../../Source/core/modules/map.cpp
+$(JUCE_OBJDIR)/cso_4c6e97f0.o: ../../Source/core/modules/cso.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling map.cpp"
+	@echo "Compiling cso.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/mix_4cdb45cd.o: ../../Source/core/modules/mix.cpp
@@ -281,9 +263,9 @@ $(JUCE_OBJDIR)/vco_1e3773d3.o: ../../Source/core/modules/vco.cpp
 	@echo "Compiling vco.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/blueprint_401eea0c.o: ../../Source/core/blueprint.cpp
+$(JUCE_OBJDIR)/modmatrix_12cd0159.o: ../../Source/core/utility/modmatrix.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling blueprint.cpp"
+	@echo "Compiling modmatrix.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/bus_6fe60279.o: ../../Source/core/bus.cpp

@@ -29,33 +29,34 @@ namespace core {
     {
         private:
             T* data;
-            int  i = 0; // Write Pointer
-            int  o = 0; // Read Pointer
+            int  i = 0;
+            int  o = 0;
+
         public:
             const int segments;
             constexpr void set(const T&) noexcept;
             constexpr T  get() noexcept;
             constexpr T* raw() const noexcept { return data; }
             constexpr wavering(const int& n): segments(n) { data = new T[segments]{}; }
+            wavering& operator=(const wavering&) = delete;
+            wavering(const wavering&) = delete;
            ~wavering() { delete[] data; }
     };
 
-template <typename T>
-constexpr void wavering<T>::set(const T& value) noexcept
-{
-    data[i] = value;
-    if (++i >= segments) i = 0;
-}
+    template <typename T>
+    constexpr void wavering<T>::set(const T& value) noexcept
+    {
+        data[i] = value;
+        if (++i >= segments) i = 0;
+    }
 
-
-template <typename T>
-constexpr T wavering<T>::get() noexcept
-{
-    auto value = data[o];
-    if (++o >= segments) o = 0;
-    return value;
-}
-
+    template <typename T>
+    constexpr T wavering<T>::get() noexcept
+    {
+        auto value = data[o];
+        if (++o >= segments) o = 0;
+        return value;
+    }
 
 }; // namespace core
 

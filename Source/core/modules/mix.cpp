@@ -25,8 +25,9 @@
 #include "../utility/utility.hpp"
 #include "../utility/primitives.hpp"
 
-namespace core {
-using namespace mix;
+namespace core 
+{
+    using namespace mix;
     int mix_t::idc = 0;
 
     void mix_t::process()
@@ -44,7 +45,7 @@ using namespace mix;
         ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
     }
 
-    mix_t::mix_t(): id(++idc)
+    mix_t::mix_t(): id(idc++)
     {
         init(id, &mix::descriptor);
     }

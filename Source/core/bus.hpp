@@ -20,7 +20,6 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-#include "blueprint.hpp"
 #include "descriptor.hxx"
 #include "grid.hpp"
 #ifdef DEBUG_MODE

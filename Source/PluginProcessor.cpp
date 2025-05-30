@@ -40,7 +40,7 @@ Processor::Processor(): AudioProcessor
 
 {
     suspendProcessing(true);
-std::cout<<"Processor::Processor()\n"; 
+    std::cout<<"Processor::Processor()\n"; 
     // sockets = std::make_unique<Sockets>(924, 196, cell::settings::ports_in, cell::settings::ports_out );
     // feed.renderer.bay = sockets->bay;
 }
@@ -93,29 +93,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
         ));
     }
 
-    // for(int i = 0; i < core::grid.count(core::Control::input); ++i)
-    // {
-    //     auto uid = core::grid.getUID(i, core::Control::input);
-    //     layout.add(std::make_unique<juce::AudioParameterBool>
-    //     (
-    //         "mmi" + juce::String(i),
-    //         "MMI" + juce::String(i),
-    //         false
-    //
-    //     ));
-    // }
-    //
-    // for(int i = 0; i < core::grid.count(core::Control::output); ++i)
-    // {
-    //     auto uid = core::grid.getUID(i, core::Control::output);
-    //     layout.add(std::make_unique<juce::AudioParameterBool>
-    //     (
-    //         "mmo" + juce::String(i),
-    //         "MMO" + juce::String(i),
-    //         false
-    //
-    //     ));
-    // }
+    for(int i = 0; i < core::grid.count(core::Control::input); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::input);
+        layout.add(std::make_unique<juce::AudioParameterBool>
+        (
+            "mmi" + juce::String(i),
+            "MMI" + juce::String(i),
+            false
+
+        ));
+    }
+
+    for(int i = 0; i < core::grid.count(core::Control::output); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::output);
+        layout.add(std::make_unique<juce::AudioParameterBool>
+        (
+            "mmo" + juce::String(i),
+            "MMO" + juce::String(i),
+            false
+
+        ));
+    }
 
     // suspendProcessing(false);
     return layout;
@@ -128,9 +128,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
 **************************************************************************************************************************/
 int Processor::getNumPrograms() { return presets.size(); }
 int Processor::getCurrentProgram() { return 0; }
-void Processor::setCurrentProgram (int index) {}
-const juce::String Processor::getProgramName (int index) { return {}; }
-void Processor::changeProgramName (int index, const juce::String& newName) {}
+void Processor::setCurrentProgram(int index) {}
+const juce::String Processor::getProgramName(int index) { return {}; }
+void Processor::changeProgramName(int index, const juce::String& newName) {}
 
 juce::Result Processor::getPresetsFolder()
 {
@@ -229,7 +229,7 @@ void Processor::presetFilesAvailableChanged()
     // }
 }
 
-const juce::File Processor::findPresetFile (const juce::String& presetNameToLookFor)
+const juce::File Processor::findPresetFile(const juce::String& presetNameToLookFor)
 {
     // auto presetFile = std::find_if 
     // (
@@ -276,11 +276,11 @@ void Processor::scanPresetDir()
 **************************************************************************************************************************/
 void Processor::getStateInformation(juce::MemoryBlock& destData)
 {
-    // // listeners.call([this](Listener &l) { l.saveCall(); });
-    // auto state = tree.copyState();
-    // // state.setProperty (presetNameID, currentPresetName, nullptr);
-    // std::unique_ptr<juce::XmlElement> xml (state.createXml());   
-    // copyXmlToBinary (*xml, destData);
+    // listeners.call([this](Listener &l) { l.saveCall(); });
+    auto state = tree.copyState();
+    // state.setProperty (presetNameID, currentPresetName, nullptr);
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());   
+    copyXmlToBinary(*xml, destData);
 }
 
 
@@ -291,10 +291,10 @@ void Processor::getStateInformation(juce::MemoryBlock& destData)
 **************************************************************************************************************************/
 void Processor::setStateInformation(const void* data, int sizeInBytes)
 {
-    // std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    // if (xmlState.get() != nullptr)
-    //     if (xmlState->hasTagName (tree.state.getType()))
-    //         tree.replaceState (juce::ValueTree::fromXml (*xmlState));
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if(xmlState.get() != nullptr)
+        if(xmlState->hasTagName (tree.state.getType()))
+            tree.replaceState(juce::ValueTree::fromXml(*xmlState));
 
 
 
@@ -355,14 +355,14 @@ void Processor::releaseResources()
 ******************************************************************************************************************************/
 void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    // for (const auto metadata : midiMessages) 
-    // {
-    //     uint8_t status  = metadata.data[0];
-    //     uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
-    //     uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
-    //     // feed.midi_message(status, msb, lsb);
-    // }
-    // midiMessages.clear();
+    for(const auto metadata : midiMessages) 
+    {
+        uint8_t status  = metadata.data[0];
+        uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
+        uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
+        spiro.midi_message(status, msb, lsb);
+    }
+    midiMessages.clear();
 }
 
 /******************************************************************************************************************************
@@ -386,8 +386,8 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 	    spiro.process();
 	       // std::cout<<"ProcessBlock(): L: "<<L<<" R: "<<R<<"\n";
 		buffer.get()->set(core::Point2D<float>{ L , R });
-		DataL[i] = L * 0.1f;
-		DataR[i] = R * 0.1f;
+		DataL[i] = L * 0.2f;
+		DataR[i] = R * 0.2f;
 	}
 	auto s = buffer.get()->get();
 }

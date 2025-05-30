@@ -32,7 +32,7 @@ namespace core
         ocv[cvo::b].store(ocv[cvo::a]);
     };
 
-    sum_t::sum_t(): id(++idc)
+    sum_t::sum_t(): id(idc++)
     { 
         init(id, &sum::descriptor[0]);
     };
