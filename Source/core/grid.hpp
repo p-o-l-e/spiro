@@ -65,16 +65,19 @@ namespace core
         private:
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
+            const std::unique_ptr<int[]> modules;
             // const int cvs[map::cv::count];
             std::unique_ptr<uint32_t[]>  indices[Control::count];
             const std::unique_ptr<int[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;
+            const std::unique_ptr<int[]> countModules(const Sector*) const;
             void  calculateUIDs();
             
         public:
             const Sector* const sector;
             const int sectors;
             constexpr int count(const Control::type& t) const { return elements[t]; }
+            constexpr int count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
             const std::string name(const uid_t&, const bool&) const;
             const Control* control(const uid_t&) const;

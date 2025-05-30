@@ -25,7 +25,9 @@
 #include "core/grid.hpp"
 #include "descriptor.hxx"
 #include "juce_audio_processors/juce_audio_processors.h"
+#include "primitives.hpp"
 #include "spiro.hpp"
+#include "uid.hpp"
 #include "utility.hpp"
 #include <iostream>
 #include <memory>
@@ -41,8 +43,8 @@ Processor::Processor(): AudioProcessor
 {
     suspendProcessing(true);
     std::cout<<"Processor::Processor()\n"; 
-    // sockets = std::make_unique<Sockets>(924, 196, cell::settings::ports_in, cell::settings::ports_out );
-    // feed.renderer.bay = sockets->bay;
+    sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
+    spiro.bay = sockets->bay;
 }
 
 Processor::~Processor()
@@ -318,9 +320,47 @@ void Processor::reset()
 
 void Processor::reloadParameters()
 {
-    // suspendProcessing(true);
+    suspendProcessing(true);
+    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::slider);
+        auto raw = tree.getRawParameterValue(core::grid.name(uid, true));
+        spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
+    }
+    
+    for(int i = 0; i < core::grid.count(core::Control::input); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::input);
+        auto icv = spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
+        auto idx = spiro.bay->get_index(core::encode_uid(uid));
+        spiro.bay->io[idx].com = &icv;
+    }
+    
+    for(int i = 0; i < core::grid.count(core::Control::output); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::output);
+        auto ocv = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
+        auto idx = spiro.bay->get_index(core::encode_uid(uid));
+        spiro.bay->io[idx].data = ocv;
+
+    }
+       // spiro.rack.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
+
+    // for(int i = 0; i < core::settings::prm_n; ++i)
+    // {
+    //     interface::parameter_list p = static_cast<interface::parameter_list>(i);
+    //     parameter[i] = tree.getParameter (parameter_list.at(p).id); 
+    //     spiro.rack.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
+    // }
     //
-    // suspendProcessing(false);
+    // for(int i = 0; i < core::settings::ports_in*core::settings::ports_out; ++i)
+    // {
+    //     matrix[i] = tree.getParameter("matrix_" + juce::String(i)); 
+    //     spiro.rack.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
+    // }
+    //
+    // spiro.connect_bus();
+    suspendProcessing(false);
 }
 
 
@@ -334,12 +374,13 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     std::cout<<"-- Processor: prepareToPlay()\n";
 
-
     core::settings::buffer_size = samplesPerBlock;
     core::settings::sample_rate = sampleRate;
     core::settings::reset_time_multiplier();
 
     buffer = std::make_shared<core::wavering<core::Point2D<float>>>(sampleRate/core::settings::scope_fps);
+
+    reloadParameters();
     suspendProcessing(false);
 }
 

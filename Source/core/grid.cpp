@@ -32,7 +32,7 @@
 namespace core
 {
     Grid::Grid(const Sector* s, const int& size): 
-    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s))
+    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s))
     {
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
@@ -195,7 +195,20 @@ namespace core
         }
         return r;
     }
-    
+
+    const std::unique_ptr<int[]> Grid::countModules(const Sector* d) const
+    {
+        auto r = std::make_unique<int[]>(map::module::count);
+        for(int i = 0; i < map::module::count; ++i) r[i] = 0;
+        int length = settings::sectors;
+
+        for(int i = 0; i < length; ++i)
+        {
+            ++r[d[i].descriptor->type];
+        }
+        return r;
+    }
+
     namespace settings 
     {
         const Sector sector_map[]

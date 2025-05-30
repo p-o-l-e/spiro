@@ -22,7 +22,6 @@
 
 
 #include "vco.hpp"
-#include <iostream>
 #include "constants.hpp"
 #include "utility.hpp"
 
@@ -131,7 +130,6 @@ namespace core
 
     vco_t::vco_t(): id(idc++)
     {
-        std::cout<<"VCO: "<<id<<"\n";
         init(id, &vco::descriptor);
         reset();
     }

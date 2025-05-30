@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #pragma once
 
+#include "node.hpp"
 #ifdef DEBUG_MODE
     #include <iostream>
     #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
@@ -48,18 +49,20 @@ namespace core
             struct stereo { enum { l, r }; };
         private:
             bool standby = false;
+            Module* mixer; 
             void note_on (uint8_t, uint8_t);
             void note_off(uint8_t);
             void connect_bus();
+            void arm();
 
         public:
             const Grid* grid;
-            Rack        rack;
-            DCBlock     dcb[2];
-            Patchbay*   bay = nullptr;
+            Rack rack;
+            DCBlock dcb[2];
+            Patchbay* bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
-            void        midi_message(uint8_t, uint8_t, uint8_t);
-            void        process();
+            void midi_message(uint8_t, uint8_t, uint8_t);
+            void process() noexcept;
             Spiro(const Grid*);
            ~Spiro();
     };

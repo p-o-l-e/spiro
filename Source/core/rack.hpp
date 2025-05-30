@@ -29,6 +29,7 @@ namespace core
             const int ccv(const map::cv::index& i) const { /*return bus.blueprint.ccv[i];*/ };              // Get CV[type] count
 
             Module* at(const map::module::type&, const int&) const noexcept;
+            Module* at(const int&) const noexcept;
             void process(const int&) noexcept;
             Rack(const Grid*);
            ~Rack() noexcept;

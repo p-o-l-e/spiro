@@ -58,7 +58,6 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
-        std::unique_ptr<Sockets> sockets;
         int envelope_shown = 0;
         EnvelopeDisplay env[4];
         Processor& processor;

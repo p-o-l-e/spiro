@@ -12,12 +12,17 @@ namespace core
         {
             if(node[i]->descriptor->type == type)
             {
-                std::cout<<"Type: "<<node[i]->descriptor->type<<" - Position : "<<node[i]->position<<"\n";
                 if(node[i]->position == pos) return node[i];
             }
         }
         return nullptr;
     }
+
+    Module* Rack::at(const int& pos) const noexcept
+    {
+        return node[pos];
+    }
+
 
     void Rack::process(const int& p) noexcept 
     { 
@@ -32,7 +37,6 @@ namespace core
         for(int i = 0; i < grid->sectors; ++i)
         {
             node[i] = create_node(grid->sector[i].descriptor->type);
-            std::cout<<"---- Node type : "<<std::hex<<node[i]->descriptor->type<<"\n";
 
         }
         std::cout<<"-- Rack built...\n";

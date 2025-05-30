@@ -32,32 +32,24 @@
 namespace core
 {
     using namespace interface;
-    float sinewave(float freq, float sr) 
-    {
-        static float phase = 0.0f;
-        float delta = freq * M_PI * 2.0f / sr; 
-        phase += delta;
-        if(phase > (M_PI*2.0f)) phase -= (M_PI*2.0f);
-        return sinf(phase);
-    }
 
-    void Spiro::process()
+    void Spiro::process() noexcept
     {
-        out[stereo::l].store(sinewave(110.0f, 44100));
-        out[stereo::r].store(sinewave(55.0f, 44100));
 
 
         for(int o = 0; o < grid->sectors; ++o) rack.process(o);
         // if(rack.at(map::module::type::cso, 1) == nullptr) std::cout<<"nullptr\n";
-        rack.at(map::module::type::cso, 0)->ccv[cso::ctl::amp] = &core::one;
         out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
         out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
 
-        // out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
-        // out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
-        //
-        // out[stereo::l].store(dcb[0].process(out[stereo::l].load()));
-        // out[stereo::r].store(dcb[1].process(out[stereo::l].load()));
+        // out[stereo::l].store(mixer->ocv[stereo::l].load());
+        // out[stereo::r].store(mixer->ocv[stereo::r].load());
+
+    }
+
+    void Spiro::arm() 
+    {
+        mixer = rack.at(map::module::type::mix, 0);
     }
 
     void Spiro::connect_bus()
@@ -92,6 +84,7 @@ namespace core
     {
         LOG("Spiro:\n");
         connect_bus();
+        arm();
         LOG("-- Core initialized...\n");
     }
 

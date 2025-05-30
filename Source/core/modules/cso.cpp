@@ -199,7 +199,6 @@ void cso_t::tsucs()
 
 cso_t::cso_t(): id(idc++)
 {
-    std::cout<<"CSO: "<<id<<"\n";
     init(id, &cso::descriptor[0]);
 }
 

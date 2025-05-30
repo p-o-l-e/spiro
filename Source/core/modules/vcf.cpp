@@ -31,7 +31,6 @@ namespace core
 
     vcf_t::vcf_t(): id(idc++) 
     { 
-        std::cout<<"VCF: "<<id<<"\n";
         init(id, &vcf::descriptor);
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;

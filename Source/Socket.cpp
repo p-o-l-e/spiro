@@ -39,7 +39,7 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
     bay = new core::Patchbay(bounds.w, bounds.h, inputs, outputs);
 
     unsigned position = 0; // 255 sockets max
-    std::cout  <<"---- Outputs...\n";
+    std::cout  <<"---- Inputs...\n";
     for(int i = 0; i < inputs; ++i)
     {   
         auto hash = o.getHash(i, core::Control::input);

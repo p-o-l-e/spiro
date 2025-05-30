@@ -55,7 +55,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
 	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
 	
-    sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
    
     bg.setImage(*bg_texture);
     bg.setOpaque(true);
@@ -142,7 +141,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 	display->setPaintingIsUnclipped(true);
 
     addAndMakeVisible(display.get());
-    addAndMakeVisible(sockets.get());
+    addAndMakeVisible(processor.sockets.get());
 
 
     /***************************************************************************************************************************
@@ -264,7 +263,7 @@ void Editor::resized()
     env[2].setVisible(false);
     env[3].setVisible(false);
 
-    sockets->setBounds(juce::Rectangle<int> 
+    processor.sockets->setBounds(juce::Rectangle<int> 
     {
         core::constraints::pbay.x,
         core::constraints::pbay.y,
