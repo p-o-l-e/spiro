@@ -22,8 +22,10 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "constants.hpp"
 #include "core/grid.hpp"
 #include "descriptor.hxx"
+#include "grid.hpp"
 #include "juce_audio_processors/juce_audio_processors.h"
 #include "primitives.hpp"
 #include "spiro.hpp"
@@ -331,35 +333,17 @@ void Processor::reloadParameters()
     for(int i = 0; i < core::grid.count(core::Control::input); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::input);
-        auto icv = spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
-        spiro.bay->io[idx].com = &icv;
+        spiro.bay->io[idx].com = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
     }
-    
+    std::cout<<std::setw(12)<<"Zero: "<<" - "<<&core::zero<<"\n";
+
     for(int i = 0; i < core::grid.count(core::Control::output); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::output);
-        auto ocv = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
-        spiro.bay->io[idx].data = ocv;
-
+        spiro.bay->io[idx].data = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
     }
-       // spiro.rack.bus.pot[p] = tree.getRawParameterValue (slider_list.at(p).id);
-
-    // for(int i = 0; i < core::settings::prm_n; ++i)
-    // {
-    //     interface::parameter_list p = static_cast<interface::parameter_list>(i);
-    //     parameter[i] = tree.getParameter (parameter_list.at(p).id); 
-    //     spiro.rack.bus.prm[p] = tree.getRawParameterValue (parameter_list.at(p).id);
-    // }
-    //
-    // for(int i = 0; i < core::settings::ports_in*core::settings::ports_out; ++i)
-    // {
-    //     matrix[i] = tree.getParameter("matrix_" + juce::String(i)); 
-    //     spiro.rack.bus.mtx[i] = tree.getRawParameterValue ("matrix_" + juce::String(i));
-    // }
-    //
-    // spiro.connect_bus();
     suspendProcessing(false);
 }
 

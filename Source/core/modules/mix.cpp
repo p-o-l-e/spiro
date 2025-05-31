@@ -24,6 +24,7 @@
 #include "interface/mix_interface.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/primitives.hpp"
+#include <iostream>
 
 namespace core 
 {
@@ -32,6 +33,12 @@ namespace core
 
     void mix_t::process()
     {
+        static auto pl = icv[cvi::l];
+        if(pl != icv[cvi::l])
+        {
+            std::cout<<"New input:\n";
+            pl = icv[cvi::l];
+        }
         Point3D<float> a 
         { 
             icv[cvi::l]->load(), 

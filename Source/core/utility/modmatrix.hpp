@@ -19,30 +19,20 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-
 #pragma once
 #include <cstdint>
-#include <vector>
 #include "curves.hpp"
 #include "shapes.hpp"
 #include "primitives.hpp"
 #include "canvas.hpp"
 #include "constants.hpp"
-#include <iostream>
 #include <string>
 #include <atomic>
-#include <map>
-
-// #include "interface.h"
-
-using std::vector;
 
 #define SOCKET_IN       1
 #define SOCKET_OUT      0
 #define DISCONNECTED   -1
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace core {
 
     namespace settings {
@@ -50,9 +40,11 @@ namespace core {
     };
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PatchCord //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
+   /***************************************************************************************************************************
+    * 
+    *  Patchcord
+    * 
+    **************************************************************************************************************************/
     struct Patchcord
     {
         Point2D<float>* data;               // Rendered spline
@@ -65,9 +57,11 @@ namespace core {
        ~Patchcord();
     };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Socket Data ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+   /***************************************************************************************************************************
+    * 
+    *  Socket
+    * 
+    **************************************************************************************************************************/
     struct Socket
     {
         const unsigned* w;
@@ -84,31 +78,35 @@ namespace core {
         std::atomic<float>* data  = &zero;                  // Output
         std::atomic<float>** com  = &data;                  // Pointer to module input pointer
         constexpr void collapse();                          // Collapse to centre
-        constexpr void drag(const float&, const float&);    // Drag
+        constexpr void drag(const float&, const float&);
         Socket(int);
        ~Socket();
     };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Patchbay ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+   /***************************************************************************************************************************
+    * 
+    *  Patchbay
+    * 
+    **************************************************************************************************************************/
     class Patchbay
     {
         private:
             Socket* src = nullptr;              // Armed source
             Socket* dst = nullptr;              // Armed destination
-            
+            int counter = 0;
+
         public:
-            int   get_index(const uint32_t&);
+            const int get_index(const uint32_t&) const;
             void  connect(Socket*, Socket*);
             void  disconnect(Socket*, Socket*);
 
             Canvas<unsigned>    canvas;         // Hit test layer
             Canvas<bool>        matrix;         // Connections matrix
             const int           nodes;          // Number of sockets
-            Socket*             io;             // Sockets array
+            Socket*             io;
 
-            int inputs, outputs;                // Number of inpunts and outputs
+            const int inputs;
+            const int outputs;
             
             void set_socket(const Point2D<int>*, const int&, const uint32_t&, const bool&, const int&);
             void drag(const float&, const float&);
@@ -124,5 +122,4 @@ namespace core {
     };
 
 };
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

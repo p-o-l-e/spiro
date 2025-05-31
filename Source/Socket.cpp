@@ -38,7 +38,6 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
 
     bay = new core::Patchbay(bounds.w, bounds.h, inputs, outputs);
 
-    unsigned position = 0; // 255 sockets max
     std::cout  <<"---- Inputs...\n";
     for(int i = 0; i < inputs; ++i)
     {   
@@ -49,10 +48,7 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
             static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
-        // std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
-        // std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
-        bay->set_socket(&offset, SR, hash, SOCKET_IN, position);
-        ++position;
+        bay->set_socket(&offset, SR, hash, SOCKET_IN, i);
     }
     std::cout  <<"---- Outputs...\n";
     for(int i = 0; i < outputs; ++i)
@@ -64,10 +60,7 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
             static_cast<int>(f.x - bounds.x + XG + SR),
             static_cast<int>(f.y - bounds.y + SR)
         };
-        // std::cout<<o.name(core::decode_uid(hash), false)<<"\n";
-        // std::cout<<"X: "<<std::setw(3)<<offset.x<<" - Y: "<<offset.y<<" - Hash: "<<std::setw(10)<<std::hex<<hash<<"\n";
-        bay->set_socket(&offset, SR, hash, SOCKET_OUT, position);
-        ++position;
+        bay->set_socket(&offset, SR, hash, SOCKET_OUT, i);
     }
     bay->draw();
     std::cout  <<"-- Sockets initialized!\n";
@@ -161,7 +154,7 @@ void Sockets::load()
 void Sockets::paint(juce::Graphics& g)
 {
     drawCords(g, 1.0f);
-    // drawMask(g, colour_set[0]);
+    drawMask(g, colour_set[0]);
 }
 
 void Sockets::resized ()

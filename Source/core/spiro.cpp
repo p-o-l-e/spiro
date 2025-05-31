@@ -35,16 +35,13 @@ namespace core
 
     void Spiro::process() noexcept
     {
-
-
         for(int o = 0; o < grid->sectors; ++o) rack.process(o);
         // if(rack.at(map::module::type::cso, 1) == nullptr) std::cout<<"nullptr\n";
-        out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
-        out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
+        // out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
+        // out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
 
-        // out[stereo::l].store(mixer->ocv[stereo::l].load());
-        // out[stereo::r].store(mixer->ocv[stereo::r].load());
-
+        out[stereo::l].store(mixer->ocv[stereo::l].load());
+        out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
 
     void Spiro::arm() 
