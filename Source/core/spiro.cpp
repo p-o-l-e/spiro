@@ -31,66 +31,17 @@
 
 namespace core
 {
-    using namespace interface;
-
     void Spiro::process() noexcept
     {
         for(int o = 0; o < grid->sectors; ++o) rack.process(o);
-        // if(rack.at(map::module::type::cso, 1) == nullptr) std::cout<<"nullptr\n";
-        // out[stereo::l].store(rack.at(map::module::type::cso, 0)->ocv[0].load());
-        // out[stereo::r].store(rack.at(map::module::type::cso, 0)->ocv[1].load());
 
         out[stereo::l].store(mixer->ocv[stereo::l].load());
         out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
 
-    void Spiro::arm() 
-    {
-        mixer = rack.at(map::module::type::mix, 0);
-    }
-
-    void Spiro::connect_bus()
-    {
-        LOG("Spiro::connect_bus : \n");
-
-        // for(int o = 0; o < rack.bus.blueprint.mc; ++o)
-        // {
-        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::c]; ++i)
-        //     {
-        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::c, i);
-        //         // rack.connect_pin_o(hash,  rack.bus.pin_c(hash));
-        //
-        //         // rack.bus.pin_c(0);
-        //     }
-        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::i]; ++i)
-        //     {
-        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::i, i);
-        //         // rack.connect_pin_i(hash, bay->io[rack.bus.blueprint.get_index(hash)].com);
-        //     }
-        //     for(int i = 0; i < *rack.at(o)->descriptor->cv[map::cv::o]; ++i)
-        //     {
-        //         auto hash = rack.bus.blueprint.get_hash(map::cv::index::o, i);
-        //         // rack.connect_pin_o(hash, bay->io[rack.bus.blueprint.get_index(hash)].data);
-        //     }
-        // }
-
-        LOG("-- Bus connected...\n");
-    }
-
     Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
     {
-        LOG("Spiro:\n");
-        connect_bus();
-        arm();
-        LOG("-- Core initialized...\n");
-    }
-
-
-
-    Spiro::~Spiro()
-    {
-        LOG("~Spiro :\n");
-
+        mixer = rack.at(map::module::type::mix, 0);
     }
 
     void Spiro::note_on(uint8_t msb, uint8_t lsb)

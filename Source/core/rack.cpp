@@ -3,7 +3,6 @@
 #include "grid.hpp"
 #include "uid.hpp"
 
-
 namespace core
 {
     Module* Rack::at(const map::module::type& type, const int& pos) const noexcept
@@ -23,13 +22,12 @@ namespace core
         return node[pos];
     }
 
-
     void Rack::process(const int& p) noexcept 
     { 
         node[p]->process(); 
     }
 
-    Rack::Rack(const Grid* grid): grid(grid), bus(grid) 
+    Rack::Rack(const Grid* grid): grid(grid)
     { 
         std::cout<<"Rack::Rack()\n"; 
         node = new Module*[grid->sectors]; 
@@ -70,56 +68,4 @@ namespace core
         for(int i = 0; i < grid->sectors; ++i) delete node[i]; 
         delete[] node;
     }
-    
-    void Rack::connectInput(const uint32_t& hash, std::atomic<float>** o)
-    {
-        // uid_t _uid = uid_t(hash);
-        // int i = 0;
-        // for(; i < bus.blueprint->sectors; ++i)
-        // {
-        //     if(node[i]->descriptor->type == _uid.mt)
-        //     {
-        //         if(node[i]->position == _uid.mp)
-        //         {
-        //             break;
-        //         }
-        //     }
-        // }
-        // o = &node[i]->icv[_uid.pp];
-    }
-
-    void Rack::connectOutput(const uint32_t& hash, std::atomic<float>* o)
-    {
-        // uid_t _uid = uid_t(hash);
-        // int i = 0;
-        // for(; i < bus.blueprint.mc; ++i)
-        // {
-        //     if(node[i]->descriptor->type == _uid.mt)
-        //     {
-        //         if(node[i]->position == _uid.mp)
-        //         {
-        //             break;
-        //         }
-        //     }
-        // }
-        // o = &node[i]->ocv[_uid.pp];
-    }
-
-    void Rack::connectControl(const uint32_t& hash, std::atomic<float>* o)
-    {
-        // uid_t _uid = uid_t(hash);
-        // int i = 0;
-        // for(; i < bus.blueprint.mc; ++i)
-        // {
-        //     if(node[i]->descriptor->type == _uid.mt)
-        //     {
-        //         if(node[i]->position == _uid.mp)
-        //         {
-        //             break;
-        //         }
-        //     }
-        // }
-        // node[i]->ccv[_uid.pp] = o;
-    }
-
 }

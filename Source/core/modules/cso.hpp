@@ -27,9 +27,7 @@
 
 namespace core 
 {
-
-    #define n_forms_chaotic 4
-    inline const char* wforms_chaotic[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
+    inline const char* formCSO[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
     class cso_t: public Module
     { 
@@ -68,6 +66,7 @@ namespace core
 
 
         public:
+            static const int forms { 4 };
             const int id = 0;
             void process() override;
             void switch_wave(const int&);

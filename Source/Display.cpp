@@ -21,6 +21,8 @@
 ******************************************************************************************************************************/
 
 #include "Display.h"
+#include "node.hpp"
+#include "vco.hpp"
 #include <memory>
 
 void Display::paint(juce::Graphics& g)
@@ -206,41 +208,41 @@ void Display::hWind(int a, int b, int c, int d)
 	core::draw_glyph(layer.get(), gtFont, d, 139, 155, contrast);
 }
 
-// void Display::ChaosMenu(core::map_t* chs, int id)
-// {
-// 	page = id == 0 ? page_t::chs_a : page_t::chs_b;
-// 	input_box.setVisible(false);
-// 	layer.get()->clr(0.0f);
-// 	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
-// 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-//
-// 	core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
-// 	core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
-//
-// 	vWind(FU, SU, SD, FD);
-// 	hWind(FL, SL, SR, FR);
-//
-// 	layer_on = true;
-// 	repaint();
-// }
+void Display::CSOMenu(core::Module* chs, int id)
+{
+	page = id == 0 ? page_t::chs_a : page_t::chs_b;
+	input_box.setVisible(false);
+	layer.get()->clr(0.0f);
+	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-// void Display::LFOMenu(core::lfo_t* lfo, int id)
-// {
-// 	page = id == 0 ? page_t::lfo_a : page_t::lfo_b;
-// 	input_box.setVisible(false);
-// 	layer.get()->clr(0.0f);
-// 	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
-// 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-//
-// 	core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
-// 	core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
-//
-// 	vWind(FU, SU, SD, FD);
-// 	hWind(FL, SL, SR, FR);
-//
-// 	layer_on = true;
-// 	repaint();
-// }
+	core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
+	// core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
+
+	vWind(FU, SU, SD, FD);
+	hWind(FL, SL, SR, FR);
+
+	layer_on = true;
+	repaint();
+}
+
+void Display::LFOMenu(core::Module* lfo, int id)
+{
+	page = id == 0 ? page_t::lfo_a : page_t::lfo_b;
+	input_box.setVisible(false);
+	layer.get()->clr(0.0f);
+	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+
+	core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
+	// core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
+
+	vWind(FU, SU, SD, FD);
+	hWind(FL, SL, SR, FR);
+
+	layer_on = true;
+	repaint();
+}
 
 void Display::About()
 {
@@ -263,53 +265,53 @@ void Display::About()
 
 
 
-// void Display::VCOMenu(core::oscillator* o, int id)
-// {
-// 	if     (row > 2) row = 2;
-// 	else if(row < 0) row = 0;
-// 	input_box.setVisible(false);
-// 	layer.get()->clr(0.0f);
-// 	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
-// 	switch(id)
-// 	{
-// 		case 0:
-// 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
-// 			page = vco_a;
-// 			break;
-// 		case 1:
-// 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
-// 			page = vco_b;
-// 			break;
-// 		case 2:
-// 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
-// 			page = vco_c;
-// 			break;
-// 		case 3:
-// 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
-// 			page = vco_d;
-// 			break;
-// 		default: 
-// 			break;
-// 	}
-// 	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-//
-// 	core::draw_text_label(layer.get(), gtFont, "FORM: ", 50, 30, contrast);
-// 	core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ctrl[static_cast<int>(core::interface::vco::ctrl::form)]->load())], 90, 30, contrast);
-//
-// 	core::draw_text_label(layer.get(), gtFont, "MODE: ", 50, 40, contrast);
-//
-//     if(o->ctrl[static_cast<int>(core::interface::vco::ctrl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
-// 	else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
-//
-// 	core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
-// 	juce::String oct ( *o->ctrl[static_cast<int>(core::interface::vco::ctrl::octave)] * 10.0f);
-// 	core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
-//
-// 	vWind(FU, SU, SD, FD);
-// 	hWind(FL, SL, SR, FR);
-// 	layer_on = true;
-// 	repaint();
-// }
+void Display::VCOMenu(core::Module* o, int id)
+{
+	if     (row > 2) row = 2;
+	else if(row < 0) row = 0;
+	input_box.setVisible(false);
+	layer.get()->clr(0.0f);
+	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+	switch(id)
+	{
+		case 0:
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
+			page = vco_a;
+			break;
+		case 1:
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
+			page = vco_b;
+			break;
+		case 2:
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
+			page = vco_c;
+			break;
+		case 3:
+			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
+			page = vco_d;
+			break;
+		default: 
+			break;
+	}
+	core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+
+	core::draw_text_label(layer.get(), gtFont, "FORM  : ", 50, 30, contrast);
+	// core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ccv[static_cast<int>(core::vco::ctl::form)]->load())], 90, 30, contrast);
+
+	core::draw_text_label(layer.get(), gtFont, "MODE  : ", 50, 40, contrast);
+
+    // if(o->ccv[static_cast<int>(core::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
+	// else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
+
+	core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
+	// juce::String oct ( *o->ccv[static_cast<int>(core::vco::ctl::octave)] * 10.0f);
+	// core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
+
+	vWind(FU, SU, SD, FD);
+	hWind(FL, SL, SR, FR);
+	layer_on = true;
+	repaint();
+}
 
 // void Display::EnvelopeMenu(core::envelope* env, int id)
 // {
@@ -347,7 +349,7 @@ void Display::resized()
 	reset();
 }
 
-    Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, int x, int y, int w, int h): _data(buf)
+Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, int x, int y, int w, int h): _data(buf)
 {
 	area.x = x;
 	area.y = y;

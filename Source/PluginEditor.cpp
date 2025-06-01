@@ -1,20 +1,24 @@
 /*****************************************************************************************************************************
-* Spiro
-* Copyright (C) 2022-2023 POLE
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+* Copyright (c) 2022-2025 POLE
 * 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*******************************************************************************************************************************/
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+******************************************************************************************************************************/
 
 #include "Constraints.hpp"
 #include "PluginProcessor.h"
@@ -27,6 +31,7 @@
 #include "node.hpp"
 #include "primitives.hpp"
 #include "uid.hpp"
+#include "Menu.hpp"
 #include "PluginEditor.h"
 #include <cstddef>
 #include <iostream>
@@ -54,13 +59,11 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
 	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
-	
    
     bg.setImage(*bg_texture);
     bg.setOpaque(true);
     bg.setPaintingIsUnclipped(true);
     addAndMakeVisible(bg);
-
 
     display = std::make_unique<Display>(processor.buffer, core::constraints::oled.x, core::constraints::oled.y, core::constraints::oled.w, core::constraints::oled.h);
    
@@ -135,7 +138,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     }
     processor.addListener(this);
     display->addListener(this);
-    
 
     display->setOpaque(true); // MUST
 	display->setPaintingIsUnclipped(true);
@@ -143,32 +145,60 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     addAndMakeVisible(display.get());
     addAndMakeVisible(processor.sockets.get());
 
-
-    /***************************************************************************************************************************
+   /***************************************************************************************************************************
     * 
-    *  λ - Menu Button
+    *  λ
     * 
     **************************************************************************************************************************/
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
-        std::cout<<"Main Menu button pressed...\n";
-        stopTimer();
-        display->MainMenu();
+        mainMenu(this);
     };
 
-    /***************************************************************************************************************************
-    * 
-    *  λ - Scope Button
-    * 
-    **************************************************************************************************************************/
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
     {
-        std::cout<<"Scope button pressed...\n";
-
-        startTimerHz(core::settings::scope_fps);
-        display->page = Display::page_t::scope;
-        display->layer_on = false;
+        croMenu(this, 0);
     };
+    
+   /***************************************************************************************************************************
+    * 
+    *  λ - VCOs
+    * 
+    **************************************************************************************************************************/    
+    for(int i = 0; i < core::grid.count(core::map::module::vco); ++i)
+    {
+        button[(core::grid.getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
+        {
+            vcoMenu(this, i);
+        };
+    }
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Dynamic Systems
+    * 
+    **************************************************************************************************************************/    
+    for(int i = 0; i < core::grid.count(core::map::module::cso); ++i)
+    {
+        button[(core::grid.getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
+        {
+            csoMenu(this, i);
+        };
+    }
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - LFOs
+    * 
+    **************************************************************************************************************************/    
+    for(int i = 0; i < core::grid.count(core::map::module::lfo); ++i)
+    {
+        button[(core::grid.getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
+        {
+            lfoMenu(this, i);
+        };
+    }
+
 
     setResizable(false, false);
     setSize (core::constraints::W, core::constraints::H);

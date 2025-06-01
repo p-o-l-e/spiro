@@ -21,14 +21,6 @@
 ******************************************************************************************************************************/
 #pragma once
 
-#include "node.hpp"
-#ifdef DEBUG_MODE
-    #include <iostream>
-    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
-#else
-    #define LOG(x)
-#endif
-
 #include <iostream>
 #include <cstdlib>
 
@@ -41,8 +33,6 @@
 
 namespace core 
 {
-    using namespace interface;
-
     class Spiro
     { 
         public:
@@ -52,8 +42,6 @@ namespace core
             Module* mixer; 
             void note_on (uint8_t, uint8_t);
             void note_off(uint8_t);
-            void connect_bus();
-            void arm();
 
         public:
             const Grid* grid;
@@ -64,6 +52,6 @@ namespace core
             void midi_message(uint8_t, uint8_t, uint8_t);
             void process() noexcept;
             Spiro(const Grid*);
-           ~Spiro();
+           ~Spiro() = default;
     };
 };

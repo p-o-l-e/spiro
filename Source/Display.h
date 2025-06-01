@@ -24,6 +24,7 @@
 #include <JuceHeader.h>
 #include <memory>
 #include "canvas.hpp"
+#include "node.hpp"
 #include "wavering.hpp"
 #include "primitives.hpp"
 #include "fonts.h"
@@ -122,10 +123,10 @@ class Display : public juce::ImageComponent
 		core::Rectangle<int> area;
 		void paint (juce::Graphics& g) override;
         void Scope();
-		// void ChaosMenu(core::map_t*, int);
+		void CSOMenu(core::Module*, int);
 		// void EnvelopeMenu(core::envelope*, int);
-		// void VCOMenu(core::oscillator*, int);
-		// void LFOMenu(core::lfo_t*, int);
+		void VCOMenu(core::Module*, int);
+		void LFOMenu(core::Module*, int);
 		void MainMenu();
 		void SaveMenu();
         void About();

@@ -18,22 +18,22 @@ namespace core
         { 
             enum type
             {   
-                off  = 0xFF, 
-                vco  = 0xEE, 
-                lfo  = 0xDD, 
-                cso  = 0xCC, 
-                vca  = 0xBB, 
-                vcd  = 0xAA, 
-                vcf  = 0x99, 
-                snh  = 0x88, 
-                sum  = 0x77, 
-                pdt  = 0x66, 
-                rtr  = 0x55, 
-                mix  = 0x44, 
-                env  = 0x33, 
-                mod  = 0x22, 
-                com  = 0x11, 
-                cro  = 0x00,
+                off, 
+                vco, 
+                lfo, 
+                cso, 
+                vca, 
+                vcd, 
+                vcf, 
+                snh, 
+                sum, 
+                pdt, 
+                rtr, 
+                mix, 
+                env, 
+                mod, 
+                com, 
+                cro,
             };
             static const int count { 16 };
         };

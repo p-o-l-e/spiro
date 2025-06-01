@@ -19,12 +19,10 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "mix.hpp"
 #include "interface/mix_interface.hpp"
-#include "../utility/utility.hpp"
-#include "../utility/primitives.hpp"
-#include <iostream>
+#include "utility.hpp"
+#include "primitives.hpp"
 
 namespace core 
 {
@@ -33,12 +31,6 @@ namespace core
 
     void mix_t::process()
     {
-        static auto pl = icv[cvi::l];
-        if(pl != icv[cvi::l])
-        {
-            std::cout<<"New input:\n";
-            pl = icv[cvi::l];
-        }
         Point3D<float> a 
         { 
             icv[cvi::l]->load(), 

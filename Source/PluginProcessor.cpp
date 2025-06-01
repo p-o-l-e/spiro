@@ -45,12 +45,14 @@ Processor::Processor(): AudioProcessor
 {
     suspendProcessing(true);
     std::cout<<"Processor::Processor()\n"; 
+    parameters = new juce::RangedAudioParameter*[core::grid.count(core::Control::parameter)];    
     sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
     spiro.bay = sockets->bay;
 }
 
 Processor::~Processor()
 {
+    delete[] parameters;
 }
 
 /******************************************************************************************************************************
@@ -82,6 +84,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
                 c->skew,
                 c->symmetric
             ),
+            c->def
+        ));
+    }
+
+    for(int i = 0; i < core::grid.count(core::Control::parameter); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::parameter);
+        const core::Control* c = core::grid.control(uid);
+        
+        layout.add(std::make_unique<juce::AudioParameterFloat> 
+        (
+            core::grid.name(uid, true), 
+            core::grid.name(uid, false), 
+            c->min,
+            c->max,
             c->def
         ));
     }
@@ -330,13 +347,21 @@ void Processor::reloadParameters()
         spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
     }
     
+    for(int i = 0; i < core::grid.count(core::Control::parameter); ++i)
+    {
+        auto uid = core::grid.getUID(i, core::Control::parameter);
+        auto name = core::grid.name(uid, true);
+        auto raw = tree.getRawParameterValue(name);
+        spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
+        parameters[i] = tree.getParameter(name);
+    }
+
     for(int i = 0; i < core::grid.count(core::Control::input); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::input);
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
         spiro.bay->io[idx].com = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
     }
-    std::cout<<std::setw(12)<<"Zero: "<<" - "<<&core::zero<<"\n";
 
     for(int i = 0; i < core::grid.count(core::Control::output); ++i)
     {
@@ -344,6 +369,9 @@ void Processor::reloadParameters()
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
         spiro.bay->io[idx].data = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
     }
+
+
+
     suspendProcessing(false);
 }
 

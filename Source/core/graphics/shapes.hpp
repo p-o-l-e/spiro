@@ -112,8 +112,7 @@ constexpr void draw_glyph(core::Canvas<float>* canvas, const char* font, int id,
     {
         for(int x = 0; x < 7; x++)
         {
-            if(font[pos + x]&stencil) canvas->set(x + xo, y + yo, colour);
-
+            if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
         }
         stencil<<=1;
     }

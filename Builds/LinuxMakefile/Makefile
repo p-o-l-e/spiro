@@ -107,18 +107,17 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/vcf_1db8a04a.o \
   $(JUCE_OBJDIR)/vco_1e3773d3.o \
   $(JUCE_OBJDIR)/modmatrix_12cd0159.o \
-  $(JUCE_OBJDIR)/bus_6fe60279.o \
   $(JUCE_OBJDIR)/grid_e75db237.o \
   $(JUCE_OBJDIR)/rack_d0e64148.o \
   $(JUCE_OBJDIR)/spiro_432af762.o \
   $(JUCE_OBJDIR)/uid_47aee049.o \
   $(JUCE_OBJDIR)/EnvelopeDisplay_4e196233.o \
-  $(JUCE_OBJDIR)/ListSlider_790c9528.o \
   $(JUCE_OBJDIR)/Socket_2b3a4d7c.o \
   $(JUCE_OBJDIR)/SpriteSlider_8fb03d8f.o \
   $(JUCE_OBJDIR)/PluginProcessor_a059e380.o \
   $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o \
   $(JUCE_OBJDIR)/Display_6a853823.o \
+  $(JUCE_OBJDIR)/Menu_6d6f9268.o \
   $(JUCE_OBJDIR)/BinaryData_ce4232d4.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
@@ -268,11 +267,6 @@ $(JUCE_OBJDIR)/modmatrix_12cd0159.o: ../../Source/core/utility/modmatrix.cpp
 	@echo "Compiling modmatrix.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/bus_6fe60279.o: ../../Source/core/bus.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling bus.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/grid_e75db237.o: ../../Source/core/grid.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling grid.cpp"
@@ -298,11 +292,6 @@ $(JUCE_OBJDIR)/EnvelopeDisplay_4e196233.o: ../../Source/EnvelopeDisplay.cpp
 	@echo "Compiling EnvelopeDisplay.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ListSlider_790c9528.o: ../../Source/ListSlider.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling ListSlider.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/Socket_2b3a4d7c.o: ../../Source/Socket.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling Socket.cpp"
@@ -326,6 +315,11 @@ $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o: ../../Source/PluginEditor.cpp
 $(JUCE_OBJDIR)/Display_6a853823.o: ../../Source/Display.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling Display.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Menu_6d6f9268.o: ../../Source/Menu.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling Menu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/BinaryData_ce4232d4.o: ../../JuceLibraryCode/BinaryData.cpp

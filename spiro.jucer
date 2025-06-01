@@ -97,13 +97,10 @@
         </GROUP>
         <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
         <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>
-        <FILE id="H1QYEH" name="bus.cpp" compile="1" resource="0" file="Source/core/bus.cpp"/>
-        <FILE id="DMybCa" name="bus.hpp" compile="0" resource="0" file="Source/core/bus.hpp"/>
         <FILE id="IS4uMt" name="grid.cpp" compile="1" resource="0" file="Source/core/grid.cpp"/>
         <FILE id="G3sDwm" name="grid.hpp" compile="0" resource="0" file="Source/core/grid.hpp"/>
         <FILE id="H9j97p" name="interface_headers.hpp" compile="0" resource="0"
               file="Source/core/interface_headers.hpp"/>
-        <FILE id="LQOsvC" name="log.hpp" compile="0" resource="0" file="Source/core/log.hpp"/>
         <FILE id="q8WRgh" name="module_headers.hpp" compile="0" resource="0"
               file="Source/core/module_headers.hpp"/>
         <FILE id="Iz4v86" name="rack.cpp" compile="1" resource="0" file="Source/core/rack.cpp"/>
@@ -127,8 +124,6 @@
             file="Source/EnvelopeDisplay.cpp"/>
       <FILE id="dBuxHo" name="EnvelopeDisplay.h" compile="0" resource="0"
             file="Source/EnvelopeDisplay.h"/>
-      <FILE id="dbDEkM" name="ListSlider.h" compile="0" resource="0" file="Source/ListSlider.h"/>
-      <FILE id="lgIrct" name="ListSlider.cpp" compile="1" resource="0" file="Source/ListSlider.cpp"/>
       <FILE id="rmtpvK" name="Socket.h" compile="0" resource="0" file="Source/Socket.h"/>
       <FILE id="JvQfIq" name="Socket.cpp" compile="1" resource="0" file="Source/Socket.cpp"/>
       <FILE id="tvFU9m" name="Colours.hpp" compile="0" resource="0" file="Source/Colours.hpp"/>
@@ -144,6 +139,8 @@
       <FILE id="pPgBMD" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="gghgDq" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
       <FILE id="EX5zI8" name="Display.cpp" compile="1" resource="0" file="Source/Display.cpp"/>
+      <FILE id="vkedxg" name="Menu.cpp" compile="1" resource="0" file="Source/Menu.cpp"/>
+      <FILE id="ssb02o" name="Menu.hpp" compile="0" resource="0" file="Source/Menu.hpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
