@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <string_view>
 #include "primitives.hpp"
 #include "constants.hpp"
 
@@ -83,9 +84,11 @@ namespace core
 
     struct Options
     {
-        const std::string description;
-        const std::string* parameterId;
+        enum type { Bool, Integer, Float, Choice };
+        const std::string_view description;
+        const std::string_view* parameterId;
         const uint8_t* parameterPosition;
         const int parameters;
+        const std::string_view* const* choice;
     };
 }

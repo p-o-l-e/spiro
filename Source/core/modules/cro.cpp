@@ -28,7 +28,7 @@ namespace core
     using namespace cro;
     int cro_t::idc = 0;
 
-    void cro_t::process()
+    void cro_t::process() noexcept
     {
 
     }

@@ -43,10 +43,9 @@ namespace core
     class vco_t: public Module
     {   
         private:
-            float   phase   [settings::poly];               // Current phase
-            float   delta   [settings::poly];               // Phase increment
-            float   eax[3]  [settings::poly];               // Feedback memory
-
+            float phase[settings::poly];                // Current phase
+            float delta[settings::poly];                // Phase increment
+            float eax[3][settings::poly];               // Feedback memory
             float tomisawa(const int&);
             float pulse(const int&);
             float hexagon(const int&);
@@ -56,19 +55,15 @@ namespace core
                 &vco_t::pulse, 
                 &vco_t::hexagon 
             };
-            static int idc;                                 // ID counter
+            static int idc;                             // ID counter
   
         public:
-            int id;                                         // Unique vco_t id
-        
-            float   freq    [settings::poly];               // Frequency
-            uint8_t note    [settings::poly];               // Triggered note
-
-            void process() override;
-        
+            int id;                                     // Unique vco_t id
+            float freq[settings::poly];               // Frequency
+            uint8_t note[settings::poly];               // Triggered note
+            void process() noexcept override;
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);
-
             void reset();
             vco_t();
            ~vco_t();

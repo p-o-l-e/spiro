@@ -19,15 +19,13 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "lfo.hpp"
 
 namespace core
 {
-
     int lfo_t::idc = 0;
 
-    void lfo_t::process()
+    void lfo_t::process() noexcept
     {
         float o = (this->*form[(int)ccv[lfo::ctl::form]->load()])();
         ocv[lfo::cvo::a].store(o);

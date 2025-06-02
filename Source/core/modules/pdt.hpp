@@ -19,7 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 #include "node.hpp"
 
@@ -29,11 +28,12 @@ namespace core
     {
         private:
             static int idc;
+
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
             pdt_t();
-           ~pdt_t(){};
+           ~pdt_t() = default;
     };
 
 }; // Namespace

@@ -19,11 +19,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "snh.hpp"
-
-#include "../setup/constants.hpp"
-#include "../setup/iospecs.hpp"
+#include "constants.hpp"
+#include "iospecs.hpp"
 
 namespace core 
 {
@@ -31,7 +29,7 @@ namespace core
 
 int snh_t::idc = 0;
 
-void snh_t::process()
+void snh_t::process() noexcept
 {
     if(icv[cvi::time] == &zero)
     {

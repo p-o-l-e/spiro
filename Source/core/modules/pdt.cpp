@@ -19,7 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "pdt.hpp"
 #include "interface/pdt_interface.hpp"
 
@@ -27,7 +26,7 @@ namespace core {
     
     int pdt_t::idc = 0;
 
-    void pdt_t::process()
+    void pdt_t::process() noexcept
     {
         bool  o = false;
         float s = 1.0f;

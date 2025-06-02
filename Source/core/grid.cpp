@@ -27,7 +27,7 @@
 
 namespace core
 {
-    Grid::Grid(const Sector* s, const int& size): 
+    Grid::Grid(const Sector* s, const int size): 
     sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s))
     {
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
@@ -65,6 +65,17 @@ namespace core
         return -1;
     }
 
+    const int Grid::getIndex(const uint32_t hash) const
+    {
+        auto uid = decode_uid(hash);
+        auto t = control(uid)->is;
+        for(int i = 0; i < elements[t]; ++i)
+        {
+            if(indices[t][i] == hash) return i;
+        }
+        return -1;
+    }
+
     const Control* Grid::control(const uid_t& uid) const
     {
         for(int i = 0; i < sectors; ++i)
@@ -77,12 +88,24 @@ namespace core
         return nullptr;
     }
 
-    const uid_t Grid::getUID(const int& index, const Control::type& type) const
+    const Sector* Grid::getSector(const map::module::type& mt, const int mp) const
+    {
+        for(int i = 0; i < sectors; ++i)
+        {
+            if(sector[i].descriptor->type == mt)
+            {
+                if(relative[i] == mp) return &sector[i];
+            }
+        }
+        return nullptr;
+    }
+
+    const uid_t Grid::getUID(const int index, const Control::type& type) const
     {
         return decode_uid(indices[type][index]);
     }
 
-    const uint32_t Grid::getHash(const int& index, const Control::type& type) const
+    const uint32_t Grid::getHash(const int index, const Control::type& type) const
     {
         return indices[type][index];
     }
@@ -107,7 +130,7 @@ namespace core
         return bounds;
     }
 
-    const std::string Grid::name(const uid_t& uid, const bool& snake) const
+    const std::string Grid::name(const uid_t& uid, const bool snake) const
     {
         std::string r {};
 

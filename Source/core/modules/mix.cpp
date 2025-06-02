@@ -20,7 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "mix.hpp"
-#include "interface/mix_interface.hpp"
+#include "mix_interface.hpp"
 #include "utility.hpp"
 #include "primitives.hpp"
 
@@ -29,7 +29,7 @@ namespace core
     using namespace mix;
     int mix_t::idc = 0;
 
-    void mix_t::process()
+    void mix_t::process() noexcept
     {
         Point3D<float> a 
         { 

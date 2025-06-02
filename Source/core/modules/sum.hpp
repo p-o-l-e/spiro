@@ -19,7 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 #include "node.hpp"
 
@@ -32,8 +31,8 @@ namespace core
 
         public:
             int id;
-            void process() override;
+            void process() noexcept override;
             sum_t();
-           ~sum_t() {};
+           ~sum_t() = default;
     };
 }

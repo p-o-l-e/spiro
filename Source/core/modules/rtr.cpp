@@ -19,7 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "rtr.hpp"
 
 namespace core 
@@ -27,7 +26,7 @@ namespace core
     using namespace rtr;
     int rtr_t::idc = 0;
     
-    void rtr_t::process()
+    void rtr_t::process() noexcept
     {
         Point3D<float> a 
         { 

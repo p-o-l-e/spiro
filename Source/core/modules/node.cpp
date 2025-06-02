@@ -1,5 +1,5 @@
 #include "node.hpp"
-
+#include "constants.hpp"
 
 namespace core
 {
@@ -10,7 +10,7 @@ namespace core
         for(int i = 0; i < *descriptor->cv[map::cv::o]; ++i) ocv[i].store(0.0f);
     };
 
-    void Module::init(const uint8_t& id, const Descriptor* d) noexcept 
+    void Module::init(const uint8_t& id, const Descriptor* d)
     {
         descriptor = d;
         ccv = std::make_unique<std::atomic<float>*[]>(*descriptor->cv[map::cv::c]);
@@ -20,5 +20,4 @@ namespace core
         fuse();
         position = id;
     }
-
 }

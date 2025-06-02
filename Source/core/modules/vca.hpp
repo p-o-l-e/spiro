@@ -20,7 +20,6 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-
 #include "node.hpp"
 
 namespace core
@@ -32,8 +31,8 @@ namespace core
 
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
             vca_t();
-           ~vca_t(){};
+           ~vca_t() = default;
     };
 }

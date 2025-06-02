@@ -21,19 +21,9 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-
-#include "modules/interface/descriptor.hxx"
 #include <cstdint>
 #include <memory>
 #include <string>
-#ifdef DEBUG_MODE
-    #include <iostream>
-    #define LOG(x) std::cout << "[DEBUG] " << x << std::endl;
-#else
-    #define LOG(x)
-#endif
-
-#include <array>
 #include "primitives.hpp"
 #include "descriptor.hxx"
 #include "interface_headers.hpp"
@@ -81,13 +71,14 @@ namespace core
             constexpr int count(const Control::type& t) const { return elements[t]; }
             constexpr int count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
-            const std::string name(const uid_t&, const bool&) const;
+            const std::string name(const uid_t&, const bool) const;
             const Control* control(const uid_t&) const;
-            const int getIndex(const uint32_t&) const;
+            const int getIndex(const uint32_t) const;
             const int getIndex(const uid_t&) const;
-            const uid_t getUID(const int&, const Control::type&) const;
-            const uint32_t getHash(const int&, const Control::type&) const;
-            Grid(const Sector*, const int&);
+            const Sector* getSector(const map::module::type&, const int) const;
+            const uid_t getUID(const int, const Control::type&) const;
+            const uint32_t getHash(const int, const Control::type&) const;
+            Grid(const Sector*, const int);
            ~Grid() = default;
     };
     

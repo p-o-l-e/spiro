@@ -21,7 +21,6 @@
 *
 * Based on: https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 ******************************************************************************************************************************/
-
 #pragma once
 #include "node.hpp"
 
@@ -39,9 +38,9 @@ namespace core {
 
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
             void reset();
             vcf_t();
-           ~vcf_t() {};
+           ~vcf_t() = default;
     };
 };

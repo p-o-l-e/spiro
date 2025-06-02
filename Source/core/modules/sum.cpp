@@ -26,7 +26,7 @@ namespace core
     using namespace sum;
     int sum_t::idc = 0;
 
-    void sum_t::process()
+    void sum_t::process() noexcept
     {
         ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
         ocv[cvo::b].store(ocv[cvo::a]);

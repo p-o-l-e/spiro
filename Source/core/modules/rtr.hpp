@@ -19,26 +19,23 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 #include "quaternion.hpp"
 #include "node.hpp"
 
 namespace core
 {
+    class rtr_t: public Module
+    {
+        private:
+            static int idc;
+            Quaternion q;
 
-class rtr_t: public Module
-{
-    private:
-        static int idc;
-        Quaternion q;
-
-    public:
-        int id;
-        void process() override;
-
-        rtr_t();
-       ~rtr_t(){};
-};
+        public:
+            int id;
+            void process() noexcept override;
+            rtr_t();
+           ~rtr_t() = default;
+    };
 
 }

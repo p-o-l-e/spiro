@@ -21,7 +21,6 @@
 *
 * Based on: https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 ******************************************************************************************************************************/
-
 #include "vcf.hpp"
 #include <iostream>
 namespace core 
@@ -49,7 +48,7 @@ namespace core
         b = 0.0f;
     }
 
-    void vcf_t::process()
+    void vcf_t::process() noexcept
     {
         float cutoff = ccv[ctl::cutoff]->load() + icv[cvi::cutoff]->load();
         if      (cutoff < 0.0f) cutoff = 0.0f;

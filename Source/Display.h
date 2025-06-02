@@ -23,17 +23,11 @@
 #pragma once
 #include <JuceHeader.h>
 #include <memory>
-#include "canvas.hpp"
-#include "descriptor.hxx"
-#include "node.hpp"
-#include "uid.hpp"
-#include "utility.hpp"
 #include "wavering.hpp"
 #include "primitives.hpp"
 #include "fonts.h"
 #include "blur.hpp"
-#include "cso.hpp"
-#include "vco.hpp"
+#include "spiro.hpp"
 #include "PluginProcessor.h"
 
 #define JumpUp      117
@@ -45,6 +39,8 @@
 #define StepLeft    123
 #define StepRight   124
 #define JumpRight   122
+
+#define LetterA     33
 
 #define OK 47
 #define CX 56
@@ -71,7 +67,7 @@ class Display: public juce::ImageComponent
 		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, Menu, About };
 
 	private:
-		OledLabel input_box { &contrast };
+		OledLabel inputBox { &contrast };
 		std::unique_ptr<juce::Image> image;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
@@ -110,7 +106,7 @@ class Display: public juce::ImageComponent
 		void CSOMenu(core::Module*, int);
 		void VCOMenu(core::Module*, int);
 		void LFOMenu(core::Module*, int);
-    	void moduleMenu(const core::map::module::type&, const int);
+    	void moduleMenu(core::Spiro*, const core::map::module::type&, const int);
 		void MainMenu();
 		void SaveMenu();
 		void vSoft(const int, const int, const int, const int);

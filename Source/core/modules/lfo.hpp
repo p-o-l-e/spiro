@@ -19,29 +19,28 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 #include <cmath>
 #include "constants.hpp"
 #include "iospecs.hpp"
 #include "node.hpp"
 
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
 namespace core 
 {
     class lfo_t: public Module
     {
+        public:
+            static const int forms = 5;
         private:
-            static int idc;                                 // ID counter
+            static int idc;
+            float phase = 0.0f;
             float sine();
             float ramp();
             float saw();
             float square();
             float triangle();
 
-            float (lfo_t::*form[5])() = 
+            float (lfo_t::*form[forms])() = 
             { 
                 &lfo_t::sine,
                 &lfo_t::square,
@@ -50,16 +49,14 @@ namespace core
                 &lfo_t::triangle
             };
 
-            float phase = 0.0f;                                 // Current phase
-
         public:
             const int id = 0;
-            void process() override;
+            void process() noexcept override;
             void reset();
             lfo_t();
            ~lfo_t() = default;
     }; 
 
-    inline const char* wforms_lfo[]     = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
+    inline const char* wforms_lfo[] = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
 
 };

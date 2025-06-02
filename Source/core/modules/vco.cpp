@@ -19,8 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-
 #include "vco.hpp"
 #include "constants.hpp"
 #include "utility.hpp"
@@ -81,7 +79,7 @@ namespace core
     }
 
 
-    void vco_t::process()
+    void vco_t::process() noexcept
     {
         float accu = 0.0f;
         

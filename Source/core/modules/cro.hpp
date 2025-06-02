@@ -32,7 +32,7 @@ namespace core
 
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
 
             cro_t();
            ~cro_t() {};

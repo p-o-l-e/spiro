@@ -19,7 +19,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
 #include "node.hpp"
 
@@ -32,7 +31,7 @@ namespace core
 
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
 
             mix_t();
            ~mix_t() {};

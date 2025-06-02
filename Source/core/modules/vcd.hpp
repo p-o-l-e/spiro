@@ -19,9 +19,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
-
 #include "utility.hpp"
 #include "node.hpp"
 #include <memory>
@@ -42,7 +40,7 @@ namespace core {
 
         public:
             const int id;
-            void process() override;
+            void process() noexcept override;
             void reset();
             vcd_t();
            ~vcd_t();

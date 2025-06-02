@@ -27,7 +27,7 @@ namespace core
 
     int vca_t::idc = 0;
 
-    void vca_t::process()
+    void vca_t::process() noexcept
     {
         float v = ccv[ctl::amp]->load() + icv[ctl::amp]->load();
         if      (v < 0.0f) v = 0.0f;

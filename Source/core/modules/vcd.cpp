@@ -51,7 +51,7 @@ namespace core
 
     vcd_t::~vcd_t() {}
 
-    void vcd_t::process()
+    void vcd_t::process() noexcept
     {
         if (departed >= length) departed = 0;
         float time = icv[cvi::time]->load() + ccv[ctl::time]->load();

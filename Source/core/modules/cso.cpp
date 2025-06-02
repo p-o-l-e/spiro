@@ -20,7 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "cso.hpp"
-#include "interface/cso_interface.hpp"
+#include "cso_interface.hpp"
 #include "constants.hpp"
 #include "iospecs.hpp"
 #include <cmath>
@@ -32,7 +32,7 @@ using namespace cso;
 
 int cso_t::idc = 0;
 
-void cso_t::process()
+void cso_t::process() noexcept
 {
     int f = (int)ccv[ctl::form]->load();
 

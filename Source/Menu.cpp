@@ -32,7 +32,7 @@ void csoMenu(Editor* editor, const int& i)
 {
     editor->stopTimer();
     editor->display->page = static_cast<Display::Page>(i);
-    editor->display->CSOMenu(editor->processor.spiro.rack.at(i), i);
+    editor->display->moduleMenu(&editor->processor.spiro, core::map::module::cso, i);
 }
 
 void lfoMenu(Editor* editor, const int& i)
