@@ -1,5 +1,6 @@
 #pragma once
 #include "descriptor.hxx"
+#include <cstdint>
 #include <string>
 
 namespace core 
@@ -11,18 +12,18 @@ namespace core
     **********************************************************************************************************************/
     namespace cso 
     {
-        const int cc { 5 };
-        const int ic { 2 };
-        const int oc { 3 };
-        const int vc { 2 };
+        constexpr int cc { 5 };
+        constexpr int ic { 2 };
+        constexpr int oc { 3 };
+        constexpr int vc { 2 };
 
         struct ctl { enum { tune, warp, amp, form, options    }; };             // Controls
         struct cvi { enum { fm, warp                          }; };             // CV in
         struct cvo { enum { x, y, z                           }; };             // CV out
 
-        const std::string prefix    { "cso"                                             };
+        constexpr std::string prefix    { "cso"                                             };
         
-        const core::Control set_i[vc][ic]
+        constexpr core::Control set_i[vc][ic]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -36,7 +37,7 @@ namespace core
             }
         };
         
-        const core::Control set_o[vc][oc]
+        constexpr core::Control set_o[vc][oc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -52,7 +53,7 @@ namespace core
             }
         };
 
-        const core::Control set_c[vc][cc]
+        constexpr core::Control set_c[vc][cc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -72,9 +73,14 @@ namespace core
             }
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 352.0f };
-        
-        const core::Descriptor descriptor[vc]
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 352.0f };
+
+        constexpr std::string parameterId[] = { "FORM" };
+        constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form) };
+        constexpr Options options { "DYNAMIC SYSTEM", parameterId, parameterPosition, 1 };
+
+    
+        constexpr core::Descriptor descriptor[vc]
         { 
             core::Descriptor 
             {

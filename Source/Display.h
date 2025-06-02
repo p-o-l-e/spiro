@@ -24,7 +24,10 @@
 #include <JuceHeader.h>
 #include <memory>
 #include "canvas.hpp"
+#include "descriptor.hxx"
 #include "node.hpp"
+#include "uid.hpp"
+#include "utility.hpp"
 #include "wavering.hpp"
 #include "primitives.hpp"
 #include "fonts.h"
@@ -33,15 +36,15 @@
 #include "vco.hpp"
 #include "PluginProcessor.h"
 
-#define FU 117
-#define SU 119
-#define SD 120
-#define FD 118
+#define JumpUp      117
+#define StepUp      119
+#define StepDown    120
+#define JumpDown    118
 
-#define FL 121
-#define SL 123
-#define SR 124
-#define FR 122
+#define JumpLeft    121
+#define StepLeft    123
+#define StepRight   124
+#define JumpRight   122
 
 #define OK 47
 #define CX 56
@@ -51,102 +54,80 @@
 
 #define EM 125
 
-class OledLabel : public juce::TextEditor
+struct OledLabel: public juce::TextEditor
 {
-	private:
-
-	public:
-		const float* contrast;
-		core::Canvas<float>* canvas;
-		core::Rectangle<int> area;
-		void paint (juce::Graphics& g) override;
-		OledLabel(const float*);
-	   ~OledLabel() {};
+    const float* contrast;
+    core::Canvas<float>* canvas;
+    core::Rectangle<int> area;
+    void paint (juce::Graphics& g) override;
+    OledLabel(const float*);
+   ~OledLabel() = default;
 };
 
 
-class Display : public juce::ImageComponent
+class Display: public juce::ImageComponent
 {
+    public:
+		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, Menu, About };
+
 	private:
+		OledLabel input_box { &contrast };
 		std::unique_ptr<juce::Image> image;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
-		int lx = 0, ly = 0;
+		std::vector<float> sampleData;                  // Data currently displayed
+		std::vector<float> newlyPopped;                 // Last popped array
+		std::vector<float> notInterpolatedData;         // Raw new data
+		std::vector<float> newData;                     // Interpolated new data
+		juce::Interpolators::Linear interpolator;
+        core::Point2D<int> prior {};
+		double ratio = 1.0f;
+        const float contrast = 0.6f;
+		int load_page = 0;
+		int last_page = 0;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
-        float contrast = 0.6f;
         std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
-		OledLabel input_box { &contrast };
-		int load_page = 0;
-		int last_page = 0;
-		int rows_max = 10;
+
+		bool layerOn = false;
+		const int rows_max = 10;
 		int files = 0;
 
-
 		std::atomic<float>* scope_type = &core::zero;
-		std::atomic<float>* scope_scale = &core::zero;
+		// std::atomic<float>* scope_scale = &core::zero;
 		std::atomic<float>  ts { 0.02f };
 		std::atomic<float>* time_scale = &ts;
 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<float> sampleData; /**< Data currently displayed */
-		//==============================================================================
-		int displayLength;
-		std::vector<float> newlyPopped;         /**< Last popped array */
-		std::vector<float> notInterpolatedData; /** < Raw new data*/
-		std::vector<float> newData;             /** < Interpolated new data*/
-		double ratio = 1.0f;
-		juce::Interpolators::Linear interpolator;
-  		/////////////////////////////////////////////////////////////////////////////////	
-		enum page_t
-		{
-			vco_a,
-			vco_b,
-			vco_c,
-			vco_d,
-			chs_a,
-			chs_b,
-			lfo_a,
-			lfo_b,
-			save,
-			load,
-			scope,
-			envs,
-			menu,
-            about
-		};
-
-		bool layer_on = false;
-		page_t page = scope;
-		int   row = 0;
-		core::Rectangle<int> area;
+		Page page = CroA;
+        const core::uid_t getUID() const;
+		int row = 0;
+		const core::Rectangle<int> area;
+        void switchPage(const Page&);
 		void paint (juce::Graphics& g) override;
-        void Scope();
+        void OFFMenu();
+        void CROMenu();
 		void CSOMenu(core::Module*, int);
-		// void EnvelopeMenu(core::envelope*, int);
 		void VCOMenu(core::Module*, int);
 		void LFOMenu(core::Module*, int);
+    	void moduleMenu(const core::map::module::type&, const int);
 		void MainMenu();
 		void SaveMenu();
-        void About();
-		void vWind(int, int, int, int);
-		void hWind(int, int, int, int);
+		void vSoft(const int, const int, const int, const int);
+		void hSoft(const int, const int, const int, const int);
 		void LoadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
-		Display(std::shared_ptr<core::wavering<core::Point2D<float>>>, int, int, int, int);
+		Display(std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);
 	   ~Display();
-
 	   	class Listener 
         {
             public:
                 virtual ~Listener() = default;
                 virtual void bufferDisconnected() {};
-
         };
-        void addListener(Listener *l)       { listeners.add(l);     }
-        void removeListener(Listener *l)    { listeners.remove(l);  }
+        void addListener(Listener *l) { listeners.add(l); }
+        void removeListener(Listener *l) { listeners.remove(l); }
         juce::ListenerList<Listener> listeners;
 
 };

@@ -3,11 +3,9 @@
 #include "core/grid.hpp"
 #include "core/modules/cso.hpp"
 #include "core/modules/interface/cso_interface.hpp"
-#include "core/modules/interface/descriptor.hxx"
 #include "core/modules/interface/vco_interface.hpp"
 #include "descriptor.hxx"
 #include "node.hpp"
-#include "uid.hpp"
 #include <sys/types.h>
 
 void mainMenu(Editor* editor)
@@ -19,28 +17,28 @@ void mainMenu(Editor* editor)
 void croMenu(Editor* editor, const int& i)
 {
     editor->startTimerHz(core::settings::scope_fps);
-    editor->display->page = Display::page_t::scope;
-    editor->display->layer_on = false;
+    editor->display->page = Display::Page::CroA;
+    editor->display->layerOn = false;
 };
 
 void vcoMenu(Editor * editor, const int& i)
 {
    editor->stopTimer();
-   editor->display->page = static_cast<Display::page_t>(i);
+   editor->display->page = static_cast<Display::Page>(i);
    editor->display->VCOMenu(editor->processor.spiro.rack.at(i), i);
 }
 
 void csoMenu(Editor* editor, const int& i)
 {
     editor->stopTimer();
-    editor->display->page = static_cast<Display::page_t>(i);
+    editor->display->page = static_cast<Display::Page>(i);
     editor->display->CSOMenu(editor->processor.spiro.rack.at(i), i);
 }
 
 void lfoMenu(Editor* editor, const int& i)
 {
     editor->stopTimer();
-    editor->display->page = static_cast<Display::page_t>(i);
+    editor->display->page = static_cast<Display::Page>(i);
     editor->display->LFOMenu(editor->processor.spiro.rack.at(i), i);
 }
 

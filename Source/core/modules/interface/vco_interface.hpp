@@ -11,17 +11,17 @@ namespace core
     **********************************************************************************************************************/
     namespace vco 
     {
-        const int cc { 10 };
-        const int ic {  5 };
-        const int oc {  1 };
+        constexpr int cc { 10 };
+        constexpr int ic {  5 };
+        constexpr int oc {  1 };
 
         struct ctl { enum { octave, detune, pll, pwm, fm, am, amp, form, freerun, options }; };              // Controls
         struct cvi { enum {         detune, pll, pwm, fm, am                              }; };              // CV in
         struct cvo { enum {         main                                                  }; };              // CV out
 
-        const std::string prefix    { "vco"                                                 };
+        constexpr std::string prefix    { "vco"                                                 };
         
-        const core::Control set_i[ic]
+        constexpr core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input    , {  50.00f, 238.00f,  16.00f,  16.00f }, "detune" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -31,13 +31,13 @@ namespace core
             { Control::type::input    , {  31.00f, 268.00f,  16.00f,  16.00f }, "am"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        const core::Control set_o[oc]
+        constexpr core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::output   , { 107.00f, 268.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        const core::Control set_c[cc]
+        constexpr core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -52,9 +52,9 @@ namespace core
             { Control::type::button   , { 136.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio   },
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f, 152.0f, 292.0f };
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f, 152.0f, 292.0f };
         
-        const core::Descriptor descriptor  
+        constexpr core::Descriptor descriptor  
         { 
             core::map::module::type::vco, 
             { &ic, &oc, &cc },

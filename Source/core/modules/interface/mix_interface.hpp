@@ -11,17 +11,17 @@ namespace core
     **********************************************************************************************************************/
     namespace mix 
     {
-        const int cc { 3 };
-        const int ic { 5 };
-        const int oc { 2 };
+        constexpr int cc { 3 };
+        constexpr int ic { 5 };
+        constexpr int oc { 2 };
 
         struct ctl { enum { alpha, theta, amp,                }; };              // Controls
         struct cvi { enum { l, c, r, alpha, theta             }; };             // CV in
         struct cvo { enum { l, r                              }; };             // CV out
 
-        const std::string prefix    { "mix"                                             };
+        constexpr std::string prefix    { "mix"                                             };
         
-        const core::Control set_i[ic]
+        constexpr core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input ,    {  32.00f,  13.00f,  16.00f,  16.00f }, "l"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -31,14 +31,14 @@ namespace core
             { Control::type::input ,    {   2.00f,  58.00f,  16.00f,  16.00f }, "theta"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        const core::Control set_o[oc]
+        constexpr core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::pin      , {    0.0f,    0.0f,    0.0f,    0.0f }, "l"      , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
             { Control::type::pin      , {    0.0f,    0.0f,    0.0f,    0.0f }, "r"      , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        const core::Control set_c[cc]
+        constexpr core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::slider   , {  67.00f,  17.00f,  32.00f,  32.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, map::flag::encoder  },
@@ -46,9 +46,9 @@ namespace core
             { Control::type::slider   , {  57.00f, 180.00f,  48.00f,  48.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::A  },
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f, 119.0f, 326.0f };
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f, 119.0f, 326.0f };
         
-        const core::Descriptor descriptor  
+        constexpr core::Descriptor descriptor  
         { 
             core::map::module::type::mix, 
             { &ic, &oc, &cc },

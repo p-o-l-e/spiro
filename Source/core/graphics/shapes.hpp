@@ -127,7 +127,7 @@ constexpr void draw_text_label(core::Canvas<float>* canvas, const char* font, co
     }
 }
 
-constexpr float capsule_sdf(float px, float py, float ax, float ay, float bx, float by, float r) 
+inline float capsule_sdf(float px, float py, float ax, float ay, float bx, float by, float r) 
 {
     float pax = px - ax, pay = py - ay, bax = bx - ax, bay = by - ay;
     float h = fmaxf(fminf((pax * bax + pay * bay) / (bax * bax + bay * bay), 1.0f), 0.0f);
@@ -135,28 +135,30 @@ constexpr float capsule_sdf(float px, float py, float ax, float ay, float bx, fl
     return sqrtf(dx * dx + dy * dy) - r;
 }
 
-constexpr void alphablend(core::Canvas<float>* canvas, int x, int y, float alpha) 
+inline void alphablend(core::Canvas<float>* canvas, int x, int y, float alpha) 
 {   
     canvas->set(x, y, canvas->get(x, y) * (1.0f - alpha) + alpha);
 }
 
 constexpr void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
 {
-    int xo = (int)floorf(fminf(ax, bx) - radius);
-    int xe = (int) ceilf(fmaxf(ax, bx) + radius);
-    int yo = (int)floorf(fminf(ay, by) - radius);
-    int ye = (int) ceilf(fmaxf(ay, by) + radius);
+    int xo = (int)floor(std::min(ax, bx) - radius);
+    int xe = (int) ceil(std::max(ax, bx) + radius);
+    int yo = (int)floor(std::min(ay, by) - radius);
+    int ye = (int) ceil(std::max(ay, by) + radius);
     for (int y = yo; y <= ye; y++)
         for (int x = xo; x <= xe; x++)
-            alphablend(canvas, x, y, fmaxf(fminf(0.5f - capsule_sdf(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
+            alphablend(canvas, x, y, std::max(std::min(0.5f - capsule_sdf(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
 }
 
 
-constexpr void drawLine(Canvas<float>& canvas, int xo, int yo, int xe, int ye, const float alpha) 
+
+
+inline void drawLine(Canvas<float>* canvas, float xo, float yo, float xe, float ye, float alpha) 
 {
-    int dx = xe - xo;
-    int dy = ye - yo;
-    int steep = std::abs(dy) > std::abs(dx);
+    float dx = xe - xo;
+    float dy = ye - yo;
+    bool steep = std::fabs(dy) > std::fabs(dx);
 
     if (steep) 
     {
@@ -171,23 +173,23 @@ constexpr void drawLine(Canvas<float>& canvas, int xo, int yo, int xe, int ye, c
         std::swap(yo, ye);
     }
 
-    float gradient = (dx == 0) ? 1.0f : (static_cast<float>(dy) / dx);
+    float gradient = (dx == 0) ? 0.0f : dy / dx;
     float y = yo;
 
-    for (int x = xo; x <= xe; ++x) 
+    for (int x = static_cast<int>(xo); x <= static_cast<int>(xe); ++x)  // Using int for loop stability
     {
-        int yf = static_cast<int>(y);
+        int yf = static_cast<int>(std::floor(y)); 
         float frac = y - yf;
 
         if (steep) 
         {
-            canvas.set(yf, x, canvas.get(yf, x) * (1.0f - frac * alpha));
-            canvas.set(yf + 1, x, canvas.get(yf + 1, x) * (frac * alpha));
+            canvas->set(yf, x, canvas->get(yf, x) * (1.0f - frac * alpha));
+            canvas->set(yf + 1, x, canvas->get(yf + 1, x) * (frac * alpha));
         } 
         else 
         {
-            canvas.set(x, yf, canvas.get(x, yf) * (1.0f - frac * alpha));
-            canvas.set(x, yf + 1, canvas.get(x, yf + 1) * (frac * alpha));
+            canvas->set(x, yf, canvas->get(x, yf) * (1.0f - frac * alpha));
+            canvas->set(x, yf + 1, canvas->get(x, yf + 1) * (frac * alpha));
         }
 
         y += gradient;

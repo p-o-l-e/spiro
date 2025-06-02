@@ -80,4 +80,12 @@ namespace core
         const Control* const set[map::cv::count];
         const Rectangle<float>* const constrain; 
     };
+
+    struct Options
+    {
+        const std::string description;
+        const std::string* parameterId;
+        const uint8_t* parameterPosition;
+        const int parameters;
+    };
 }

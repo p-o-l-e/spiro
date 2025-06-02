@@ -24,10 +24,6 @@
 #include <iostream>
 #include <string>
 #include "grid.hpp"
-#include "cro_interface.hpp"
-#include "descriptor.hxx"
-#include "primitives.hpp"
-#include "uid.hpp"
 
 namespace core
 {
@@ -207,41 +203,6 @@ namespace core
             ++r[d[i].descriptor->type];
         }
         return r;
-    }
-
-    namespace settings 
-    {
-        const Sector sector_map[]
-        {
-            Sector(&vca::descriptor[0], Point2D<float>{ 228.0f, 292.0f }),
-            Sector(&vca::descriptor[1], Point2D<float>{ 228.0f, 292.0f }),
-            Sector(&snh::descriptor[0], Point2D<float>{ 532.0f, 292.0f }),
-            Sector(&snh::descriptor[1], Point2D<float>{ 532.0f, 292.0f }),
-            Sector(&sum::descriptor[0], Point2D<float>{  76.0f, 292.0f }),
-            Sector(&sum::descriptor[0], Point2D<float>{ 152.0f, 292.0f }),   
-            Sector(&pdt::descriptor   , Point2D<float>{  76.0f, 351.0f }),
-            Sector(&vco::descriptor   , Point2D<float>{   0.0f,   0.0f }),
-            Sector(&vco::descriptor   , Point2D<float>{ 152.0f,   0.0f }),
-            Sector(&vco::descriptor   , Point2D<float>{ 304.0f,   0.0f }),
-            Sector(&vco::descriptor   , Point2D<float>{ 456.0f,   0.0f }),
-            Sector(&cso::descriptor[0], Point2D<float>{ 608.0f,   0.0f }),
-            Sector(&cso::descriptor[1], Point2D<float>{ 684.0f,   0.0f }),    
-            Sector(&vcd::descriptor   , Point2D<float>{ 304.0f, 292.0f }),
-            Sector(&vcf::descriptor   , Point2D<float>{ 380.0f, 292.0f }),
-            Sector(&vcf::descriptor   , Point2D<float>{ 456.0f, 292.0f }),
-            Sector(&lfo::descriptor   , Point2D<float>{ 608.0f, 352.0f }),
-            Sector(&lfo::descriptor   , Point2D<float>{ 684.0f, 352.0f }),
-            Sector(&rtr::descriptor   , Point2D<float>{ 760.0f, 270.0f }),
-            Sector(&mix::descriptor   , Point2D<float>{ 888.0f, 270.0f }),
-            Sector(&env::descriptor[0], Point2D<float>{   0.0f, 381.0f }),
-            Sector(&env::descriptor[1], Point2D<float>{   0.0f, 381.0f }),
-            Sector(&env::descriptor[2], Point2D<float>{   0.0f, 381.0f }),
-            Sector(&env::descriptor[3], Point2D<float>{   0.0f, 381.0f }),
-            Sector(&com::descriptor   , Point2D<float>{   0.0f, 292.0f }),
-            Sector(&cro::descriptor   , Point2D<float>{ 760.0f,   0.0f }),
-        };
-
-        const int sectors = std::size(sector_map);
     }
 
     const Grid grid(settings::sector_map, settings::sectors);   

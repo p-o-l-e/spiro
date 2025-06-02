@@ -22,6 +22,7 @@
 ******************************************************************************************************************************/
 #pragma once
 
+#include "modules/interface/descriptor.hxx"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -49,9 +50,10 @@ namespace core
     struct Sector
     {
         const Descriptor* const descriptor;
+        const Options* const options;
         const Point2D<float> offset;
-        constexpr Sector(const Descriptor* d, const Point2D<float>& f): 
-            descriptor(d), offset(f) {};
+        constexpr Sector(const Descriptor* d, const Options* o, const Point2D<float>& f): 
+            descriptor(d), options(o), offset(f) {};
        ~Sector() = default;
     };
     
@@ -93,8 +95,37 @@ namespace core
 
     namespace settings 
     {
-        extern const Sector sector_map[];
-        extern const int sectors;
+        constexpr Sector sector_map[]
+        {
+            Sector(&vca::descriptor[0], nullptr      , Point2D<float>{ 228.0f, 292.0f }),
+            Sector(&vca::descriptor[1], nullptr      , Point2D<float>{ 228.0f, 292.0f }),
+            Sector(&snh::descriptor[0], nullptr      , Point2D<float>{ 532.0f, 292.0f }),
+            Sector(&snh::descriptor[1], nullptr      , Point2D<float>{ 532.0f, 292.0f }),
+            Sector(&sum::descriptor[0], nullptr      , Point2D<float>{  76.0f, 292.0f }),
+            Sector(&sum::descriptor[0], nullptr      , Point2D<float>{ 152.0f, 292.0f }),   
+            Sector(&pdt::descriptor   , nullptr      , Point2D<float>{  76.0f, 351.0f }),
+            Sector(&vco::descriptor   , nullptr      , Point2D<float>{   0.0f,   0.0f }),
+            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 152.0f,   0.0f }),
+            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 304.0f,   0.0f }),
+            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 456.0f,   0.0f }),
+            Sector(&cso::descriptor[0], &cso::options, Point2D<float>{ 608.0f,   0.0f }),
+            Sector(&cso::descriptor[1], &cso::options, Point2D<float>{ 684.0f,   0.0f }),    
+            Sector(&vcd::descriptor   , nullptr      , Point2D<float>{ 304.0f, 292.0f }),
+            Sector(&vcf::descriptor   , nullptr      , Point2D<float>{ 380.0f, 292.0f }),
+            Sector(&vcf::descriptor   , nullptr      , Point2D<float>{ 456.0f, 292.0f }),
+            Sector(&lfo::descriptor   , nullptr      , Point2D<float>{ 608.0f, 352.0f }),
+            Sector(&lfo::descriptor   , nullptr      , Point2D<float>{ 684.0f, 352.0f }),
+            Sector(&rtr::descriptor   , nullptr      , Point2D<float>{ 760.0f, 270.0f }),
+            Sector(&mix::descriptor   , nullptr      , Point2D<float>{ 888.0f, 270.0f }),
+            Sector(&env::descriptor[0], nullptr      , Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[1], nullptr      , Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[2], nullptr      , Point2D<float>{   0.0f, 381.0f }),
+            Sector(&env::descriptor[3], nullptr      , Point2D<float>{   0.0f, 381.0f }),
+            Sector(&com::descriptor   , nullptr      , Point2D<float>{   0.0f, 292.0f }),
+            Sector(&cro::descriptor   , nullptr      , Point2D<float>{ 760.0f,   0.0f }),
+        };
+
+        constexpr int sectors = std::size(sector_map);
     }
 
 }

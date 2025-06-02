@@ -19,15 +19,60 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "Display.h"
+#include "descriptor.hxx"
 #include "node.hpp"
+#include "primitives.hpp"
 #include "vco.hpp"
+#include <cstdint>
 #include <memory>
+#include <sys/types.h>
+
+const core::uid_t Display::getUID() const
+{
+    uint8_t mt;
+    switch(page) {
+        case VcoA: mt = static_cast<uint8_t>(core::map::module::vco); break;
+        case VcoB: mt = static_cast<uint8_t>(core::map::module::vco); break;
+        case VcoC: mt = static_cast<uint8_t>(core::map::module::vco); break;
+        case VcoD: mt = static_cast<uint8_t>(core::map::module::vco); break;
+        case CsoA: mt = static_cast<uint8_t>(core::map::module::cso); break;
+        case CsoB: mt = static_cast<uint8_t>(core::map::module::cso); break;
+    }
+}
+
+void moduleMenu(const core::map::module::type&, const int)
+{
+	// input_box.setVisible(false);
+	// layer.get()->clr(0.0f);
+	// core::draw_text_label(layer.get(), gtFont, core::cso::option.description, 30, 10, contrast);
+	// core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+	//
+	// core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
+	// // core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
+	//
+	// vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	// hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
+	//
+	// layerOn = true;
+	// repaint();
+
+}
+
+void Display::switchPage(const Page& p)
+{
+    // switch(p)
+    // {
+    //     case CroA: CROMenu(); break;
+    //     case CsoA: CSOMenu(core::Module *, int); break;
+    //     case A: LFOMenu(core::Module *, int); break;
+    //
+    // }
+}
 
 void Display::paint(juce::Graphics& g)
 {
-    if(page == scope) Scope();
+    if(page == CroA) CROMenu();
 
 	for(int y = 0; y < area.h; y++)
 	{
@@ -42,33 +87,60 @@ void Display::paint(juce::Graphics& g)
 	g.drawImageAt(*image, 0, 0, false);
 }
 
-void Display::Scope()
+void Display::CROMenu()
 {
-    // std::cout<<"Display::Scope()\n";
     if(auto data = _data.lock())
     {
+        int precision = 4;
         layer.get()->clr(0.0f);
-        float cy = area.h /2;
-        float cx = area.w /2;
-        // auto gain = area.h * scope_scale->load();
-        auto gain = 30.0f;
+        float center_y = area.h /2;
+        float center_x = area.w /2;
+        auto gain = 60.0f;
+
+        // if(scope_type->load() < 0.5f)
+        // {
+        //     // auto raw = data->get();
+        //     // prior.x = raw.x * gain + center_x;
+        //     // prior.y = raw.y * gain + center_y;
+        //     float x = 0, y = 0;
+        //
+        //     for(unsigned i = 1; i < data->segments/2; i++)
+        //     {
+        //         auto raw = data->get();
+        //         x += raw.x;
+        //         y += raw.y;
+        //         if(i % precision == 0 || i == data->segments)
+        //         {
+        //             x /= (float)precision;
+        //             y /= (float)precision;
+        //             x = x * gain + center_x;
+        //             y = y * gain + center_y;
+        //             lineSDFAABB(canvas.get(), prior.x, prior.y, x, y, 0.8f / (i + 1), 0.01f / (i + 1));
+        //             // drawLine(canvas.get(), prior.x, prior.y, x, y,  0.5f);
+        //
+        //             // canvas.get()->set(x, y, 1.0f);
+        //             prior.x = x;
+        //             prior.y = y;
+        //             x = 0.0f;
+        //             y = 0.0f;
+        //
+        //         }
+        //     }
+        // }
         if(scope_type->load() < 0.5f)
         {
-            
-            auto lp = data->get();
-            lx = lp.x * gain + cx;
-            ly = lp.y * gain + cy;
-            // std::cout<<"Scope type A | x: "<<lp.x<<"\t| y: "<<lp.y<<"\n";
+            auto raw = data->get();
+            prior.x = raw.x * gain + center_x;
+            prior.y = raw.y * gain + center_y;
 
-            for(unsigned i = 0; i < data->segments; i++)
+            for(unsigned i = 0; i < data->segments - 1; i++)
             {
-                core::Point2D<float> f = data->get();
-                float x = f.x * gain * 2.0f + cx;
-                float y = f.y * gain * 2.0f + cy;
-                lineSDFAABB(canvas.get(), lx, ly, x, y, 0.8f/(i+1), 0.01f/(i+1)) ;
-                canvas.get()->set(x, y, 1.0f);
-                lx = x;
-                ly = y;
+                auto raw = data->get();
+                float x = raw.x * gain + center_x;
+                float y = raw.y * gain + center_y;
+                lineSDFAABB(canvas.get(), prior.x, prior.y, x, y, 0.8f / (i + 1), 0.01f / (i + 1)) ;
+                prior.x = x;
+                prior.y = y;
             }
         }
         else if(scope_type->load() > 0.5f)
@@ -79,10 +151,8 @@ void Display::Scope()
                 auto f = data->get();
                 notInterpolatedData.at(i) = f.x + f.y;
             }
-            // resample data
-            interpolator.process(ratio, notInterpolatedData.data(), newlyPopped.data(), queueSize);
-            // shift & add new data
-            std::copy(sampleData.data() + queueSize, sampleData.data() + sampleData.size(), newData.begin());
+            interpolator.process(ratio, notInterpolatedData.data(), newlyPopped.data(), queueSize);             // resample data
+            std::copy(sampleData.data() + queueSize, sampleData.data() + sampleData.size(), newData.begin());   // shift & add new data
             int n = sampleData.size() - queueSize;
             for(int i = 0; i < queueSize; ++i)
             {
@@ -90,43 +160,39 @@ void Display::Scope()
                 newData.at(n) = newlyPopped.at(i);
                 ++n;
             }
-            // set data to plot equal to shifted data
-            sampleData = newData;
+            sampleData = newData;                                                                               // set data to plot equal to shifted data
 
             auto data_ = sampleData.data();
             auto numSamples = sampleData.size();
 
-            // for each point map and draw line
-            for (size_t i = 1; i < numSamples; ++i)
+            for(size_t i = 1; i < numSamples; ++i) // for each point map and draw line
             {
                 lineSDFAABB
                 (
                     canvas.get(), 
                     juce::jmap(float(i - 1), float(0), float(numSamples - 1), 0.0f, float(area.w)),
-                    cy - gain * data_[i - 1],
+                    center_y - gain * data_[i - 1],
                     juce::jmap(float(i), float(0), float(numSamples - 1), 0.0f, float(area.w)),
-                    cy - gain * data_[i],
+                    center_y - gain * data_[i],
                     0.8f,
                     0.01f
                 );
             }
         }
         core::boxBlur(canvas.get(), 1);
-        layer_on = true;
-        hWind(SL, SR, MI, PL);
+        layerOn = true;
+        hSoft(StepLeft, StepRight, MI, PL);
     }
     else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
-    // std::cout<<"eof Display::Scope()\n";
-
 }
 
 
 void Display::SaveMenu()
 {
-	page = page_t::save;
+	page = Page::Save;
 
 	input_box.setVisible(true);
-	layer_on = true;
+	layerOn = true;
 	repaint();
 }
 
@@ -164,15 +230,15 @@ void Display::LoadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
 		core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), 46, 30 + 10 * i, contrast);
 	}
 
-	vWind(FU, SU, SD, FD);
-	hWind(CX, OK, SL, SR);
-	layer_on = true;
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(CX, OK, StepLeft, StepRight);
+	layerOn = true;
 	repaint();
 }
 
 void Display::MainMenu()
 {
-	page = page_t::menu;
+	page = Page::Menu;
 
 	if     (row > 2) row = 2;
 	else if(row < 0) row = 0;
@@ -186,31 +252,35 @@ void Display::MainMenu()
 
 	core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
 
-	vWind(FU, SU, SD, FD);
-	hWind(CX, OK, EM, EM);
-	layer_on = true;
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(CX, OK, EM, EM);
+	layerOn = true;
 	repaint();
 }
 
-void Display::vWind(int a, int b, int c, int d)
+void Display::vSoft(const int a, const int b, const int c, const int d)
 {
-	core::draw_glyph(layer.get(), gtFont, a, 6,  39, contrast);
-	core::draw_glyph(layer.get(), gtFont, b, 6,  69, contrast);
-	core::draw_glyph(layer.get(), gtFont, c, 6,  99, contrast);
-	core::draw_glyph(layer.get(), gtFont, d, 6, 129, contrast);
+    auto step = area.h / 30;
+    auto offset = area.w / 30;
+	core::draw_glyph(layer.get(), gtFont, a, offset, step *  8, contrast);
+	core::draw_glyph(layer.get(), gtFont, b, offset, step * 14, contrast);
+	core::draw_glyph(layer.get(), gtFont, c, offset, step * 20, contrast);
+	core::draw_glyph(layer.get(), gtFont, d, offset, step * 26, contrast);
 }
 
-void Display::hWind(int a, int b, int c, int d)
+void Display::hSoft(const int a, const int b, const int c, const int d)
 {
-	core::draw_glyph(layer.get(), gtFont, a,  49, 155, contrast);
-	core::draw_glyph(layer.get(), gtFont, b,  79, 155, contrast);
-	core::draw_glyph(layer.get(), gtFont, c, 109, 155, contrast);
-	core::draw_glyph(layer.get(), gtFont, d, 139, 155, contrast);
+    auto step = area.w / 30;
+    auto offset = area.h - area.h / 15;
+	core::draw_glyph(layer.get(), gtFont, a, step *  8, offset, contrast);
+	core::draw_glyph(layer.get(), gtFont, b, step * 13, offset, contrast);
+	core::draw_glyph(layer.get(), gtFont, c, step * 18, offset, contrast);
+	core::draw_glyph(layer.get(), gtFont, d, step * 23, offset, contrast);
 }
 
 void Display::CSOMenu(core::Module* chs, int id)
 {
-	page = id == 0 ? page_t::chs_a : page_t::chs_b;
+	page = id == 0 ? Page::CsoA : Page::CsoB;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
 	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
@@ -219,16 +289,16 @@ void Display::CSOMenu(core::Module* chs, int id)
 	core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
 	// core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
 
-	vWind(FU, SU, SD, FD);
-	hWind(FL, SL, SR, FR);
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
 
-	layer_on = true;
+	layerOn = true;
 	repaint();
 }
 
 void Display::LFOMenu(core::Module* lfo, int id)
 {
-	page = id == 0 ? page_t::lfo_a : page_t::lfo_b;
+	page = id == 0 ? Page::LfoA : Page::LfoB;
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
 	core::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
@@ -237,14 +307,14 @@ void Display::LFOMenu(core::Module* lfo, int id)
 	core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
 	// core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
 
-	vWind(FU, SU, SD, FD);
-	hWind(FL, SL, SR, FR);
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
 
-	layer_on = true;
+	layerOn = true;
 	repaint();
 }
 
-void Display::About()
+void Display::OFFMenu()
 {
 	input_box.setVisible(false);
 	layer.get()->clr(0.0f);
@@ -254,12 +324,10 @@ void Display::About()
 	core::draw_text_label(layer.get(), gtFont, "POLE ", 0, 40, contrast);
 	core::draw_text_label(layer.get(), gtFont, "MIT License ", 0, 50, contrast);
 
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
 
-
-	vWind(FU, SU, SD, FD);
-	hWind(FL, SL, SR, FR);
-
-	layer_on = true;
+	layerOn = true;
 	repaint();
 }
 
@@ -276,19 +344,19 @@ void Display::VCOMenu(core::Module* o, int id)
 	{
 		case 0:
 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
-			page = vco_a;
+			page = VcoA;
 			break;
 		case 1:
 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
-			page = vco_b;
+			page = VcoB;
 			break;
 		case 2:
 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
-			page = vco_c;
+			page = VcoC;
 			break;
 		case 3:
 			core::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
-			page = vco_d;
+			page = VcoD;
 			break;
 		default: 
 			break;
@@ -300,16 +368,16 @@ void Display::VCOMenu(core::Module* o, int id)
 
 	core::draw_text_label(layer.get(), gtFont, "MODE  : ", 50, 40, contrast);
 
-    // if(o->ccv[static_cast<int>(core::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "FREERUN", 90, 40, contrast);
+    // if(o->ccv[static_cast<int>(core::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "JumpRightEERUN", 90, 40, contrast);
 	// else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
 
 	core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
 	// juce::String oct ( *o->ccv[static_cast<int>(core::vco::ctl::octave)] * 10.0f);
 	// core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
 
-	vWind(FU, SU, SD, FD);
-	hWind(FL, SL, SR, FR);
-	layer_on = true;
+	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+	hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
+	layerOn = true;
 	repaint();
 }
 
@@ -335,10 +403,10 @@ void Display::VCOMenu(core::Module* o, int id)
 // 	juce::String scale = juce::String::formatted("%d%%", sc);
 // 	core::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
 //
-// 	vWind(FU, SU, SD, FD);
-// 	hWind(FL, SL, SR, FR);
+// 	vSoft(JumpUp, StepUp, StepDown, JumpDown);
+// 	hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
 //
-// 	layer_on = true;
+// 	layerOn = true;
 // 	repaint();
 // }
 
@@ -349,12 +417,8 @@ void Display::resized()
 	reset();
 }
 
-Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, int x, int y, int w, int h): _data(buf)
+Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): _data(buf), area(area)
 {
-	area.x = x;
-	area.y = y;
-	area.w = w;
-	area.h = h;
 	image = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
 	canvas = std::make_unique<core::Canvas<float>>(area.w, area.h);
 	canvas.get()->clr(0.0f);
@@ -406,7 +470,7 @@ void OledLabel::paint(juce::Graphics& g)
 void Display::reset()
 {
     // set attributes
-    displayLength = (int)(time_scale->load() * core::settings::sample_rate);
+    int displayLength = (int)(time_scale->load() * core::settings::sample_rate);
     ratio = (double)displayLength / (double)area.w;
     displayLength /= ratio;
     // resize buffers

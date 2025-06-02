@@ -11,22 +11,22 @@ namespace core
     **********************************************************************************************************************/
     namespace env 
     {
-        const int cc { 16 };
-        const int ic {  0 };
-        const int oc {  1 };
-        const int vc {  4 }; // Variants
+        constexpr int cc { 16 };
+        constexpr int ic {  0 };
+        constexpr int oc {  1 };
+        constexpr int vc {  4 }; // Variants
 
         struct ctl { enum { at, ht, dt, st, rt, aa, ha, da, sa, ra, af, hf, df, sf, rf, scale }; };              // Controls
         struct cvi { enum {                                                                   }; };              // CV in
         struct cvo { enum { a                                                                 }; };              // CV out
 
-        const std::string prefix    { "env" };
+        constexpr std::string prefix    { "env" };
         
-        const core::Control set_i[ic]
+        constexpr core::Control set_i[ic]
         {
         };
         
-        const core::Control set_o[vc][oc]
+        constexpr core::Control set_o[vc][oc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -43,7 +43,7 @@ namespace core
             }
         };
 
-        const core::Control set_c[cc]
+        constexpr core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "at"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
@@ -67,9 +67,9 @@ namespace core
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.00f, 8.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x00000000  },
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f, 228.0f, 215.0f };
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f, 228.0f, 215.0f };
         
-        const core::Descriptor descriptor[vc] 
+        constexpr core::Descriptor descriptor[vc] 
         { 
             {
                 core::map::module::type::env, 

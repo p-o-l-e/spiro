@@ -29,8 +29,8 @@ namespace core {
     {
         private:
             T* data;
-            int  i = 0;
-            int  o = 0;
+            std::atomic<int>  i = 0;
+            std::atomic<int>  o = 0;
 
         public:
             const int segments;

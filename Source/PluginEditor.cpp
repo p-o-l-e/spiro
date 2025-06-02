@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
 #include "cro_interface.hpp"
+#include "cso_interface.hpp"
 #include "descriptor.hxx"
 #include "env_interface.hpp"
 #include "grid.hpp"
@@ -36,6 +37,7 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include <sys/types.h>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor (&o), processor (o), valueTreeState (tree)
 {
@@ -65,7 +67,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     bg.setPaintingIsUnclipped(true);
     addAndMakeVisible(bg);
 
-    display = std::make_unique<Display>(processor.buffer, core::constraints::oled.x, core::constraints::oled.y, core::constraints::oled.w, core::constraints::oled.h);
+    display = std::make_unique<Display>(processor.buffer, core::constraints::oled);
    
    /***************************************************************************************************************************
     * 
@@ -198,7 +200,48 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             lfoMenu(this, i);
         };
     }
-
+    
+   /***************************************************************************************************************************
+    * 
+    *   λ - Soft A (Cancel or Rewind)
+    * 
+    **************************************************************************************************************************/
+    // button.at(interface::button_list::soft_a).get()->onClick = [this]
+    // {
+    //     float v;
+    //     switch(display->page)
+    //     {
+    //         case Display::Page::scope: scopeOptions(0, false); break;
+    //         case Display::Page::CsoA: setOption(uid_t { core::map::module::cso, 0, core::map::cv::c, core::cso::ctl::form }, 1.0f, 4.0f }; break;
+    //         case Display::Page::CsoB: setOption; break;
+    //         case Display::Page::LfoA: lfoOptions; break;
+    //         case Display::Page::LfoB: lfoOptions; break;
+    //         case Display::Page::VcoA: vcoOptions; break;
+    //         case Display::Page::VcoB: vcoOptions; break;
+    //         case Display::Page::VcoC: vcoOptions; break;
+    //         case Display::Page::VcoD: vcoOptions; break;
+    //         case Display::Page::load:          
+    //             stopTimer();
+    //             display->MainMenu();
+    //             break;
+    //
+    //         case Display::page_t::save:          
+    //             stopTimer();
+    //             display->MainMenu();
+    //             break;
+    //
+    //         case Display::page_t::menu:          
+    //             startTimerHz(core::settings::scope_fps);
+    //             display->page = Display::page_t::scope;
+    //             display->layer_on = false;
+    //             button.at(interface::button_list::scope).get()->setToggleState(true, juce::NotificationType::dontSendNotification);
+    //             break;
+    //
+    //         default:
+    //             break;
+    //     }
+    //     display->repaint();
+    // };
 
     setResizable(false, false);
     setSize (core::constraints::W, core::constraints::H);

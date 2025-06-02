@@ -11,18 +11,18 @@ namespace core
     **********************************************************************************************************************/
     namespace snh 
     {
-        const int cc { 1 };
-        const int ic { 3 };
-        const int oc { 1 };
-        const int vc { 2 }; // Variants
+        constexpr int cc { 1 };
+        constexpr int ic { 3 };
+        constexpr int oc { 1 };
+        constexpr int vc { 2 }; // Variants
 
         struct ctl { enum { time                                      }; };              // Controls
         struct cvi { enum { time, a, b                                }; };              // CV in
         struct cvo { enum { a                                         }; };              // CV out
 
-        const std::string prefix    { "snh"                              };
+        constexpr std::string prefix    { "snh"                              };
         
-        const core::Control set_i[vc][ic]
+        constexpr core::Control set_i[vc][ic]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -38,7 +38,7 @@ namespace core
             }
         };
         
-        const core::Control set_o[vc][oc]
+        constexpr core::Control set_o[vc][oc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -50,7 +50,7 @@ namespace core
             }
         };
 
-        const core::Control set_c[vc][cc]
+        constexpr core::Control set_c[vc][cc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -62,9 +62,9 @@ namespace core
             }
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 304.0f };
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f,  76.0f, 304.0f };
         
-        const core::Descriptor descriptor[vc]
+        constexpr core::Descriptor descriptor[vc]
         {
             {
                 core::map::module::type::snh, 

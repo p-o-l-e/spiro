@@ -11,18 +11,18 @@ namespace core
     **********************************************************************************************************************/
     namespace sum 
     {
-        const int cc { 0 };
-        const int ic { 2 };
-        const int oc { 2 };
-        const int vc { 1 };
+        constexpr int cc { 0 };
+        constexpr int ic { 2 };
+        constexpr int oc { 2 };
+        constexpr int vc { 1 };
 
         struct ctl { enum {                                           }; };              // Controls
         struct cvi { enum { a, b                                      }; };              // CV in
         struct cvo { enum { a, b                                      }; };              // CV out
 
-        const std::string prefix    { "sum"                              };
+        constexpr std::string prefix    { "sum"                              };
         
-        const core::Control set_i[vc][ic]
+        constexpr core::Control set_i[vc][ic]
         {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             {
@@ -31,7 +31,7 @@ namespace core
             }  
         };  
           
-        const core::Control set_o[vc][oc]
+        constexpr core::Control set_o[vc][oc]
         {  
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             {
@@ -40,14 +40,14 @@ namespace core
             }
         };
 
-        const core::Control set_c[vc][cc]
+        constexpr core::Control set_c[vc][cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
         };
         
-        const Rectangle<float> constrain { 0.0f, 0.0f,  76.0f,  59.0f };
+        constexpr Rectangle<float> constrain { 0.0f, 0.0f,  76.0f,  59.0f };
         
-        const core::Descriptor descriptor[vc]
+        constexpr core::Descriptor descriptor[vc]
         { 
             core::Descriptor {
                 core::map::module::type::sum, 

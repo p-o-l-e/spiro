@@ -389,8 +389,9 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
     core::settings::buffer_size = samplesPerBlock;
     core::settings::sample_rate = sampleRate;
     core::settings::reset_time_multiplier();
-
-    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(sampleRate/core::settings::scope_fps);
+    std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
+    std::cout<<"Sample rate       : "<<sampleRate<<"\n";
+    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(samplesPerBlock * core::settings::scope_fps);
 
     reloadParameters();
     suspendProcessing(false);
@@ -428,7 +429,6 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 	handleMIDI(data, midiMessages);
 	data.clear();
 	int samples = data.getNumSamples();
-
 	float* DataL = data.getWritePointer(0);
 	float* DataR = data.getWritePointer(1);
 
@@ -437,7 +437,6 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 	    auto L = spiro.out[core::Spiro::stereo::l].load();
 	    auto R = spiro.out[core::Spiro::stereo::r].load();
 	    spiro.process();
-	       // std::cout<<"ProcessBlock(): L: "<<L<<" R: "<<R<<"\n";
 		buffer.get()->set(core::Point2D<float>{ L , R });
 		DataL[i] = L * 0.2f;
 		DataR[i] = R * 0.2f;

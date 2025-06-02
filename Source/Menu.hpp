@@ -1,4 +1,7 @@
 #pragma once
+#include "descriptor.hxx"
+#include "uid.hpp"
+
 class Editor;
 
 void mainMenu(Editor*);
@@ -8,3 +11,4 @@ void lfoMenu(Editor*, const int&);
 
 
 void croMenu(Editor*, const int&);
+
