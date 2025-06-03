@@ -29,10 +29,10 @@ namespace core
 
     struct uid_t 
     {
-        const uint8_t mt: 8;
-        const uint8_t mp: 8;
-        const uint8_t pt: 8;
-        const uint8_t pp: 8;
+        uint8_t mt: 8;
+        uint8_t mp: 8;
+        uint8_t pt: 8;
+        uint8_t pp: 8;
     };
 
     /**************************************************************************************************************************

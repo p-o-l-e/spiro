@@ -21,8 +21,10 @@
 ******************************************************************************************************************************/
 
 #include "Constraints.hpp"
+#include "Display.h"
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
+#include "core/grid.hpp"
 #include "cro_interface.hpp"
 #include "cso_interface.hpp"
 #include "descriptor.hxx"
@@ -149,17 +151,27 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ
+    *  λ - Main Menu
     * 
     **************************************************************************************************************************/
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
-        mainMenu(this);
+        stopTimer();
+        display->page = Display::Page::MainMenu;
+        display->mainMenu();
     };
 
+   /***************************************************************************************************************************
+    * 
+    *  λ - Scope
+    * 
+    **************************************************************************************************************************/
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
     {
-        croMenu(this, 0);
+        startTimerHz(core::settings::scope_fps);
+        display->page = Display::Page::CroA;
+        display->croMenu();
+        // display->layerOn = false;
     };
     
    /***************************************************************************************************************************
@@ -171,7 +183,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
         {
-            vcoMenu(this, i);
+            stopTimer();
+            display->page = static_cast<Display::Page>(Display::VcoA + i);
+            display->moduleMenu(&processor.spiro, core::map::module::vco, i);
         };
     }
 
@@ -184,7 +198,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
         {
-            csoMenu(this, i);
+            stopTimer();
+            display->page = static_cast<Display::Page>(Display::CsoA + i);
+            display->moduleMenu(&processor.spiro, core::map::module::cso, i);
         };
     }
 
@@ -197,51 +213,104 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
         {
-            lfoMenu(this, i);
+            stopTimer();
+            display->page = static_cast<Display::Page>(Display::LfoA + i);
+            display->moduleMenu(&processor.spiro, core::map::module::lfo, i);
         };
     }
     
    /***************************************************************************************************************************
     * 
-    *   λ - Soft A (Cancel or Rewind)
+    *  λ - Soft A (Jump Up)
     * 
-    **************************************************************************************************************************/
-    // button.at(interface::button_list::soft_a).get()->onClick = [this]
-    // {
-    //     float v;
-    //     switch(display->page)
-    //     {
-    //         case Display::Page::scope: scopeOptions(0, false); break;
-    //         case Display::Page::CsoA: setOption(uid_t { core::map::module::cso, 0, core::map::cv::c, core::cso::ctl::form }, 1.0f, 4.0f }; break;
-    //         case Display::Page::CsoB: setOption; break;
-    //         case Display::Page::LfoA: lfoOptions; break;
-    //         case Display::Page::LfoB: lfoOptions; break;
-    //         case Display::Page::VcoA: vcoOptions; break;
-    //         case Display::Page::VcoB: vcoOptions; break;
-    //         case Display::Page::VcoC: vcoOptions; break;
-    //         case Display::Page::VcoD: vcoOptions; break;
-    //         case Display::Page::load:          
-    //             stopTimer();
-    //             display->MainMenu();
-    //             break;
-    //
-    //         case Display::page_t::save:          
-    //             stopTimer();
-    //             display->MainMenu();
-    //             break;
-    //
-    //         case Display::page_t::menu:          
-    //             startTimerHz(core::settings::scope_fps);
-    //             display->page = Display::page_t::scope;
-    //             display->layer_on = false;
-    //             button.at(interface::button_list::scope).get()->setToggleState(true, juce::NotificationType::dontSendNotification);
-    //             break;
-    //
-    //         default:
-    //             break;
-    //     }
-    //     display->repaint();
-    // };
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sa }))]->onClick = [this]
+    {
+        display->row[display->page] = 0;
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft B (Step Up)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sb }))]->onClick = [this]
+    {
+        display->row[display->page]--;
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft C (Step Down)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sc }))]->onClick = [this]
+    {
+        display->row[display->page]++;
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft D (Jump Down)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sd }))]->onClick = [this]
+    {
+        display->row[display->page] = display->rows_max;
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft E (Jump Left)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
+    {
+        auto control = core::grid.control(display->uid);
+        setOption(display->uid, -control->max, control->max);
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft F (Step Left)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
+    {
+        auto control = core::grid.control(display->uid);
+        setOption(display->uid, -control->step, control->max);
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft G (Step Right)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
+    {
+        auto control = core::grid.control(display->uid);
+        setOption(display->uid, control->step, control->max);
+        display->switchPage(&processor, display->page);
+    };
+
+   /***************************************************************************************************************************
+    * 
+    *  λ - Soft H (Jump Right)
+    * 
+    **************************************************************************************************************************/   
+    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
+    {
+        auto control = core::grid.control(display->uid);
+        setOption(display->uid, control->max, control->max);
+        display->switchPage(&processor, display->page);
+    };
+
 
     setResizable(false, false);
     setSize (core::constraints::W, core::constraints::H);
@@ -253,6 +322,20 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     std::cout<<"-- Editor created\n";
 
 } 
+
+void Editor::setOption(const core::uid_t& uid, const float& delta, const float& max)
+{
+    auto index = core::grid.getIndex(uid);
+
+    processor.parameters[index] = processor.tree.getParameter(core::grid.name(uid, true));
+    float value = processor.parameters[index]->convertFrom0to1(processor.parameters[index]->getValue());
+    value += delta;
+    if      (value > max) value = max;
+    else if (value < 0.0f) value = 0.0f;
+    processor.parameters[index]->beginChangeGesture();
+    processor.parameters[index]->setValueNotifyingHost(processor.parameters[index]->convertTo0to1(value));
+    processor.parameters[index]->endChangeGesture();
+}
 
 /*****************************************************************************************************************************
 * 

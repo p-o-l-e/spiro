@@ -61,7 +61,7 @@ namespace core
                 { Control::type::slider   , {  14.00f,  32.00f,  48.00f,  48.00f }, "tune"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::A        },
                 { Control::type::slider   , {  14.00f, 108.00f,  48.00f,  48.00f }, "warp"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::A        },
                 { Control::type::slider   , {  22.00f, 177.00f,  32.00f,  32.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B        },
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000          },
+                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 3.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::button   , { 120.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio    },
             },
             {
@@ -69,7 +69,7 @@ namespace core
                 { Control::type::slider   , {  14.00f,  32.00f,  48.00f,  48.00f }, "tune"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::A        },
                 { Control::type::slider   , {  14.00f, 108.00f,  48.00f,  48.00f }, "warp"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::A        },
                 { Control::type::slider   , {  22.00f, 177.00f,  32.00f,  32.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B        },
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000          },
+                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 3.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::button   , {  60.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio    },
             }
         };
@@ -101,14 +101,16 @@ namespace core
         *  Options
         * 
         **********************************************************************************************************************/
-        constexpr std::string_view parameterId[] = { "FORM" };
-        constexpr std::string_view waveforms[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
+        constexpr std::string_view parameterId[]    = { "FORM:" };
+        constexpr Options::type parameterType[]     = { Options::Choice };
+        constexpr std::string_view waveforms[]      = { "SPROTT", "HELMHOLZ", "HALVORSEN", "3SCROLL" };
         constexpr const std::string_view* const choice[] = { waveforms };
         constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form) };
         constexpr Options options 
         { 
             "DYNAMIC SYSTEM", 
             parameterId, 
+            parameterType,
             parameterPosition, 
             1, 
             choice 

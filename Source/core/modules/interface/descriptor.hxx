@@ -17,25 +17,7 @@ namespace core
 
         struct module
         { 
-            enum type
-            {   
-                off, 
-                vco, 
-                lfo, 
-                cso, 
-                vca, 
-                vcd, 
-                vcf, 
-                snh, 
-                sum, 
-                pdt, 
-                rtr, 
-                mix, 
-                env, 
-                mod, 
-                com, 
-                cro,
-            };
+            enum type { off, vco, lfo, cso, vca, vcd, vcf, snh, sum, pdt, rtr, mix, env, mod, com, cro };
             static const int count { 16 };
         };
         
@@ -87,6 +69,7 @@ namespace core
         enum type { Bool, Integer, Float, Choice };
         const std::string_view description;
         const std::string_view* parameterId;
+        const type* parameterType;
         const uint8_t* parameterPosition;
         const int parameters;
         const std::string_view* const* choice;

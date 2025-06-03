@@ -23,6 +23,8 @@
 #pragma once
 #include <JuceHeader.h>
 #include <memory>
+// #include "PluginEditor.h"
+#include "uid.hpp"
 #include "wavering.hpp"
 #include "primitives.hpp"
 #include "fonts.h"
@@ -30,25 +32,23 @@
 #include "spiro.hpp"
 #include "PluginProcessor.h"
 
-#define JumpUp      117
-#define StepUp      119
-#define StepDown    120
-#define JumpDown    118
-
-#define JumpLeft    121
-#define StepLeft    123
-#define StepRight   124
-#define JumpRight   122
-
-#define LetterA     33
-
-#define OK 47
-#define CX 56
-
-#define PL 11
-#define MI 13
-
-#define EM 125
+namespace glyph
+{
+    constexpr int JumpUp    = 117;
+    constexpr int StepUp    = 119;
+    constexpr int StepDown  = 120;
+    constexpr int JumpDown  = 118;
+    constexpr int JumpLeft  = 121;
+    constexpr int StepLeft  = 123;
+    constexpr int StepRight = 124;
+    constexpr int JumpRight = 122;
+    constexpr int Ok        = 47;
+    constexpr int Cancel    = 56;
+    constexpr int Plus      = 11;
+    constexpr int Minus     = 13;
+    constexpr int Empty     = 125;
+    constexpr int Square    = 113;
+}
 
 struct OledLabel: public juce::TextEditor
 {
@@ -64,7 +64,7 @@ struct OledLabel: public juce::TextEditor
 class Display: public juce::ImageComponent
 {
     public:
-		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, Menu, About };
+		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, MainMenu, About, COUNT };
 
 	private:
 		OledLabel inputBox { &contrast };
@@ -81,6 +81,9 @@ class Display: public juce::ImageComponent
         const float contrast = 0.6f;
 		int load_page = 0;
 		int last_page = 0;
+        int stepX = 10, stepY = 10;
+        constexpr static bool X = true, Y = false;
+        constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
@@ -97,21 +100,19 @@ class Display: public juce::ImageComponent
 
 		Page page = CroA;
         const core::uid_t getUID() const;
-		int row = 0;
+		int row[Page::COUNT] = {};
+        core::uid_t uid;
 		const core::Rectangle<int> area;
-        void switchPage(const Page&);
-		void paint (juce::Graphics& g) override;
-        void OFFMenu();
-        void CROMenu();
-		void CSOMenu(core::Module*, int);
-		void VCOMenu(core::Module*, int);
-		void LFOMenu(core::Module*, int);
+        void switchPage(Processor*, const Page); 
+		void paint(juce::Graphics& g) override;
+        void offMenu();
+        void croMenu();
     	void moduleMenu(core::Spiro*, const core::map::module::type&, const int);
-		void MainMenu();
-		void SaveMenu();
+		void mainMenu();
+		void saveMenu();
 		void vSoft(const int, const int, const int, const int);
 		void hSoft(const int, const int, const int, const int);
-		void LoadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
+		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
 		Display(std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);

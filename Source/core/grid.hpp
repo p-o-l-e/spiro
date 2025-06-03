@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "modules/interface/vco_interface.hpp"
 #include "primitives.hpp"
 #include "descriptor.hxx"
 #include "interface_headers.hpp"
@@ -95,17 +96,17 @@ namespace core
             Sector(&sum::descriptor[0], nullptr      , Point2D<float>{  76.0f, 292.0f }),
             Sector(&sum::descriptor[0], nullptr      , Point2D<float>{ 152.0f, 292.0f }),   
             Sector(&pdt::descriptor   , nullptr      , Point2D<float>{  76.0f, 351.0f }),
-            Sector(&vco::descriptor   , nullptr      , Point2D<float>{   0.0f,   0.0f }),
-            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 152.0f,   0.0f }),
-            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 304.0f,   0.0f }),
-            Sector(&vco::descriptor   , nullptr      , Point2D<float>{ 456.0f,   0.0f }),
+            Sector(&vco::descriptor   , &vco::options, Point2D<float>{   0.0f,   0.0f }),
+            Sector(&vco::descriptor   , &vco::options, Point2D<float>{ 152.0f,   0.0f }),
+            Sector(&vco::descriptor   , &vco::options, Point2D<float>{ 304.0f,   0.0f }),
+            Sector(&vco::descriptor   , &vco::options, Point2D<float>{ 456.0f,   0.0f }),
             Sector(&cso::descriptor[0], &cso::options, Point2D<float>{ 608.0f,   0.0f }),
             Sector(&cso::descriptor[1], &cso::options, Point2D<float>{ 684.0f,   0.0f }),    
             Sector(&vcd::descriptor   , nullptr      , Point2D<float>{ 304.0f, 292.0f }),
             Sector(&vcf::descriptor   , nullptr      , Point2D<float>{ 380.0f, 292.0f }),
             Sector(&vcf::descriptor   , nullptr      , Point2D<float>{ 456.0f, 292.0f }),
-            Sector(&lfo::descriptor   , nullptr      , Point2D<float>{ 608.0f, 352.0f }),
-            Sector(&lfo::descriptor   , nullptr      , Point2D<float>{ 684.0f, 352.0f }),
+            Sector(&lfo::descriptor   , &lfo::options, Point2D<float>{ 608.0f, 352.0f }),
+            Sector(&lfo::descriptor   , &lfo::options, Point2D<float>{ 684.0f, 352.0f }),
             Sector(&rtr::descriptor   , nullptr      , Point2D<float>{ 760.0f, 270.0f }),
             Sector(&mix::descriptor   , nullptr      , Point2D<float>{ 888.0f, 270.0f }),
             Sector(&env::descriptor[0], nullptr      , Point2D<float>{   0.0f, 381.0f }),

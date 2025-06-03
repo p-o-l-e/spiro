@@ -42,7 +42,7 @@ namespace core
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             { Control::type::slider   , {  22.00f, 106.00f,  32.00f,  32.00f }, "delta"  , 0.001f, 1.00f, 0.01f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
             { Control::type::slider   , {  22.00f, 166.00f,  32.00f,  32.00f }, "amp"    , 0.000f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.000f, 2.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.000f, 4.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000  },
             { Control::type::button   , {  60.00f, 227.00f,  12.00f,  12.00f }, "options", 0.000f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio   },
         };
         
@@ -55,6 +55,26 @@ namespace core
             &prefix, 
             { set_i, set_o, set_c }, 
             &constrain
+        };
+
+       /**********************************************************************************************************************
+        * 
+        *  Options
+        * 
+        **********************************************************************************************************************/
+        constexpr std::string_view parameterId[]    = { "FORM:" };
+        constexpr Options::type parameterType[]     = { Options::Choice };
+        constexpr std::string_view waveforms[]      = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
+        constexpr const std::string_view* const choice[] = { waveforms };
+        constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form) };
+        constexpr Options options 
+        { 
+            "LFO", 
+            parameterId, 
+            parameterType,
+            parameterPosition, 
+            1, 
+            choice 
         };
     }
 }

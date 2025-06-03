@@ -40,7 +40,7 @@ namespace core
             void helmholz_reset();
             void halvorsen_reset();
             void tsucs_reset();
-            bool _reset = true; // Reset flag
+            int  prior = 0;
 
             void (cso_t::*reset[forms])() = 
             { 
@@ -55,7 +55,7 @@ namespace core
             void halvorsen();
             void tsucs();
 
-            void (cso_t::*form[4])() = 
+            void (cso_t::*form[forms])() = 
             { 
                 &cso_t::sprott,
                 &cso_t::helmholz,
@@ -66,9 +66,7 @@ namespace core
         public:
             const int id = 0;
             void process() noexcept override;
-            void switch_wave(const int&);
-
             cso_t();
-           ~cso_t() {};
+           ~cso_t() = default;
     }; 
 } // Namespace core

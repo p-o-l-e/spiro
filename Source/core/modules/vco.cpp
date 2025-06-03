@@ -33,7 +33,7 @@ namespace core
 
     void vco_t::set_delta(const unsigned& voice)
     { 
-        int n = note[voice] + 12 * roundf(ccv[ctl::octave]->load() * 10.0f);
+        int n = note[voice] + 12 * ccv[ctl::octave]->load();
         freq[voice]  = chromatic[n];
         delta[voice] = chromatic[n] * tao / settings::sample_rate; 
         set_fine(voice);

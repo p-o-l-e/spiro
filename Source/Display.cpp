@@ -20,19 +20,28 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "Display.h"
+#include "PluginEditor.h"
+#include "core/modules/interface/descriptor.hxx"
 #include "cso.hpp"
 #include "spiro.hpp"
 
-const core::uid_t Display::getUID() const
+void Display::switchPage(Processor* o, const Page p)
 {
-    uint8_t mt;
-    switch(page) {
-        case VcoA: mt = static_cast<uint8_t>(core::map::module::vco); break;
-        case VcoB: mt = static_cast<uint8_t>(core::map::module::vco); break;
-        case VcoC: mt = static_cast<uint8_t>(core::map::module::vco); break;
-        case VcoD: mt = static_cast<uint8_t>(core::map::module::vco); break;
-        case CsoA: mt = static_cast<uint8_t>(core::map::module::cso); break;
-        case CsoB: mt = static_cast<uint8_t>(core::map::module::cso); break;
+    page = p;
+    switch(page)
+    {
+        case VcoA: moduleMenu(&o->spiro, core::map::module::vco, 0); break;
+        case VcoB: moduleMenu(&o->spiro, core::map::module::vco, 1); break;
+        case VcoC: moduleMenu(&o->spiro, core::map::module::vco, 2); break;
+        case VcoD: moduleMenu(&o->spiro, core::map::module::vco, 3); break;
+        case CsoA: moduleMenu(&o->spiro, core::map::module::cso, 0); break;
+        case CsoB: moduleMenu(&o->spiro, core::map::module::cso, 1); break;
+        case LfoA: moduleMenu(&o->spiro, core::map::module::lfo, 0); break;
+        case LfoB: moduleMenu(&o->spiro, core::map::module::lfo, 1); break;
+        case CroA: croMenu(); break;
+        case Load: loadMenu(&o->presets); break;
+        case MainMenu: mainMenu(); break;
+        default: break;
     }
 }
 
@@ -42,41 +51,49 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     layer.get()->clr(0.0f);
     auto module = o->rack.at(mt, mp);
     auto sector = o->grid->getSector(mt, mp);
-    auto description =  std::string(sector->options->description) + " " + std::string(1, 'A' + mp);
+    if(row[page] >= sector->options->parameters) row[page] = sector->options->parameters - 1;
+    else if(row[page] < 0) row[page] = 0;
+    auto description = std::string(sector->options->description) + " " + std::string(1, 'A' + mp);
 
-    core::draw_text_label(layer.get(), gtFont, description.c_str(), 30, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-    
-    for(int i = 0; i < sector->options->parameters; ++i)
+    core::draw_text_label(layer.get(), gtFont, description.c_str(),   grid(3, X), grid(1, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "-------------------", grid(3, X), grid(2, Y), contrast);
+   
+    for(int i = 0, cid = 0; i < sector->options->parameters; ++i)
     {
-        core::draw_text_label(layer.get(), gtFont, sector->options->parameterId[i].data(), 30, 30 + 20 * i, contrast);
-        core::draw_text_label(layer.get(), gtFont, sector->options->choice[0][0].data(), 30, 50 + 20 * i, contrast);
-
-        // auto value = core::wforms_chaotic[0];
-        // core::draw_text_label(layer.get(), gtFont, value, 70, 30, contrast);
+        auto parameter = sector->options->parameterId[i];
+        core::draw_text_label(layer.get(), gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), contrast);
+        int offset = grid(parameter.size(), X) + grid(3, X);
+        if(sector->options->parameterType[i] == core::Options::Choice)
+        {
+            auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
+            parameter = sector->options->choice[cid][p];
+            core::draw_text_label(layer.get(), gtFont, parameter.data(), offset, grid(3, Y) + grid(i, Y), contrast);
+            ++cid;
+        }
+        else if(sector->options->parameterType[i] == core::Options::Integer) 
+        {
+            auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
+            core::draw_text_label(layer.get(), gtFont, std::to_string(p).c_str(), offset, grid(3, Y) + grid(i, Y), contrast);
+        }
     }
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
+    
+    core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
+    vSoft(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown);
+    hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
+
+    uid.mt = mt;
+    uid.mp = mp;
+    uid.pt = core::map::cv::c;
+    uid.pp = sector->options->parameterPosition[row[page]];
 
     layerOn = true;
     repaint();
 }
 
-void Display::switchPage(const Page& p)
-{
-    // switch(p)
-    // {
-    //     case CroA: CROMenu(); break;
-    //     case CsoA: CSOMenu(core::Module *, int); break;
-    //     case A: LFOMenu(core::Module *, int); break;
-    //
-    // }
-}
+
 
 void Display::paint(juce::Graphics& g)
 {
-    if(page == CroA) CROMenu();
-
     for(int y = 0; y < area.h; y++)
     {
         for(int x = 0; x < area.w; x++)
@@ -90,7 +107,7 @@ void Display::paint(juce::Graphics& g)
     g.drawImageAt(*image, 0, 0, false);
 }
 
-void Display::CROMenu()
+void Display::croMenu()
 {
     if(auto data = _data.lock())
     {
@@ -100,36 +117,6 @@ void Display::CROMenu()
         float center_x = area.w /2;
         auto gain = 60.0f;
 
-        // if(scope_type->load() < 0.5f)
-        // {
-        //     // auto raw = data->get();
-        //     // prior.x = raw.x * gain + center_x;
-        //     // prior.y = raw.y * gain + center_y;
-        //     float x = 0, y = 0;
-        //
-        //     for(unsigned i = 1; i < data->segments/2; i++)
-        //     {
-        //         auto raw = data->get();
-        //         x += raw.x;
-        //         y += raw.y;
-        //         if(i % precision == 0 || i == data->segments)
-        //         {
-        //             x /= (float)precision;
-        //             y /= (float)precision;
-        //             x = x * gain + center_x;
-        //             y = y * gain + center_y;
-        //             lineSDFAABB(canvas.get(), prior.x, prior.y, x, y, 0.8f / (i + 1), 0.01f / (i + 1));
-        //             // drawLine(canvas.get(), prior.x, prior.y, x, y,  0.5f);
-        //
-        //             // canvas.get()->set(x, y, 1.0f);
-        //             prior.x = x;
-        //             prior.y = y;
-        //             x = 0.0f;
-        //             y = 0.0f;
-        //
-        //         }
-        //     }
-        // }
         if(scope_type->load() < 0.5f)
         {
             auto raw = data->get();
@@ -184,13 +171,14 @@ void Display::CROMenu()
         }
         core::boxBlur(canvas.get(), 1);
         layerOn = true;
-        hSoft(StepLeft, StepRight, MI, PL);
+        hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus);
     }
     else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
+    // repaint();
 }
 
 
-void Display::SaveMenu()
+void Display::saveMenu()
 {
     page = Page::Save;
 
@@ -199,7 +187,7 @@ void Display::SaveMenu()
     repaint();
 }
 
-void Display::LoadMenu(std::vector<std::pair<juce::String, const juce::File>>* list)
+void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* list)
 {
     files = list->size();
     inputBox.setVisible(false);
@@ -212,19 +200,19 @@ void Display::LoadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
     else if(load_page < 0) load_page = last_page;
     if(load_page == last_page)
     {
-        if(row > last_row) row = 0;
-        else if(row < 0) row = last_row;
+        if(row[page] > last_row) row[page] = 0;
+        else if(row[page] < 0) row[page] = last_row;
     }
     else
     {
-        if(row >= rows_max) row = 0;
-        else if(row < 0) row = rows_max - 1;
+        if(row[page] >= rows_max) row[page] = 0;
+        else if(row[page] < 0) row[page] = rows_max - 1;
     }
 
     juce::String lp ("LOAD PAGE: "); lp += load_page;
     core::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(), 30, 10, contrast);
     core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-    core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+    core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row[page] * 10, contrast);
 
     for(int i = 0; i < rows_max; ++i)
     {
@@ -233,18 +221,18 @@ void Display::LoadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
         core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), 46, 30 + 10 * i, contrast);
     }
 
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(CX, OK, StepLeft, StepRight);
+    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+    hSoft(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight);
     layerOn = true;
     repaint();
 }
 
-void Display::MainMenu()
+void Display::mainMenu()
 {
-    page = Page::Menu;
+    page = Page::MainMenu;
 
-    if     (row > 2) row = 2;
-    else if(row < 0) row = 0;
+    if     (row[page] > 2) row[page] = 2;
+    else if(row[page] < 0) row[page] = 0;
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
     core::draw_text_label(layer.get(), gtFont, "PRESET:", 30, 10, contrast);
@@ -253,10 +241,10 @@ void Display::MainMenu()
     core::draw_text_label(layer.get(), gtFont, "LOAD", 46, 40, contrast);
     core::draw_text_label(layer.get(), gtFont, "INIT", 46, 50, contrast);
 
-    core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
+    core::draw_glyph(layer.get(), gtFont, glyph::Square, 30, 30 + row[page] * 10, contrast);
 
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(CX, OK, EM, EM);
+    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+    hSoft(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty);
     layerOn = true;
     repaint();
 }
@@ -281,43 +269,9 @@ void Display::hSoft(const int a, const int b, const int c, const int d)
     core::draw_glyph(layer.get(), gtFont, d, step * 23, offset, contrast);
 }
 
-void Display::CSOMenu(core::Module* chs, int id)
-{
-    page = id == 0 ? Page::CsoA : Page::CsoB;
-    inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, (id == 0 ? "DYNAMIC SYSTEM A:" : "DYNAMIC SYSTEM B:"), 30, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
 
-    core::draw_text_label(layer.get(), gtFont, "TYPE: ", 30, 30, contrast);
-    // core::draw_text_label(layer.get(), gtFont, core::wforms_chaotic[(int)chs->ctrl[static_cast<int>(interface::map::ctrl::form)]->load()], 70, 30, contrast);
 
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
-
-    layerOn = true;
-    repaint();
-}
-
-void Display::LFOMenu(core::Module* lfo, int id)
-{
-    page = id == 0 ? Page::LfoA : Page::LfoB;
-    inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, (id == 0 ? "LFO A:" : "LFO B:"), 30, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-
-    core::draw_text_label(layer.get(), gtFont, "FORM: ", 30, 30, contrast);
-    // core::draw_text_label(layer.get(), gtFont, core::wforms_lfo[(int)(lfo->ctrl[static_cast<int>(core::interface::lfo::ctrl::form)]->load())], 70, 30, contrast);
-
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
-
-    layerOn = true;
-    repaint();
-}
-
-void Display::OFFMenu()
+void Display::offMenu()
 {
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
@@ -327,8 +281,8 @@ void Display::OFFMenu()
     core::draw_text_label(layer.get(), gtFont, "POLE ", 0, 40, contrast);
     core::draw_text_label(layer.get(), gtFont, "MIT License ", 0, 50, contrast);
 
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
+    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+    hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
 
     layerOn = true;
     repaint();
@@ -336,53 +290,6 @@ void Display::OFFMenu()
 
 
 
-void Display::VCOMenu(core::Module* o, int id)
-{
-    if     (row > 2) row = 2;
-    else if(row < 0) row = 0;
-    inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
-    core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row * 10, contrast);
-    switch(id)
-    {
-        case 0:
-            core::draw_text_label(layer.get(), gtFont, "OSCILLATOR A:", 30, 10, contrast);
-            page = VcoA;
-            break;
-        case 1:
-            core::draw_text_label(layer.get(), gtFont, "OSCILLATOR B:", 30, 10, contrast);
-            page = VcoB;
-            break;
-        case 2:
-            core::draw_text_label(layer.get(), gtFont, "OSCILLATOR C:", 30, 10, contrast);
-            page = VcoC;
-            break;
-        case 3:
-            core::draw_text_label(layer.get(), gtFont, "OSCILLATOR D:", 30, 10, contrast);
-            page = VcoD;
-            break;
-        default: 
-            break;
-    }
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-
-    core::draw_text_label(layer.get(), gtFont, "FORM  : ", 50, 30, contrast);
-    // core::draw_text_label(layer.get(), gtFont, core::wforms_vco[(int)(o->ccv[static_cast<int>(core::vco::ctl::form)]->load())], 90, 30, contrast);
-
-    core::draw_text_label(layer.get(), gtFont, "MODE  : ", 50, 40, contrast);
-
-    // if(o->ccv[static_cast<int>(core::vco::ctl::freerun)]->load() > 0.5f) core::draw_text_label(layer.get(), gtFont, "JumpRightEERUN", 90, 40, contrast);
-    // else core::draw_text_label(layer.get(), gtFont, "TRIGGERED", 90, 40, contrast);
-
-    core::draw_text_label(layer.get(), gtFont, "OCTAVE: ", 50, 50, contrast);
-    // juce::String oct ( *o->ccv[static_cast<int>(core::vco::ctl::octave)] * 10.0f);
-    // core::draw_text_label(layer.get(), gtFont, oct.toRawUTF8(), 110, 50, contrast);
-
-    vSoft(JumpUp, StepUp, StepDown, JumpDown);
-    hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
-    layerOn = true;
-    repaint();
-}
 
 // void Display::EnvelopeMenu(core::envelope* env, int id)
 // {
@@ -406,8 +313,8 @@ void Display::VCOMenu(core::Module* o, int id)
 //  juce::String scale = juce::String::formatted("%d%%", sc);
 //  core::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
 //
-//  vSoft(JumpUp, StepUp, StepDown, JumpDown);
-//  hSoft(JumpLeft, StepLeft, StepRight, JumpRight);
+//  vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+//  hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
 //
 //  layerOn = true;
 //  repaint();
@@ -465,8 +372,8 @@ void OledLabel::paint(juce::Graphics& g)
     int cp = getCaretPosition();
     core::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, *contrast);
 
-    core::draw_glyph(canvas, gtFont, CX,  49, 155, *contrast);
-    core::draw_glyph(canvas, gtFont, OK,  79, 155, *contrast);
+    core::draw_glyph(canvas, gtFont, glyph::Cancel,  49, 155, *contrast);
+    core::draw_glyph(canvas, gtFont, glyph::Ok,  79, 155, *contrast);
 }
 
 

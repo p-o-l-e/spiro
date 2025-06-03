@@ -34,19 +34,13 @@ int cso_t::idc = 0;
 
 void cso_t::process() noexcept
 {
-    int f = (int)ccv[ctl::form]->load();
-
-    if(_reset)
+    int f = ccv[ctl::form]->load();
+    if(prior != f) [[unlikely]]
     {
-        (this->*reset[0])();
-        _reset = false;
+        (this->*reset[f])();
+        prior = f;
     }
-    (this->*form[0])();
-}
-
-void cso_t::switch_wave(const int& w)
-{
-    _reset = true;
+    (this->*form[f])();
 }
 
 void cso_t::sprott_reset()

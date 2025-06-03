@@ -57,6 +57,4 @@ namespace core
            ~lfo_t() = default;
     }; 
 
-    inline const char* wforms_lfo[] = { "SINE", "SQUARE", "RAMP", "SAW", "TRIANGLE" };
-
 };
