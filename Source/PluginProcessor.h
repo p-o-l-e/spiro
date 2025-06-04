@@ -34,7 +34,7 @@ class Processor: public juce::AudioProcessor
         juce::AudioProcessorEditor* createEditor() override;
         juce::AudioProcessorValueTreeState tree;
         juce::RangedAudioParameter** parameters;
-        juce::AudioProcessorParameter* matrix[0];
+        juce::AudioProcessorParameter** matrix;
         
         juce::CriticalSection localResourcesLock;
         juce::CriticalSection parametersLock;

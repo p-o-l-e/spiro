@@ -27,6 +27,7 @@
 #include "descriptor.hxx"
 #include "grid.hpp"
 #include "juce_audio_processors/juce_audio_processors.h"
+#include "juce_core/juce_core.h"
 #include "primitives.hpp"
 #include "spiro.hpp"
 #include "uid.hpp"
@@ -46,12 +47,14 @@ Processor::Processor(): AudioProcessor
     suspendProcessing(true);
     std::cout<<"Processor::Processor()\n"; 
     parameters = new juce::RangedAudioParameter*[core::grid.count(core::Control::parameter)];    
+    matrix = new juce::AudioProcessorParameter*[core::grid.count(core::Control::input) * core::grid.count(core::Control::output)];
     sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
     spiro.bay = sockets->bay;
 }
 
 Processor::~Processor()
 {
+    delete[] matrix;
     delete[] parameters;
 }
 
@@ -114,25 +117,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
         ));
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::input); ++i)
+    for(int i = 0; i < core::grid.count(core::Control::input) * core::grid.count(core::Control::output); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::input);
+        // auto uid = core::grid.getUID(i, core::Control::input);
         layout.add(std::make_unique<juce::AudioParameterBool>
         (
-            "mmi" + juce::String(i),
-            "MMI" + juce::String(i),
-            false
-
-        ));
-    }
-
-    for(int i = 0; i < core::grid.count(core::Control::output); ++i)
-    {
-        auto uid = core::grid.getUID(i, core::Control::output);
-        layout.add(std::make_unique<juce::AudioParameterBool>
-        (
-            "mmo" + juce::String(i),
-            "MMO" + juce::String(i),
+            "mm" + juce::String(i),
+            "MM" + juce::String(i),
             false
 
         ));
@@ -297,7 +288,7 @@ void Processor::scanPresetDir()
 **************************************************************************************************************************/
 void Processor::getStateInformation(juce::MemoryBlock& destData)
 {
-    // listeners.call([this](Listener &l) { l.saveCall(); });
+    listeners.call([this](Listener &l) { l.saveCall(); });
     auto state = tree.copyState();
     // state.setProperty (presetNameID, currentPresetName, nullptr);
     std::unique_ptr<juce::XmlElement> xml(state.createXml());   
@@ -329,7 +320,7 @@ void Processor::setStateInformation(const void* data, int sizeInBytes)
     //     tree.replaceState (juce::ValueTree::fromXml (*xmlState));
     //     juce::String presetNameLoaded = tree.state.getProperty (presetNameID, "");
     // }
-    // listeners.call([this](Listener &l) { l.loadCall(); });
+    listeners.call([this](Listener &l) { l.loadCall(); });
 }
 
 void Processor::reset()
@@ -370,7 +361,10 @@ void Processor::reloadParameters()
         spiro.bay->io[idx].data = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
     }
 
-
+    for(int i = 0; i < core::grid.count(core::Control::input) * core::grid.count(core::Control::output); ++i)
+    {
+        matrix[i] = tree.getParameter("mm" + juce::String(i));
+    }
 
     suspendProcessing(false);
 }

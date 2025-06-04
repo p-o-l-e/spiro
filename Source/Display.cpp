@@ -94,6 +94,8 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
 
 void Display::paint(juce::Graphics& g)
 {
+    if(page == CroA) [[likely]] croMenu();
+
     for(int y = 0; y < area.h; y++)
     {
         for(int x = 0; x < area.w; x++)

@@ -337,6 +337,72 @@ void Editor::setOption(const core::uid_t& uid, const float& delta, const float& 
     processor.parameters[index]->endChangeGesture();
 }
 
+
+
+
+/*****************************************************************************************************************************
+* 
+* Modmatrix routines
+* 
+******************************************************************************************************************************/
+
+void Editor::loadMatrix()
+{
+    int i = 0;
+    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    {
+        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        {
+            processor.matrix[i] = processor.tree.getParameter("mm" + juce::String(i)); 
+            processor.spiro.bay->matrix.set(x, y, core::bool_from_range(processor.matrix[i]->getValue()));
+            ++i;
+        }
+    }
+    processor.sockets->load();
+    processor.sockets->repaint();
+}
+
+void Editor::saveMatrix()
+{
+    int i = 0;
+    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    {
+        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        {
+            processor.matrix[i] = processor.tree.getParameter("mm" + juce::String(i)); 
+            processor.matrix[i]->beginChangeGesture();
+            processor.matrix[i]->setValueNotifyingHost(processor.spiro.bay->matrix.get(x, y) ? 1.0f : 0.0f);
+            processor.matrix[i]->endChangeGesture();
+            ++i;
+        }
+    }
+}
+
+void Editor::clearMatrix()
+{
+    int i = 0;
+    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    {
+        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        {
+            processor.spiro.bay->matrix.set(x, y, false);
+            ++i;
+        }
+    }
+    processor.sockets->load();
+    processor.sockets->repaint();
+}
+
+
+void Editor::loadCall() 
+{ 
+    loadMatrix();
+}
+
+void Editor::saveCall() 
+{ 
+    saveMatrix();
+}
 /*****************************************************************************************************************************
 * 
 * Destructor
@@ -434,7 +500,7 @@ void Editor::resized()
        core::constraints::oled.w,
        core::constraints::oled.h
     );
-
+    loadMatrix();
 
     std::cout<<"-- Editor resized\n";
 }
