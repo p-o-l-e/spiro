@@ -104,6 +104,7 @@ class Processor: public juce::AudioProcessor
                 virtual ~Listener() = default;
                 virtual void saveCall() {};
                 virtual void loadCall() {};
+                virtual void resetCall() {};
         };
     
         void addListener(Listener *l)       { listeners.add(l);     }

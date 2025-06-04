@@ -25,6 +25,7 @@
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
 #include "core/grid.hpp"
+#include "core/modules/interface/cro_interface.hpp"
 #include "cro_interface.hpp"
 #include "cso_interface.hpp"
 #include "descriptor.hxx"
@@ -69,7 +70,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     bg.setPaintingIsUnclipped(true);
     addAndMakeVisible(bg);
 
-    display = std::make_unique<Display>(processor.buffer, core::constraints::oled);
    
    /***************************************************************************************************************************
     * 
@@ -141,12 +141,15 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         addAndMakeVisible(env[i]);
     }
     processor.addListener(this);
-    display->addListener(this);
 
-    display->setOpaque(true); // MUST
-	display->setPaintingIsUnclipped(true);
-
-    addAndMakeVisible(display.get());
+    resetCall();
+	//    display = std::make_unique<Display>(processor.buffer, core::constraints::oled);
+	//    display->addListener(this);
+	//
+	//    display->setOpaque(true); // MUST
+	// display->setPaintingIsUnclipped(true);
+	//
+	//    addAndMakeVisible(display.get());
     addAndMakeVisible(processor.sockets.get());
 
    /***************************************************************************************************************************
@@ -265,50 +268,86 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft E (Jump Left)
+    *  λ - Soft E (Jump Left) (Step Left for Scope)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
     {
-        auto control = core::grid.control(display->uid);
-        setOption(display->uid, -control->max, control->max);
-        display->switchPage(&processor, display->page);
+        if(display->page == Display::Page::CroA)
+        {
+            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
+            auto control = core::grid.control(uid);
+            setOption(uid, -control->step, control->max);
+        }
+        else 
+        {        
+            auto control = core::grid.control(display->uid);
+            setOption(display->uid, -control->max, control->max);
+            display->switchPage(&processor, display->page);
+        }
     };
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft F (Step Left)
+    *  λ - Soft F (Step Left) (Step Right for Scope)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
     {
-        auto control = core::grid.control(display->uid);
-        setOption(display->uid, -control->step, control->max);
-        display->switchPage(&processor, display->page);
+        if(display->page == Display::Page::CroA)
+        {
+            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
+            auto control = core::grid.control(uid);
+            setOption(uid, control->step, control->max);
+        }
+        else 
+        {
+            auto control = core::grid.control(display->uid);
+            setOption(display->uid, -control->step, control->max);
+            display->switchPage(&processor, display->page);
+        }
     };
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft G (Step Right)
+    *  λ - Soft G (Step Right) (Scale Down for Scope)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
     {
-        auto control = core::grid.control(display->uid);
-        setOption(display->uid, control->step, control->max);
-        display->switchPage(&processor, display->page);
+        if(display->page == Display::Page::CroA)
+        {
+            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
+            auto control = core::grid.control(uid);
+            setOption(uid, -control->step, control->max);
+        }
+        else 
+        {
+            auto control = core::grid.control(display->uid);
+            setOption(display->uid, control->step, control->max);
+            display->switchPage(&processor, display->page);
+        }
     };
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft H (Jump Right)
+    *  λ - Soft H (Jump Right) (Scale Up for Scope)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
     {
-        auto control = core::grid.control(display->uid);
-        setOption(display->uid, control->max, control->max);
-        display->switchPage(&processor, display->page);
+        if(display->page == Display::Page::CroA)
+        {
+            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
+            auto control = core::grid.control(uid);
+            setOption(uid, control->step, control->max);
+        }
+        else 
+        {
+            auto control = core::grid.control(display->uid);
+            setOption(display->uid, control->max, control->max);
+            display->switchPage(&processor, display->page);
+        }
     };
 
 
@@ -323,7 +362,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
 } 
 
-void Editor::setOption(const core::uid_t& uid, const float& delta, const float& max)
+void Editor::setOption(const core::uid_t& uid, const float delta, const float max)
 {
     auto index = core::grid.getIndex(uid);
 
@@ -336,7 +375,6 @@ void Editor::setOption(const core::uid_t& uid, const float& delta, const float& 
     processor.parameters[index]->setValueNotifyingHost(processor.parameters[index]->convertTo0to1(value));
     processor.parameters[index]->endChangeGesture();
 }
-
 
 
 
@@ -403,6 +441,27 @@ void Editor::saveCall()
 { 
     saveMatrix();
 }
+
+void Editor::resetCall()
+{
+    display = std::make_unique<Display>(&processor, processor.buffer, core::constraints::oled);
+    display->addListener(this);
+    display->scope_scale = processor.spiro.rack.at(core::map::module::cro, 0)->ccv[core::cro::ctl::scale];
+    display->scope_type  = processor.spiro.rack.at(core::map::module::cro, 0)->ccv[core::cro::ctl::type];
+    
+    display->setBounds
+    (
+       core::constraints::oled.x,
+       core::constraints::oled.y,
+       core::constraints::oled.w,
+       core::constraints::oled.h
+    );
+    display->setOpaque(true); // MUST
+	display->setPaintingIsUnclipped(true);
+
+    addAndMakeVisible(display.get());
+}
+
 /*****************************************************************************************************************************
 * 
 * Destructor

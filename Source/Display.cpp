@@ -21,8 +21,11 @@
 ******************************************************************************************************************************/
 #include "Display.h"
 #include "PluginEditor.h"
+#include "PluginProcessor.h"
+#include "core/modules/interface/cro_interface.hpp"
 #include "core/modules/interface/descriptor.hxx"
 #include "cso.hpp"
+#include "descriptor.hxx"
 #include "spiro.hpp"
 
 void Display::switchPage(Processor* o, const Page p)
@@ -38,7 +41,7 @@ void Display::switchPage(Processor* o, const Page p)
         case CsoB: moduleMenu(&o->spiro, core::map::module::cso, 1); break;
         case LfoA: moduleMenu(&o->spiro, core::map::module::lfo, 0); break;
         case LfoB: moduleMenu(&o->spiro, core::map::module::lfo, 1); break;
-        case CroA: croMenu(); break;
+        // case CroA: croMenu(); break;
         case Load: loadMenu(&o->presets); break;
         case MainMenu: mainMenu(); break;
         default: break;
@@ -115,9 +118,9 @@ void Display::croMenu()
     {
         int precision = 4;
         layer.get()->clr(0.0f);
-        float center_y = area.h /2;
-        float center_x = area.w /2;
-        auto gain = 60.0f;
+        float center_y = area.h / 2;
+        float center_x = area.w / 2;
+        auto gain = (*scope_scale + 1.0f) * 10.0f;
 
         if(scope_type->load() < 0.5f)
         {
@@ -176,7 +179,6 @@ void Display::croMenu()
         hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus);
     }
     else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
-    // repaint();
 }
 
 
@@ -329,7 +331,7 @@ void Display::resized()
     reset();
 }
 
-Display::Display(std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): _data(buf), area(area)
+Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
 {
     image = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
     canvas = std::make_unique<core::Canvas<float>>(area.w, area.h);

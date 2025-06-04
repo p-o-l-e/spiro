@@ -55,7 +55,8 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         void clearMatrix();
         void saveCall() override;
         void loadCall() override;
-        void setOption(const core::uid_t& uid, const float& delta, const float& max);
+        void resetCall() override;
+        void setOption(const core::uid_t&, const float, const float);
         std::unique_ptr<juce::Image> sprite[3][3];
         std::unique_ptr<juce::Image> bg_texture;
         juce::ImageComponent bg;

@@ -67,6 +67,7 @@ class Display: public juce::ImageComponent
 		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, MainMenu, About, COUNT };
 
 	private:
+        Processor *processor;
 		OledLabel inputBox { &contrast };
 		std::unique_ptr<juce::Image> image;
 		std::unique_ptr<core::Canvas<float>> canvas;
@@ -94,7 +95,7 @@ class Display: public juce::ImageComponent
 		int files = 0;
 
 		std::atomic<float>* scope_type = &core::zero;
-		// std::atomic<float>* scope_scale = &core::zero;
+		std::atomic<float>* scope_scale = &core::zero;
 		std::atomic<float>  ts { 0.02f };
 		std::atomic<float>* time_scale = &ts;
 
@@ -115,7 +116,7 @@ class Display: public juce::ImageComponent
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
-		Display(std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);
+		Display(Processor*, std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);
 	   ~Display();
 	   	class Listener 
         {

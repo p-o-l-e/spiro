@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "modules/interface/cro_interface.hpp"
 #include "modules/interface/vco_interface.hpp"
 #include "primitives.hpp"
 #include "descriptor.hxx"
@@ -114,7 +115,7 @@ namespace core
             Sector(&env::descriptor[2], nullptr      , Point2D<float>{   0.0f, 381.0f }),
             Sector(&env::descriptor[3], nullptr      , Point2D<float>{   0.0f, 381.0f }),
             Sector(&com::descriptor   , nullptr      , Point2D<float>{   0.0f, 292.0f }),
-            Sector(&cro::descriptor   , nullptr      , Point2D<float>{ 760.0f,   0.0f }),
+            Sector(&cro::descriptor   , &cro::options, Point2D<float>{ 760.0f,   0.0f }),
         };
 
         constexpr int sectors = std::size(sector_map);

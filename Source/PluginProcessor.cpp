@@ -146,11 +146,11 @@ void Processor::changeProgramName(int index, const juce::String& newName) {}
 
 juce::Result Processor::getPresetsFolder()
 {
-    // preset_directory = juce::File::getSpecialLocation(juce::File::SpecialLocationType::userDocumentsDirectory);
-    // preset_directory = preset_directory.getChildFile("Spiro").getChildFile("Presets");
-    // juce::Result res = preset_directory.createDirectory();
-    // std::cout<<"Processor::getPresetsFolder()\n";
-    // return res;
+    preset_directory = juce::File::getSpecialLocation(juce::File::SpecialLocationType::userDocumentsDirectory);
+    preset_directory = preset_directory.getChildFile("Spiro").getChildFile("Presets");
+    juce::Result res = preset_directory.createDirectory();
+    std::cout<<"Processor::getPresetsFolder()\n";
+    return res;
 }
 
 /***************************************************************************************************************************
@@ -160,49 +160,49 @@ juce::Result Processor::getPresetsFolder()
 **************************************************************************************************************************/
 bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
 {
-    // suspendProcessing(true);
-    // getPresetsFolder();
-    //
-    // currentPresetName = presetName;
-    // juce::MemoryBlock newPresetFileContent;
-    // getStateInformation (newPresetFileContent);
-    //
-    // auto presetFile = preset_directory.getChildFile(presetName);
-    // auto tempFile = preset_directory.getChildFile("temp");
-    //
-    // auto file = presetFile.create();
-    //
-    // jassert(file.wasOk());
-    // if (file.failed())
-    // {
-    //     suspendProcessing(false);
-    //     return false;
-    // }
-    // file = tempFile.create();
-    //
-    // jassert(file.wasOk());
-    // if (file.failed()) 
-    // {
-    //     suspendProcessing(false);
-    //     return false;
-    // }
-    //
-    // if(auto stream = std::unique_ptr<juce::FileOutputStream> (tempFile.createOutputStream()))
-    // {
-    //     stream->setPosition(0);
-    //     stream->truncate();
-    //     stream->write (newPresetFileContent.getData(), newPresetFileContent.getSize());
-    // }
-    // else 
-    // {
-    //     suspendProcessing(false);
-    //     return false;
-    // }
-    // tempFile.moveFileTo(presetFile);
-    // tempFile.deleteFile();
-    //
-    // suspendProcessing(false);
-    // return true;
+    suspendProcessing(true);
+    getPresetsFolder();
+
+    currentPresetName = presetName;
+    juce::MemoryBlock newPresetFileContent;
+    getStateInformation(newPresetFileContent);
+
+    auto presetFile = preset_directory.getChildFile(presetName);
+    auto tempFile = preset_directory.getChildFile("temp");
+
+    auto file = presetFile.create();
+
+    jassert(file.wasOk());
+    if(file.failed())
+    {
+        suspendProcessing(false);
+        return false;
+    }
+    file = tempFile.create();
+
+    jassert(file.wasOk());
+    if(file.failed()) 
+    {
+        suspendProcessing(false);
+        return false;
+    }
+
+    if(auto stream = std::unique_ptr<juce::FileOutputStream>(tempFile.createOutputStream()))
+    {
+        stream->setPosition(0);
+        stream->truncate();
+        stream->write(newPresetFileContent.getData(), newPresetFileContent.getSize());
+    }
+    else 
+    {
+        suspendProcessing(false);
+        return false;
+    }
+    tempFile.moveFileTo(presetFile);
+    tempFile.deleteFile();
+
+    suspendProcessing(false);
+    return true;
 }
 
 
@@ -213,71 +213,68 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
 **************************************************************************************************************************/
 bool Processor::loadPreset(juce::String presetName)
 {
-    // suspendProcessing(true);
-    // scanPresetDir();
-    // auto presetFile = findPresetFile (presetName);
-    // if (presetFile.getFullPathName().isNotEmpty() && presetFile.existsAsFile())
-    // {
-    //     currentPresetName = presetName;
-    //
-    //     juce::MemoryMappedFile file (presetFile, juce::MemoryMappedFile::readOnly);
-    //
-    //     setStateInformation (file.getData(), int (file.getSize()));
-    //
-    //     suspendProcessing(false);)
-    //     return true;
-    // }
-    //
-    // suspendProcessing(false);
-    // return false;
+    suspendProcessing(true);
+    scanPresetDir();
+    auto presetFile = findPresetFile(presetName);
+    if (presetFile.getFullPathName().isNotEmpty() && presetFile.existsAsFile())
+    {
+        currentPresetName = presetName;
+        juce::MemoryMappedFile file(presetFile, juce::MemoryMappedFile::readOnly);
+        setStateInformation(file.getData(), int(file.getSize()));
+        suspendProcessing(false);
+        return true;
+    }
+
+    suspendProcessing(false);
+    return false;
 }
 
 void Processor::presetFilesAvailableChanged()
 {
-    // presets.clear();
-    // for (auto& presetFile : presets_available)
-    // {
-    //     presets.emplace_back (std::make_pair (presetFile.getFileNameWithoutExtension(), presetFile));
-    // }
+    presets.clear();
+    for(auto& presetFile: presets_available)
+    {
+        presets.emplace_back(std::make_pair(presetFile.getFileNameWithoutExtension(), presetFile));
+    }
 }
 
 const juce::File Processor::findPresetFile(const juce::String& presetNameToLookFor)
 {
-    // auto presetFile = std::find_if 
-    // (
-    //     presets.begin(), 
-    //     presets.end(),
-    //     [&presetNameToLookFor] (const std::pair<juce::String, const juce::File>& p)
-    //     {
-    //         return p.first == presetNameToLookFor;
-    //     }
-    // );
-    //
-    // if (presetFile != presets.end()) return presetFile->second;
-    // return {};
+    auto presetFile = std::find_if 
+    (
+        presets.begin(), 
+        presets.end(),
+        [&presetNameToLookFor] (const std::pair<juce::String, const juce::File>& p)
+        {
+            return p.first == presetNameToLookFor;
+        }
+    );
+
+    if (presetFile != presets.end()) return presetFile->second;
+    return {};
 }
 
 juce::StringArray Processor::getPresetList()
 {
-    // juce::StringArray presetList;
-    // presetList.ensureStorageAllocated(int (presets.size()));
-    // for(auto& preset : presets) presetList.add (preset.first);
-    // std::cout<<"Processor::getPresetList()\n";
-    // return presetList;
+    juce::StringArray presetList;
+    presetList.ensureStorageAllocated(int (presets.size()));
+    for(auto& preset : presets) presetList.add (preset.first);
+    std::cout<<"Processor::getPresetList()\n";
+    return presetList;
 }
 
 void Processor::scanPresetDir()
 {
-    // getPresetsFolder();
-    // if (!preset_directory.exists()) preset_directory.createDirectory();
-    // const auto fileExtensionWildcard = juce::String ("*");
-    // auto allPresetsFound = preset_directory.findChildFiles (juce::File::TypesOfFileToFind::findFiles, false, fileExtensionWildcard);
-    //
-    // if (allPresetsFound != presets_available)
-    // {
-    //     presets_available = allPresetsFound;
-    //     presetFilesAvailableChanged();
-    // }
+    getPresetsFolder();
+    if (!preset_directory.exists()) preset_directory.createDirectory();
+    const auto fileExtensionWildcard = juce::String ("*");
+    auto allPresetsFound = preset_directory.findChildFiles (juce::File::TypesOfFileToFind::findFiles, false, fileExtensionWildcard);
+
+    if (allPresetsFound != presets_available)
+    {
+        presets_available = allPresetsFound;
+        presetFilesAvailableChanged();
+    }
 }
 
 
@@ -290,7 +287,7 @@ void Processor::getStateInformation(juce::MemoryBlock& destData)
 {
     listeners.call([this](Listener &l) { l.saveCall(); });
     auto state = tree.copyState();
-    // state.setProperty (presetNameID, currentPresetName, nullptr);
+    state.setProperty(presetNameID, currentPresetName, nullptr);
     std::unique_ptr<juce::XmlElement> xml(state.createXml());   
     copyXmlToBinary(*xml, destData);
 }
@@ -305,21 +302,13 @@ void Processor::setStateInformation(const void* data, int sizeInBytes)
 {
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if(xmlState.get() != nullptr)
-        if(xmlState->hasTagName (tree.state.getType()))
+    {
+        if(xmlState->hasTagName(tree.state.getType()))
+        {
             tree.replaceState(juce::ValueTree::fromXml(*xmlState));
-
-
-
-    // auto xmlState = getXmlFromBinary (data, sizeInBytes);
-    //
-    // if (xmlState.get() != nullptr) juce::ScopedLock scopedLock (parametersLock);
-    //
-    // if (xmlState->hasTagName (tree.state.getType()))
-    // {
-    //     reset();
-    //     tree.replaceState (juce::ValueTree::fromXml (*xmlState));
-    //     juce::String presetNameLoaded = tree.state.getProperty (presetNameID, "");
-    // }
+            juce::String presetNameLoaded = tree.state.getProperty (presetNameID, "");
+        }
+    }
     listeners.call([this](Listener &l) { l.loadCall(); });
 }
 
@@ -386,7 +375,10 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
     std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
     std::cout<<"Sample rate       : "<<sampleRate<<"\n";
     buffer = std::make_shared<core::wavering<core::Point2D<float>>>(samplesPerBlock * core::settings::scope_fps);
-
+    if(getActiveEditor())
+    {
+        listeners.call([this](Listener &l) { l.resetCall(); });
+    }
     reloadParameters();
     suspendProcessing(false);
 }
