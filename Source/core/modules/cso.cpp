@@ -31,9 +31,9 @@ namespace core
 {
 using namespace cso;
 
-int cso_t::idc = 0;
+int CSO::idc = 0;
 
-void cso_t::process() noexcept
+void CSO::process() noexcept
 {
     int f = ccv[ctl::form]->load();
     if(prior != f) [[unlikely]]
@@ -44,7 +44,7 @@ void cso_t::process() noexcept
     (this->*form[f])();
 }
 
-void cso_t::sprott_reset()
+void CSO::sprott_reset()
 {
     f[0] = 0.8f;     // a
     f[1] = 0.5f;     // b
@@ -57,7 +57,7 @@ void cso_t::sprott_reset()
     f[7] = 0.1f;     // z
 }
 
-void cso_t::sprott() 
+void CSO::sprott() 
 {
     f[4] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.0001f;
     if(ccv[cvi::warp] == &zero) f[2] = 0.1f + ccv[ctl::warp]->load();
@@ -81,7 +81,7 @@ void cso_t::sprott()
     }
 }
 
-void cso_t::helmholz_reset()
+void CSO::helmholz_reset()
 {
     f[5] = 0.1f;     // x
     f[6] = 0.1f;     // y
@@ -92,7 +92,7 @@ void cso_t::helmholz_reset()
     f[2] = 0.01;     // t
 }
 
-void cso_t::helmholz() 
+void CSO::helmholz() 
 {
     f[2] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.01f;
     if(ccv[cvi::warp] == &zero) f[1] = ((ccv[ctl::warp]->load() - 0.5f) * 0.03f) + 0.55f;
@@ -116,7 +116,7 @@ void cso_t::helmholz()
     }
 }
 
-void cso_t::halvorsen_reset()
+void CSO::halvorsen_reset()
 {
     f[0] = 1.4f;     // a
     f[1] = 0.01f;    // t
@@ -127,7 +127,7 @@ void cso_t::halvorsen_reset()
 };
 
 
-void cso_t::halvorsen()
+void CSO::halvorsen()
 {
     f[1] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.01f) * 0.02f + 0.00001f;
     if(ccv[cvi::warp] == &zero) f[0] = 1.4f + ccv[ctl::warp]->load();
@@ -152,7 +152,7 @@ void cso_t::halvorsen()
 
 }
 
-void cso_t::tsucs_reset()
+void CSO::tsucs_reset()
 {
     f[0] = 1.0f;     // x
     f[1] = 1.0f;     // y
@@ -167,7 +167,7 @@ void cso_t::tsucs_reset()
     f[8] = 0.001f;   // t
 };
 
-void cso_t::tsucs()
+void CSO::tsucs()
 {
     if(ccv[cvi::warp] == &zero) f[7] = ccv[ctl::warp]->load() / 8.0f + 0.55f;
     else f[7] = ccv[ctl::warp]->load() * fabsf(ccv[cvi::warp]->load())  / 8.0f + 0.55f;
@@ -192,7 +192,7 @@ void cso_t::tsucs()
     }
 }
 
-cso_t::cso_t(): id(idc++), Module(idc, &cso::descriptor[0])
+CSO::CSO(): id(idc++), Module(idc, &cso::descriptor[0])
 {
 }
 

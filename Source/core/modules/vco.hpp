@@ -40,7 +40,7 @@ namespace core
     *  VCO
     * 
     **************************************************************************************************************************/
-    class vco_t: public Module<float>
+    class VCO: public Module<float>
     {   
         private:
             float phase[settings::poly];                // Current phase
@@ -49,24 +49,24 @@ namespace core
             float tomisawa(const int&);
             float pulse(const int&);
             float hexagon(const int&);
-            float (vco_t::*form[3])(const int&) = 
+            float (VCO::*form[3])(const int&) = 
             { 
-                &vco_t::tomisawa, 
-                &vco_t::pulse, 
-                &vco_t::hexagon 
+                &VCO::tomisawa, 
+                &VCO::pulse, 
+                &VCO::hexagon 
             };
             static int idc;                             // ID counter
   
         public:
-            int id;                                     // Unique vco_t id
+            int id;                                     // Unique VCO id
             float freq[settings::poly];               // Frequency
             uint8_t note[settings::poly];               // Triggered note
             void process() noexcept override;
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);
             void reset();
-            vco_t();
-           ~vco_t();
+            VCO();
+           ~VCO();
     };
 
 

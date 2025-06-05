@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class sum_t: public Module<float>
+    class SUM: public Module<float>
     {
         private:
             static int idc;
@@ -32,7 +32,7 @@ namespace core
         public:
             int id;
             void process() noexcept override;
-            sum_t();
-           ~sum_t() = default;
+            SUM();
+           ~SUM() = default;
     };
 }

@@ -20,9 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-#include <cstddef>
-#include <iostream>
-#include <string>
+
 #include "grid.hpp"
 
 namespace core

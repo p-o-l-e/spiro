@@ -31,9 +31,9 @@
 namespace core
 {
     using namespace vco;
-    int vco_t::idc = 0;
+    int VCO::idc = 0;
 
-    void vco_t::set_delta(const unsigned& voice)
+    void VCO::set_delta(const unsigned& voice)
     { 
         int n = note[voice] + 12 * ccv[ctl::octave]->load();
         freq[voice]  = chromatic[n];
@@ -41,13 +41,13 @@ namespace core
         set_fine(voice);
     }
 
-    void vco_t::set_fine(const unsigned& voice)
+    void VCO::set_fine(const unsigned& voice)
     {
         float range   = (freq[voice] * chromatic_ratio - freq[voice] / chromatic_ratio) * tao / settings::sample_rate;
         delta[voice] += (ccv[ctl::detune]->load() + icv[cvi::detune]->load() - 0.5f) * range * 2.0f;
     }
 
-    inline float vco_t::tomisawa(const int& voice)
+    inline float VCO::tomisawa(const int& voice)
     {
         float oa = cosf(phase[voice] + eax[0][voice]);
         eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
@@ -61,7 +61,7 @@ namespace core
         return oa - ob;
     }
 
-    inline float vco_t::pulse(const int& voice)
+    inline float VCO::pulse(const int& voice)
     {
         float pw =  icv[cvi::pwm] == &zero ? 
             (0.5f - ccv[ctl::pwm]->load()) * 2.0f :
@@ -70,7 +70,7 @@ namespace core
         return fPulse(phase[voice], pw, 0.0001f);
     }
 
-    inline float vco_t::hexagon(const int& voice)
+    inline float VCO::hexagon(const int& voice)
     {
         float pw = icv[cvi::pwm] == &zero ? 
             (0.5f - ccv[ctl::pwm]->load()) * pi :
@@ -81,7 +81,7 @@ namespace core
     }
 
 
-    void vco_t::process() noexcept
+    void VCO::process() noexcept
     {
         float accu = 0.0f;
         
@@ -114,7 +114,7 @@ namespace core
 
     
 
-    void vco_t::reset()
+    void VCO::reset()
     {
         for(int i = 0; i < settings::poly; ++i)
         {
@@ -128,12 +128,12 @@ namespace core
     }
 
 
-    vco_t::vco_t(): id(idc++), Module(idc, &vco::descriptor)
+    VCO::VCO(): id(idc++), Module(idc, &vco::descriptor)
     {
         reset();
     }
 
-    vco_t::~vco_t() = default;
+    VCO::~VCO() = default;
 
 
  

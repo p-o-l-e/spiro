@@ -20,13 +20,10 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-#include <cstdint>
 #include "curves.hpp"
-#include "shapes.hpp"
 #include "primitives.hpp"
 #include "canvas.hpp"
 #include "constants.hpp"
-#include <string>
 #include <atomic>
 
 #define SOCKET_IN       1

@@ -19,16 +19,12 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #pragma once
-
 #include <JuceHeader.h>
-#include <vector>
 #include "modmatrix.hpp"
 #include "Constraints.hpp"
 #include "Colours.hpp"
 #include "grid.hpp"
-#include "primitives.hpp"
 
 class Sockets: public juce::Component
 {

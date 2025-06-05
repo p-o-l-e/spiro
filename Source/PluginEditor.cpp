@@ -19,28 +19,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-#include "Constraints.hpp"
-#include "Display.h"
-#include "PluginProcessor.h"
-#include "SpriteSlider.h"
-#include "core/grid.hpp"
-#include "core/modules/interface/cro_interface.hpp"
-#include "cro_interface.hpp"
-#include "cso_interface.hpp"
-#include "descriptor.hxx"
-#include "env_interface.hpp"
-#include "grid.hpp"
-#include "juce_gui_basics/juce_gui_basics.h"
-#include "node.hpp"
-#include "primitives.hpp"
-#include "uid.hpp"
-#include "Menu.hpp"
 #include "PluginEditor.h"
-#include <cstddef>
-#include <iostream>
-#include <memory>
-#include <sys/types.h>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor (&o), processor (o), valueTreeState (tree)
 {
@@ -182,7 +161,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - VCOs
     * 
     **************************************************************************************************************************/    
-    for(int i = 0; i < core::grid.count(core::map::module::vco); ++i)
+    for(uint8_t i = 0; i < core::grid.count(core::map::module::vco); ++i)
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
         {
@@ -197,7 +176,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Dynamic Systems
     * 
     **************************************************************************************************************************/    
-    for(int i = 0; i < core::grid.count(core::map::module::cso); ++i)
+    for(uint8_t i = 0; i < core::grid.count(core::map::module::cso); ++i)
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
         {
@@ -212,7 +191,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - LFOs
     * 
     **************************************************************************************************************************/    
-    for(int i = 0; i < core::grid.count(core::map::module::lfo); ++i)
+    for(uint8_t i = 0; i < core::grid.count(core::map::module::lfo); ++i)
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
         {

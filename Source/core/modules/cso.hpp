@@ -27,7 +27,7 @@ namespace core
 {
     inline const char* formCSO[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
-    class cso_t: public Module<float>
+    class CSO: public Module<float>
     { 
         public:
             static const int forms { 4 };
@@ -42,12 +42,12 @@ namespace core
             void tsucs_reset();
             int  prior = 0;
 
-            void (cso_t::*reset[forms])() = 
+            void (CSO::*reset[forms])() = 
             { 
-                &cso_t::sprott_reset,
-                &cso_t::helmholz_reset,
-                &cso_t::halvorsen_reset,
-                &cso_t::tsucs_reset
+                &CSO::sprott_reset,
+                &CSO::helmholz_reset,
+                &CSO::halvorsen_reset,
+                &CSO::tsucs_reset
             };
             
             void sprott();
@@ -55,18 +55,18 @@ namespace core
             void halvorsen();
             void tsucs();
 
-            void (cso_t::*form[forms])() = 
+            void (CSO::*form[forms])() = 
             { 
-                &cso_t::sprott,
-                &cso_t::helmholz,
-                &cso_t::halvorsen,
-                &cso_t::tsucs
+                &CSO::sprott,
+                &CSO::helmholz,
+                &CSO::halvorsen,
+                &CSO::tsucs
             };
 
         public:
             const int id = 0;
             void process() noexcept override;
-            cso_t();
-           ~cso_t() = default;
+            CSO();
+           ~CSO() = default;
     }; 
 } // Namespace core

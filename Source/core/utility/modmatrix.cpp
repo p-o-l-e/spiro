@@ -19,13 +19,12 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
-#include "constants.hpp"
-#include "modmatrix.hpp"
-#include "uid.hpp"
-#include <cstdint>
 #include <iostream>
-namespace core {
+#include "modmatrix.hpp"
+#include "shapes.hpp"
+
+namespace core
+{
 
 /***************************************************************************************************************************
 * 

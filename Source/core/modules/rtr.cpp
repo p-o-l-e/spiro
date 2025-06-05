@@ -26,9 +26,9 @@
 namespace core 
 {
     using namespace rtr;
-    int rtr_t::idc = 0;
+    int RTR::idc = 0;
     
-    void rtr_t::process() noexcept
+    void RTR::process() noexcept
     {
         Point3D<float> a 
         { 
@@ -56,7 +56,7 @@ namespace core
 
     }
 
-    rtr_t::rtr_t(): id(idc++), Module(idc, &rtr::descriptor)
+    RTR::RTR(): id(idc++), Module(idc, &rtr::descriptor)
     { 
     };
 

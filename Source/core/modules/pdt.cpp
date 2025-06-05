@@ -26,9 +26,9 @@
 
 namespace core {
     
-    int pdt_t::idc = 0;
+    int PDT::idc = 0;
 
-    void pdt_t::process() noexcept
+    void PDT::process() noexcept
     {
         bool  o = false;
         float s = 1.0f;
@@ -44,7 +44,7 @@ namespace core {
         ocv[0].store( o ? s : 0.0f);
     };
 
-    pdt_t::pdt_t(): id(idc++), Module(idc, &pdt::descriptor)
+    PDT::PDT(): id(idc++), Module(idc, &pdt::descriptor)
     { 
     };
 }

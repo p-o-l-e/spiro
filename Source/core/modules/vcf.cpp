@@ -28,16 +28,16 @@
 namespace core 
 {
     using namespace vcf;
-    int vcf_t::idc = 0;
+    int VCF::idc = 0;
 
-    vcf_t::vcf_t(): id(idc++), Module(idc, &vcf::descriptor)
+    VCF::VCF(): id(idc++), Module(idc, &vcf::descriptor)
     { 
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;
         reset(); 
     }
 
-    void vcf_t::reset()
+    void VCF::reset()
     {
         iceq[0]  = 0.0f;
         iceq[1]  = 0.0f;
@@ -48,7 +48,7 @@ namespace core
         b = 0.0f;
     }
 
-    void vcf_t::process() noexcept
+    void VCF::process() noexcept
     {
         float cutoff = ccv[ctl::cutoff]->load() + icv[cvi::cutoff]->load();
         if      (cutoff < 0.0f) cutoff = 0.0f;

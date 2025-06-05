@@ -25,51 +25,51 @@
 
 namespace core
 {
-    int lfo_t::idc = 0;
+    int LFO::idc = 0;
 
-    void lfo_t::process() noexcept
+    void LFO::process() noexcept
     {
         float o = (this->*form[(int)ccv[lfo::ctl::form]->load()])();
         ocv[lfo::cvo::a].store(o);
         ocv[lfo::cvo::b].store(o);
     }
 
-    float lfo_t::sine()
+    float LFO::sine()
     {
         phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return cosf(phase) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
-    float lfo_t::ramp()
+    float LFO::ramp()
     {
         phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return atanf(tanf(phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
-    float lfo_t::saw()
+    float LFO::saw()
     {
         phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return atanf(tanf(pi - phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
-    float lfo_t::square()
+    float LFO::square()
     {
         phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return (phase > 0.0f ? 1.0f : 0.0f) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
-    float lfo_t::triangle()
+    float LFO::triangle()
     {
         phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return tan(sin(phase)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load()) * 0.65f;
     }
 
-    void lfo_t::reset()
+    void LFO::reset()
     {
         phase = 0.0f;
         for(int i = 0; i < lfo::cc; ++i) ccv[i] = &zero;
@@ -77,7 +77,7 @@ namespace core
         for(int i = 0; i < lfo::oc; ++i) ocv[i].store(0.0f);
     }
 
-    lfo_t::lfo_t(): id(idc++), Module(idc, &lfo::descriptor)
+    LFO::LFO(): id(idc++), Module(idc, &lfo::descriptor)
     {
         reset();
     };

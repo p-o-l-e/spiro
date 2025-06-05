@@ -20,13 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "Socket.h"
-#include "Constraints.hpp"
-#include "descriptor.hxx"
-#include "modmatrix.hpp"
-#include "primitives.hpp"
-#include "uid.hpp"
-#include <iostream>
-#include <iomanip>
+
 #define SR core::constraints::SR
 #define XG core::constraints::gap_x
 

@@ -27,14 +27,14 @@
 namespace core 
 {
     using namespace cro;
-    int cro_t::idc = 0;
+    int CRO::idc = 0;
 
-    void cro_t::process() noexcept
+    void CRO::process() noexcept
     {
 
     }
 
-    cro_t::cro_t(): id(idc++), Module(idc, &cro::descriptor)    
+    CRO::CRO(): id(idc++), Module(idc, &cro::descriptor)    
     {
     }
 }

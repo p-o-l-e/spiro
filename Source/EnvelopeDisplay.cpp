@@ -165,7 +165,6 @@ void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
     {
         node[p].curve.load() >= 3.0f ? node[p].curve.store(0.0f) : node[p].curve.store(envd.node[p].curve->load() + 1.0f);
     };
-    float incr = 1.0f;
     if     ((event.x >   0) && (event.x < A.x)) l(1);
     else if((event.x > A.x) && (event.x < D.x)) l(2);
     else if((event.x > D.x) && (event.x < S.x)) l(3);

@@ -17,6 +17,5 @@ namespace core
         Module(const int, const Descriptor*);
         virtual ~Module();
     };
-
-
 }
+

@@ -21,18 +21,9 @@
 ******************************************************************************************************************************/
 #pragma once
 
-#include <JuceHeader.h>
-#include <memory>
-#include <vector>
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
 #include "Display.h"
-#include "blur.hpp"
-#include "Display.h"
-#include "Constraints.hpp"
-#include "core/grid.hpp"
-#include "descriptor.hxx"
-#include "juce_core/juce_core.h"
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;

@@ -29,9 +29,9 @@ namespace core
 {
     using namespace snh;
 
-int snh_t::idc = 0;
+int SNH::idc = 0;
 
-void snh_t::process() noexcept
+void SNH::process() noexcept
 {
     if(icv[cvi::time] == &zero)
     {
@@ -53,14 +53,14 @@ void snh_t::process() noexcept
     }
 }
 
-void snh_t::reset()
+void SNH::reset()
 {
     t     = 0.0f;
     value = 0.0f;
     scale = 40.0f;
 }
 
-snh_t::snh_t(): id(idc++), Module(idc, &snh::descriptor[0])
+SNH::SNH(): id(idc++), Module(idc, &snh::descriptor[0])
 {
     reset();
 }

@@ -25,7 +25,7 @@
 
 namespace core
 {
-    class rtr_t: public Module<float>
+    class RTR: public Module<float>
     {
         private:
             static int idc;
@@ -34,8 +34,8 @@ namespace core
         public:
             int id;
             void process() noexcept override;
-            rtr_t();
-           ~rtr_t() = default;
+            RTR();
+           ~RTR() = default;
     };
 
 }

@@ -22,14 +22,6 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include <memory>
-// #include "PluginEditor.h"
-#include "uid.hpp"
-#include "wavering.hpp"
-#include "primitives.hpp"
-#include "fonts.h"
-#include "blur.hpp"
-#include "spiro.hpp"
 #include "PluginProcessor.h"
 
 namespace glyph

@@ -21,16 +21,9 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-#include <cstdint>
-#include <memory>
-#include <string>
-#include "modules/interface/cro_interface.hpp"
-#include "modules/interface/vco_interface.hpp"
-#include "primitives.hpp"
-#include "descriptor.hxx"
 #include "interface_headers.hpp"
 #include "uid.hpp"
-
+    
 namespace core
 {
    /**********************************************************************************************************************
@@ -60,7 +53,6 @@ namespace core
             const std::unique_ptr<int[]> relative;
             const std::unique_ptr<int[]> elements; 
             const std::unique_ptr<int[]> modules;
-            // const int cvs[map::cv::count];
             std::unique_ptr<uint32_t[]>  indices[Control::count];
             const std::unique_ptr<int[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;
@@ -70,8 +62,8 @@ namespace core
         public:
             const Sector* const sector;
             const int sectors;
-            constexpr int count(const Control::type& t) const { return elements[t]; }
-            constexpr int count(const map::module::type& t) const { return modules[t]; }
+            const int count(const Control::type& t) const { return elements[t]; }
+            const int count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
             const std::string name(const uid_t&, const bool) const;
             const Control* control(const uid_t&) const;

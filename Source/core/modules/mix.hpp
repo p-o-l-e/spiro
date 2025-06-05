@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class mix_t: public Module<float>
+    class MIX: public Module<float>
     {
         private:
             static int idc;
@@ -33,8 +33,8 @@ namespace core
             const int id;
             void process() noexcept override;
 
-            mix_t();
-           ~mix_t() {};
+            MIX();
+           ~MIX() {};
     };
 
 }; // Namespace core

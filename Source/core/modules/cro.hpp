@@ -26,7 +26,7 @@
 
 namespace core
 {
-    class cro_t: public Module<float>
+    class CRO: public Module<float>
     {
         private:
             static int idc;
@@ -35,8 +35,8 @@ namespace core
             const int id;
             void process() noexcept override;
 
-            cro_t();
-           ~cro_t() {};
+            CRO();
+           ~CRO() {};
     };
 
 }; // Namespace core

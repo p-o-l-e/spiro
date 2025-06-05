@@ -20,13 +20,8 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "Display.h"
-#include "PluginEditor.h"
-#include "PluginProcessor.h"
-#include "core/modules/interface/cro_interface.hpp"
-#include "core/modules/interface/descriptor.hxx"
-#include "cso.hpp"
-#include "descriptor.hxx"
-#include "spiro.hpp"
+#include "blur.hpp"
+#include "fonts.h"
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -116,7 +111,6 @@ void Display::croMenu()
 {
     if(auto data = _data.lock())
     {
-        int precision = 4;
         layer.get()->clr(0.0f);
         float center_y = area.h / 2;
         float center_x = area.w / 2;

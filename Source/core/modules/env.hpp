@@ -54,7 +54,7 @@ struct breakpoint
 
 
 
-class env_t: public Module<float>
+class ENV: public Module<float>
 {
     private:
         static int idc;  
@@ -80,9 +80,9 @@ class env_t: public Module<float>
         float value_scale = (1.0f / 100.0f);
         bool  regenerate = false;
         bool  freerun = true;
-        void  generate(float*, int);        // Compute env_t to given array
-        env_t();
-       ~env_t();
+        void  generate(float*, int);        // Compute ENV to given array
+        ENV();
+       ~ENV();
 };
 
 

@@ -24,7 +24,7 @@
 
 #pragma once
 #include <cmath>
-#include "../utility/primitives.hpp"
+#include "primitives.hpp"
 
 namespace core {
 

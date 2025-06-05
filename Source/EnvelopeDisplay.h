@@ -41,7 +41,7 @@ class EnvelopeDisplay  : public juce::Component
         float opacity = 0.2f;
         float curve_width = 2.0f;
         int id;
-        core::env_t                 envd;           // Displayed envelope
+        core::ENV                   envd;           // Displayed envelope
         juce::Rectangle<int>        area;           // Display bounds
         core::Rectangle<int>        scope_bounds;   // Scope constraints
         b_point                     node[SEGMENTS]; // Input nodes

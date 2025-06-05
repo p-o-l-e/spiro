@@ -28,9 +28,9 @@
 namespace core 
 {
     using namespace mix;
-    int mix_t::idc = 0;
+    int MIX::idc = 0;
 
-    void mix_t::process() noexcept
+    void MIX::process() noexcept
     {
         Point3D<float> a 
         { 
@@ -45,7 +45,7 @@ namespace core
         ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
     }
 
-    mix_t::mix_t(): id(idc++), Module(idc, &mix::descriptor)
+    MIX::MIX(): id(idc++), Module(idc, &mix::descriptor)
     {
     }
 }

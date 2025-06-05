@@ -26,7 +26,7 @@
 
 namespace core {
 
-    class vcf_t: public Module<float>
+    class VCF: public Module<float>
     {
         private:
             static int idc;
@@ -40,7 +40,7 @@ namespace core {
             const int id;
             void process() noexcept override;
             void reset();
-            vcf_t();
-           ~vcf_t() = default;
+            VCF();
+           ~VCF() = default;
     };
 };

@@ -1,7 +1,4 @@
 #include "rack.hpp"
-#include "descriptor.hxx"
-#include "grid.hpp"
-#include "uid.hpp"
 
 namespace core
 {
@@ -44,25 +41,25 @@ namespace core
     {
         switch (t)
         {
-            case map::module::type::env: return new env_t(); break;
-            case map::module::type::lfo: return new lfo_t(); break;
-            case map::module::type::cso: return new cso_t(); break;
-            case map::module::type::mix: return new mix_t(); break;
-            case map::module::type::pdt: return new pdt_t(); break;
-            case map::module::type::rtr: return new rtr_t(); break;
-            case map::module::type::snh: return new snh_t(); break;
-            case map::module::type::sum: return new sum_t(); break;
-            case map::module::type::vca: return new vca_t(); break;
-            case map::module::type::vcd: return new vcd_t(); break;
-            case map::module::type::vcf: return new vcf_t(); break;
-            case map::module::type::vco: return new vco_t(); break;
-            case map::module::type::cro: return new cro_t(); break;
+            case map::module::type::env: return new ENV(); break;
+            case map::module::type::lfo: return new LFO(); break;
+            case map::module::type::cso: return new CSO(); break;
+            case map::module::type::mix: return new MIX(); break;
+            case map::module::type::pdt: return new PDT(); break;
+            case map::module::type::rtr: return new RTR(); break;
+            case map::module::type::snh: return new SNH(); break;
+            case map::module::type::sum: return new SUM(); break;
+            case map::module::type::vca: return new VCA(); break;
+            case map::module::type::vcd: return new VCD(); break;
+            case map::module::type::vcf: return new VCF(); break;
+            case map::module::type::vco: return new VCO(); break;
+            case map::module::type::cro: return new CRO(); break;
             default: break;
         }
         return nullptr;
     }
    
-    Rack::~Rack() noexcept
+    Rack::~Rack()
     { 
         std::cout<<"Rack::~Rack()\n";
         for(int i = 0; i < grid->sectors; ++i) delete node[i]; 

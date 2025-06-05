@@ -20,9 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-
 #include <JuceHeader.h>
-#include <vector>
 #include "Socket.h"
 #include "wavering.hpp"
 #include "EnvelopeDisplay.h"

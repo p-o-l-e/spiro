@@ -1,7 +1,5 @@
 #pragma once
-
 #include "grid.hpp"
-#include "node.hpp"
 #include "module_headers.hpp"
 
 namespace core
@@ -18,7 +16,7 @@ namespace core
             Module<float>* at(const int&) const noexcept;
             void process(const int&) noexcept;
             Rack(const Grid*);
-           ~Rack() noexcept;
+           ~Rack();
     };
 
 }

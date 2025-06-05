@@ -24,7 +24,7 @@
 
 namespace core 
 {
-    class snh_t: public Module<float>
+    class SNH: public Module<float>
     {
         private:
             static int idc;
@@ -36,8 +36,8 @@ namespace core
             int id;
             void process() noexcept override;
             void reset();
-            snh_t();
-           ~snh_t() = default;
+            SNH();
+           ~SNH() = default;
     };
 
 }

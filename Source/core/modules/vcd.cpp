@@ -27,14 +27,14 @@
 namespace core 
 {
     using namespace vcd;
-    int vcd_t::idc = 0;
+    int VCD::idc = 0;
 
-    vcd_t::vcd_t(): id(idc++), Module(idc, &vcd::descriptor)
+    VCD::VCD(): id(idc++), Module(idc, &vcd::descriptor)
     {
         reset();
     }
 
-    void vcd_t::reset() 
+    void VCD::reset() 
     {
         psf.reset(10.0f);
         apf.a   = 0.6f;
@@ -50,9 +50,9 @@ namespace core
         for(int i = 0; i < oc; ++i) ocv[i].store(0.0f);
     }
 
-    vcd_t::~vcd_t() {}
+    VCD::~VCD() {}
 
-    void vcd_t::process() noexcept
+    void VCD::process() noexcept
     {
         if (departed >= length) departed = 0;
         float time = icv[cvi::time]->load() + ccv[ctl::time]->load();

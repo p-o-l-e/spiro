@@ -139,15 +139,13 @@
       <FILE id="pPgBMD" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="gghgDq" name="Display.h" compile="0" resource="0" file="Source/Display.h"/>
       <FILE id="EX5zI8" name="Display.cpp" compile="1" resource="0" file="Source/Display.cpp"/>
-      <FILE id="vkedxg" name="Menu.cpp" compile="1" resource="0" file="Source/Menu.cpp"/>
-      <FILE id="ssb02o" name="Menu.hpp" compile="0" resource="0" file="Source/Menu.hpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
                JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;-DDEBUG">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;-DDEBUG&#10;-Wunused&#10;-Wunused-but-set-variable&#10;-Wunused-const-variable=1&#10;-Wunused-function&#10;-Wunused-label&#10;-Wunused-local-typedefs&#10;-Wunused-value&#10;-Wunused-variable">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="spiro" linkTimeOptimisation="1"/>

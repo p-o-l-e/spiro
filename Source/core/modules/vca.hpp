@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class vca_t: public Module<float>
+    class VCA: public Module<float>
     {
         private:
             static int idc;
@@ -32,7 +32,7 @@ namespace core
         public:
             const int id;
             void process() noexcept override;
-            vca_t();
-           ~vca_t() = default;
+            VCA();
+           ~VCA() = default;
     };
 }

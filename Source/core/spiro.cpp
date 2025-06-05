@@ -19,15 +19,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 ******************************************************************************************************************************/
-
 #include "spiro.hpp"
-#include "constants.hpp"
-#include "cso_interface.hpp"
-#include "descriptor.hxx"
-#include "grid.hpp"
-#include <cmath>
-#include <cstdint>
-#include <iostream>
+#include "setup/midi.h"
+
 
 namespace core
 {
@@ -56,24 +50,14 @@ namespace core
 
     void Spiro::midi_message(uint8_t status, uint8_t msb, uint8_t lsb)
     {
-        switch(status&0xF0) 
+        switch(status & 0xF0) 
         {
-            case 0x80: // Note off
+            case MidiMessage::NOTE_OFF:
                 note_off(msb);
                 break;
 
-            case 0x90: // Note on
-                if(lsb) note_on (msb, lsb);
-                else    note_off(msb);
-                break;
-
-            case 0xB0: // Control change
-                break;
-
-            case 0xD0: // Channel aftertouch
-                break;
-
-            case 0xE0: // Pitch bend
+            case MidiMessage::NOTE_ON:
+                lsb ? note_on (msb, lsb) : note_off(msb);
                 break;
 
             default:

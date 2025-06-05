@@ -22,18 +22,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "constants.hpp"
-#include "core/grid.hpp"
-#include "descriptor.hxx"
-#include "grid.hpp"
-#include "juce_audio_processors/juce_audio_processors.h"
-#include "juce_core/juce_core.h"
-#include "primitives.hpp"
-#include "spiro.hpp"
-#include "uid.hpp"
-#include "utility.hpp"
-#include <iostream>
-#include <memory>
+
 
 Processor::Processor(): AudioProcessor
                         (
@@ -427,7 +416,6 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 		DataL[i] = L * 0.2f;
 		DataR[i] = R * 0.2f;
 	}
-	auto s = buffer.get()->get();
 }
 
 

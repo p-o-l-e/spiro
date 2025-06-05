@@ -20,16 +20,10 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #pragma once
-
-#include <iostream>
-#include <cstdlib>
-
-#include "grid.hpp"
 #include "modmatrix.hpp"
-#include "utility.hpp"
 #include "rack.hpp"
-#include "iospecs.hpp"
-#include "module_headers.hpp"
+#include "setup/midi.h"
+
 
 namespace core 
 {

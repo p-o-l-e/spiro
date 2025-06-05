@@ -48,7 +48,7 @@ ifeq ($(CONFIG),Debug)
   JUCE_CFLAGS_SHARED_CODE := -fPIC -fvisibility=hidden
   JUCE_TARGET_SHARED_CODE := spiro_dbg.a
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O3 -Wfatal-errors -DDEBUG $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O3 -Wfatal-errors -DDEBUG -Wunused -Wunused-but-set-variable -Wunused-const-variable=1 -Wunused-function -Wunused-label -Wunused-local-typedefs -Wunused-value -Wunused-variable $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++20 $(CXXFLAGS)
   JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig libcurl) -fvisibility=hidden -lrt -ldl -lpthread $(LDFLAGS)
 
@@ -74,7 +74,7 @@ ifeq ($(CONFIG),Release)
   JUCE_CFLAGS_SHARED_CODE := -fPIC -fvisibility=hidden
   JUCE_TARGET_SHARED_CODE := spiro.a
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -flto -Wfatal-errors -DDEBUG $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -flto -Wfatal-errors -DDEBUG -Wunused -Wunused-but-set-variable -Wunused-const-variable=1 -Wunused-function -Wunused-label -Wunused-local-typedefs -Wunused-value -Wunused-variable $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++20 $(CXXFLAGS)
   JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig libcurl) -fvisibility=hidden -flto -lrt -ldl -lpthread $(LDFLAGS)
 
@@ -117,7 +117,6 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/PluginProcessor_a059e380.o \
   $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o \
   $(JUCE_OBJDIR)/Display_6a853823.o \
-  $(JUCE_OBJDIR)/Menu_6d6f9268.o \
   $(JUCE_OBJDIR)/BinaryData_ce4232d4.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
@@ -315,11 +314,6 @@ $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o: ../../Source/PluginEditor.cpp
 $(JUCE_OBJDIR)/Display_6a853823.o: ../../Source/Display.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling Display.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Menu_6d6f9268.o: ../../Source/Menu.cpp
-	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling Menu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/BinaryData_ce4232d4.o: ../../JuceLibraryCode/BinaryData.cpp

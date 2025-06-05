@@ -27,9 +27,9 @@ namespace core
 {
     using namespace vca;
 
-    int vca_t::idc = 0;
+    int VCA::idc = 0;
 
-    void vca_t::process() noexcept
+    void VCA::process() noexcept
     {
         float v = ccv[ctl::amp]->load() + icv[ctl::amp]->load();
         if      (v < 0.0f) v = 0.0f;
@@ -39,7 +39,7 @@ namespace core
         ocv[cvo::b].store(o);
     };
 
-    vca_t::vca_t(): id(idc++), Module(idc, &vca::descriptor[0])
+    VCA::VCA(): id(idc++), Module(idc, &vca::descriptor[0])
     {  
     };
 }

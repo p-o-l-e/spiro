@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class pdt_t: public Module<float>
+    class PDT: public Module<float>
     {
         private:
             static int idc;
@@ -32,8 +32,8 @@ namespace core
         public:
             const int id;
             void process() noexcept override;
-            pdt_t();
-           ~pdt_t() = default;
+            PDT();
+           ~PDT() = default;
     };
 
 }; // Namespace

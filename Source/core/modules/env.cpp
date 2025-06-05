@@ -32,9 +32,9 @@ namespace settings {
         }
     };
 
-int env_t::idc = 0;
+int ENV::idc = 0;
 
-void env_t::start()
+void ENV::start()
 {
     stage = 1;
     departed = 0;
@@ -48,7 +48,7 @@ void env_t::start()
     delta = time[stage] - time[stage - 1];
 }
 
-void env_t::reset()
+void ENV::reset()
 {
     stage    = 0;
     departed = 0;
@@ -61,7 +61,7 @@ void env_t::reset()
     settings::reset_time_multiplier();
 }
 
-void env_t::next_stage()
+void ENV::next_stage()
 {
     stage++;
     departed = 0;
@@ -73,7 +73,7 @@ void env_t::next_stage()
     }
 }
 
-void env_t::jump(int target)
+void ENV::jump(int target)
 {
     departed = 0;
     stage = target;
@@ -82,7 +82,7 @@ void env_t::jump(int target)
     delta = time[stage] - time[stage - 1];
 }
 
-float env_t::iterate()
+float ENV::iterate()
 {
     if(stage > 0)
     {
@@ -95,13 +95,13 @@ float env_t::iterate()
     return 0.0f;
 }
 
-void env_t::process() noexcept
+void ENV::process() noexcept
 {
     // if(stage <= 0) start();
     // iterate();
 }
 
-void env_t::generate(float* data, int width)
+void ENV::generate(float* data, int width)
 {
     reset();
     start();
@@ -110,12 +110,12 @@ void env_t::generate(float* data, int width)
 }
 
 
-core::env_t::env_t(): id(idc++), Module(idc, &env::descriptor[0])
+core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
 {
     reset();
 }
 
-core::env_t::~env_t()
+core::ENV::~ENV()
 {
 }
 

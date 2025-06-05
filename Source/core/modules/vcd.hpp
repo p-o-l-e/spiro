@@ -26,7 +26,7 @@
 
 namespace core {
 
-    class vcd_t: public Module<float>
+    class VCD: public Module<float>
     {
         private:
             static int idc;
@@ -42,8 +42,8 @@ namespace core {
             const int id;
             void process() noexcept override;
             void reset();
-            vcd_t();
-           ~vcd_t();
+            VCD();
+           ~VCD();
     };
 
 

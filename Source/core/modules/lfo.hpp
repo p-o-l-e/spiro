@@ -28,7 +28,7 @@
 
 namespace core 
 {
-    class lfo_t: public Module<float>
+    class LFO: public Module<float>
     {
         public:
             static const int forms = 5;
@@ -41,21 +41,21 @@ namespace core
             float square();
             float triangle();
 
-            float (lfo_t::*form[forms])() = 
+            float (LFO::*form[forms])() = 
             { 
-                &lfo_t::sine,
-                &lfo_t::square,
-                &lfo_t::ramp,
-                &lfo_t::saw,
-                &lfo_t::triangle
+                &LFO::sine,
+                &LFO::square,
+                &LFO::ramp,
+                &LFO::saw,
+                &LFO::triangle
             };
 
         public:
             const int id = 0;
             void process() noexcept override;
             void reset();
-            lfo_t();
-           ~lfo_t() = default;
+            LFO();
+           ~LFO() = default;
     }; 
 
 };

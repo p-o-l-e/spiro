@@ -22,45 +22,17 @@
 #pragma once
 
 #include "canvas.hpp"
+#include <vector>
+
+#if defined(__SSE2__)
+    #define SSE2 1
+#else
+    #define SSE2 0
+#endif
 
 namespace core {
 
-constexpr void hBlur(Canvas<float>* data, const unsigned& scale = 1)
-{
-    int range = scale * 2 + 1;
-    for(unsigned y = 0; y < data->height; y++)
-    {
-        for(unsigned x = 0; x < data->width-range; x++)
-        {
-            float carry = 0.0f;
-            for(int i = 0; i < range; i++)
-            {   
-                carry += data->get(x + i, y);
-            }
-            carry /= range;
-            data->set(x + scale, y, carry);
-        }
-    }
-}
-
-constexpr void vBlur(Canvas<float>* data, const unsigned& scale = 1)
-{
-    int range = scale * 2 + 1;  
-    for(unsigned x = 0; x < data->width; x++)
-    {
-        for(unsigned y = 0; y < data->height-range; y++)
-        {
-            float carry = 0.0f;
-            for(int i = 0; i < range; i++)
-            {   
-                carry += data->get(x, y + i);
-            }
-            carry /= range;
-            data->set(x, y + scale, carry);
-        }
-    }
-}
-
+#ifndef SSE2
 constexpr void boxBlur(Canvas<float>* data, const unsigned& scale = 1)
 {
     int range = scale * 2 + 1;
@@ -77,7 +49,7 @@ constexpr void boxBlur(Canvas<float>* data, const unsigned& scale = 1)
             data->set(x + scale, y, carry);
         }
     }
-    
+
     for(unsigned x = 0; x < data->width; x++)
     {
         for(unsigned y = 0; y < data->height-range; y++)
@@ -93,5 +65,47 @@ constexpr void boxBlur(Canvas<float>* data, const unsigned& scale = 1)
     }
 }
 
+#else
+#include <emmintrin.h>
+
+constexpr void boxBlur(core::Canvas<float>* data, const unsigned& scale = 1)
+{
+    int range = scale * 2 + 1;
+
+    for(unsigned y = 0; y < data->height; y++)
+    {
+        for(unsigned x = 0; x < data->width - range; x++)
+        {
+            __m128 carry = _mm_setzero_ps();
+            for (int i = 0; i < range; i++)
+            {
+                carry = _mm_add_ps(carry, _mm_set1_ps(data->get(x + i, y)));
+            }
+            carry = _mm_div_ps(carry, _mm_set1_ps(float(range)));
+            data->set(x + scale, y, _mm_cvtss_f32(carry));
+        }
+    }
+
+    for(unsigned x = 0; x < data->width; x++)
+    {
+        for(unsigned y = 0; y < data->height - range; y++)
+        {
+            __m128 carry = _mm_setzero_ps();
+            for (int i = 0; i < range; i++)
+            {
+                carry = _mm_add_ps(carry, _mm_set1_ps(data->get(x, y + i)));
+            }
+            carry = _mm_div_ps(carry, _mm_set1_ps(float(range)));
+            data->set(x, y + scale, _mm_cvtss_f32(carry));
+        }
+    }
+}
+
+#endif
 };
+
+
+
+
+
 
