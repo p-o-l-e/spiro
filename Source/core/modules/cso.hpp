@@ -27,7 +27,7 @@ namespace core
 {
     inline const char* formCSO[] = { "SPROTT", "HELMHOLZ", "HALVORSEN", "TSUCS" };
 
-    class cso_t: public Module
+    class cso_t: public Module<float>
     { 
         public:
             static const int forms { 4 };

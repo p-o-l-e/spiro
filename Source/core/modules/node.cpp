@@ -3,21 +3,25 @@
 
 namespace core
 {
-    void Module::fuse() 
+    template<typename T>
+    Module<T>::Module(const int id, const Descriptor* d): position(id), descriptor(d)
     {
+        ccv = new std::atomic<T>*[*descriptor->cv[map::cv::c]];
+        icv = new std::atomic<T>*[*descriptor->cv[map::cv::i]];
+        ocv = new std::atomic<T> [*descriptor->cv[map::cv::o]];
+
         for(int i = 0; i < *descriptor->cv[map::cv::i]; ++i) icv[i] = &zero;
         for(int i = 0; i < *descriptor->cv[map::cv::c]; ++i) ccv[i] = &zero;
         for(int i = 0; i < *descriptor->cv[map::cv::o]; ++i) ocv[i].store(0.0f);
-    };
-
-    void Module::init(const uint8_t& id, const Descriptor* d)
-    {
-        descriptor = d;
-        ccv = std::make_unique<std::atomic<float>*[]>(*descriptor->cv[map::cv::c]);
-        icv = std::make_unique<std::atomic<float>*[]>(*descriptor->cv[map::cv::i]);
-        ocv = std::make_unique<std::atomic<float> []>(*descriptor->cv[map::cv::o]);
-
-        fuse();
-        position = id;
     }
+
+    template<typename T>
+    Module<T>::~Module()
+    {
+        delete[] ocv;
+        delete[] icv;
+        delete[] ccv;
+    }
+
+    template class Module<float>;
 }

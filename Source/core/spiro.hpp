@@ -39,7 +39,7 @@ namespace core
             struct stereo { enum { l, r }; };
         private:
             bool standby = false;
-            Module* mixer; 
+            Module<float>* mixer; 
             void note_on (uint8_t, uint8_t);
             void note_off(uint8_t);
 

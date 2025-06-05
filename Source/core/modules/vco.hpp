@@ -40,7 +40,7 @@ namespace core
     *  VCO
     * 
     **************************************************************************************************************************/
-    class vco_t: public Module
+    class vco_t: public Module<float>
     {   
         private:
             float phase[settings::poly];                // Current phase

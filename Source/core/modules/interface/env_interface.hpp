@@ -45,7 +45,7 @@ namespace core
 
         constexpr core::Control set_c[cc]
         {
-        // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
+        // -- TYPE ---------------------------- X ------ Y ------ W ------ H ---- ID ------- MIN -- MAX -- DEF - SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "at"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ht"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "dt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
@@ -64,7 +64,7 @@ namespace core
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
 
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.00f, 8.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr Rectangle<float> constrain { 0.0f, 0.0f, 228.0f, 215.0f };

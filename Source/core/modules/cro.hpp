@@ -22,10 +22,11 @@
 
 #pragma once
 #include "node.hpp"
+#include "cro_interface.hpp"
 
 namespace core
 {
-    class cro_t: public Module
+    class cro_t: public Module<float>
     {
         private:
             static int idc;

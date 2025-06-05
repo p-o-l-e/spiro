@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class sum_t: public Module
+    class sum_t: public Module<float>
     {
         private:
             static int idc;

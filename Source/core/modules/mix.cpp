@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #include "mix.hpp"
 #include "mix_interface.hpp"
+#include "node.hpp"
 #include "utility.hpp"
 #include "primitives.hpp"
 
@@ -44,8 +45,7 @@ namespace core
         ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
     }
 
-    mix_t::mix_t(): id(idc++)
+    mix_t::mix_t(): id(idc++), Module(idc, &mix::descriptor)
     {
-        init(id, &mix::descriptor);
     }
 }

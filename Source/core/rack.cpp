@@ -5,7 +5,7 @@
 
 namespace core
 {
-    Module* Rack::at(const map::module::type& type, const int& pos) const noexcept
+    Module<float>* Rack::at(const map::module::type& type, const int& pos) const noexcept
     {
         for(int i = 0; i < grid->sectors; ++i)
         {
@@ -17,7 +17,7 @@ namespace core
         return nullptr;
     }
 
-    Module* Rack::at(const int& pos) const noexcept
+    Module<float>* Rack::at(const int& pos) const noexcept
     {
         return node[pos];
     }
@@ -30,7 +30,7 @@ namespace core
     Rack::Rack(const Grid* grid): grid(grid)
     { 
         std::cout<<"Rack::Rack()\n"; 
-        node = new Module*[grid->sectors]; 
+        node = new Module<float>*[grid->sectors]; 
         std::cout<<"-- Space for rack allocated...\n";
         for(int i = 0; i < grid->sectors; ++i)
         {
@@ -40,7 +40,7 @@ namespace core
         std::cout<<"-- Rack built...\n";
     }
 
-    Module* Rack::create_node(const map::module::type& t)
+    Module<float>* Rack::create_node(const map::module::type& t)
     {
         switch (t)
         {

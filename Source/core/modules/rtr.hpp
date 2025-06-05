@@ -25,7 +25,7 @@
 
 namespace core
 {
-    class rtr_t: public Module
+    class rtr_t: public Module<float>
     {
         private:
             static int idc;

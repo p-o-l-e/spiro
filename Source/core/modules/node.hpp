@@ -1,23 +1,22 @@
 #pragma once
-#include <memory>
 #include <atomic>
-#include "interface_headers.hpp"
+#include "descriptor.hxx"
 
 namespace core
 {
+    template<typename T>
     struct Module
     {
-        const Descriptor* descriptor = &fuse::descriptor;
-        int position;
-        std::unique_ptr<std::atomic<float>*[]> ccv;     // Controls
-        std::unique_ptr<std::atomic<float>*[]> icv;     // Inputs
-        std::unique_ptr<std::atomic<float> []> ocv;     // Outputs
+        const Descriptor* const descriptor;
+        const int position;
+        std::atomic<T>** ccv;                   // Controls
+        std::atomic<T>** icv;                   // Inputs
+        std::atomic<T>*  ocv;                   // Outputs
 
-        virtual void fuse();
-        virtual void process() noexcept {};
-        void init(const uint8_t&, const Descriptor*);
-        Module() = default;
-        virtual ~Module() = default;
-        friend class rack_t;
+        virtual void process() noexcept = 0;
+        Module(const int, const Descriptor*);
+        virtual ~Module();
     };
+
+
 }

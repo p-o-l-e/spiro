@@ -21,15 +21,16 @@
 ******************************************************************************************************************************/
 
 #include "vcd.hpp"
+#include "node.hpp"
+#include "vcd_interface.hpp"
 
 namespace core 
 {
     using namespace vcd;
     int vcd_t::idc = 0;
 
-    vcd_t::vcd_t(): id(idc++)
+    vcd_t::vcd_t(): id(idc++), Module(idc, &vcd::descriptor)
     {
-        init(id, &vcd::descriptor);
         reset();
     }
 

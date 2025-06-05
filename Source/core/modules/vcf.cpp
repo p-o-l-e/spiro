@@ -22,18 +22,18 @@
 * Based on: https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 ******************************************************************************************************************************/
 #include "vcf.hpp"
+#include "node.hpp"
+#include "vcf_interface.hpp"
 #include <iostream>
 namespace core 
 {
     using namespace vcf;
     int vcf_t::idc = 0;
 
-    vcf_t::vcf_t(): id(idc++) 
+    vcf_t::vcf_t(): id(idc++), Module(idc, &vcf::descriptor)
     { 
-        init(id, &vcf::descriptor);
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;
-
         reset(); 
     }
 

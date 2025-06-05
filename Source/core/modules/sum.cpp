@@ -20,6 +20,8 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "sum.hpp"
+#include "node.hpp"
+#include "sum_interface.hpp"
 
 namespace core
 {
@@ -32,8 +34,7 @@ namespace core
         ocv[cvo::b].store(ocv[cvo::a]);
     };
 
-    sum_t::sum_t(): id(idc++)
+    sum_t::sum_t(): id(idc++), Module(idc, &sum::descriptor[0])
     { 
-        init(id, &sum::descriptor[0]);
     };
 }

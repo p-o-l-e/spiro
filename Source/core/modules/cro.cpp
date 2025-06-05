@@ -22,6 +22,7 @@
 
 #include "cro.hpp"
 #include "cro_interface.hpp"
+#include "node.hpp"
 
 namespace core 
 {
@@ -33,8 +34,7 @@ namespace core
 
     }
 
-    cro_t::cro_t(): id(idc++)
+    cro_t::cro_t(): id(idc++), Module(idc, &cro::descriptor)    
     {
-        init(id, &cro::descriptor);
     }
 }

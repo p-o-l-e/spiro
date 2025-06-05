@@ -27,6 +27,7 @@
 #include <iostream>
 #include <atomic>
 #include "node.hpp"
+#include "env_interface.hpp"
 #include "constants.hpp"
 #include "iospecs.hpp"
 
@@ -53,7 +54,7 @@ struct breakpoint
 
 
 
-class env_t: public Module
+class env_t: public Module<float>
 {
     private:
         static int idc;  
@@ -74,6 +75,7 @@ class env_t: public Module
         void  jump(int);                    // Jump to stage N 
         void  reset();
         float iterate();
+        void  process() noexcept override;
         std::atomic<float>* time_scale = &one;
         float value_scale = (1.0f / 100.0f);
         bool  regenerate = false;

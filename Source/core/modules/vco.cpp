@@ -21,10 +21,12 @@
 ******************************************************************************************************************************/
 #include "vco.hpp"
 #include "constants.hpp"
+#include "node.hpp"
 #include "utility.hpp"
 
 #include "iospecs.hpp"
 #include "scales.h"
+#include "vco_interface.hpp"
 
 namespace core
 {
@@ -126,9 +128,8 @@ namespace core
     }
 
 
-    vco_t::vco_t(): id(idc++)
+    vco_t::vco_t(): id(idc++), Module(idc, &vco::descriptor)
     {
-        init(id, &vco::descriptor);
         reset();
     }
 

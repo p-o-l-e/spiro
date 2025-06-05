@@ -20,6 +20,8 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "rtr.hpp"
+#include "node.hpp"
+#include "rtr_interface.hpp"
 
 namespace core 
 {
@@ -54,9 +56,8 @@ namespace core
 
     }
 
-    rtr_t::rtr_t(): id(idc++)
+    rtr_t::rtr_t(): id(idc++), Module(idc, &rtr::descriptor)
     { 
-        init(id, &rtr::descriptor);
     };
 
 }

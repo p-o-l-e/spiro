@@ -26,7 +26,7 @@
 
 namespace core {
 
-    class vcd_t: public Module
+    class vcd_t: public Module<float>
     {
         private:
             static int idc;

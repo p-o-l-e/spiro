@@ -20,6 +20,8 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "lfo.hpp"
+#include "lfo_interface.hpp"
+#include "node.hpp"
 
 namespace core
 {
@@ -75,9 +77,8 @@ namespace core
         for(int i = 0; i < lfo::oc; ++i) ocv[i].store(0.0f);
     }
 
-    lfo_t::lfo_t(): id(idc++)
+    lfo_t::lfo_t(): id(idc++), Module(idc, &lfo::descriptor)
     {
-        init(id, &lfo::descriptor);
         reset();
     };
 }

@@ -23,6 +23,7 @@
 #include "cso_interface.hpp"
 #include "constants.hpp"
 #include "iospecs.hpp"
+#include "node.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -191,9 +192,8 @@ void cso_t::tsucs()
     }
 }
 
-cso_t::cso_t(): id(idc++)
+cso_t::cso_t(): id(idc++), Module(idc, &cso::descriptor[0])
 {
-    init(id, &cso::descriptor[0]);
 }
 
 

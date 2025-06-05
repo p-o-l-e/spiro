@@ -21,6 +21,8 @@
 ******************************************************************************************************************************/
 #include "pdt.hpp"
 #include "interface/pdt_interface.hpp"
+#include "node.hpp"
+#include "pdt_interface.hpp"
 
 namespace core {
     
@@ -42,8 +44,7 @@ namespace core {
         ocv[0].store( o ? s : 0.0f);
     };
 
-    pdt_t::pdt_t(): id(idc++)
+    pdt_t::pdt_t(): id(idc++), Module(idc, &pdt::descriptor)
     { 
-        init(id, &pdt::descriptor); 
     };
 }

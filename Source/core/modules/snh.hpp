@@ -24,7 +24,7 @@
 
 namespace core 
 {
-    class snh_t: public Module
+    class snh_t: public Module<float>
     {
         private:
             static int idc;

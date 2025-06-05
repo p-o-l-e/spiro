@@ -24,7 +24,7 @@
 
 namespace core
 {
-    class mix_t: public Module
+    class mix_t: public Module<float>
     {
         private:
             static int idc;

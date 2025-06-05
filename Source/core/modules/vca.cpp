@@ -20,6 +20,8 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "vca.hpp"
+#include "node.hpp"
+#include "vca_interface.hpp"
 
 namespace core 
 {
@@ -37,8 +39,7 @@ namespace core
         ocv[cvo::b].store(o);
     };
 
-    vca_t::vca_t(): id(idc++)
+    vca_t::vca_t(): id(idc++), Module(idc, &vca::descriptor[0])
     {  
-        init(id, &vca::descriptor[0]);
     };
 }

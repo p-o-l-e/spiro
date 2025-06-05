@@ -73,10 +73,10 @@ void env_t::next_stage()
     }
 }
 
-void env_t::jump(int to)
+void env_t::jump(int target)
 {
     departed = 0;
-    stage = to;
+    stage = target;
     value[stage - 1] = out.load();
     theta = value[stage] - value[stage - 1];
     delta = time[stage] - time[stage - 1];
@@ -95,6 +95,12 @@ float env_t::iterate()
     return 0.0f;
 }
 
+void env_t::process() noexcept
+{
+    // if(stage <= 0) start();
+    // iterate();
+}
+
 void env_t::generate(float* data, int width)
 {
     reset();
@@ -104,9 +110,8 @@ void env_t::generate(float* data, int width)
 }
 
 
-core::env_t::env_t(): id(idc++)
+core::env_t::env_t(): id(idc++), Module(idc, &env::descriptor[0])
 {
-    init(id, &env::descriptor[0]);
     reset();
 }
 

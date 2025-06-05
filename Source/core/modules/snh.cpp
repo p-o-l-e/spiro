@@ -22,6 +22,8 @@
 #include "snh.hpp"
 #include "constants.hpp"
 #include "iospecs.hpp"
+#include "node.hpp"
+#include "snh_interface.hpp"
 
 namespace core 
 {
@@ -58,9 +60,8 @@ void snh_t::reset()
     scale = 40.0f;
 }
 
-snh_t::snh_t(): id(idc++)
+snh_t::snh_t(): id(idc++), Module(idc, &snh::descriptor[0])
 {
-    init(id, &snh::descriptor[0]);
     reset();
 }
 

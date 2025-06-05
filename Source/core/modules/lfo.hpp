@@ -24,10 +24,11 @@
 #include "constants.hpp"
 #include "iospecs.hpp"
 #include "node.hpp"
+#include "lfo_interface.hpp"
 
 namespace core 
 {
-    class lfo_t: public Module
+    class lfo_t: public Module<float>
     {
         public:
             static const int forms = 5;
