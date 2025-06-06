@@ -409,12 +409,12 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 
 	for(int i = 0; i < samples; i++)
 	{
+	    spiro.process();
 	    auto L = spiro.out[core::Spiro::stereo::l].load();
 	    auto R = spiro.out[core::Spiro::stereo::r].load();
-	    spiro.process();
-		buffer.get()->set(core::Point2D<float>{ L , R });
 		DataL[i] = L * 0.2f;
 		DataR[i] = R * 0.2f;
+		buffer.get()->set(core::Point2D<float>{ L , R });
 	}
 }
 

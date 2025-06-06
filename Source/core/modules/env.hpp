@@ -45,14 +45,6 @@ namespace core
 #define SEGMENTS        6 
 #define env_curves_n    4
 
-struct breakpoint
-{
-    std::atomic<float>* time  = &zero;
-    std::atomic<float>* value = &zero;
-    std::atomic<float>* curve = &zero;
-};
-
-
 
 class ENV: public Module<float>
 {
@@ -62,7 +54,6 @@ class ENV: public Module<float>
         unsigned delta = 0;
     public:
         const int id = 0;
-        breakpoint  node[SEGMENTS];
         unsigned    time[SEGMENTS];
         float      value[SEGMENTS];
         float      curve[SEGMENTS];
@@ -82,35 +73,35 @@ class ENV: public Module<float>
         bool  freerun = true;
         void  generate(float*, int);        // Compute ENV to given array
         ENV();
-       ~ENV();
+       ~ENV() = default;
 };
 
-
-////////////////////////////////////////////////////////////////////////////////////////////
-// t = Time - Amount of time that has passed since the beginning.
-// b = Beginning value - The starting point of the transition.
-// c = Change in value - The amount of change needed to go from starting point to end point.
-// d = Duration - Amount of time the transition will take.
-////////////////////////////////////////////////////////////////////////////////////////////
-constexpr float fLinear(float t, float b, float c, float d)
+/******************************************************************************************************************************
+*   Easing functions
+*   t = Time - Amount of time that has passed since the beginning.
+*   b = Beginning value - The starting point of the transition.
+*   c = Change in value - The amount of change needed to go from starting point to end point.
+*   d = Duration - Amount of time the transition will take.
+******************************************************************************************************************************/
+constexpr float fLinear(float t, const float b, const float c, const float d)
 {
         return c * t / d + b;
 }
-////////////////////////////////////////////////////////////////////////////////////////////
-constexpr float fCubicIn(float t, float b, float c, float d)
+
+constexpr float fCubicIn(float t, const float b, const float c, const float d)
 {
         t /= d;
         return c * t * t * t + b;
 }
-////////////////////////////////////////////////////////////////////////////////////////////
-constexpr float fCubicOut(float t, float b, float c, float d)
+
+constexpr float fCubicOut(float t, const float b, const float c, const float d)
 {
         t /= d;
         t--;
         return c * (t * t * t + 1.0f) + b;
 };
-////////////////////////////////////////////////////////////////////////////////////////////
-constexpr float fCubicIO(float t, float b, float c, float d)
+
+constexpr float fCubicIO(float t, const float b, const float c, const float d)
 {
         t /= (d * 0.5f);
         if (t < 1.0f) return c * 0.5f * t * t * t + b;
@@ -118,7 +109,7 @@ constexpr float fCubicIO(float t, float b, float c, float d)
         return c * 0.5f * (t * t * t + 2.0f) + b;
 }
 
-inline float (*formenv_t[])(float, float, float, float) = 
+inline float (*ease[])(float, const float, const float, const float) = 
 { 
     fLinear,
     fCubicOut,

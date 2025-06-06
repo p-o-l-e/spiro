@@ -20,8 +20,9 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
+#include <memory>
 
-Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor (&o), processor (o), valueTreeState (tree)
+Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor(&o), processor(o), valueTreeState(tree)
 {
     std::cout<<"-- Constructing Editor...\n";
     processor.suspendProcessing(true);
@@ -110,14 +111,15 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         buttonAttachment.emplace_back(std::make_unique<ButtonAttachment>(valueTreeState, core::grid.name(uid, true), *button[i]));
         addAndMakeVisible(button[i].get());
     }
-    
-    for(int i = 0; i < 4; ++i)
+   
+    for(int i = 0; i < envn; ++i)
     {
-        env[i].id = i;
-        env[i].addListener(this);
-        env[i].setOpaque(true);
-        env[i].setPaintingIsUnclipped(true);
-        addAndMakeVisible(env[i]);
+        env.emplace_back(std::make_unique<EnvelopeDisplay>(&processor, i));
+
+        // env[i].get()->addListener(this);
+        env[i].get()->setOpaque(true);
+        env[i].get()->setPaintingIsUnclipped(true);
+        addAndMakeVisible(env[i].get());
     }
     processor.addListener(this);
 
@@ -515,13 +517,13 @@ void Editor::resized()
             core::constraints::envd.w,
             core::constraints::envd.h 
         };
-        env[i].setBounds(r);
+        env[i].get()->setBounds(r);
     }
 
-    env[0].setVisible(true);
-    env[1].setVisible(false);
-    env[2].setVisible(false);
-    env[3].setVisible(false);
+    env[0].get()->setVisible(true);
+    env[1].get()->setVisible(false);
+    env[2].get()->setVisible(false);
+    env[3].get()->setVisible(false);
 
     processor.sockets->setBounds(juce::Rectangle<int> 
     {

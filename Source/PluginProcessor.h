@@ -23,7 +23,6 @@
 #include <JuceHeader.h>
 #include "Socket.h"
 #include "wavering.hpp"
-#include "EnvelopeDisplay.h"
 #include "spiro.hpp"
 
 class Processor: public juce::AudioProcessor

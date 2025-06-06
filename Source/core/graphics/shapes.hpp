@@ -89,9 +89,9 @@ constexpr void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, floa
     int xe = (int) ceil(std::max(ax, bx) + radius);
     int yo = (int)floor(std::min(ay, by) - radius);
     int ye = (int) ceil(std::max(ay, by) + radius);
-    for (int y = yo; y <= ye; y++)
+    for(int y = yo; y <= ye; y++)
     {
-        for (int x = xo; x <= xe; x++)
+        for(int x = xo; x <= xe; x++)
         {
             alphablend(canvas, x, y, std::max(std::min(0.5f - capsule_sdf(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
         }

@@ -21,9 +21,12 @@
 ******************************************************************************************************************************/
 
 #include "env.hpp"
-namespace core {
-    
-namespace settings {
+#include "interface/env_interface.hpp"
+namespace core 
+{
+    using namespace env; 
+    namespace settings 
+    {
         unsigned env_time_max_ms = 120 /* seconds */ * 1000;
         float env_time_multiplier = 1;
         void reset_time_multiplier()
@@ -40,9 +43,9 @@ void ENV::start()
     departed = 0;
     for(int i = 0; i < SEGMENTS; ++i)
     {
-        value[i] = node[i].value->load() * value_scale;
-        time[i]  = node[i].time->load() * time_multiplier * time_scale->load();
-        curve[i] = node[i].curve->load();
+        value[i] = ccv[ctl::aa + i]->load() * value_scale;
+        time[i]  = ccv[ctl::at + i]->load() * time_multiplier * time_scale->load();
+        curve[i] = ccv[ctl::af + i]->load();
     }
     theta = value[stage] - value[stage - 1];
     delta = time[stage] - time[stage - 1];
@@ -86,7 +89,7 @@ float ENV::iterate()
 {
     if(stage > 0)
     {
-        out.store(formenv_t[(int)curve[stage]](float(departed), value[stage - 1], theta, float(delta)));
+        out.store(ease[(int)curve[stage]](float(departed), value[stage - 1], theta, float(delta)));
         departed++;
         if (departed >= delta) next_stage();
         if (std::isnan(out.load())) out.store(0.0f);
@@ -115,13 +118,5 @@ core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
     reset();
 }
 
-core::ENV::~ENV()
-{
-}
 
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
 };

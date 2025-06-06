@@ -21,34 +21,31 @@
 ******************************************************************************************************************************/
 
 #pragma once
-#include <JuceHeader.h>
 #include <iostream>
+#include <JuceHeader.h>
+#include "PluginProcessor.h"
 #include "Colours.hpp"
-#include "env.hpp"
+#include "envelope.h"
 
-struct b_point
-{
-    std::atomic<float> time  { 0.0f };
-    std::atomic<float> value { 0.0f };
-    std::atomic<float> curve { 0.0f };
-};
-
-class EnvelopeDisplay  : public juce::Component
+class EnvelopeDisplay: public juce::Component
 {
     public:
+        enum Stage { A, D, S, R, Stages };
+        const int nodes = 5;
         int   gap = 5;                              // = Dragger radius
         int   diameter = gap * 2 + 1;
         float opacity = 0.2f;
         float curve_width = 2.0f;
-        int id;
-        core::ENV                   envd;           // Displayed envelope
+        const int id;
+        core::Envelope              env;           // Displayed envelope
         juce::Rectangle<int>        area;           // Display bounds
         core::Rectangle<int>        scope_bounds;   // Scope constraints
-        b_point                     node[SEGMENTS]; // Input nodes
         std::unique_ptr<float[]>    data;
         juce::Colour colour = colour_set[10];
         void plot(juce::Graphics&, float);
-        void load();                                // Load from memory
+        void sync();                                // Load from tree
+        void load();                                // Load to display
+        void transmit();                            // Save to tree
         void updateNodes();
         void setDefaults();
         void paint(juce::Graphics& g) override;
@@ -58,7 +55,7 @@ class EnvelopeDisplay  : public juce::Component
         * Node handler
         *
         **********************************************************************************************************************/
-        struct  NodePoint : public juce::Component
+        struct NodePoint: public juce::Component
         {
             juce::ComponentDragger node;
             juce::ComponentBoundsConstrainer constrainer;
@@ -87,13 +84,13 @@ class EnvelopeDisplay  : public juce::Component
                 if(x >= cR) setCentrePosition(x = cR, y);
                 if(x <= cL) setCentrePosition(x = cL, y);
 
-                parent->envd.regenerate = true;
+                parent->env.regenerate = true;
                 parent->repaint();
             }
 
             void mouseUp(const juce::MouseEvent&) override 
             { 
-                parent->listeners.call([this](Listener &l) { l.envChanged(parent->id); });
+                // parent->listeners.call([this](Listener &l) { l.envChanged(parent->id); });
             };
 
             NodePoint(EnvelopeDisplay* p): parent(p)
@@ -111,34 +108,36 @@ class EnvelopeDisplay  : public juce::Component
             }
         };
 
-        NodePoint A;
-        NodePoint D;
-        NodePoint S;
-        NodePoint R;
-       /***********************************************************************************************************************
-        * Listener
-        **********************************************************************************************************************/
-        struct Listener 
-        {
-            virtual ~Listener() = default;
-            virtual void envChanged(int) {};
-        };
-        void addListener(Listener *l) { listeners.add(l); }
-        void removeListener(Listener *l) { listeners.remove(l); }
-       /***********************************************************************************************************************
-        * 
-        **********************************************************************************************************************/
+        NodePoint NP[Stages];
+
+       // /***********************************************************************************************************************
+       //  * Listener
+       //  **********************************************************************************************************************/
+       //  struct Listener 
+       //  {
+       //      virtual ~Listener() = default;
+       //      virtual void envChanged(int) {};
+       //  };
+       //  void addListener(Listener *l) { listeners.add(l); }
+       //  void removeListener(Listener *l) { listeners.remove(l); }
+       // /***********************************************************************************************************************
+       //  * 
+       //  **********************************************************************************************************************/
         void mouseUp(const juce::MouseEvent&) override 
         { 
-            listeners.call([this](Listener &l) { l.envChanged(id); });
+            transmit();
+            // listeners.call([this](Listener &l) { l.envChanged(id); });
         };
         void mouseDown(const juce::MouseEvent&) override;
 
-        EnvelopeDisplay();
+        EnvelopeDisplay(Processor*, const int);
        ~EnvelopeDisplay() override;
 
     private:
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDisplay)
-        juce::ListenerList<Listener> listeners;
+
+        Processor *processor;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeDisplay)
+        // juce::ListenerList<Listener> listeners;
 };
+
 

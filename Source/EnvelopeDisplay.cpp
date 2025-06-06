@@ -20,29 +20,81 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "EnvelopeDisplay.h"
+#include "PluginProcessor.h"
+#include "core/modules/interface/descriptor.hxx"
+#include "core/modules/interface/env_interface.hpp"
+#include "descriptor.hxx"
+#include "env.hpp"
+#include "uid.hpp"
+#include <iostream>
 
-EnvelopeDisplay::EnvelopeDisplay (): A(this), D(this), S(this), R(this)
+EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID): processor(p), id(ID), NP(this, this, this, this)
 {
-    node[1].curve.store(1.0f);
-    node[2].curve.store(3.0f);
-    node[3].curve.store(0.0f);
-    node[4].curve.store(2.0f);
-    node[5].curve.store(1.0f);
-
-    for(int i = 0; i < SEGMENTS; ++i)
+    for(int i = 0; i < Stages; ++i)
     {
-        envd.node[i].time  = &node[i].time;
-        envd.node[i].value = &node[i].value;
-        envd.node[i].curve = &node[i].curve;
+        addAndMakeVisible(NP[i]);
     }
-    envd.time_scale = &core::one;
-    envd.time_multiplier = 1.0f;
-    envd.value_scale = 1.0f;
+}
 
-    addAndMakeVisible(A);
-    addAndMakeVisible(D);
-    addAndMakeVisible(S);
-    addAndMakeVisible(R);
+
+void EnvelopeDisplay::sync()
+{
+    auto module = processor->spiro.rack.at(core::map::module::env, id);
+    for(int i = 0; i < nodes; ++i)
+    {
+        env.node[i + 1].data[core::breakpoint::Form].store(*module->ccv[core::env::ctl::af + i]);
+        env.node[i + 1].data[core::breakpoint::Amplitude].store(*module->ccv[core::env::ctl::aa + i] * scope_bounds.h);
+        env.node[i + 1].data[core::breakpoint::Time].store(*module->ccv[core::env::ctl::at + i] * scope_bounds.w);
+        if(id == 0)
+        {
+        std::cout<<"Sync::Form :"<<env.node[i + 1].data[core::breakpoint::Form].load()<<"\n";
+        std::cout<<"Sync::Time :"<<env.node[i + 1].data[core::breakpoint::Time].load()<<"\n";
+        std::cout<<"Sync::Amp  :"<<env.node[i + 1].data[core::breakpoint::Amplitude].load()<<"\n\n";
+        }
+    }
+}
+
+void EnvelopeDisplay::transmit()
+{
+    static const int offset[core::breakpoint::Count]
+    {
+        core::env::ctl::af,
+        core::env::ctl::aa,
+        core::env::ctl::at
+    };
+
+    static const int type[core::breakpoint::Count]
+    {
+        core::breakpoint::Form,
+        core::breakpoint::Amplitude,
+        core::breakpoint::Time
+    };
+
+    for(int j = 0; j < core::breakpoint::Count; ++j)
+    {
+        for(int i = 0; i < nodes; ++i)
+        {
+            auto uid = core::uid_t { core::map::module::env, id, core::map::cv::c, offset[j] + i }; 
+            auto index = core::grid.getIndex(uid);
+
+            processor->parameters[index] = processor->tree.getParameter(core::grid.name(uid, true));
+            float value = env.node[i + 1].data[type[j]];
+            if     (offset[j] == core::env::ctl::af) std::cout<<"Form: "<<value<<"\n";
+            else if(offset[j] == core::env::ctl::aa)
+            {
+                value /= scope_bounds.h;
+                std::cout<<"Amp : "<<value<<"\n";
+            }
+            else if(offset[j] == core::env::ctl::at) 
+            {
+                value /= scope_bounds.w;
+                std::cout<<"Time: "<<value<<"\n";
+            }
+            processor->parameters[index]->beginChangeGesture();
+            processor->parameters[index]->setValueNotifyingHost(processor->parameters[index]->convertTo0to1(value));
+            processor->parameters[index]->endChangeGesture();
+        }
+    }
 }
 
 EnvelopeDisplay::~EnvelopeDisplay()
@@ -53,65 +105,58 @@ EnvelopeDisplay::~EnvelopeDisplay()
 void EnvelopeDisplay::updateNodes()
 {  
     //  [0] = OFF stage
-    node[0].time.store(0.0f);   
-    node[0].value.store(0.0f);
+    env.node[0].data[core::breakpoint::Time].store(0.0f);   
+    env.node[0].data[core::breakpoint::Amplitude].store(0.0f);
 
-    node[1].value.store(scope_bounds.h - A.y + gap);
-    node[1].time.store(A.x - gap);
+    for(int i = 0; i < Stages; ++i)
+    {
+        env.node[i + 1].data[core::breakpoint::Amplitude].store(scope_bounds.h - NP[i].y + gap);
+        env.node[i + 1].data[core::breakpoint::Time].store(NP[i].x - gap);
+    }
 
-    node[2].value.store(scope_bounds.h - D.y + gap);
-    node[2].time.store(D.x - gap);
-
-    node[3].value.store(scope_bounds.h - S.y + gap);
-    node[3].time.store(S.x - gap);
-
-    node[4].value.store(scope_bounds.h - R.y + gap);
-    node[4].time.store(R.x - gap);
-
-    node[5].time.store(scope_bounds.w);
-    node[5].value.store(0.0f);
+    env.node[5].data[core::breakpoint::Time].store(scope_bounds.w);
+    env.node[5].data[core::breakpoint::Amplitude].store(0.0f);
 }
 
 void EnvelopeDisplay::load()
 {
-    A.y = area.getHeight() - node[1].value.load() - gap;
-    A.x = node[1].time.load() + gap;
-    A.setCentrePosition(A.x, A.y);
-
-    D.y = area.getHeight() - node[2].value.load() - gap;
-    D.x = node[2].time.load() + gap;
-    D.setCentrePosition(D.x, D.y);
-
-    S.y = area.getHeight() - node[3].value.load() - gap;
-    S.x = node[3].time.load() + gap;
-    S.setCentrePosition(S.x, S.y);
-
-    R.y = area.getHeight() - node[4].value.load() - gap;
-    R.x = node[4].time.load() + gap;
-    R.setCentrePosition(R.x, R.y);
-
+    sync();
+    if(env.node[1].data[core::breakpoint::Time].load() < 1.0f) [[unlikely]]
+    {
+        std::cout<<"Skipping to defaults...\n";
+        setDefaults();
+        repaint();
+        return;
+    }
+    for(int i = 0; i < Stages; ++i)
+    {
+        NP[i].y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Amplitude].load() - gap;
+        NP[i].x = env.node[i + 1].data[core::breakpoint::Time].load() + gap;
+        NP[i].setCentrePosition(NP[i].x, NP[i].y);
+        std::cout<<NP[i].y<<" : "<<NP[i].x<<"\n";
+    }
     repaint();
 }
 
 void EnvelopeDisplay::paint (juce::Graphics& g)
 {
     // Reset individual points left/right constraints
-    A.cL = gap;
-    A.cR = D.x - gap;
-    D.cL = A.x + gap;
-    D.cR = S.x - gap;
-    S.cL = D.x + gap;
-    S.cR = R.x - gap;
-    R.cL = S.x + gap;
-    R.cR = scope_bounds.w  + gap; 
+    NP[A].cL = gap + 1;
+    NP[A].cR = NP[D].x - gap;
+    NP[D].cL = NP[A].x + gap;
+    NP[D].cR = NP[S].x - gap;
+    NP[S].cL = NP[D].x + gap;
+    NP[S].cR = NP[R].x - gap;
+    NP[R].cL = NP[S].x + gap;
+    NP[R].cR = scope_bounds.w  + gap; 
 
     updateNodes();
     plot(g, 0.0f);
     g.setColour(colour);
-    g.drawLine(A.x, A.y, A.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(D.x, D.y, D.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(S.x, S.y, S.x, area.getHeight() - gap, 1.0f);
-    g.drawLine(R.x, R.y, R.x, area.getHeight() - gap, 1.0f);
+    for(int i = 0; i < Stages; ++i)
+    {
+        g.drawLine(NP[i].x, NP[i].y, NP[i].x, area.getHeight() - gap, 1.0f);
+    }
     g.drawHorizontalLine
     (
         area.getY() + area.getHeight() - gap, 
@@ -131,16 +176,17 @@ void EnvelopeDisplay::resized()
     data = std::make_unique<float[]>(scope_bounds.w);
 
     setDefaults();
+    load();
     updateNodes();
     repaint();
 }
 
 void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
 {
-    sync();
+    // sync();
     float h  = area.getHeight();
     
-    envd.generate(data.get(), scope_bounds.w);
+    env.generate(data.get(), scope_bounds.w);
 
     float py, cy = 0.0f;
     float px, cx = gap;
@@ -163,20 +209,22 @@ void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
 {
     auto l = [this](const int p) 
     {
-        node[p].curve.load() >= 3.0f ? node[p].curve.store(0.0f) : node[p].curve.store(envd.node[p].curve->load() + 1.0f);
+        env.node[p].data[core::breakpoint::Form].load() >= 3.0f ? 
+        env.node[p].data[core::breakpoint::Form].store(0.0f) :
+        env.node[p].data[core::breakpoint::Form].store(env.node[p].data[core::breakpoint::Form].load() + 1.0f);
     };
-    if     ((event.x >   0) && (event.x < A.x)) l(1);
-    else if((event.x > A.x) && (event.x < D.x)) l(2);
-    else if((event.x > D.x) && (event.x < S.x)) l(3);
-    else if((event.x > S.x) && (event.x < R.x)) l(4);
-    else if((event.x > R.x) && (event.x < area.getWidth())) l(5);
+    if     ((event.x >       0) && (event.x < NP[A].x)) l(1);
+    else if((event.x > NP[A].x) && (event.x < NP[D].x)) l(2);
+    else if((event.x > NP[D].x) && (event.x < NP[S].x)) l(3);
+    else if((event.x > NP[S].x) && (event.x < NP[R].x)) l(4);
+    else if((event.x > NP[R].x) && (event.x < area.getWidth())) l(5);
     repaint();
 }
 
 void EnvelopeDisplay::setDefaults()
 {
-    A.setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
-    D.setBounds(area.getWidth() /  5, area.getHeight() /  3, diameter, diameter);
-    S.setBounds(area.getWidth() /  3, area.getHeight() /  3, diameter, diameter);
-    R.setBounds(area.getWidth() /  2, area.getHeight() /  2, diameter, diameter);
+    NP[A].setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
+    NP[D].setBounds(area.getWidth() /  5, area.getHeight() /  3, diameter, diameter);
+    NP[S].setBounds(area.getWidth() /  3, area.getHeight() /  3, diameter, diameter);
+    NP[R].setBounds(area.getWidth() /  2, area.getHeight() /  2, diameter, diameter);
 }

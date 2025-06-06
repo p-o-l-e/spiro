@@ -58,11 +58,11 @@ namespace core
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ra"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C  },
 
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "af"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "hf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "df"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 4.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "af"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "hf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "df"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
 
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000  },
         };

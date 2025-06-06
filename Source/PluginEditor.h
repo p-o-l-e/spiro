@@ -23,12 +23,14 @@
 
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
+#include "EnvelopeDisplay.h"
 #include "Display.h"
+#include <vector>
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 
-class Editor: public juce::AudioProcessorEditor, public juce::Timer, public EnvelopeDisplay::Listener, public Processor::Listener, public Display::Listener
+class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public EnvelopeDisplay::Listener,*/ public Processor::Listener, public Display::Listener
 {
     public:
         enum Sprite { Momentary, Radio, Slider };
@@ -56,7 +58,8 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, public Enve
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
+        const int envn = 4;
         int envelope_shown = 0;
-        EnvelopeDisplay env[4];
+        std::vector<std::unique_ptr<EnvelopeDisplay>> env;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Editor)
 };
