@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "spiro.hpp"
+#include "modules/interface/descriptor.hxx"
 #include "setup/midi.h"
 
 
@@ -36,11 +37,12 @@ namespace core
     Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
     {
         mixer = rack.at(map::module::type::mix, 0);
+        for(int i = 0; i < 4; ++i) envelope[i] = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
     }
 
     void Spiro::note_on(uint8_t msb, uint8_t lsb)
     {
-
+        for(int i = 0; i < 4; ++i) envelope[i]->start();
     }
 
     void Spiro::note_off(uint8_t msb)

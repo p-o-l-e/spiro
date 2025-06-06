@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
+#include "Display.h"
 #include <memory>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor(&o), processor(o), valueTreeState(tree)
@@ -140,7 +141,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
-        stopTimer();
+        fade = true;
         display->page = Display::Page::MainMenu;
         display->mainMenu();
     };
@@ -153,6 +154,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
     {
         startTimerHz(core::settings::scope_fps);
+        fade = false;
         display->page = Display::Page::CroA;
         display->croMenu();
         // display->layerOn = false;
@@ -167,7 +169,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
         {
-            stopTimer();
+            fade = true;
             display->page = static_cast<Display::Page>(Display::VcoA + i);
             display->moduleMenu(&processor.spiro, core::map::module::vco, i);
         };
@@ -182,7 +184,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
         {
-            stopTimer();
+            fade = true;
             display->page = static_cast<Display::Page>(Display::CsoA + i);
             display->moduleMenu(&processor.spiro, core::map::module::cso, i);
         };
@@ -197,7 +199,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         button[(core::grid.getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
         {
-            stopTimer();
+            fade = true;
             display->page = static_cast<Display::Page>(Display::LfoA + i);
             display->moduleMenu(&processor.spiro, core::map::module::lfo, i);
         };
@@ -249,7 +251,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft E (Jump Left) (Step Left for Scope)
+    *  λ - Soft E (Jump Left) (Step Left for Scope) (Cancel for Menu)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
@@ -259,6 +261,13 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
             auto control = core::grid.control(uid);
             setOption(uid, -control->step, control->max);
+        }
+        else if(display->page == Display::Page::MainMenu)
+        {
+            startTimerHz(core::settings::scope_fps);
+            fade = false;
+            display->page = Display::Page::CroA;
+            display->croMenu();
         }
         else 
         {        
@@ -270,7 +279,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft F (Step Left) (Step Right for Scope)
+    *  λ - Soft F (Step Left) (Step Right for Scope) (Ok for Menu)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
@@ -280,6 +289,14 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
             auto control = core::grid.control(uid);
             setOption(uid, control->step, control->max);
+        }
+        else if(display->page == Display::Page::MainMenu)
+        {
+            startTimerHz(core::settings::scope_fps);
+            display->page = Display::Page::Save;
+            display->saveMenu();
+            display->grabKeyboardFocus();
+            display->inputBox.setText(processor.currentPresetName);
         }
         else 
         {
@@ -302,6 +319,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto control = core::grid.control(uid);
             setOption(uid, -control->step, control->max);
         }
+        else if(display->page == Display::Page::MainMenu)
+        {
+        }
         else 
         {
             auto control = core::grid.control(display->uid);
@@ -322,6 +342,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
             auto control = core::grid.control(uid);
             setOption(uid, control->step, control->max);
+        }
+        else if(display->page == Display::Page::MainMenu)
+        {
         }
         else 
         {
@@ -452,7 +475,6 @@ Editor::~Editor()
 {
     stopTimer();
     std::cout<<"-- Editor deconstructed\n";
-
 }
 
 void Editor::timerCallback()  
@@ -464,6 +486,9 @@ void Editor::timerCallback()
         core::constraints::oled.w,
         core::constraints::oled.h
     }); 
+    static int f = 0;
+    if(fade) ++f;
+    if(f > core::settings::scope_fps) { fade = false; f = 0; stopTimer(); };
 }
 
 /*****************************************************************************************************************************

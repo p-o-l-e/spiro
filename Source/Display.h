@@ -60,7 +60,6 @@ class Display: public juce::ImageComponent
 
 	private:
         Processor *processor;
-		OledLabel inputBox { &contrast };
 		std::unique_ptr<juce::Image> image;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
@@ -81,6 +80,7 @@ class Display: public juce::ImageComponent
 
 	public:
         std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
+	    OledLabel inputBox { &contrast };
 
 		bool layerOn = false;
 		const int rows_max = 10;

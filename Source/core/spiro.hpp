@@ -21,6 +21,8 @@
 ******************************************************************************************************************************/
 #pragma once
 #include "modmatrix.hpp"
+#include "modules/env.hpp"
+#include "modules/node.hpp"
 #include "rack.hpp"
 #include "setup/midi.h"
 
@@ -34,6 +36,7 @@ namespace core
         private:
             bool standby = false;
             Module<float>* mixer; 
+            ENV* envelope[4];
             void note_on (uint8_t, uint8_t);
             void note_off(uint8_t);
 

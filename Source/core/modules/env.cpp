@@ -41,13 +41,13 @@ void ENV::start()
 {
     stage = 1;
     departed = 0;
-    for(int i = 0; i < SEGMENTS; ++i)
+    for(int i = 0; i < env::Segments; ++i)
     {
-        value[i] = ccv[ctl::aa + i]->load() * value_scale;
+        level[i] = ccv[ctl::aa + i]->load() * value_scale;
         time[i]  = ccv[ctl::at + i]->load() * time_multiplier * time_scale->load();
         curve[i] = ccv[ctl::af + i]->load();
     }
-    theta = value[stage] - value[stage - 1];
+    theta = level[stage] - level[stage - 1];
     delta = time[stage] - time[stage - 1];
 }
 
@@ -55,10 +55,10 @@ void ENV::reset()
 {
     stage    = 0;
     departed = 0;
-    for(int i = 0; i < SEGMENTS; ++i)
+    for(int i = 0; i < env::Segments; ++i)
     {
         time[i]  = 0;
-        value[i] = 0.0f;
+        level[i] = 0.0f;
         curve[i] = 0.0f;
     }
     settings::reset_time_multiplier();
@@ -68,10 +68,10 @@ void ENV::next_stage()
 {
     stage++;
     departed = 0;
-    if  (stage >= SEGMENTS)  stage = OFF;
+    if  (stage >= env::Segments)  stage = env::Off;
     else
     {
-        theta = value[stage] - value[stage - 1];
+        theta = level[stage] - level[stage - 1];
         delta = time[stage] - time[stage - 1];
     }
 }
@@ -80,8 +80,8 @@ void ENV::jump(int target)
 {
     departed = 0;
     stage = target;
-    value[stage - 1] = out.load();
-    theta = value[stage] - value[stage - 1];
+    level[stage - 1] = out.load();
+    theta = level[stage] - level[stage - 1];
     delta = time[stage] - time[stage - 1];
 }
 
@@ -89,7 +89,7 @@ float ENV::iterate()
 {
     if(stage > 0)
     {
-        out.store(ease[(int)curve[stage]](float(departed), value[stage - 1], theta, float(delta)));
+        out.store(ease[(int)curve[stage]](float(departed), level[stage - 1], theta, float(delta)));
         departed++;
         if (departed >= delta) next_stage();
         if (std::isnan(out.load())) out.store(0.0f);

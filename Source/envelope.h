@@ -7,21 +7,21 @@ namespace core {
 
 struct breakpoint
 {
-    enum { Time, Amplitude, Form, Count };
+    enum { Time, Level, Form, Count };
     std::atomic<float> data[Count] {};
 };
 
 class Envelope
 {
     private:
-        float theta = 0.0f;                 // Amplitude difference
+        float theta = 0.0f;                 // Level difference
         unsigned delta = 0;
         float prior = 0.0f;
     public:
-        breakpoint  node[SEGMENTS];
-        unsigned    time[SEGMENTS];
-        float      value[SEGMENTS];
-        float      curve[SEGMENTS];
+        breakpoint  node[env::Segments];
+        unsigned    time[env::Segments];
+        float      value[env::Segments];
+        float      curve[env::Segments];
         uint  departed;                     // Current sample
         int   stage = 0;                    // Current stage
         void  start();          
@@ -38,9 +38,9 @@ inline void Envelope::start()
 {
     stage = 1;
     departed = 0;
-    for(int i = 0; i < SEGMENTS; ++i)
+    for(int i = 0; i < env::Segments; ++i)
     {
-        value[i] = node[i].data[breakpoint::Amplitude].load();
+        value[i] = node[i].data[breakpoint::Level].load();
         time[i]  = node[i].data[breakpoint::Time].load();
         curve[i] = node[i].data[breakpoint::Form].load();
     }
@@ -52,7 +52,7 @@ inline void Envelope::reset()
 {
     stage    = 0;
     departed = 0;
-    for(int i = 0; i < SEGMENTS; ++i)
+    for(int i = 0; i < env::Segments; ++i)
     {
         time[i]  = 0;
         value[i] = 0.0f;
@@ -64,7 +64,7 @@ inline void Envelope::next_stage()
 {
     stage++;
     departed = 0;
-    if  (stage >= SEGMENTS)  stage = OFF;
+    if  (stage >= env::Segments)  stage = env::Off;
     else
     {
         theta = value[stage] - value[stage - 1];

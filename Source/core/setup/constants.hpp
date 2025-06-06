@@ -15,6 +15,6 @@ namespace core
     const std::string lowercase { "abcdefghijklmnopqrstuvwxyz" };
     namespace  settings
     {
-        constexpr int scope_fps { 10 };
+        constexpr int scope_fps { 24 };
     }
 }

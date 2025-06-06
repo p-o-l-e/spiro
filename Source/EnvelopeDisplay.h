@@ -37,7 +37,7 @@ class EnvelopeDisplay: public juce::Component
         float opacity = 0.2f;
         float curve_width = 2.0f;
         const int id;
-        core::Envelope              env;           // Displayed envelope
+        core::Envelope              env;            // Displayed envelope
         juce::Rectangle<int>        area;           // Display bounds
         core::Rectangle<int>        scope_bounds;   // Scope constraints
         std::unique_ptr<float[]>    data;
@@ -88,11 +88,6 @@ class EnvelopeDisplay: public juce::Component
                 parent->repaint();
             }
 
-            void mouseUp(const juce::MouseEvent&) override 
-            { 
-                // parent->listeners.call([this](Listener &l) { l.envChanged(parent->id); });
-            };
-
             NodePoint(EnvelopeDisplay* p): parent(p)
             {
                 auto d = parent->diameter;
@@ -109,25 +104,7 @@ class EnvelopeDisplay: public juce::Component
         };
 
         NodePoint NP[Stages];
-
-       // /***********************************************************************************************************************
-       //  * Listener
-       //  **********************************************************************************************************************/
-       //  struct Listener 
-       //  {
-       //      virtual ~Listener() = default;
-       //      virtual void envChanged(int) {};
-       //  };
-       //  void addListener(Listener *l) { listeners.add(l); }
-       //  void removeListener(Listener *l) { listeners.remove(l); }
-       // /***********************************************************************************************************************
-       //  * 
-       //  **********************************************************************************************************************/
-        void mouseUp(const juce::MouseEvent&) override 
-        { 
-            transmit();
-            // listeners.call([this](Listener &l) { l.envChanged(id); });
-        };
+        void mouseUp(const juce::MouseEvent&) override { transmit(); };
         void mouseDown(const juce::MouseEvent&) override;
 
         EnvelopeDisplay(Processor*, const int);
@@ -137,7 +114,6 @@ class EnvelopeDisplay: public juce::Component
 
         Processor *processor;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeDisplay)
-        // juce::ListenerList<Listener> listeners;
 };
 
 

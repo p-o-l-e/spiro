@@ -233,13 +233,13 @@ void Display::mainMenu()
     else if(row[page] < 0) row[page] = 0;
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, "PRESET:", 30, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-    core::draw_text_label(layer.get(), gtFont, "SAVE", 46, 30, contrast);
-    core::draw_text_label(layer.get(), gtFont, "LOAD", 46, 40, contrast);
-    core::draw_text_label(layer.get(), gtFont, "INIT", 46, 50, contrast);
+    core::draw_text_label(layer.get(), gtFont, "PRESET:", grid(3, X), grid(1, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "-------------------", grid(3, X), grid(2, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "SAVE", grid(4, X), grid(3, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "LOAD", grid(4, X), grid(4, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "INIT", grid(4, X), grid(5, Y), contrast);
 
-    core::draw_glyph(layer.get(), gtFont, glyph::Square, 30, 30 + row[page] * 10, contrast);
+    core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
 
     vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
     hSoft(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty);
@@ -273,13 +273,11 @@ void Display::offMenu()
 {
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, "SPIRO V.0.4.0-ALPHA", 0, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "", 0, 20, contrast);
-    core::draw_text_label(layer.get(), gtFont, "COPYRIGHT (C) 2022-2023", 0, 30, contrast);
-    core::draw_text_label(layer.get(), gtFont, "POLE ", 0, 40, contrast);
-    core::draw_text_label(layer.get(), gtFont, "MIT License ", 0, 50, contrast);
+    core::draw_text_label(layer.get(), gtFont, "SPIRO    V.0.5.1-ALPHA", 10, 10, contrast);
+    core::draw_text_label(layer.get(), gtFont, "                      ", 10, 20, contrast);
+    core::draw_text_label(layer.get(), gtFont, "COPYRIGHT(C) 2022-2025", 10, 30, contrast);
+    core::draw_text_label(layer.get(), gtFont, "MIT LICENSE   [ POLE ]", 10, 40, contrast);
 
-    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
     hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
 
     layerOn = true;
@@ -382,9 +380,9 @@ void Display::reset()
     ratio = (double)displayLength / (double)area.w;
     displayLength /= ratio;
     // resize buffers
-    double dataLength = core::settings::sample_rate/core::settings::scope_fps / ratio;
-    sampleData.resize(area.w);
-    newData.resize(sampleData.size());
+    double dataLength = area.w;//core::settings::sample_rate/core::settings::scope_fps / ratio;
+    sampleData.resize(dataLength);
+    newData.resize(dataLength);
     newlyPopped.resize(dataLength);
     notInterpolatedData.resize(core::settings::sample_rate/core::settings::scope_fps);
     // fill all buffers with 0

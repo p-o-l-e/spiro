@@ -36,21 +36,14 @@ EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID): processor(p), id(I
     }
 }
 
-
 void EnvelopeDisplay::sync()
 {
     auto module = processor->spiro.rack.at(core::map::module::env, id);
     for(int i = 0; i < nodes; ++i)
     {
         env.node[i + 1].data[core::breakpoint::Form].store(*module->ccv[core::env::ctl::af + i]);
-        env.node[i + 1].data[core::breakpoint::Amplitude].store(*module->ccv[core::env::ctl::aa + i] * scope_bounds.h);
+        env.node[i + 1].data[core::breakpoint::Level].store(*module->ccv[core::env::ctl::aa + i] * scope_bounds.h);
         env.node[i + 1].data[core::breakpoint::Time].store(*module->ccv[core::env::ctl::at + i] * scope_bounds.w);
-        if(id == 0)
-        {
-        std::cout<<"Sync::Form :"<<env.node[i + 1].data[core::breakpoint::Form].load()<<"\n";
-        std::cout<<"Sync::Time :"<<env.node[i + 1].data[core::breakpoint::Time].load()<<"\n";
-        std::cout<<"Sync::Amp  :"<<env.node[i + 1].data[core::breakpoint::Amplitude].load()<<"\n\n";
-        }
     }
 }
 
@@ -66,7 +59,7 @@ void EnvelopeDisplay::transmit()
     static const int type[core::breakpoint::Count]
     {
         core::breakpoint::Form,
-        core::breakpoint::Amplitude,
+        core::breakpoint::Level,
         core::breakpoint::Time
     };
 
@@ -79,16 +72,13 @@ void EnvelopeDisplay::transmit()
 
             processor->parameters[index] = processor->tree.getParameter(core::grid.name(uid, true));
             float value = env.node[i + 1].data[type[j]];
-            if     (offset[j] == core::env::ctl::af) std::cout<<"Form: "<<value<<"\n";
-            else if(offset[j] == core::env::ctl::aa)
+            if(offset[j] == core::env::ctl::aa)
             {
                 value /= scope_bounds.h;
-                std::cout<<"Amp : "<<value<<"\n";
             }
             else if(offset[j] == core::env::ctl::at) 
             {
                 value /= scope_bounds.w;
-                std::cout<<"Time: "<<value<<"\n";
             }
             processor->parameters[index]->beginChangeGesture();
             processor->parameters[index]->setValueNotifyingHost(processor->parameters[index]->convertTo0to1(value));
@@ -99,23 +89,20 @@ void EnvelopeDisplay::transmit()
 
 EnvelopeDisplay::~EnvelopeDisplay()
 {
+    transmit();
 }
 
-// Convert user input to envelope nodes
 void EnvelopeDisplay::updateNodes()
 {  
-    //  [0] = OFF stage
     env.node[0].data[core::breakpoint::Time].store(0.0f);   
-    env.node[0].data[core::breakpoint::Amplitude].store(0.0f);
-
+    env.node[0].data[core::breakpoint::Level].store(0.0f);
     for(int i = 0; i < Stages; ++i)
     {
-        env.node[i + 1].data[core::breakpoint::Amplitude].store(scope_bounds.h - NP[i].y + gap);
+        env.node[i + 1].data[core::breakpoint::Level].store(scope_bounds.h - NP[i].y + gap);
         env.node[i + 1].data[core::breakpoint::Time].store(NP[i].x - gap);
     }
-
     env.node[5].data[core::breakpoint::Time].store(scope_bounds.w);
-    env.node[5].data[core::breakpoint::Amplitude].store(0.0f);
+    env.node[5].data[core::breakpoint::Level].store(0.0f);
 }
 
 void EnvelopeDisplay::load()
@@ -123,24 +110,21 @@ void EnvelopeDisplay::load()
     sync();
     if(env.node[1].data[core::breakpoint::Time].load() < 1.0f) [[unlikely]]
     {
-        std::cout<<"Skipping to defaults...\n";
         setDefaults();
         repaint();
         return;
     }
     for(int i = 0; i < Stages; ++i)
     {
-        NP[i].y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Amplitude].load() - gap;
+        NP[i].y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Level].load() - gap;
         NP[i].x = env.node[i + 1].data[core::breakpoint::Time].load() + gap;
         NP[i].setCentrePosition(NP[i].x, NP[i].y);
-        std::cout<<NP[i].y<<" : "<<NP[i].x<<"\n";
     }
     repaint();
 }
 
 void EnvelopeDisplay::paint (juce::Graphics& g)
 {
-    // Reset individual points left/right constraints
     NP[A].cL = gap + 1;
     NP[A].cR = NP[D].x - gap;
     NP[D].cL = NP[A].x + gap;
@@ -183,7 +167,6 @@ void EnvelopeDisplay::resized()
 
 void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
 {
-    // sync();
     float h  = area.getHeight();
     
     env.generate(data.get(), scope_bounds.w);

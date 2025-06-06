@@ -40,41 +40,45 @@ namespace core
         void reset_time_multiplier();
     };
 
-#define OFF             0 
-#define SUS             3
-#define SEGMENTS        6 
-#define env_curves_n    4
+    namespace env 
+    {
+        constexpr int Off = 0;
+        constexpr int Sustain = 3;
+        constexpr int Segments = 6; 
+        constexpr int Forms = 4;
+    };
 
+    class ENV: public Module<float>
+    {
+        private:
+            static int idc;  
+            float theta = 0.0f;                 // Change in value_scale
+            unsigned delta = 0;
+            unsigned time[env::Segments];
+            float level[env::Segments];
+            float curve[env::Segments];
 
-class ENV: public Module<float>
-{
-    private:
-        static int idc;  
-        float theta = 0.0f;                 // Change in value_scale
-        unsigned delta = 0;
-    public:
-        const int id = 0;
-        unsigned    time[SEGMENTS];
-        float      value[SEGMENTS];
-        float      curve[SEGMENTS];
-        float time_multiplier = settings::env_time_multiplier; 
-        uint  departed;                     // Current sample
-        std::atomic<float> out;             // Current output
-        int   stage = 0;                    // Current stage
-        void  start();          
-        void  next_stage();
-        void  jump(int);                    // Jump to stage N 
-        void  reset();
-        float iterate();
-        void  process() noexcept override;
-        std::atomic<float>* time_scale = &one;
-        float value_scale = (1.0f / 100.0f);
-        bool  regenerate = false;
-        bool  freerun = true;
-        void  generate(float*, int);        // Compute ENV to given array
-        ENV();
-       ~ENV() = default;
-};
+        public:
+            const int id = 0;
+
+            float time_multiplier = settings::env_time_multiplier; 
+            uint departed;                     // Current sample
+            std::atomic<float> out;             // Current output
+            int   stage = 0;                    // Current stage
+            void  start();          
+            void  next_stage();
+            void  jump(int);                    // Jump to stage N 
+            void  reset();
+            float iterate();
+            void  process() noexcept override;
+            std::atomic<float>* time_scale = &one;
+            float value_scale = (1.0f / 100.0f);
+            bool  regenerate = false;
+            bool  freerun = true;
+            void  generate(float*, int);        // Compute ENV to given array
+            ENV();
+           ~ENV() = default;
+    };
 
 /******************************************************************************************************************************
 *   Easing functions

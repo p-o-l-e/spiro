@@ -35,6 +35,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
     public:
         enum Sprite { Momentary, Radio, Slider };
 		std::unique_ptr<Display> display;
+        bool fade = false;
         Processor& processor;
         void resized() override;
         void timerCallback() override;
