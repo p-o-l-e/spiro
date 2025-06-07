@@ -26,9 +26,9 @@
 *.d
 *.o
 *.a
+*.blend1
 
 build/
 .cache/
 compile_commands.json
 .vscode
-*.blend1
