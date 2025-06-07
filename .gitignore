@@ -28,6 +28,7 @@
 *.a
 *.blend1
 
+render/
 build/
 .cache/
 compile_commands.json
