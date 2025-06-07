@@ -31,4 +31,4 @@ build/
 .cache/
 compile_commands.json
 .vscode
-.blend1
+*.blend1
