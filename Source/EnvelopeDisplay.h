@@ -75,6 +75,11 @@ class EnvelopeDisplay: public juce::Component
                 node.startDraggingComponent(this, event);
             }
 
+            void mouseUp(const juce::MouseEvent& event) override
+            {
+                parent->transmit();            
+            }
+
             void mouseDrag(const juce::MouseEvent& event) override
             {
                 node.dragComponent (this, event, &constrainer);

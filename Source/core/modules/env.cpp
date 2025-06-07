@@ -22,20 +22,16 @@
 
 #include "env.hpp"
 #include "interface/env_interface.hpp"
-namespace core 
-{
-    using namespace env; 
-    namespace settings 
-    {
-        unsigned env_time_max_ms = 120 /* seconds */ * 1000;
-        float env_time_multiplier = 1;
-        void reset_time_multiplier()
-        {
-            env_time_multiplier = float(env_time_max_ms) * 1000.0f / float(sample_rate);
-        }
-    };
+#include <iostream>
+namespace core {
+using namespace env; 
 
 int ENV::idc = 0;
+
+inline float linearToLog(float value) 
+{
+    return std::pow(value, 2.0f);
+}
 
 void ENV::start()
 {
@@ -43,8 +39,8 @@ void ENV::start()
     departed = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
-        level[i] = ccv[ctl::aa + i]->load() * value_scale;
-        time[i]  = ccv[ctl::at + i]->load() * time_multiplier * time_scale->load();
+        level[i] = linearToLog(ccv[ctl::aa + i]->load()) * value_scale;
+        time[i]  = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
         curve[i] = ccv[ctl::af + i]->load();
     }
     theta = level[stage] - level[stage - 1];
@@ -61,7 +57,6 @@ void ENV::reset()
         level[i] = 0.0f;
         curve[i] = 0.0f;
     }
-    settings::reset_time_multiplier();
 }
 
 void ENV::next_stage()
@@ -80,7 +75,7 @@ void ENV::jump(int target)
 {
     departed = 0;
     stage = target;
-    level[stage - 1] = out.load();
+    level[stage - 1] = ocv[env::cvo::a].load();
     theta = level[stage] - level[stage - 1];
     delta = time[stage] - time[stage - 1];
 }
@@ -89,29 +84,19 @@ float ENV::iterate()
 {
     if(stage > 0)
     {
-        out.store(ease[(int)curve[stage]](float(departed), level[stage - 1], theta, float(delta)));
+        ocv[env::cvo::a].store(ease[(int)curve[stage]](float(departed), level[stage - 1], theta, float(delta)));
         departed++;
         if (departed >= delta) next_stage();
-        if (std::isnan(out.load())) out.store(0.0f);
-        return out.load();
+        if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
+        return ocv[env::cvo::a].load();
     }
     return 0.0f;
 }
 
 void ENV::process() noexcept
 {
-    // if(stage <= 0) start();
-    // iterate();
+    iterate();
 }
-
-void ENV::generate(float* data, int width)
-{
-    reset();
-    start();
-    for(int i = 0; i < width; ++i) data[i] = iterate();
-    regenerate = false;
-}
-
 
 core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
 {

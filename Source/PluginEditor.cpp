@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
 #include "Display.h"
+#include <iostream>
 #include <memory>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor(&o), processor(o), valueTreeState(tree)
@@ -71,10 +72,8 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             case core::map::flag::B:  type = 1; break;
             default: break;
         }
-        // slider[i]new SpriteSlider {});
         slider[i].setPaintingIsUnclipped(true);
         slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-        // std::cout<<core::grid.name(uid, true)<<"\n";
         sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
         addAndMakeVisible(slider[i]);
     }
@@ -116,8 +115,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     for(int i = 0; i < envn; ++i)
     {
         env.emplace_back(std::make_unique<EnvelopeDisplay>(&processor, i));
-
-        // env[i].get()->addListener(this);
         env[i].get()->setOpaque(true);
         env[i].get()->setPaintingIsUnclipped(true);
         addAndMakeVisible(env[i].get());
@@ -125,13 +122,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     processor.addListener(this);
 
     resetCall();
-	//    display = std::make_unique<Display>(processor.buffer, core::constraints::oled);
-	//    display->addListener(this);
-	//
-	//    display->setOpaque(true); // MUST
-	// display->setPaintingIsUnclipped(true);
-	//
-	//    addAndMakeVisible(display.get());
     addAndMakeVisible(processor.sockets.get());
 
    /***************************************************************************************************************************
@@ -204,7 +194,19 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             display->moduleMenu(&processor.spiro, core::map::module::lfo, i);
         };
     }
-    
+
+    /***************************************************************************************************************************
+    * 
+    *  λ - Envelope switches
+    * 
+    **************************************************************************************************************************/    
+    for(uint8_t i = 0; i < core::grid.count(core::map::module::env); ++i)
+    {
+        button[(core::grid.getIndex(core::uid_t{ core::map::module::env, i, core::map::cv::c, core::env::ctl::select }))]->onClick = [this, i]
+        {
+            switchEnvelope(i);
+        };
+    }
    /***************************************************************************************************************************
     * 
     *  λ - Soft A (Jump Up)
@@ -269,6 +271,8 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             display->page = Display::Page::CroA;
             display->croMenu();
         }
+        else if(display->page == Display::Page::Save) display->mainMenu();
+        else if(display->page == Display::Page::Load) display->mainMenu();
         else 
         {        
             auto control = core::grid.control(display->uid);
@@ -292,11 +296,34 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         }
         else if(display->page == Display::Page::MainMenu)
         {
-            startTimerHz(core::settings::scope_fps);
-            display->page = Display::Page::Save;
-            display->saveMenu();
-            display->grabKeyboardFocus();
-            display->inputBox.setText(processor.currentPresetName);
+            if(display->row[display->page] == 0)
+            {
+                startTimerHz(core::settings::scope_fps);
+                display->page = Display::Page::Save;
+                display->saveMenu();
+                display->grabKeyboardFocus();
+                display->inputBox.setText(processor.currentPresetName);
+            }
+            else if(display->row[display->page] == 1)
+            {
+                display->page = Display::Page::Load;
+                processor.scanPresetDir();
+                display->loadMenu(&processor.presets);          
+            }
+            else if(display->row[display->page] == 2)
+            {
+                // INIT 
+            }
+        }
+        else if(display->page == Display::Page::Save)
+        {
+            auto presetName = display->inputBox.getText();
+            if(!presetName.isEmpty()) 
+            {
+                processor.savePreset(presetName, false);
+                display->page = Display::Page::MainMenu;
+                display->mainMenu();
+            }
         }
         else 
         {
@@ -466,6 +493,15 @@ void Editor::resetCall()
     addAndMakeVisible(display.get());
 }
 
+void Editor::switchEnvelope(const int e)
+{
+    auto uid    = core::uid_t { core::map::module::env, e, core::map::cv::c, core::env::ctl::select };
+    auto name   = core::grid.name(uid, true);
+    auto value  = processor.tree.getRawParameterValue(name); 
+    std::cout<<*value<<"\n";
+    env[e].get()->setVisible(*value);
+}
+
 /*****************************************************************************************************************************
 * 
 * Destructor
@@ -533,7 +569,7 @@ void Editor::resized()
         button[i]->setBounds(r);
     }
 
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0; i < envn; ++i)
     {
         juce::Rectangle<int> r 
         {
@@ -543,12 +579,17 @@ void Editor::resized()
             core::constraints::envd.h 
         };
         env[i].get()->setBounds(r);
+        switchEnvelope(i);
     }
 
-    env[0].get()->setVisible(true);
-    env[1].get()->setVisible(false);
-    env[2].get()->setVisible(false);
-    env[3].get()->setVisible(false);
+    // for(int i = 0; i < envn; ++i)
+    // {
+    //     auto uid = core::uid_t { core::map::module::env, i, core::map::cv::c, core::env::ctl::select };
+    //     auto name = core::grid.name(uid, true);
+    //     auto value = processor.tree.getRawParameterValue(name); 
+    //     std::cout<<*value<<"\n";
+    //     env[i].get()->setVisible(*value);
+    // }
 
     processor.sockets->setBounds(juce::Rectangle<int> 
     {

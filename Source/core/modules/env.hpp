@@ -33,13 +33,6 @@
 
 namespace core 
 {
-    namespace settings 
-    {
-        extern unsigned env_time_max_ms;
-        extern float env_time_multiplier;
-        void reset_time_multiplier();
-    };
-
     namespace env 
     {
         constexpr int Off = 0;
@@ -61,9 +54,8 @@ namespace core
         public:
             const int id = 0;
 
-            float time_multiplier = settings::env_time_multiplier; 
-            uint departed;                     // Current sample
-            std::atomic<float> out;             // Current output
+            float time_multiplier; 
+            uint  departed;                     // Current sample
             int   stage = 0;                    // Current stage
             void  start();          
             void  next_stage();
@@ -71,11 +63,8 @@ namespace core
             void  reset();
             float iterate();
             void  process() noexcept override;
-            std::atomic<float>* time_scale = &one;
-            float value_scale = (1.0f / 100.0f);
-            bool  regenerate = false;
+            float value_scale = 1.0f;
             bool  freerun = true;
-            void  generate(float*, int);        // Compute ENV to given array
             ENV();
            ~ENV() = default;
     };

@@ -201,6 +201,7 @@ void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
     else if((event.x > NP[D].x) && (event.x < NP[S].x)) l(3);
     else if((event.x > NP[S].x) && (event.x < NP[R].x)) l(4);
     else if((event.x > NP[R].x) && (event.x < area.getWidth())) l(5);
+    transmit();
     repaint();
 }
 

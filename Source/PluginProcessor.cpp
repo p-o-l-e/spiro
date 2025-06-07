@@ -360,7 +360,6 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
     core::settings::buffer_size = samplesPerBlock;
     core::settings::sample_rate = sampleRate;
-    core::settings::reset_time_multiplier();
     std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
     std::cout<<"Sample rate       : "<<sampleRate<<"\n";
     buffer = std::make_shared<core::wavering<core::Point2D<float>>>(samplesPerBlock * 196 / core::settings::scope_fps);

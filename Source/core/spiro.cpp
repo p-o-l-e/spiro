@@ -22,6 +22,7 @@
 #include "spiro.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "setup/midi.h"
+#include <iostream>
 
 
 namespace core
@@ -42,6 +43,8 @@ namespace core
 
     void Spiro::note_on(uint8_t msb, uint8_t lsb)
     {
+        for(int i = 0; i < 4; ++i) envelope[i]->reset();
+
         for(int i = 0; i < 4; ++i) envelope[i]->start();
     }
 
@@ -52,6 +55,7 @@ namespace core
 
     void Spiro::midi_message(uint8_t status, uint8_t msb, uint8_t lsb)
     {
+        std::cout<<"MidiMessage: "<<std::hex<<(int)status<<" : "<<(int)msb<<" : "<<(int)lsb<<"\n";
         switch(status & 0xF0) 
         {
             case MidiMessage::NOTE_OFF:
