@@ -23,3 +23,36 @@ Pre-Alpha Release
 |**Rotor** 		| Modulation 	| Angle X, Angle Y, Angle Z |
 |**Mixer**		| Modulation 	| LC->L Crossfade, RC->Right Crossfade |
 
+
+##  Build Instructions
+
+### **Prerequisites**
+
+Before building, ensure you have:
+
+-   **C++20 or later**
+
+-   **A compatible compiler:**
+    
+    -   Windows: **MSVC / Clang**
+    -   Linux: **GCC / Clang**
+    -   macOS: **Xcode / Clang**
+        
+
+### **Steps to Build**
+**Linux**
+1.  **Clone the Repository**
+    ```
+    git clone https://github.com/p-o-l-e/spiro.git
+    cd spiro/Builds/LinuxMakefile
+    ```
+3.  **Compile** 
+    ```
+    make CONFIG=Release
+    
+    ```
+4.  **Run (Standalone Mode)**
+    ```
+    ./build/spiro
+    
+    ```
