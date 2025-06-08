@@ -1,6 +1,6 @@
-### Spiro 0.5.1 #
+### Spiro
 **Semi-modular VST / Standalone Synthesizer**
-**Pre-Alpha Release**
+Pre-Alpha Release
 
 <a href="./Source/assets/screen_a.jpg"><img width=800 src="./Source/assets/screen_a.jpg"/></a>
 
