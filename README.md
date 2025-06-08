@@ -56,3 +56,29 @@ Before building, ensure you have:
     ./build/spiro
     
     ```
+
+⚠️ Pre-Alpha Caveats
+Spiro is still in its early pre-alpha phase, meaning some features may be incomplete, unstable, or subject to change as development progresses.
+
+Known Limitations:
+
+Potential bugs & crashes – The codebase is evolving, so unexpected behavior may occur.
+
+UI/UX refinements ongoing – Some interface elements may not be fully optimized.
+
+Performance tuning in progress – Audio processing efficiency may vary depending on the system.
+
+Cross-platform compatibility not guaranteed – Currently tested only on Linux, with macOS and Windows testing needed.
+
+Feature changes may happen – Some modules, parameters, or workflows might be adjusted before the first stable release.
+
+How You Can Help:
+
+Report issues & feedback to help refine performance and stability.
+
+Test on macOS & Windows to assist with cross-platform improvements.
+
+Share thoughts on usability & workflow to shape future updates.
+
+Your input will directly influence Spiro's evolution—let’s build something great together!
+
