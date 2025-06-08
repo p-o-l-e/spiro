@@ -27,17 +27,34 @@
 #include "iospecs.hpp"
 #include "scales.h"
 #include "vco_interface.hpp"
+#include <iostream>
 
 namespace core
 {
     using namespace vco;
     int VCO::idc = 0;
 
+    inline float getFrequency(int n) 
+    {
+        constexpr float A4 = 440.0f;
+        return A4 * std::pow(2.0f, n / 12.0f);
+    }
+
     void VCO::set_delta(const unsigned& voice)
     { 
         int n = note[voice] + 12 * ccv[ctl::octave]->load();
-        freq[voice]  = chromatic[n];
-        delta[voice] = chromatic[n] * tao / settings::sample_rate; 
+
+        if(n < chroma_n)[[likely]]
+        {
+            freq[voice]  = chromatic[n];
+            delta[voice] = chromatic[n] * tao / settings::sample_rate; 
+        }
+        else[[unlikely]] 
+        {
+            auto f = getFrequency(n);
+            freq[voice]  = f;
+            delta[voice] = f * tao / settings::sample_rate;
+        }
         set_fine(voice);
     }
 
@@ -80,7 +97,6 @@ namespace core
         return feed * (pi - fabsf(pw));
     }
 
-
     void VCO::process() noexcept
     {
         float accu = 0.0f;
@@ -96,7 +112,6 @@ namespace core
 
             accu = (this->*form[(int)ccv[ctl::form]->load()])(0);
 
-
             if(icv[cvi::pll] != &zero)
             {
                 float f = powf(ccv[ctl::pll]->load(), 3.0f);
@@ -111,9 +126,6 @@ namespace core
         }
     }
 
-
-    
-
     void VCO::reset()
     {
         for(int i = 0; i < settings::poly; ++i)
@@ -127,14 +139,11 @@ namespace core
         }
     }
 
-
     VCO::VCO(): id(idc++), Module(idc, &vco::descriptor)
     {
         reset();
     }
 
     VCO::~VCO() = default;
-
-
  
 }; // Namespace

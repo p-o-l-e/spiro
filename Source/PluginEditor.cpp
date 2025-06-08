@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
 #include "Display.h"
+#include <cstdint>
 #include <iostream>
 #include <memory>
 
@@ -493,7 +494,7 @@ void Editor::resetCall()
     addAndMakeVisible(display.get());
 }
 
-void Editor::switchEnvelope(const int e)
+void Editor::switchEnvelope(uint8_t e)
 {
     auto uid    = core::uid_t { core::map::module::env, e, core::map::cv::c, core::env::ctl::select };
     auto name   = core::grid.name(uid, true);

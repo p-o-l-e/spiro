@@ -23,6 +23,7 @@
 #include "modmatrix.hpp"
 #include "modules/env.hpp"
 #include "modules/node.hpp"
+#include "modules/vco.hpp"
 #include "rack.hpp"
 #include "setup/midi.h"
 
@@ -37,8 +38,9 @@ namespace core
             bool standby = false;
             Module<float>* mixer; 
             ENV* envelope[4];
-            void note_on (uint8_t, uint8_t);
-            void note_off(uint8_t);
+            VCO* oscillator[4];
+            void noteOn (uint8_t, uint8_t);
+            void noteOff(uint8_t);
 
         public:
             const Grid* grid;
@@ -46,7 +48,7 @@ namespace core
             DCBlock dcb[2];
             Patchbay* bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
-            void midi_message(uint8_t, uint8_t, uint8_t);
+            void midiMessage(uint8_t, uint8_t, uint8_t);
             void process() noexcept;
             Spiro(const Grid*);
            ~Spiro() = default;

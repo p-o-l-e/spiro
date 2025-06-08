@@ -1,7 +1,7 @@
 
 #pragma once
 namespace core {
-const float chromatic[] =
+constexpr float chromatic[] =
 {
     8.17579891564370, // MIDI#0
     8.66195721802725,
@@ -145,5 +145,6 @@ const float chromatic[] =
     14080.0,
     14917.2403685788,
     15804.2656401959
-  };
+};
+constexpr int chroma_n = sizeof(chromatic)/sizeof(float);
 }

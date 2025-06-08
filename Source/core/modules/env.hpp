@@ -57,7 +57,7 @@ namespace core
             float time_multiplier; 
             uint  departed;                     // Current sample
             int   stage = 0;                    // Current stage
-            void  start();          
+            void  start(const float);          
             void  next_stage();
             void  jump(int);                    // Jump to stage N 
             void  reset();

@@ -33,13 +33,13 @@ inline float linearToLog(float value)
     return std::pow(value, 2.0f);
 }
 
-void ENV::start()
+void ENV::start(const float velocity)
 {
     stage = 1;
     departed = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
-        level[i] = linearToLog(ccv[ctl::aa + i]->load()) * value_scale;
+        level[i] = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
         time[i]  = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
         curve[i] = ccv[ctl::af + i]->load();
     }

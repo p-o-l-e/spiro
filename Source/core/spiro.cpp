@@ -38,32 +38,39 @@ namespace core
     Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
     {
         mixer = rack.at(map::module::type::mix, 0);
-        for(int i = 0; i < 4; ++i) envelope[i] = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
+        for(int i = 0; i < 4; ++i) 
+        {
+            envelope[i] = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
+            oscillator[i] = dynamic_cast<VCO*>(rack.at(map::module::type::vco, i));
+        }
     }
 
-    void Spiro::note_on(uint8_t msb, uint8_t lsb)
+    void Spiro::noteOn(uint8_t msb, uint8_t lsb)
     {
-        for(int i = 0; i < 4; ++i) envelope[i]->reset();
-
-        for(int i = 0; i < 4; ++i) envelope[i]->start();
+        for(int i = 0; i < 4; ++i)
+        {
+            envelope[i]->reset();
+            envelope[i]->start((float)lsb/(float)0x7F);
+            oscillator[i]->note[0] = msb;
+        }
     }
 
-    void Spiro::note_off(uint8_t msb)
+    void Spiro::noteOff(uint8_t msb)
     {
 
     }
 
-    void Spiro::midi_message(uint8_t status, uint8_t msb, uint8_t lsb)
+    void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)
     {
         std::cout<<"MidiMessage: "<<std::hex<<(int)status<<" : "<<(int)msb<<" : "<<(int)lsb<<"\n";
         switch(status & 0xF0) 
         {
             case MidiMessage::NOTE_OFF:
-                note_off(msb);
+                noteOff(msb);
                 break;
 
             case MidiMessage::NOTE_ON:
-                lsb ? note_on (msb, lsb) : note_off(msb);
+                lsb ? noteOn (msb, lsb) : noteOff(msb);
                 break;
 
             default:

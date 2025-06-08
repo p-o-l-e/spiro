@@ -25,6 +25,7 @@
 #include "SpriteSlider.h"
 #include "EnvelopeDisplay.h"
 #include "Display.h"
+#include <cstdint>
 #include <vector>
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
@@ -51,7 +52,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
         void loadCall() override;
         void resetCall() override;
         void setOption(const core::uid_t&, const float, const float);
-        void switchEnvelope(const int);
+        void switchEnvelope(uint8_t);
         std::unique_ptr<juce::Image> sprite[3][3];
         std::unique_ptr<juce::Image> bg_texture;
         juce::ImageComponent bg;

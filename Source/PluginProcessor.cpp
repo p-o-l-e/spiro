@@ -213,7 +213,6 @@ bool Processor::loadPreset(juce::String presetName)
         suspendProcessing(false);
         return true;
     }
-
     suspendProcessing(false);
     return false;
 }
@@ -227,27 +226,27 @@ void Processor::presetFilesAvailableChanged()
     }
 }
 
-const juce::File Processor::findPresetFile(const juce::String& presetNameToLookFor)
+const juce::File Processor::findPresetFile(const juce::String& name)
 {
     auto presetFile = std::find_if 
     (
         presets.begin(), 
         presets.end(),
-        [&presetNameToLookFor] (const std::pair<juce::String, const juce::File>& p)
+        [&name] (const std::pair<juce::String, const juce::File>& p)
         {
-            return p.first == presetNameToLookFor;
+            return p.first == name;
         }
     );
 
-    if (presetFile != presets.end()) return presetFile->second;
+    if(presetFile != presets.end()) return presetFile->second;
     return {};
 }
 
 juce::StringArray Processor::getPresetList()
 {
     juce::StringArray presetList;
-    presetList.ensureStorageAllocated(int (presets.size()));
-    for(auto& preset : presets) presetList.add (preset.first);
+    presetList.ensureStorageAllocated(int(presets.size()));
+    for(auto& preset: presets) presetList.add(preset.first);
     std::cout<<"Processor::getPresetList()\n";
     return presetList;
 }
@@ -255,13 +254,13 @@ juce::StringArray Processor::getPresetList()
 void Processor::scanPresetDir()
 {
     getPresetsFolder();
-    if (!preset_directory.exists()) preset_directory.createDirectory();
-    const auto fileExtensionWildcard = juce::String ("*");
-    auto allPresetsFound = preset_directory.findChildFiles (juce::File::TypesOfFileToFind::findFiles, false, fileExtensionWildcard);
+    if(!preset_directory.exists()) preset_directory.createDirectory();
+    const auto wildcard = juce::String("*");
+    auto found = preset_directory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false, wildcard);
 
-    if (allPresetsFound != presets_available)
+    if(found != presets_available)
     {
-        presets_available = allPresetsFound;
+        presets_available = found;
         presetFilesAvailableChanged();
     }
 }
@@ -373,7 +372,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
 void Processor::releaseResources()
 {
-    // suspendProcessing(true);
+    suspendProcessing(true);
 }
 
 /******************************************************************************************************************************
@@ -388,7 +387,7 @@ void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
         uint8_t status  = metadata.data[0];
         uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
         uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
-        spiro.midi_message(status, msb, lsb);
+        spiro.midiMessage(status, msb, lsb);
     }
     midiMessages.clear();
 }
