@@ -1,73 +1,25 @@
-# Spiro 0.5.1
-## Semi-modular VST / Standalone Synthesizer
+### Spiro 0.5.1 #
+**Semi-modular VST / Standalone Synthesizer**
 **Pre-Alpha Release**
 
 <a href="./Source/assets/screen_a.jpg"><img width=800 src="./Source/assets/screen_a.jpg"/></a>
 
 
-- 4x **Oscillators :**
-	>- **Modes :**
-	>   - Poly
-	>   - Mono
-	>   - Freerun
-    >- **Modulation :**
-    >   - Amplitude (AM)
-    >   - Frequency (FM)
-    >   - Pulse Width (PWM)
-    >   - Phase Locked Loop (PLL)
-    >   - Detune
-	>- **Waveforms :**
-	>	- Tomisawa ( Adjustable pulse-width sine )
-	>	- Square
-    >   - Hexagon ( Saw - Triangle - Ramp )
-- 2x **Chaotic sources :**
-	>- **Modulation :**
-	>	- Frequency
-	>	- Warp
-	>- **Waveforms :**
-	>	- Sprott
-	>	- Helmholz
-	>	- Halvorsen
-	>	- TSUCS
-- 4x **AHDSR Envelopes :**
-	>- **Modes :**
-	>   - Freerun Modulation Source
-	>   - Mono
-- 2x **VCA :**
-	>- **Modulation :**
-	>	- Amplitude
-- 2x **LFO :**
-	>- **Modulation :**
-	>	- Amplitude
-	>	- Frequency
-	>- **Waveforms :**
-	>	- Sine
-	>	- Square
-	>	- Ramp
-	>	- Saw
-	>	- Triangle
--  **Sample and Hold :**
-	>- **Modulation :**
-	>	- Time
--  **Delay :**
-	>- **Modulation :**
-	>	- Time
-	>	- Feedback
--  2x **VCF :**
-	>- **Modulation :**
-	>	- Frequency
-	>	- Resonance
-	>- **Outputs :**
-	>	- Low Pass
-	>	- High Pass
-	>	- Band Pass
-- **Rotator**
-	>- **Modulation :**
-	>	- Angle x
-	>	- Angle y
-	>	- Angle z
-- **Output Mixer**
-	>- **Modulation :**
-	>	- Left / Center to Left crossfade
-	>	- Right / Center to Right crossfade
+|Module|Feature|Options| 
+|-|-|-|
+|**VCO (4X)**   | Modes         | Poly, Mono, Freerun | 
+|               | Modulation    | Amplitude (AM), Frequency (FM), Pulse Width (PWM), Phase Locked Loop (PLL), Detune |
+|               | Waveforms     | Tomisawa (Adjustable pulse-width sine), Pulse, Hexagon (Saw - Triangle - Ramp) |
+|**CSO (2X)**   | Modulation    | Frequency, Warp |
+|               | Waveforms     | Sprott, Helmholz, Halvorsen, TSUCS |
+|**ADSR (4X)**  | Modes         | Freerun, Triggered |
+|**VCA (2X)**   | Modulation    | Amplitude |
+|**LFO (2X)**   | Modulation    | Amplitude, Frequency |
+|               | Waveforms     | Sine, Square, Ramp, Saw, Triangle |
+|**SNH (2X)**	| Modulation  	| Time |
+|  **Delay**	| Modulation 	| Time, Feedback |
+|**VCF (2X)**	| Modulation 	| Frequency, Resonance |
+|				| Outputs		| Low Pass, High Pass, Band Pass |
+|**Rotor** 		| Modulation 	| Angle X, Angle Y, Angle Z |
+|**Mixer**		| Modulation 	| LC->L Crossfade, RC->Right Crossfade |
 
