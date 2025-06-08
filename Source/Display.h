@@ -71,7 +71,7 @@ class Display: public juce::ImageComponent
         core::Point2D<int> prior {};
 		double ratio = 1.0f;
         const float contrast = 0.6f;
-		int load_page = 0;
+
 		int last_page = 0;
         int stepX = 10, stepY = 10;
         constexpr static bool X = true, Y = false;
@@ -83,7 +83,7 @@ class Display: public juce::ImageComponent
 	    OledLabel inputBox { &contrast };
 
 		bool layerOn = false;
-		const int rows_max = 10;
+		const int rows_max = 12;
 		int files = 0;
 
 		std::atomic<float>* scope_type = &core::zero;
@@ -94,6 +94,7 @@ class Display: public juce::ImageComponent
 		Page page = CroA;
         const core::uid_t getUID() const;
 		int row[Page::COUNT] = {};
+		int load_page = 0;
         core::uid_t uid;
 		const core::Rectangle<int> area;
         void switchPage(Processor*, const Page); 

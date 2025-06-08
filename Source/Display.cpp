@@ -208,15 +208,15 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
     }
 
     juce::String lp ("LOAD PAGE: "); lp += load_page;
-    core::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(), 30, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
-    core::draw_glyph(layer.get(), gtFont, 113, 30, 30 + row[page] * 10, contrast);
+    core::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(),          grid(3, X), grid(1, Y)              , contrast);
+    core::draw_text_label(layer.get(), gtFont, "-------------------",   grid(3, X), grid(2, Y)              , contrast);
+    core::draw_glyph(layer.get(), gtFont, 113,                          grid(3, X), grid(3 + row[page], Y)  , contrast);
 
     for(int i = 0; i < rows_max; ++i)
     {
         int pos = i + rows_max * load_page;
         if(pos >= files) break;
-        core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), 46, 30 + 10 * i, contrast);
+        core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), grid(4, X), grid(3 + i, Y), contrast);
     }
 
     vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
@@ -233,11 +233,11 @@ void Display::mainMenu()
     else if(row[page] < 0) row[page] = 0;
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, "PRESET:", grid(3, X), grid(1, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", grid(3, X), grid(2, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "SAVE", grid(4, X), grid(3, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "LOAD", grid(4, X), grid(4, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "INIT", grid(4, X), grid(5, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "PRESET:",               grid(3, X), grid(1, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "-------------------",   grid(3, X), grid(2, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "SAVE",                  grid(4, X), grid(3, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "LOAD",                  grid(4, X), grid(4, Y), contrast);
+    core::draw_text_label(layer.get(), gtFont, "INIT",                  grid(4, X), grid(5, Y), contrast);
 
     core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
 

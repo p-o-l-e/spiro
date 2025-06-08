@@ -248,7 +248,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sd }))]->onClick = [this]
     {
-        display->row[display->page] = display->rows_max;
+        display->row[display->page] = display->rows_max - 1;
         display->switchPage(&processor, display->page);
     };
 
@@ -326,6 +326,14 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 display->mainMenu();
             }
         }
+        else if(display->page == Display::Page::Load)
+        {
+            processor.loadPreset(processor.presets.at(display->row[Display::Page::Load] + display->load_page * display->rows_max).first);
+            loadMatrix();
+            for(int i = 0; i < envn; ++i) switchEnvelope(i);
+            processor.scanPresetDir();
+            display->mainMenu();
+        }
         else 
         {
             auto control = core::grid.control(display->uid);
@@ -336,7 +344,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft G (Step Right) (Scale Down for Scope)
+    *  λ - Soft G (Step Right) (Scale Down for Scope) (Prior page for Load)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
@@ -347,8 +355,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto control = core::grid.control(uid);
             setOption(uid, -control->step, control->max);
         }
-        else if(display->page == Display::Page::MainMenu)
+        else if(display->page == Display::Page::MainMenu)   {}
+        else if(display->page == Display::Page::Save)       {}
+        else if(display->page == Display::Page::Load)       
         {
+            display->load_page--;
+            display->loadMenu(&processor.presets);           
         }
         else 
         {
@@ -360,7 +372,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
    /***************************************************************************************************************************
     * 
-    *  λ - Soft H (Jump Right) (Scale Up for Scope)
+    *  λ - Soft H (Jump Right) (Scale Up for Scope) (Next page for Load)
     * 
     **************************************************************************************************************************/   
     button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
@@ -371,8 +383,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             auto control = core::grid.control(uid);
             setOption(uid, control->step, control->max);
         }
-        else if(display->page == Display::Page::MainMenu)
+        else if(display->page == Display::Page::MainMenu)   {}
+        else if(display->page == Display::Page::Save)       {}
+        else if(display->page == Display::Page::Load)       
         {
+            display->load_page++;
+            display->loadMenu(&processor.presets);        
         }
         else 
         {
