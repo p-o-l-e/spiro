@@ -5,7 +5,7 @@
 
 **Semi-modular VST / Standalone Synthesizer**
 
-<a href="./Source/assets/screen_a.jpg"><img width=800 src="./Source/assets/screen_a.jpg"/></a>
+![UI](./Source/assets/screen_a.jpg)
 
 
 Features marked with `*` are **unstable** or **still in progress** and may change in future updates.
