@@ -1,3 +1,5 @@
+
+
 ### Spiro
 **Semi-modular VST / Standalone Synthesizer**
 Pre-Alpha Release
@@ -57,10 +59,11 @@ Before building, ensure you have:
     
     ```
 
-⚠️ Pre-Alpha Caveats
+### **⚠️ Pre-Alpha Caveats:**
+
 Spiro is still in its early pre-alpha phase, meaning some features may be incomplete, unstable, or subject to change as development progresses.
 
-Known Limitations:
+**Known Limitations:**
 
 Potential bugs & crashes – The codebase is evolving, so unexpected behavior may occur.
 
@@ -72,7 +75,7 @@ Cross-platform compatibility not guaranteed – Currently tested only on Linux, 
 
 Feature changes may happen – Some modules, parameters, or workflows might be adjusted before the first stable release.
 
-How You Can Help:
+**How You Can Help:**
 
 Report issues & feedback to help refine performance and stability.
 
