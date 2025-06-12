@@ -1,6 +1,8 @@
 #pragma once
 #include "grid.hpp"
 #include "module_headers.hpp"
+#include "modules/node.hpp"
+#include <unordered_map>
 
 namespace core
 {
@@ -8,6 +10,8 @@ namespace core
     {
         private:
             const Grid* const grid;
+            std::unordered_map<uint16_t, Module<float>*> moduleMap;
+            void calculateModuleMap();
             Module<float>** node;
             Module<float>* create_node(const map::module::type&);
 

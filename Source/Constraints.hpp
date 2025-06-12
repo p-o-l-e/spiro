@@ -29,7 +29,7 @@ namespace core
     {
         static constexpr int W { 1060 };
         static constexpr int H {  596 };
-        static constexpr int SR { 7 };                              // Socket radius
+        static constexpr int SR { 8 };                              // Socket radius
         static constexpr int gap_x { 27 };
         static constexpr int gap_y {  0 };
         static constexpr Rectangle<int> oled { 820,  36, 196, 176 };

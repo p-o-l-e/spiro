@@ -43,6 +43,7 @@ class Sockets: public juce::Component
         core::Patchbay* bay = nullptr;
         void drawMask(juce::Graphics&, juce::Colour);
         void drawCords(juce::Graphics&, float);
+        juce::MouseCursor cursor;
         void load();
         void mouseUp   (const juce::MouseEvent&) override;
         void mouseDrag (const juce::MouseEvent&) override;

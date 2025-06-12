@@ -63,7 +63,8 @@ class Processor: public juce::AudioProcessor
         **********************************************************************************************************************/
         std::vector<std::pair<juce::String, const juce::File>> presets;
         std::pair<juce::String, const juce::File> current_preset;
-        juce::String currentPresetName;
+        juce::String currentPresetName = "INIT";
+        int  currentPresetPosition = 0;
         bool currentPresetWasModified = false;
         bool presetLoadingInProgress = false;
         juce::Identifier presetNameID {"PresetName"};

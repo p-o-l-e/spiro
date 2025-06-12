@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="h0jLtr" name="spiro" projectType="audioplug" addUsingNamespaceToJuceHeader="0"
               jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
-              pluginFormats="buildStandalone" pluginVST3Category="Instrument,Synth"
+              pluginFormats="buildStandalone,buildVST3" pluginVST3Category="Instrument,Synth"
               cppLanguageStandard="20" companyName="pole" pluginCode="pspr"
               pluginManufacturerCode="pole" companyWebsite="https://github.com/p-o-l-e"
               version="0.5.0" headerPath="../../Source/core&#10;../../Source/core/utility&#10;../../Source/core/graphics&#10;../../Source/core/setup&#10;../../Source/core/modules&#10;../../Source/core/modules/interface">
@@ -95,6 +95,7 @@
           <FILE id="Jitj1T" name="vco.cpp" compile="1" resource="0" file="Source/core/modules/vco.cpp"/>
           <FILE id="HYr9fR" name="vco.hpp" compile="0" resource="0" file="Source/core/modules/vco.hpp"/>
         </GROUP>
+        <FILE id="qyZC9K" name="envelope.hpp" compile="0" resource="0" file="Source/core/envelope.hpp"/>
         <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
         <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>
         <FILE id="IS4uMt" name="grid.cpp" compile="1" resource="0" file="Source/core/grid.cpp"/>
@@ -145,9 +146,10 @@
                JUCE_USE_OGGVORBIS="1" JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="0" JUCE_WEB_BROWSER="0"/>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;-DDEBUG&#10;-Wunused&#10;-Wunused-but-set-variable&#10;-Wunused-const-variable=1&#10;-Wunused-function&#10;-Wunused-label&#10;-Wunused-local-typedefs&#10;-Wunused-value&#10;-Wunused-variable">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"
+                       extraCompilerFlags="-DDEBUG_MODE&#10;-Wunused&#10;-Wall &#10;-Wextra &#10;-Wpedantic"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="spiro" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

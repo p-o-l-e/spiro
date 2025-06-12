@@ -22,11 +22,18 @@
 ******************************************************************************************************************************/
 
 #include "grid.hpp"
+#include "modules/interface/descriptor.hxx"
+#include "uid.hpp"
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
 
 namespace core
 {
     Grid::Grid(const Sector* s, const int size): 
-    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s))
+    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s)),
+    controlMap(calculateControlMap(s)), idMap(calculateIdMap(s))
     {
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
@@ -76,15 +83,62 @@ namespace core
 
     const Control* Grid::control(const uid_t& uid) const
     {
-        for(int i = 0; i < sectors; ++i)
+        return controlMap->find(encode_uid(uid))->second;
+    }
+
+    const std::unique_ptr<std::unordered_map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
+    {
+        auto r = std::make_unique<std::unordered_map<uint32_t, const Control*>>();
+        for(int i = 0; i < settings::sectors; ++i)
         {
-            if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
+            for(int pt = 0; pt < core::map::cv::count; ++pt)
             {
-                if(relative[i] == uid.mp) return &sector[i].descriptor->set[uid.pt][uid.pp];
+                for(int pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
+                {   
+                    uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
+                    r->emplace(encode_uid(uid), &d[i].descriptor->set[pt][pp]);
+                }
+
             }
         }
-        return nullptr;
+        return r;
     }
+    
+    const std::unique_ptr<std::unordered_map<uint32_t, std::pair<std::string, std::string>>> Grid::calculateIdMap(const Sector* d) const
+    {
+        auto r = std::make_unique<std::unordered_map<uint32_t, std::pair<std::string, std::string>>>();
+
+        auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
+
+        for(int i = 0; i < settings::sectors; ++i)
+        {
+            for(int pt = 0; pt < core::map::cv::count; ++pt)
+            {
+                for(int pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
+                {
+                    core::uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
+
+                    std::string id {};
+                    std::string name {};
+
+                    id += *d[i].descriptor->prefix + "_";
+                    id += std::to_string(relative[i]) + "_";
+                    id += d[i].descriptor->set[pt][pp].postfix;
+
+                    name += caps(*d[i].descriptor->prefix) + " ";
+                    name += std::string(1, relative[i] + 'A') + " ";
+                    name += caps(d[i].descriptor->set[pt][pp].postfix);
+
+                    std::pair<std::string, std::string> idName { id, name };
+
+                    r->emplace(encode_uid(uid), idName);
+                }
+            }
+        }
+        return r;
+ 
+    }
+
 
     const Sector* Grid::getSector(const map::module::type& mt, const int mp) const
     {
@@ -130,40 +184,7 @@ namespace core
 
     const std::string Grid::name(const uid_t& uid, const bool snake) const
     {
-        std::string r {};
-
-        if(snake)
-        {
-            for(int i = 0; i < sectors; ++i)
-            {
-                if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
-                {
-                    if(relative[i] == uid.mp) 
-                    {
-                        r += *sector[i].descriptor->prefix + "_";
-                        r += std::to_string(uid.mp) + "_";
-                        r += sector[i].descriptor->set[uid.pt][uid.pp].postfix;
-                    }
-                }
-            }
-        }
-        else 
-        {
-            auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
-            for(int i = 0; i < sectors; ++i)
-            {
-                if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
-                {
-                    if(relative[i] == uid.mp) 
-                    {
-                        r += caps(*sector[i].descriptor->prefix) + " ";
-                        r += std::string(1, uid.mp + 'A') + " ";
-                        r += caps(sector[i].descriptor->set[uid.pt][uid.pp].postfix);
-                    }
-                }
-            }
-        }
-        return r;
+        return snake ? idMap->find(encode_uid(uid))->second.first : idMap->find(encode_uid(uid))->second.second;
     }
 
 

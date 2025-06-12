@@ -1,17 +1,13 @@
 #include "rack.hpp"
+#include <cstdint>
+#include <locale>
 
 namespace core
 {
     Module<float>* Rack::at(const map::module::type& type, const int& pos) const noexcept
     {
-        for(int i = 0; i < grid->sectors; ++i)
-        {
-            if(node[i]->descriptor->type == type)
-            {
-                if(node[i]->position == pos) return node[i];
-            }
-        }
-        return nullptr;
+        uint16_t uid { (static_cast<uint8_t>(type) << 8) + pos };
+        return moduleMap.find(uid)->second;
     }
 
     Module<float>* Rack::at(const int& pos) const noexcept
@@ -34,7 +30,17 @@ namespace core
             node[i] = create_node(grid->sector[i].descriptor->type);
 
         }
+        calculateModuleMap();
         std::cout<<"-- Rack built...\n";
+    }
+
+    void Rack::calculateModuleMap()
+    {
+        for(int i = 0; i < grid->sectors; ++i)
+        {
+            uint16_t uid { (static_cast<uint8_t>(node[i]->descriptor->type) << 8) + node[i]->position }; 
+            moduleMap.emplace(uid, node[i]);
+        }
     }
 
     Module<float>* Rack::create_node(const map::module::type& t)

@@ -127,11 +127,27 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
 *  Preset routines
 * 
 **************************************************************************************************************************/
-int Processor::getNumPrograms() { return presets.size(); }
-int Processor::getCurrentProgram() { return 0; }
+int Processor::getNumPrograms() 
+{
+    return presets.size();
+}
+
+int Processor::getCurrentProgram()
+{
+    return currentPresetPosition;
+}
+
 void Processor::setCurrentProgram(int index) {}
-const juce::String Processor::getProgramName(int index) { return {}; }
-void Processor::changeProgramName(int index, const juce::String& newName) {}
+
+const juce::String Processor::getProgramName(int index) 
+{
+    return currentPresetName;
+}
+
+void Processor::changeProgramName(int index, const juce::String& newName)
+{
+
+}
 
 juce::Result Processor::getPresetsFolder()
 {

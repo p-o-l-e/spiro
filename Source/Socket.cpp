@@ -99,7 +99,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
             current = bay->io[j].cord.data[i];
             g.drawLine(prior.x, prior.y, current.x, current.y, 2.0f);
         }
-        if(bay->io[j].on) g.fillEllipse(bay->io[j].cord.data[0].x - (SR/2), bay->io[j].cord.data[0].y - (SR/2), SR, SR);
+        if(bay->io[j].on) g.fillEllipse(bay->io[j].cord.data[0].x - (SR/2) - 1, bay->io[j].cord.data[0].y - (SR/2) - 1, SR + 1, SR + 1);
     }
 }
 

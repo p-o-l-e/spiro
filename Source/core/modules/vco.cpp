@@ -101,7 +101,7 @@ namespace core
     {
         float accu = 0.0f;
         
-        if(ccv[ctl::freerun]->load() > 0.5f)
+        // if(ccv[ctl::freerun]->load() > 0.5f)
         {
             set_delta(0);
 

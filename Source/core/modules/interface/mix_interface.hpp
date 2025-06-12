@@ -24,11 +24,11 @@ namespace core
         constexpr core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::input ,    {  32.00f,  13.00f,  16.00f,  16.00f }, "l"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::input ,    {  32.00f,  43.00f,  16.00f,  16.00f }, "c"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::input ,    {  32.00f,  73.00f,  16.00f,  16.00f }, "r"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::input ,    {   2.00f,  28.00f,  16.00f,  16.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
-            { Control::type::input ,    {   2.00f,  58.00f,  16.00f,  16.00f }, "theta"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input ,    {  31.00f,  14.00f,  16.00f,  16.00f }, "l"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input ,    {  31.00f,  44.00f,  16.00f,  16.00f }, "c"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input ,    {  31.00f,  74.00f,  16.00f,  16.00f }, "r"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input ,    {   1.00f,  29.00f,  16.00f,  16.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+            { Control::type::input ,    {   1.00f,  59.00f,  16.00f,  16.00f }, "theta"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr core::Control set_o[oc]

@@ -34,16 +34,16 @@ namespace core
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-                { Control::type::output   , {  88.00f,   7.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::output   , {  87.00f,   8.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             },
             {
-                { Control::type::output   , { 126.00f,   7.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::output   , { 125.00f,   8.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             },
             {
-                { Control::type::output   , { 164.00f,   7.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::output   , { 163.00f,   8.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             },
             {
-                { Control::type::output   , { 202.00f,   7.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
+                { Control::type::output   , { 201.00f,   8.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
             }
         };
 
@@ -150,30 +150,62 @@ namespace core
         { 
             {
                 core::map::module::type::env, 
-                { &ic, &oc, &cc },
+                { 
+                    &ic, 
+                    &oc, 
+                    &cc 
+                },
                 &prefix, 
-                { set_i, set_o[0], set_c[0] }, 
+                { 
+                    set_i, 
+                    set_o[0], 
+                    set_c[0] 
+                }, 
                 &constrain
             },
             {
                 core::map::module::type::env, 
-                { &ic, &oc, &cc },
+                { 
+                    &ic, 
+                    &oc, 
+                    &cc 
+                },
                 &prefix, 
-                { set_i, set_o[1], set_c[1] }, 
+                { 
+                    set_i, 
+                    set_o[1], 
+                    set_c[1] 
+                }, 
                 &constrain                
             },
             {
                 core::map::module::type::env, 
-                { &ic, &oc, &cc },
+                { 
+                    &ic, 
+                    &oc, 
+                    &cc 
+                },
                 &prefix, 
-                { set_i, set_o[2], set_c[2] }, 
+                { 
+                    set_i, 
+                    set_o[2], 
+                    set_c[2] 
+                }, 
                 &constrain                
             },
             {
                 core::map::module::type::env, 
-                { &ic, &oc, &cc },
+                { 
+                    &ic, 
+                    &oc, 
+                    &cc 
+                },
                 &prefix, 
-                { set_i, set_o[3], set_c[3] }, 
+                { 
+                    set_i, 
+                    set_o[3], 
+                    set_c[3] 
+                }, 
                 &constrain                
             },
         };

@@ -26,6 +26,7 @@
 #include "descriptor.hxx"
 #include "env.hpp"
 #include "uid.hpp"
+#include <cstdint>
 #include <iostream>
 
 EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID): processor(p), id(ID), NP(this, this, this, this)
@@ -49,7 +50,7 @@ void EnvelopeDisplay::sync()
 
 void EnvelopeDisplay::transmit()
 {
-    static const int offset[core::breakpoint::Count]
+    static const uint8_t offset[core::breakpoint::Count]
     {
         core::env::ctl::af,
         core::env::ctl::aa,
@@ -65,7 +66,7 @@ void EnvelopeDisplay::transmit()
 
     for(int j = 0; j < core::breakpoint::Count; ++j)
     {
-        for(int i = 0; i < nodes; ++i)
+        for(uint8_t i = 0; i < nodes; ++i)
         {
             auto uid = core::uid_t { core::map::module::env, id, core::map::cv::c, offset[j] + i }; 
             auto index = core::grid.getIndex(uid);
@@ -201,7 +202,6 @@ void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
     else if((event.x > NP[D].x) && (event.x < NP[S].x)) l(3);
     else if((event.x > NP[S].x) && (event.x < NP[R].x)) l(4);
     else if((event.x > NP[R].x) && (event.x < area.getWidth())) l(5);
-    transmit();
     repaint();
 }
 
