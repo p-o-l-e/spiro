@@ -45,7 +45,7 @@ namespace core
         private:
             float phase[settings::poly];                // Current phase
             float delta[settings::poly];                // Phase increment
-            float eax[3][settings::poly];               // Feedback memory
+            float mem[3][settings::poly];               // Feedback memory
             float tomisawa(const int&);
             float pulse(const int&);
             float hexagon(const int&);
@@ -59,8 +59,9 @@ namespace core
   
         public:
             int id;                                     // Unique VCO id
-            float freq[settings::poly];               // Frequency
+            float freq[settings::poly];                 // Frequency
             uint8_t note[settings::poly];               // Triggered note
+            bool trigger[settings::poly];
             void process() noexcept override;
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);

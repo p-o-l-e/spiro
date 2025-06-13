@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #include "spiro.hpp"
 #include "modules/interface/descriptor.hxx"
+#include "modules/vco.hpp"
 #include "setup/midi.h"
 #include <iostream>
 
@@ -45,19 +46,56 @@ namespace core
         }
     }
 
-    void Spiro::noteOn(uint8_t msb, uint8_t lsb)
+    void Spiro::resetVoice(int voice)
     {
         for(int i = 0; i < 4; ++i)
         {
-            envelope[i]->reset();
-            envelope[i]->start((float)lsb/(float)0x7F);
+            oscillator[i]->note[voice] = note[voice].chroma;
+            oscillator[i]->trigger[voice] = note[voice].on;
+        }
+    }
+
+    void Spiro::noteOn(uint8_t msb, uint8_t lsb)
+    {
+        active.emplace(voiceIterator);
+        note[voiceIterator].chroma = msb;
+        note[voiceIterator].on = true;
+
+        resetVoice(voiceIterator);
+        if(++voiceIterator >= settings::poly)
+        {
+            voiceIterator = 0;
+        }
+        //////////////////////////////////////////////
+        std::cout<<"Note ON  - Active voices: ";
+        for(auto o: active) std::cout<<o<<" ";
+        std::cout<<"\n";
+        //////////////////////////////////////////////
+        for(int i = 0; i < 4; ++i)
+        {
+            envelope[i]->reset(0);
+            envelope[i]->start((float)lsb/(float)0x7F, 0);
             oscillator[i]->note[0] = msb;
         }
     }
 
     void Spiro::noteOff(uint8_t msb)
     {
-
+        for(auto& voice: active)
+        {
+            if(note[voice].chroma == msb)
+            {
+                note[voice].on = false;
+                active.erase(voice);
+                resetVoice(voice);
+                break;
+            }
+        }
+        ////////////////////////////////////////////
+        std::cout<<"Note OFF - Active voices: ";
+        for(auto o: active) std::cout<<o<<" ";
+        std::cout<<"\n";
+        ////////////////////////////////////////////
     }
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)

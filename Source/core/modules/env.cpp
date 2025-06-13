@@ -33,60 +33,69 @@ inline float linearToLog(float value)
     return std::pow(value, 2.0f);
 }
 
-void ENV::start(const float velocity)
+void ENV::start(float velocity, int v)
 {
-    stage = 1;
-    departed = 0;
+    stage[v] = 1;
+    departed[v] = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
-        level[i] = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
-        time[i]  = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
-        curve[i] = ccv[ctl::af + i]->load();
+        point[i][v].L = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
+        point[i][v].T = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
+        point[i][v].F = ccv[ctl::af + i]->load();
     }
-    theta = level[stage] - level[stage - 1];
-    delta = time[stage] - time[stage - 1];
+    theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
+    delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
 }
 
-void ENV::reset()
+void ENV::reset(int v)
 {
-    stage    = 0;
-    departed = 0;
+    stage[v] = 0;
+    departed[v] = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
-        time[i]  = 0;
-        level[i] = 0.0f;
-        curve[i] = 0.0f;
+        point[i][v].T = 0;
+        point[i][v].L = 0;
+        point[i][v].F = 0;
     }
 }
 
-void ENV::next_stage()
+void ENV::next_stage(int v)
 {
-    stage++;
-    departed = 0;
-    if  (stage >= env::Segments)  stage = env::Off;
+    ++stage[v];
+    departed[v] = 0;
+    if(stage[v] >= env::Segments) stage[v] = env::Off;
     else
     {
-        theta = level[stage] - level[stage - 1];
-        delta = time[stage] - time[stage - 1];
+        theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
+        delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
     }
 }
 
-void ENV::jump(int target)
+void ENV::jump(int target, int v)
 {
-    departed = 0;
-    stage = target;
-    level[stage - 1] = ocv[env::cvo::a].load();
-    theta = level[stage] - level[stage - 1];
-    delta = time[stage] - time[stage - 1];
+    departed[v] = 0;
+    stage[v] = target;
+    point[stage[v] - 1][v].L = ocv[env::cvo::a].load();
+    theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
+    delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
 }
 
-float ENV::iterate()
+float ENV::iterate(int v)
 {
-    if(stage > 0)
+    if(stage[v] > 0)
     {
-        ocv[env::cvo::a].store(ease[(int)curve[stage]](float(departed), level[stage - 1], theta, float(delta)));
-        departed++;
-        if (departed >= delta) next_stage();
+        ocv[env::cvo::a].store
+        (
+            ease[(int)point[stage[v]][v].F]
+            (
+                (float)departed[v],
+                point[stage[v] - 1][v].L,
+                theta[v],
+                (float)delta[v]
+            )
+        );
+        departed[v]++;
+        if (departed[v] >= delta[v]) next_stage(v);
         if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
         return ocv[env::cvo::a].load();
     }
@@ -95,12 +104,12 @@ float ENV::iterate()
 
 void ENV::process() noexcept
 {
-    iterate();
+    iterate(0);
 }
 
 core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
 {
-    reset();
+    reset(0);
 }
 
 

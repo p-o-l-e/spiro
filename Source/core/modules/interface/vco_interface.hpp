@@ -16,9 +16,9 @@ namespace core
         constexpr int ic {  5 };
         constexpr int oc {  1 };
 
-        struct ctl { enum { octave, detune, pll, pwm, fm, am, amp, form, freerun, options }; };              // Controls
-        struct cvi { enum {         detune, pll, pwm, fm, am                              }; };              // CV in
-        struct cvo { enum {         main                                                  }; };              // CV out
+        struct ctl { enum { octave, detune, pll, pwm, fm, am, amp, form, mode, options  }; };              // Controls
+        struct cvi { enum {         detune, pll, pwm, fm, am                            }; };              // CV in
+        struct cvo { enum {         main                                                }; };              // CV out
 
         constexpr std::string prefix { "vco" };
         
@@ -49,7 +49,7 @@ namespace core
             { Control::type::slider   , {  22.00f, 177.00f,  32.00f,  32.00f }, "am"     , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B        },
             { Control::type::slider   , {  98.00f, 177.00f,  32.00f,  32.00f }, "amp"    , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B        },
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "form"   , 0.00f, 2.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },
-            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "freerun", 0.00f, 1.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },
+            { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "mode"   , 0.00f, 2.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },
             { Control::type::button   , { 136.00f,   5.00f,  12.00f,  12.00f }, "options", 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xFF, false, map::flag::radio    },
         };
         
@@ -82,9 +82,9 @@ namespace core
                                                         "OCTAVE:" };
         constexpr Options::type parameterType[]     = { Options::Choice, Options::Choice, Options::Integer };
         constexpr std::string_view waveforms[]      = { "SINE", "SQUARE", "HEXAGON" };
-        constexpr std::string_view modes[]          = { "TRIGGERED", "FREERUN" };
+        constexpr std::string_view modes[]          = { "MONO", "POLY", "FREERUN" };
         constexpr const std::string_view* const choice[] = { waveforms, modes };
-        constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form), static_cast<uint8_t>(ctl::freerun), static_cast<uint8_t>(ctl::octave) };
+        constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form), static_cast<uint8_t>(ctl::mode), static_cast<uint8_t>(ctl::octave) };
         constexpr Options options 
         { 
             "OSCILLATOR", 

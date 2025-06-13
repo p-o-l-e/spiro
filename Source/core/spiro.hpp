@@ -26,7 +26,16 @@
 #include "modules/vco.hpp"
 #include "rack.hpp"
 #include "setup/midi.h"
+#include <queue>
+#include <set>
+#include <cstdint>
+#include <functional>
 
+struct Note 
+{
+    uint8_t chroma { 0 };
+    bool on { false };
+};
 
 namespace core 
 {
@@ -35,12 +44,16 @@ namespace core
         public:
             struct stereo { enum { l, r }; };
         private:
+            Note note[settings::poly];
+            int voiceIterator = 0;
+            std::set<int> active;
             bool standby = false;
             Module<float>* mixer; 
             ENV* envelope[4];
             VCO* oscillator[4];
             void noteOn (uint8_t, uint8_t);
             void noteOff(uint8_t);
+            void resetVoice(int);
 
         public:
             const Grid* grid;

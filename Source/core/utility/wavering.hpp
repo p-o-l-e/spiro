@@ -38,8 +38,8 @@ namespace core {
             constexpr T  get() noexcept;
             constexpr T* raw() const noexcept { return data; }
             constexpr wavering(const int& n): segments(n) { data = new T[segments]{}; }
-            wavering& operator=(const wavering&) = delete;
-            wavering(const wavering&) = delete;
+            wavering& operator=(const wavering&);
+            wavering(const wavering&);
            ~wavering() { delete[] data; }
     };
 
@@ -56,6 +56,35 @@ namespace core {
         auto value = data[o];
         if (++o >= segments) o = 0;
         return value;
+    }
+
+    template <typename T>
+    wavering<T>::wavering(const wavering& other) : segments(other.segments)
+    {
+        data = new T[segments] {};
+        for (int j = 0; j < segments; ++j)
+        {
+            data[j] = other.data[j];
+        }
+        i.store(other.i.load());
+        o.store(other.o.load());
+    }
+
+    template <typename T>
+    wavering<T>& wavering<T>::operator=(const wavering& other)
+    {
+        if (this != &other)
+        {
+            delete[] data;
+            data = new T[other.segments] {};
+            for (int j = 0; j < other.segments; ++j)
+            {
+                data[j] = other.data[j];
+            }
+            i.store(other.i.load());
+            o.store(other.o.load());
+        }
+        return *this;
     }
 
 }; // namespace core

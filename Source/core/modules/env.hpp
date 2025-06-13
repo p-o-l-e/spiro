@@ -22,14 +22,17 @@
 
 #pragma once
 
+#include <set>
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
 #include <atomic>
+#include <memory>
 #include "node.hpp"
 #include "env_interface.hpp"
 #include "constants.hpp"
 #include "iospecs.hpp"
+#include "vco.hpp"
 
 namespace core 
 {
@@ -39,32 +42,39 @@ namespace core
         constexpr int Sustain = 3;
         constexpr int Segments = 6; 
         constexpr int Forms = 4;
+
+        template <typename Real>
+        struct Point 
+        {
+            unsigned T;
+            Real     L;
+            Real     F;
+        };
     };
 
     class ENV: public Module<float>
     {
         private:
             static int idc;  
-            float theta = 0.0f;                 // Change in value_scale
-            unsigned delta = 0;
-            unsigned time[env::Segments];
-            float level[env::Segments];
-            float curve[env::Segments];
+            float theta[settings::poly]{};                      // Change in value_scale
+            unsigned delta[settings::poly]{};                   // Time delta
+            float time_multiplier; 
+            uint  departed[settings::poly]{};                   // Current sample
+            int   stage[settings::poly]{};                      // Current stage
+            env::Point<float> point[env::Segments][settings::poly];
+            void  next_stage(int);
+            float iterate(int);
 
         public:
+            std::set<int> active {};                            // Active voice
             const int id = 0;
 
-            float time_multiplier; 
-            uint  departed;                     // Current sample
-            int   stage = 0;                    // Current stage
-            void  start(const float);          
-            void  next_stage();
-            void  jump(int);                    // Jump to stage N 
-            void  reset();
-            float iterate();
+            void  start(float, int);          
+            void  jump(int, int);                               // Jump to stage N 
+            void  reset(int);
             void  process() noexcept override;
             float value_scale = 1.0f;
-            bool  freerun = true;
+            bool  hold[settings::poly]{};
             ENV();
            ~ENV() = default;
     };

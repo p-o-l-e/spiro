@@ -66,15 +66,15 @@ namespace core
 
     inline float VCO::tomisawa(const int& voice)
     {
-        float oa = cosf(phase[voice] + eax[0][voice]);
-        eax[0][voice] = (oa + eax[0][voice]) * 0.5f;
+        float oa = cosf(phase[voice] + mem[0][voice]);
+        mem[0][voice] = (oa + mem[0][voice]) * 0.5f;
 
         float pw =  icv[cvi::pwm] == &zero ? 
             (0.5f - ccv[ctl::pwm]->load()) * tao * 0.98f - pi :
             (0.5f - ccv[ctl::pwm]->load() + icv[cvi::pwm]->load());  
 
-        float ob = cosf(phase[voice] + eax[1][voice] + pw);
-        eax[1][voice] = (ob + eax[1][voice]) * 0.5f;
+        float ob = cosf(phase[voice] + mem[1][voice] + pw);
+        mem[1][voice] = (ob + mem[1][voice]) * 0.5f;
         return oa - ob;
     }
 
@@ -99,9 +99,8 @@ namespace core
 
     void VCO::process() noexcept
     {
-        float accu = 0.0f;
         
-        // if(ccv[ctl::freerun]->load() > 0.5f)
+        if(ccv[ctl::mode]->load() < 1.0f) // Mono
         {
             set_delta(0);
 
@@ -110,7 +109,7 @@ namespace core
             phase[0] += (delta[0] + icv[cvi::fm]->load() * fm);
             if(phase[0] >= pi) phase[0] -= tao;  
 
-            accu = (this->*form[(int)ccv[ctl::form]->load()])(0);
+            float accu = (this->*form[(int)ccv[ctl::form]->load()])(0);
 
             if(icv[cvi::pll] != &zero)
             {
@@ -124,6 +123,38 @@ namespace core
             accu *= ccv[ctl::amp]->load();
             ocv[cvo::main].store(accu);
         }
+        else // if(ccv[ctl::mode]->load() < 2.0f) // Poly
+        {
+            float accu = 0.0;
+            float fm  = powf(ccv[ctl::fm]->load(), 3.0f) * icv[cvi::fm]->load();
+            float pll = powf(ccv[ctl::pll]->load(), 3.0f);
+
+            for(int i = 0; i < settings::poly; ++i)
+            {
+                if(trigger[i])
+                {
+                    set_delta(i);
+                    phase[i] += (delta[i] + fm);
+                    if(phase[i] >= pi) phase[i] -= tao;  
+
+                    auto current = (this->*form[(int)ccv[ctl::form]->load()])(i);
+
+                    if(icv[cvi::pll] != &zero)
+                    {
+                        phase[i] += fPLL(current, icv[cvi::pll]->load()) * pll;
+                    }
+                    if(icv[cvi::am] != &zero)
+                    {
+                        current = xfade(current * icv[cvi::am]->load(), current, ccv[ctl::am]->load());
+                    }
+                    current *= ccv[ctl::amp]->load();
+                    accu += current;
+                                    
+                }
+            }
+            ocv[cvo::main].store(accu);
+
+        }
     }
 
     void VCO::reset()
@@ -132,10 +163,11 @@ namespace core
         {
             phase[i]    = 0;
             delta[i]    = 0;
-            eax[0][i]   = 0.0f;
-            eax[1][i]   = 0.0f;
-            eax[2][i]   = 0.0f;
+            mem[0][i]   = 0.0f;
+            mem[1][i]   = 0.0f;
+            mem[2][i]   = 0.0f;
             note[i]     = 36;
+            trigger[i]  = false;
         }
     }
 
