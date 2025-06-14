@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include <functional>
 #include <atomic>
 #include <memory>
 #include "node.hpp"
@@ -38,43 +39,43 @@ namespace core
 {
     namespace env 
     {
-        constexpr int Off = 0;
-        constexpr int Sustain = 3;
         constexpr int Segments = 6; 
         constexpr int Forms = 4;
 
         template <typename Real>
-        struct Point 
+        struct Node 
         {
-            unsigned T;
-            Real     L;
-            Real     F;
+            uint T;
+            Real L;
+            Real F;
         };
     };
 
     class ENV: public Module<float>
     {
+        public:
+            enum ADSR { Start, Attack, Decay, Sustain, Release, Finish };
+            std::function<void(int)> onStart;
+            std::function<void(int)> onFinish;
         private:
             static int idc;  
             float theta[settings::poly]{};                      // Change in value_scale
-            unsigned delta[settings::poly]{};                   // Time delta
+            uint delta[settings::poly]{};                       // Time delta
             float time_multiplier; 
-            uint  departed[settings::poly]{};                   // Current sample
-            int   stage[settings::poly]{};                      // Current stage
-            env::Point<float> point[env::Segments][settings::poly];
-            void  next_stage(int);
-            float iterate(int);
+            uint departed[settings::poly]{};                    // Current sample
+            int stage[settings::poly]{};                        // Current stage
+            env::Node<float> node[env::Segments][settings::poly];
+            void next_stage(int) noexcept;
+            void iterate(int) noexcept;
 
         public:
-            std::set<int> active {};                            // Active voice
+            float pin[settings::poly] {};
+            bool gate[settings::poly] {};                            // Active voice
             const int id = 0;
-
-            void  start(float, int);          
-            void  jump(int, int);                               // Jump to stage N 
-            void  reset(int);
-            void  process() noexcept override;
+            void start(float, int) noexcept;          
+            void jump(int, int) noexcept;                       // Jump to stage N 
+            void process() noexcept override;
             float value_scale = 1.0f;
-            bool  hold[settings::poly]{};
             ENV();
            ~ENV() = default;
     };
@@ -86,25 +87,25 @@ namespace core
 *   c = Change in value - The amount of change needed to go from starting point to end point.
 *   d = Duration - Amount of time the transition will take.
 ******************************************************************************************************************************/
-constexpr float fLinear(float t, const float b, const float c, const float d)
+constexpr float fLinear(float t, float b, float c, float d)
 {
         return c * t / d + b;
 }
 
-constexpr float fCubicIn(float t, const float b, const float c, const float d)
+constexpr float fCubicIn(float t, float b, float c, float d)
 {
         t /= d;
         return c * t * t * t + b;
 }
 
-constexpr float fCubicOut(float t, const float b, const float c, const float d)
+constexpr float fCubicOut(float t, float b, float c, float d)
 {
         t /= d;
         t--;
         return c * (t * t * t + 1.0f) + b;
 };
 
-constexpr float fCubicIO(float t, const float b, const float c, const float d)
+constexpr float fCubicIO(float t, float b, float c, float d)
 {
         t /= (d * 0.5f);
         if (t < 1.0f) return c * 0.5f * t * t * t + b;
@@ -112,7 +113,7 @@ constexpr float fCubicIO(float t, const float b, const float c, const float d)
         return c * 0.5f * (t * t * t + 2.0f) + b;
 }
 
-inline float (*ease[])(float, const float, const float, const float) = 
+inline float (*ease[])(float, float, float, float) = 
 { 
     fLinear,
     fCubicOut,

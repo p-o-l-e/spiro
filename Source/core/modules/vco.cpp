@@ -99,7 +99,6 @@ namespace core
 
     void VCO::process() noexcept
     {
-        
         if(ccv[ctl::mode]->load() < 1.0f) // Mono
         {
             set_delta(0);
@@ -126,12 +125,12 @@ namespace core
         else // if(ccv[ctl::mode]->load() < 2.0f) // Poly
         {
             float accu = 0.0;
-            float fm  = powf(ccv[ctl::fm]->load(), 3.0f) * icv[cvi::fm]->load();
+            float fm  = powf(ccv[ctl::fm]->load(),  3.0f) * icv[cvi::fm]->load();
             float pll = powf(ccv[ctl::pll]->load(), 3.0f);
 
             for(int i = 0; i < settings::poly; ++i)
             {
-                if(trigger[i])
+                if(gate[i])
                 {
                     set_delta(i);
                     phase[i] += (delta[i] + fm);
@@ -148,6 +147,7 @@ namespace core
                         current = xfade(current * icv[cvi::am]->load(), current, ccv[ctl::am]->load());
                     }
                     current *= ccv[ctl::amp]->load();
+                    current *= *pin[i];
                     accu += current;
                                     
                 }
@@ -167,7 +167,7 @@ namespace core
             mem[1][i]   = 0.0f;
             mem[2][i]   = 0.0f;
             note[i]     = 36;
-            trigger[i]  = false;
+            gate[i]     = false;
         }
     }
 

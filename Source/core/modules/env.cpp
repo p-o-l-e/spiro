@@ -22,94 +22,112 @@
 
 #include "env.hpp"
 #include "interface/env_interface.hpp"
+#include "vco.hpp"
 #include <iostream>
 namespace core {
 using namespace env; 
 
 int ENV::idc = 0;
 
-inline float linearToLog(float value) 
+inline float linearToLog(float value) noexcept
 {
     return std::pow(value, 2.0f);
 }
 
-void ENV::start(float velocity, int v)
+void ENV::start(float velocity, int v) noexcept
 {
-    stage[v] = 1;
+    stage[v] = ADSR::Attack;
     departed[v] = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
-        point[i][v].L = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
-        point[i][v].T = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
-        point[i][v].F = ccv[ctl::af + i]->load();
+        node[i][v].L = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
+        node[i][v].T = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
+        node[i][v].F = ccv[ctl::af + i]->load();
     }
-    theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
-    delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
+    theta[v] = node[stage[v]][v].L - node[stage[v] - 1][v].L;
+    delta[v] = node[stage[v]][v].T - node[stage[v] - 1][v].T;
+
+    onStart(v);
 }
 
-void ENV::reset(int v)
-{
-    stage[v] = 0;
-    departed[v] = 0;
-    for(int i = 0; i < env::Segments; ++i)
-    {
-        point[i][v].T = 0;
-        point[i][v].L = 0;
-        point[i][v].F = 0;
-    }
-}
-
-void ENV::next_stage(int v)
+void ENV::next_stage(int v) noexcept
 {
     ++stage[v];
     departed[v] = 0;
-    if(stage[v] >= env::Segments) stage[v] = env::Off;
+    if(stage[v] >= ADSR::Finish) 
+    {
+        onFinish(v);
+        stage[v] = ADSR::Start;
+    }
     else
     {
-        theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
-        delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
+        theta[v] = node[stage[v]][v].L - node[stage[v] - 1][v].L;
+        delta[v] = node[stage[v]][v].T - node[stage[v] - 1][v].T;
     }
 }
 
-void ENV::jump(int target, int v)
+void ENV::jump(int target, int v) noexcept
 {
-    departed[v] = 0;
-    stage[v] = target;
-    point[stage[v] - 1][v].L = ocv[env::cvo::a].load();
-    theta[v] = point[stage[v]][v].L - point[stage[v] - 1][v].L;
-    delta[v] = point[stage[v]][v].T - point[stage[v] - 1][v].T;
+    if(target > stage[v])
+    {
+        departed[v] = 0;
+        stage[v] = target;
+        // node[stage[v] - 1][v].L = ocv[env::cvo::a].load();
+        node[stage[v] - 1][v].L = pin[v];
+
+        theta[v] = node[stage[v]][v].L - node[stage[v] - 1][v].L;
+        delta[v] = node[stage[v]][v].T - node[stage[v] - 1][v].T;
+    }
 }
 
-float ENV::iterate(int v)
+void ENV::iterate(int v) noexcept
 {
-    if(stage[v] > 0)
+    if(stage[v] > ADSR::Start)
     {
-        ocv[env::cvo::a].store
+        // ocv[env::cvo::a].store
+        pin[v] =
         (
-            ease[(int)point[stage[v]][v].F]
+            ease[(int)node[stage[v]][v].F]
             (
                 (float)departed[v],
-                point[stage[v] - 1][v].L,
+                node[stage[v] - 1][v].L,
                 theta[v],
                 (float)delta[v]
             )
         );
         departed[v]++;
         if (departed[v] >= delta[v]) next_stage(v);
-        if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
-        return ocv[env::cvo::a].load();
+        // if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
+        // return ocv[env::cvo::a].load();
     }
-    return 0.0f;
+    // return 0.0f;
 }
 
 void ENV::process() noexcept
 {
-    iterate(0);
+    for(int voice = 0; voice < settings::poly; ++voice) 
+    {
+        if(gate[voice]) 
+        {
+            iterate(voice);
+        }
+    }
 }
 
 core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
 {
-    reset(0);
+    for(int v = 0; v < settings::poly; ++v)
+    {
+        stage[v] = 0;
+        departed[v] = 0;
+        for(int i = 0; i < env::Segments; ++i)
+        {
+            node[i][v].T = 0;
+            node[i][v].L = 0;
+            node[i][v].F = 0;
+            gate[v] = false;
+        }
+    }
 }
 
 

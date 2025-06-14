@@ -25,14 +25,14 @@
 #include <cmath>
 #include <cstdint>
 #include <complex>
-
+#include <set>
 #include "node.hpp"
 
 namespace core
 {
     namespace settings
     {
-        const int poly { 8 };
+        const int poly { 32 };
     }
 
     /**************************************************************************************************************************
@@ -58,10 +58,12 @@ namespace core
             static int idc;                             // ID counter
   
         public:
+            const float* pin[settings::poly];
             int id;                                     // Unique VCO id
             float freq[settings::poly];                 // Frequency
             uint8_t note[settings::poly];               // Triggered note
-            bool trigger[settings::poly];
+            bool gate[settings::poly];
+            std::set<int> active{}; 
             void process() noexcept override;
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);

@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include "env.hpp"
+#include "modules/env.hpp"
 
 
 namespace core {
@@ -64,7 +65,7 @@ inline void Envelope::next_stage()
 {
     stage++;
     departed = 0;
-    if  (stage >= env::Segments)  stage = env::Off;
+    if  (stage >= env::Segments)  stage = ENV::ADSR::Start;
     else
     {
         theta = value[stage] - value[stage - 1];

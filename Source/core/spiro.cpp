@@ -41,61 +41,60 @@ namespace core
         mixer = rack.at(map::module::type::mix, 0);
         for(int i = 0; i < 4; ++i) 
         {
-            envelope[i] = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
+            envelope[i]   = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
             oscillator[i] = dynamic_cast<VCO*>(rack.at(map::module::type::vco, i));
-        }
-    }
 
-    void Spiro::resetVoice(int voice)
-    {
-        for(int i = 0; i < 4; ++i)
-        {
-            oscillator[i]->note[voice] = note[voice].chroma;
-            oscillator[i]->trigger[voice] = note[voice].on;
+            envelope[i]->onStart = [=](int voice)
+            {
+                oscillator[i]->note[voice] = note[voice];
+                oscillator[i]->gate[voice] = true;
+                envelope[i]->gate[voice]   = true;
+                active.emplace(voice);
+            };
+
+            envelope[i]->onFinish = [=](int voice) 
+            {
+                oscillator[i]->gate[voice] = false;
+                envelope[i]->gate[voice]   = false;
+                active.erase(voice);
+            };
+            for(int voice = 0; voice < settings::poly; ++voice)
+            {
+                oscillator[i]->pin[voice] = &envelope[i]->pin[voice];
+            }
         }
     }
 
     void Spiro::noteOn(uint8_t msb, uint8_t lsb)
     {
-        active.emplace(voiceIterator);
-        note[voiceIterator].chroma = msb;
-        note[voiceIterator].on = true;
-
-        resetVoice(voiceIterator);
-        if(++voiceIterator >= settings::poly)
+        if(++voiceIterator >= settings::poly) voiceIterator = 0;
+        for(auto voice: active) 
         {
-            voiceIterator = 0;
+            if(note[voice] == msb) 
+            {
+                std::cout<<"Duplicate found: "<<std::hex<<(int)msb<<" : "<<voice<<"\n";
+                voiceIterator = voice;   // On duplicate
+                break;
+            }
         }
-        //////////////////////////////////////////////
-        std::cout<<"Note ON  - Active voices: ";
-        for(auto o: active) std::cout<<o<<" ";
-        std::cout<<"\n";
-        //////////////////////////////////////////////
+
+        note[voiceIterator] = msb;
         for(int i = 0; i < 4; ++i)
         {
-            envelope[i]->reset(0);
-            envelope[i]->start((float)lsb/(float)0x7F, 0);
-            oscillator[i]->note[0] = msb;
+            envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
         }
+
+
+        std::cout<<"Note  ON: ";
+        for(auto voice: active) std::cout<<voice<<" ";
+        std::cout<<"\n";
     }
 
     void Spiro::noteOff(uint8_t msb)
     {
-        for(auto& voice: active)
-        {
-            if(note[voice].chroma == msb)
-            {
-                note[voice].on = false;
-                active.erase(voice);
-                resetVoice(voice);
-                break;
-            }
-        }
-        ////////////////////////////////////////////
-        std::cout<<"Note OFF - Active voices: ";
-        for(auto o: active) std::cout<<o<<" ";
+        std::cout<<"Note OFF: ";
+        for(auto voice: active) std::cout<<voice<<" ";
         std::cout<<"\n";
-        ////////////////////////////////////////////
     }
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)
