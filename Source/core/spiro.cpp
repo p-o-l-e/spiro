@@ -23,6 +23,7 @@
 #include "modules/interface/descriptor.hxx"
 #include "modules/vco.hpp"
 #include "setup/midi.h"
+#include <cmath>
 #include <iostream>
 
 
@@ -49,6 +50,7 @@ namespace core
                 oscillator[i]->note[voice] = note[voice];
                 oscillator[i]->gate[voice] = true;
                 envelope[i]->gate[voice]   = true;
+                envelope[i]->hold[voice]   = true;
                 active.emplace(voice);
             };
 
@@ -95,6 +97,23 @@ namespace core
         std::cout<<"Note OFF: ";
         for(auto voice: active) std::cout<<voice<<" ";
         std::cout<<"\n";
+
+        int on_hold = -1;
+        for(auto voice: active)
+        {
+            if(note[voice] == msb)
+            {
+                on_hold = voice;
+                break;
+            }
+        }
+        if(on_hold > -1)
+        {
+            for(int i = 0; i < 4; ++i) 
+            {
+                envelope[i]->hold[on_hold] = false;
+            }
+        }
     }
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)

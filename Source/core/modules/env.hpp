@@ -71,6 +71,7 @@ namespace core
         public:
             float pin[settings::poly] {};
             bool gate[settings::poly] {};                            // Active voice
+            bool hold[settings::poly] {};
             const int id = 0;
             void start(float, int) noexcept;          
             void jump(int, int) noexcept;                       // Jump to stage N 

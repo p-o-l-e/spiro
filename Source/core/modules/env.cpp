@@ -37,6 +37,7 @@ inline float linearToLog(float value) noexcept
 void ENV::start(float velocity, int v) noexcept
 {
     stage[v] = ADSR::Attack;
+    hold[v] = true;
     departed[v] = 0;
     for(int i = 0; i < env::Segments; ++i)
     {
@@ -84,19 +85,25 @@ void ENV::iterate(int v) noexcept
 {
     if(stage[v] > ADSR::Start)
     {
+        if(stage[v] == ADSR::Sustain && hold[v])
+        {
+        }
+        else
+        {
         // ocv[env::cvo::a].store
-        pin[v] =
-        (
-            ease[(int)node[stage[v]][v].F]
+            pin[v] =
             (
-                (float)departed[v],
-                node[stage[v] - 1][v].L,
-                theta[v],
-                (float)delta[v]
-            )
-        );
-        departed[v]++;
-        if (departed[v] >= delta[v]) next_stage(v);
+                ease[(int)node[stage[v]][v].F]
+                (
+                    (float)departed[v],
+                    node[stage[v] - 1][v].L,
+                    theta[v],
+                    (float)delta[v]
+                )
+            );
+            departed[v]++;
+            if (departed[v] >= delta[v]) next_stage(v);
+        }
         // if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
         // return ocv[env::cvo::a].load();
     }
