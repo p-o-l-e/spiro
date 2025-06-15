@@ -58,6 +58,8 @@ namespace core
             static int idc;                             // ID counter
   
         public:
+            enum Mode { Mono, Poly };
+            Mode mode() const noexcept;
             const float* pin[settings::poly];
             int id;                                     // Unique VCO id
             float freq[settings::poly];                 // Frequency
@@ -67,6 +69,7 @@ namespace core
             void process() noexcept override;
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);
+            
             void reset();
             VCO();
            ~VCO();

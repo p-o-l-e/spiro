@@ -120,6 +120,7 @@ namespace core
                 accu = xfade(accu * icv[cvi::am]->load(), accu, ccv[ctl::am]->load());
             }
             accu *= ccv[ctl::amp]->load();
+            accu *= gate[0];
             ocv[cvo::main].store(accu);
         }
         else // if(ccv[ctl::mode]->load() < 2.0f) // Poly
@@ -155,6 +156,11 @@ namespace core
             ocv[cvo::main].store(accu);
 
         }
+    }
+
+    VCO::Mode VCO::mode() const noexcept
+    {
+        return static_cast<VCO::Mode>(ccv[ctl::mode]->load());
     }
 
     void VCO::reset()

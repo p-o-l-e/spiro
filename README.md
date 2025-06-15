@@ -11,7 +11,7 @@
 Features marked with `*` are **unstable** or **still in progress** and may change in future updates.
 |Module|Feature|Options| 
 |-|-|-|
-|**VCO (4X)**   | Modes         | *Poly, Mono, Freerun | 
+|**VCO (4X)**   | Modes         | Poly, Mono, *Freerun | 
 |               | Modulation    | Amplitude (AM), Frequency (FM), Pulse Width (PWM), Phase Locked Loop (PLL), Detune |
 |               | Waveforms     | Tomisawa (Adjustable pulse-width sine), Pulse, Hexagon (Saw - Triangle - Ramp) |
 |**CSO (2X)**   | Modulation    | *Frequency, *Warp |
@@ -27,9 +27,6 @@ Features marked with `*` are **unstable** or **still in progress** and may chang
 |**Rotor** 		| Modulation 	| Angle X, Angle Y, Angle Z |
 |**Mixer**		| Modulation 	| LC->L Crossfade, RC->Right Crossfade |
 
-*Preset Load 
-*Preset Init
-*Polyphony
 
 ##  Build Instructions
 
@@ -79,14 +76,4 @@ Performance tuning in progress – Audio processing efficiency may vary dependin
 Cross-platform compatibility not guaranteed – Currently tested only on Linux, with macOS and Windows testing needed.
 
 Feature changes may happen – Some modules, parameters, or workflows might be adjusted before the first stable release.
-
-**How You Can Help:**
-
-Report issues & feedback to help refine performance and stability.
-
-Test on macOS & Windows to assist with cross-platform improvements.
-
-Share thoughts on usability & workflow to shape future updates.
-
-Your input will directly influence Spiro's evolution—let’s build something great together!
 

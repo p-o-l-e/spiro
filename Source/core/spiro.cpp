@@ -47,7 +47,8 @@ namespace core
 
             envelope[i]->onStart = [=](int voice)
             {
-                oscillator[i]->note[voice] = note[voice];
+                if(oscillator[i]->mode() == VCO::Mono) voice = 0;
+                else oscillator[i]->note[voice] = note[voice];
                 oscillator[i]->gate[voice] = true;
                 envelope[i]->gate[voice]   = true;
                 envelope[i]->hold[voice]   = true;
@@ -83,9 +84,13 @@ namespace core
         note[voiceIterator] = msb;
         for(int i = 0; i < 4; ++i)
         {
-            envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
+            if(oscillator[i]->mode() == VCO::Mono) 
+            {
+                envelope[i]->start((float)lsb/(float)0x7F, 0);
+                oscillator[i]->note[0] = msb;
+            }
+            else envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
         }
-
 
         std::cout<<"Note  ON: ";
         for(auto voice: active) std::cout<<voice<<" ";
@@ -98,22 +103,20 @@ namespace core
         for(auto voice: active) std::cout<<voice<<" ";
         std::cout<<"\n";
 
-        int on_hold = -1;
         for(auto voice: active)
         {
             if(note[voice] == msb)
             {
-                on_hold = voice;
+                auto on_hold = voice;
+                for(int i = 0; i < 4; ++i) 
+                {
+                    envelope[i]->hold[on_hold] = false;
+                    if(oscillator[i]->mode() == VCO::Mono) oscillator[i]->gate[0] = false;
+                }
                 break;
             }
         }
-        if(on_hold > -1)
-        {
-            for(int i = 0; i < 4; ++i) 
-            {
-                envelope[i]->hold[on_hold] = false;
-            }
-        }
+
     }
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)
