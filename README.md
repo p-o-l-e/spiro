@@ -8,15 +8,17 @@
 ![UI](./Source/assets/screen_a.jpg)
 
 
-Features marked with `*` are **unstable** or **still in progress** and may change in future updates.
+Features marked with `*` are **unstable**.
+Features marked with `**` are **to be implemented** or **still in progress** and may change in future updates.
+
 |Module|Feature|Options| 
 |-|-|-|
-|**VCO (4X)**   | Modes         | Poly, Mono, *Freerun | 
+|**VCO (4X)**   | Modes         | Poly, Mono, **Freerun | 
 |               | Modulation    | Amplitude (AM), Frequency (FM), Pulse Width (PWM), Phase Locked Loop (PLL), Detune |
 |               | Waveforms     | Tomisawa (Adjustable pulse-width sine), Pulse, Hexagon (Saw - Triangle - Ramp) |
 |**CSO (2X)**   | Modulation    | *Frequency, *Warp |
 |               | Waveforms     | *Sprott, *Helmholz, *Halvorsen, *TSUCS |
-|**ADSR (4X)**  | Modes         | *Freerun, Triggered |
+|**ADSR (4X)**  | Modes         | **Freerun, Triggered |
 |**VCA (2X)**   | Modulation    | Amplitude |
 |**LFO (2X)**   | Modulation    | Amplitude, Frequency |
 |               | Waveforms     | Sine, Square, Ramp, Saw, Triangle |

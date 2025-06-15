@@ -99,28 +99,28 @@ namespace core
 
     void VCO::process() noexcept
     {
-        if(ccv[ctl::mode]->load() < 1.0f) // Mono
+        if(mode() == Mono) // Mono
         {
-            set_delta(0);
+            set_delta(Mono);
 
             float fm = powf(ccv[ctl::fm]->load(), 3.0f);
 
-            phase[0] += (delta[0] + icv[cvi::fm]->load() * fm);
-            if(phase[0] >= pi) phase[0] -= tao;  
+            phase[Mono] += (delta[Mono] + icv[cvi::fm]->load() * fm);
+            if(phase[Mono] >= pi) phase[Mono] -= tao;  
 
-            float accu = (this->*form[(int)ccv[ctl::form]->load()])(0);
+            float accu = (this->*form[(int)ccv[ctl::form]->load()])(Mono);
 
             if(icv[cvi::pll] != &zero)
             {
                 float f = powf(ccv[ctl::pll]->load(), 3.0f);
-                phase[0] += fPLL(accu, icv[cvi::pll]->load()) * f;
+                phase[Mono] += fPLL(accu, icv[cvi::pll]->load()) * f;
             }
             if(icv[cvi::am] != &zero)
             {
                 accu = xfade(accu * icv[cvi::am]->load(), accu, ccv[ctl::am]->load());
             }
             accu *= ccv[ctl::amp]->load();
-            accu *= gate[0];
+            accu *= gate[Mono];
             ocv[cvo::main].store(accu);
         }
         else // if(ccv[ctl::mode]->load() < 2.0f) // Poly

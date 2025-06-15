@@ -75,7 +75,7 @@ namespace core
         {
             if(note[voice] == msb) 
             {
-                std::cout<<"Duplicate found: "<<std::hex<<(int)msb<<" : "<<voice<<"\n";
+                // std::cout<<"Duplicate found: "<<std::hex<<(int)msb<<" : "<<voice<<"\n";
                 voiceIterator = voice;   // On duplicate
                 break;
             }
@@ -92,16 +92,16 @@ namespace core
             else envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
         }
 
-        std::cout<<"Note  ON: ";
-        for(auto voice: active) std::cout<<voice<<" ";
-        std::cout<<"\n";
+        // std::cout<<"Note  ON: ";
+        // for(auto voice: active) std::cout<<voice<<" ";
+        // std::cout<<"\n";
     }
 
     void Spiro::noteOff(uint8_t msb)
     {
-        std::cout<<"Note OFF: ";
-        for(auto voice: active) std::cout<<voice<<" ";
-        std::cout<<"\n";
+        // std::cout<<"Note OFF: ";
+        // for(auto voice: active) std::cout<<voice<<" ";
+        // std::cout<<"\n";
 
         for(auto voice: active)
         {
@@ -111,7 +111,7 @@ namespace core
                 for(int i = 0; i < 4; ++i) 
                 {
                     envelope[i]->hold[on_hold] = false;
-                    if(oscillator[i]->mode() == VCO::Mono) oscillator[i]->gate[0] = false;
+                    if(oscillator[i]->mode() == VCO::Mono) oscillator[i]->gate[VCO::Mono] = false;
                 }
                 break;
             }
@@ -121,7 +121,7 @@ namespace core
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)
     {
-        std::cout<<"MidiMessage: "<<std::hex<<(int)status<<" : "<<(int)msb<<" : "<<(int)lsb<<"\n";
+        // std::cout<<"MidiMessage: "<<std::hex<<(int)status<<" : "<<(int)msb<<" : "<<(int)lsb<<"\n";
         switch(status & 0xF0) 
         {
             case MidiMessage::NOTE_OFF:
