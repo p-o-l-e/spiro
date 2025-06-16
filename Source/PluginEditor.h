@@ -23,9 +23,11 @@
 
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
+#include "BarSlider.h"
 #include "EnvelopeDisplay.h"
 #include "Display.h"
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
@@ -58,6 +60,9 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
         juce::ImageComponent bg;
         juce::AudioProcessorValueTreeState& valueTreeState;
         std::unique_ptr<SpriteSlider[]> slider;
+        std::unique_ptr<Fader[]> fader;
+        int sliders;
+        int faders;
         std::vector<std::unique_ptr<juce::ImageButton>> button;
         std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;

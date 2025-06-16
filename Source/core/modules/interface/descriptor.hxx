@@ -31,6 +31,7 @@ namespace core
                 toggle      = 1 << 3,
                 momentary   = 1 << 4,
                 radio       = 1 << 5,
+                fader       = 1 << 6
             };
         };
     }

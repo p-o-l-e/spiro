@@ -69,7 +69,7 @@ namespace core
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
 
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
+                { Control::type::slider,    {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.33f, 9.99f, 1.00f, 0.50f, 0.010f, 0x00, false, map::flag::fader    },
                 { Control::type::button,    {  89.00f,  56.00f,  12.00f,  12.00f }, "select" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xEE, false, map::flag::radio    },
             },
             {
@@ -92,7 +92,7 @@ namespace core
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
 
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
+                { Control::type::slider,    {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.33f, 9.99f, 1.00f, 0.50f, 0.010f, 0x00, false, map::flag::fader    },
                 { Control::type::button,    { 127.00f,  56.00f,  12.00f,  12.00f }, "select" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xEE, false, map::flag::radio    },
             },
             {
@@ -102,7 +102,6 @@ namespace core
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "dt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "st"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rt"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
-
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "aa"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "ha"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "da"     , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, 0x0000000C          },
@@ -115,7 +114,7 @@ namespace core
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
 
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
+                { Control::type::slider,    {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.33f, 9.99f, 1.00f, 0.50f, 0.010f, 0x00, false, map::flag::fader    },
                 { Control::type::button,    { 165.00f,  56.00f,  12.00f,  12.00f }, "select" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xEE, false, map::flag::radio    },
             },
             {
@@ -138,7 +137,7 @@ namespace core
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "sf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
                 { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "rf"     , 0.00f, 3.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
 
-                { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 1.00f, 8.00f, 0.00f, 1.00f, 1.000f, 0x00, false, 0x00000000          },
+                { Control::type::slider,    {   0.00f,   0.00f,   0.00f,   0.00f }, "scale"  , 0.33f, 9.99f, 1.00f, 0.50f, 0.010f, 0x00, false, map::flag::fader    },
                 { Control::type::button,    { 203.00f,  56.00f,  12.00f,  12.00f }, "select" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0xEE, false, map::flag::radio    },
             },
 

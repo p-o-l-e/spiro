@@ -20,7 +20,9 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
+#include "BarSlider.h"
 #include "Display.h"
+#include "core/modules/interface/descriptor.hxx"
 #include <cstdint>
 #include <iostream>
 #include <memory>
@@ -59,24 +61,53 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Sliders initialization
     * 
     **************************************************************************************************************************/
-    slider = std::make_unique<SpriteSlider[]>(core::grid.count(core::Control::slider));
-    sliderAttachment.reserve(core::grid.count(core::Control::slider));
+    faders = core::grid.count(core::Control::slider, core::map::flag::fader);
+    sliders = core::grid.count(core::Control::slider) - faders;
+    slider = std::make_unique<SpriteSlider[]>(sliders);
+    fader = std::make_unique<Fader[]>(faders);
 
-    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
+    sliderAttachment.reserve(sliders);
+
+    for(int i = 0, j = 0; i < core::grid.count(core::Control::slider); ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
         const core::Control* c = core::grid.control(uid);
         int type = 0;
+
         switch(c->flag) 
         {
-            case core::map::flag::encoder: type = 2; break;
-            case core::map::flag::B:  type = 1; break;
+            case core::map::flag::encoder:  
+                type = 2;
+                slider[i].setPaintingIsUnclipped(true);
+                slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                addAndMakeVisible(slider[i]);
+                break;
+
+            case core::map::flag::B:        
+                type = 1;
+                slider[i].setPaintingIsUnclipped(true);
+                slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                addAndMakeVisible(slider[i]);
+                break;
+
+            case core::map::flag::A:        
+                type = 0;
+                slider[i].setPaintingIsUnclipped(true);
+                slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                addAndMakeVisible(slider[i]);
+                break;
+
+            case core::map::flag::fader:
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), fader[j]));
+                addAndMakeVisible(fader[j]);
+                ++j;
+                break;
+
             default: break;
         }
-        slider[i].setPaintingIsUnclipped(true);
-        slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-        sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
-        addAndMakeVisible(slider[i]);
     }
 
    /***************************************************************************************************************************
@@ -517,6 +548,7 @@ void Editor::switchEnvelope(uint8_t e)
     auto value  = processor.tree.getRawParameterValue(name); 
     std::cout<<*value<<"\n";
     env[e].get()->setVisible(*value);
+    fader[e].setVisible(*value);
 }
 
 /*****************************************************************************************************************************
@@ -557,7 +589,7 @@ void Editor::resized()
 
 	bg.setBounds(0, 0, core::constraints::W, core::constraints::H);
 
-    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
+    for(int i = 0; i < sliders; ++i)
     {
         auto uid = core::grid.getUID(i, core::Control::slider);
         auto bounds = core::grid.getBounds(uid);
@@ -570,6 +602,12 @@ void Editor::resized()
             static_cast<int>(bounds.h) 
         };
         slider[i].setBounds(r);
+    }
+
+    juce::Rectangle<int> rect { core::constraints::envd.x + 4, 562, core::constraints::envd.w - 8, 10 };
+    for(int i = 0; i < faders; ++i)
+    {
+        fader[i].setBounds(rect);
     }
 
     for(int i = 0; i < core::grid.count(core::Control::button); ++i)

@@ -59,6 +59,25 @@ namespace core
         }
     }
 
+    const int Grid::count(const Control::type& ct, map::flag::type ft) const
+    {
+        int n = 0;
+        for(int i = 0; i < sectors; ++i)
+        {
+            for(int t = 0; t < map::cv::count; ++t)
+            {
+                for(int e = 0; e < *sector[i].descriptor->cv[t]; ++e)
+                {   
+                    if(sector[i].descriptor->set[t][e].is == ct)
+                    {
+                        if(sector[i].descriptor->set[t][e].flag == ft) ++n;
+                    }
+                }
+            }
+        }
+        return n;
+    }
+
     const int Grid::getIndex(const uid_t& uid) const
     {
         uint32_t hash = encode_uid(uid);

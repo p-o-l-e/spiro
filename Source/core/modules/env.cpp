@@ -39,11 +39,11 @@ void ENV::start(float velocity, int v) noexcept
     stage[v] = ADSR::Attack;
     hold[v] = true;
     departed[v] = 0;
-    for(int i = 0; i < env::Segments; ++i)
+    for(int i = 0; i < env::Segments - 1; ++i)
     {
-        node[i][v].L = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
-        node[i][v].T = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate * 5.0f;
-        node[i][v].F = ccv[ctl::af + i]->load();
+        node[i + 1][v].L = linearToLog(ccv[ctl::aa + i]->load()) * value_scale * velocity;
+        node[i + 1][v].T = ccv[ctl::at + i]->load() * ccv[ctl::scale]->load() * core::settings::sample_rate;
+        node[i + 1][v].F = ccv[ctl::af + i]->load();
     }
     theta[v] = node[stage[v]][v].L - node[stage[v] - 1][v].L;
     delta[v] = node[stage[v]][v].T - node[stage[v] - 1][v].T;
@@ -90,7 +90,6 @@ void ENV::iterate(int v) noexcept
         }
         else
         {
-        // ocv[env::cvo::a].store
             pin[v] =
             (
                 ease[(int)node[stage[v]][v].F]
@@ -103,11 +102,13 @@ void ENV::iterate(int v) noexcept
             );
             departed[v]++;
             if (departed[v] >= delta[v]) next_stage(v);
+            ocv[env::cvo::a].store(pin[v]);
         }
         // if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
         // return ocv[env::cvo::a].load();
     }
-    // return 0.0f;
+    ocv[env::cvo::a].store(0.0f);
+
 }
 
 void ENV::process() noexcept

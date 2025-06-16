@@ -75,6 +75,7 @@ namespace core
             const Sector* const sector;
             const int sectors;
             const int count(const Control::type& t) const { return elements[t]; }
+            const int count(const Control::type&, map::flag::type) const;
             const int count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
             const std::string name(const uid_t&, const bool) const;
