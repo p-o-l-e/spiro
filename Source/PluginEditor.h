@@ -23,7 +23,7 @@
 
 #include "PluginProcessor.h"
 #include "SpriteSlider.h"
-#include "BarSlider.h"
+#include "Fader.h"
 #include "EnvelopeDisplay.h"
 #include "Display.h"
 #include <cstdint>

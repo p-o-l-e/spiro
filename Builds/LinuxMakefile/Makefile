@@ -140,7 +140,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/rack_d0e64148.o \
   $(JUCE_OBJDIR)/spiro_432af762.o \
   $(JUCE_OBJDIR)/uid_47aee049.o \
-  $(JUCE_OBJDIR)/BarSlider_c9045235.o \
+  $(JUCE_OBJDIR)/Fader_6a7919d7.o \
   $(JUCE_OBJDIR)/EnvelopeDisplay_4e196233.o \
   $(JUCE_OBJDIR)/Socket_2b3a4d7c.o \
   $(JUCE_OBJDIR)/SpriteSlider_8fb03d8f.o \
@@ -349,9 +349,9 @@ $(JUCE_OBJDIR)/uid_47aee049.o: ../../Source/core/uid.cpp
 	@echo "Compiling uid.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/BarSlider_c9045235.o: ../../Source/BarSlider.cpp
+$(JUCE_OBJDIR)/Fader_6a7919d7.o: ../../Source/Fader.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling BarSlider.cpp"
+	@echo "Compiling Fader.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/EnvelopeDisplay_4e196233.o: ../../Source/EnvelopeDisplay.cpp

@@ -121,8 +121,8 @@
         <FILE id="ZbiohT" name="R12f.png" compile="0" resource="1" file="Source/assets/R12f.png"/>
         <FILE id="kWOnl7" name="R12n.png" compile="0" resource="1" file="Source/assets/R12n.png"/>
       </GROUP>
-      <FILE id="Yl0f1C" name="BarSlider.h" compile="0" resource="0" file="Source/BarSlider.h"/>
-      <FILE id="MMCJgH" name="BarSlider.cpp" compile="1" resource="0" file="Source/BarSlider.cpp"/>
+      <FILE id="tiEvkV" name="Fader.cpp" compile="1" resource="0" file="Source/Fader.cpp"/>
+      <FILE id="d39IHQ" name="Fader.h" compile="0" resource="0" file="Source/Fader.h"/>
       <FILE id="e1PigC" name="EnvelopeDisplay.cpp" compile="1" resource="0"
             file="Source/EnvelopeDisplay.cpp"/>
       <FILE id="dBuxHo" name="EnvelopeDisplay.h" compile="0" resource="0"

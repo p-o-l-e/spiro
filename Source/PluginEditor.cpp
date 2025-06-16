@@ -20,7 +20,6 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "PluginEditor.h"
-#include "BarSlider.h"
 #include "Display.h"
 #include "core/modules/interface/descriptor.hxx"
 #include <cstdint>
