@@ -28,12 +28,23 @@ namespace core
     using namespace vca;
 
     int VCA::idc = 0;
+    
+    inline float sigmoid_amp(float x) 
+    {
+        return 0.5f * (std::tanh(2.0f * x) + 1.0f);
+    }
 
     void VCA::process() noexcept
     {
-        float v = ccv[ctl::amp]->load() + icv[ctl::amp]->load();
-        if      (v < 0.0f) v = 0.0f;
-        else if (v > 1.0f) v = 1.0f;
+        float v = 0.0f;
+        if(icv[cvi::amp] == &zero)
+        {
+            v = ccv[ctl::amp]->load();
+        }
+        else 
+        {
+            v = ccv[ctl::amp]->load() * sigmoid_amp(icv[cvi::amp]->load());
+        }
         float o = (icv[cvi::a]->load() + icv[cvi::b]->load()) * v; 
         ocv[cvo::a].store(o);
         ocv[cvo::b].store(o);
