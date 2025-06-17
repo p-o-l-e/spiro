@@ -40,7 +40,7 @@ namespace core
             void helmholz_reset();
             void halvorsen_reset();
             void tsucs_reset();
-            int  prior = 0;
+            int  prior = -1;
 
             void (CSO::*reset[forms])() = 
             { 

@@ -59,7 +59,7 @@ void CSO::sprott_reset()
 
 void CSO::sprott() 
 {
-    f[4] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.0001f;
+    f[4] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 1000.0f / settings::sample_rate + 1.0f / settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[2] = 0.1f + ccv[ctl::warp]->load();
     else f[2] = 0.1f + ccv[ctl::warp]->load() * icv[cvi::warp]->load();
 
@@ -94,7 +94,7 @@ void CSO::helmholz_reset()
 
 void CSO::helmholz() 
 {
-    f[2] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.1f ) * 0.2f + 0.01f;
+    f[2] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 1000.0f / settings::sample_rate + 10.0f/settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[1] = ((ccv[ctl::warp]->load() - 0.5f) * 0.03f) + 0.55f;
     else f[1] = ((ccv[ctl::warp]->load() * fabsf(icv[cvi::warp]->load()) - 0.5f) * 0.03f) + 0.55f;
 
@@ -129,7 +129,7 @@ void CSO::halvorsen_reset()
 
 void CSO::halvorsen()
 {
-    f[1] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load() * 0.01f) * 0.02f + 0.00001f;
+    f[1] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 200.0f / settings::sample_rate + 10.0f/settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[0] = 1.4f + ccv[ctl::warp]->load();
     else f[0] = 1.4f + ccv[ctl::warp]->load() * fabsf(icv[cvi::warp]->load());
 

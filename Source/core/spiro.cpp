@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "spiro.hpp"
+#include "modules/env.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "modules/vco.hpp"
 #include "setup/midi.h"
@@ -47,8 +48,7 @@ namespace core
 
             envelope[i]->onStart = [=](int voice)
             {
-                if(oscillator[i]->mode() == VCO::Mono) voice = 0;
-                else oscillator[i]->note[voice] = note[voice];
+                oscillator[i]->note[voice] = note[voice];
                 oscillator[i]->gate[voice] = true;
                 envelope[i]->gate[voice]   = true;
                 envelope[i]->hold[voice]   = true;
@@ -70,12 +70,11 @@ namespace core
 
     void Spiro::noteOn(uint8_t msb, uint8_t lsb)
     {
-        if(++voiceIterator >= settings::poly) voiceIterator = 0;
+        if(++voiceIterator >= settings::poly) voiceIterator = 1;
         for(auto voice: active) 
         {
             if(note[voice] == msb) 
             {
-                // std::cout<<"Duplicate found: "<<std::hex<<(int)msb<<" : "<<voice<<"\n";
                 voiceIterator = voice;   // On duplicate
                 break;
             }
@@ -84,44 +83,41 @@ namespace core
         note[voiceIterator] = msb;
         for(int i = 0; i < 4; ++i)
         {
-            if(oscillator[i]->mode() == VCO::Mono) 
+            if(oscillator[i]->mode() != VCO::Poly) 
             {
-                envelope[i]->start((float)lsb/(float)0x7F, 0);
-                oscillator[i]->note[0] = msb;
+                envelope[i]->start((float)lsb/(float)0x7F, VCO::Mono);
+                oscillator[i]->note[VCO::Mono] = msb;
+                note[VCO::Mono] = msb;
             }
-            else envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
+            else 
+            {
+                envelope[i]->start((float)lsb/(float)0x7F, voiceIterator);
+            }
         }
-
-        // std::cout<<"Note  ON: ";
-        // for(auto voice: active) std::cout<<voice<<" ";
-        // std::cout<<"\n";
     }
 
     void Spiro::noteOff(uint8_t msb)
     {
-        // std::cout<<"Note OFF: ";
-        // for(auto voice: active) std::cout<<voice<<" ";
-        // std::cout<<"\n";
-
-        for(auto voice: active)
+        std::vector<int> to_process(active.begin(), active.end());
+        for (auto voice : to_process) 
         {
-            if(note[voice] == msb)
+            if (note[voice] == msb) 
             {
-                auto on_hold = voice;
-                for(int i = 0; i < 4; ++i) 
+                for (int i = 0; i < 4; ++i) 
                 {
-                    envelope[i]->hold[on_hold] = false;
-                    if(oscillator[i]->mode() == VCO::Mono) oscillator[i]->gate[VCO::Mono] = false;
+                    envelope[i]->hold[voice] = false;
+                    if (oscillator[i]->mode() == VCO::Freerun) 
+                    {
+                        envelope[i]->jump(ENV::Release, voice);
+                        envelope[i]->next_stage(voice);
+                    }
                 }
-                break;
             }
-        }
-
+        }    
     }
 
     void Spiro::midiMessage(uint8_t status, uint8_t msb, uint8_t lsb)
     {
-        // std::cout<<"MidiMessage: "<<std::hex<<(int)status<<" : "<<(int)msb<<" : "<<(int)lsb<<"\n";
         switch(status & 0xF0) 
         {
             case MidiMessage::NOTE_OFF:

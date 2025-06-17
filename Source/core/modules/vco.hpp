@@ -58,7 +58,7 @@ namespace core
             static int idc;                             // ID counter
   
         public:
-            enum Mode { Mono, Poly };
+            enum Mode { Mono, Freerun, Poly };
             Mode mode() const noexcept;
             const float* pin[settings::poly];
             int id;                                     // Unique VCO id

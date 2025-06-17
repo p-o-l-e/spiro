@@ -82,7 +82,7 @@ namespace core
                                                         "OCTAVE:" };
         constexpr Options::type parameterType[]     = { Options::Choice, Options::Choice, Options::Integer };
         constexpr std::string_view waveforms[]      = { "SINE", "SQUARE", "HEXAGON" };
-        constexpr std::string_view modes[]          = { "MONO", "POLY", "FREERUN" };
+        constexpr std::string_view modes[]          = { "MONO", "FREERUN", "POLY" };
         constexpr const std::string_view* const choice[] = { waveforms, modes };
         constexpr uint8_t parameterPosition[] = { static_cast<uint8_t>(ctl::form), static_cast<uint8_t>(ctl::mode), static_cast<uint8_t>(ctl::octave) };
         constexpr Options options 

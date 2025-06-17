@@ -545,7 +545,6 @@ void Editor::switchEnvelope(uint8_t e)
     auto uid    = core::uid_t { core::map::module::env, e, core::map::cv::c, core::env::ctl::select };
     auto name   = core::grid.name(uid, true);
     auto value  = processor.tree.getRawParameterValue(name); 
-    std::cout<<*value<<"\n";
     env[e].get()->setVisible(*value);
     fader[e].setVisible(*value);
 }
@@ -635,15 +634,6 @@ void Editor::resized()
         env[i].get()->setBounds(r);
         switchEnvelope(i);
     }
-
-    // for(int i = 0; i < envn; ++i)
-    // {
-    //     auto uid = core::uid_t { core::map::module::env, i, core::map::cv::c, core::env::ctl::select };
-    //     auto name = core::grid.name(uid, true);
-    //     auto value = processor.tree.getRawParameterValue(name); 
-    //     std::cout<<*value<<"\n";
-    //     env[i].get()->setVisible(*value);
-    // }
 
     processor.sockets->setBounds(juce::Rectangle<int> 
     {

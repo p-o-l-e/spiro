@@ -73,9 +73,7 @@ void ENV::jump(int target, int v) noexcept
     {
         departed[v] = 0;
         stage[v] = target;
-        // node[stage[v] - 1][v].L = ocv[env::cvo::a].load();
         node[stage[v] - 1][v].L = pin[v];
-
         theta[v] = node[stage[v]][v].L - node[stage[v] - 1][v].L;
         delta[v] = node[stage[v]][v].T - node[stage[v] - 1][v].T;
     }
@@ -83,11 +81,9 @@ void ENV::jump(int target, int v) noexcept
 
 void ENV::iterate(int v) noexcept
 {
-    if(stage[v] > ADSR::Start)
+    if(stage[v] > ADSR::Start && stage[v] < ADSR::Finish)
     {
-        if(stage[v] == ADSR::Sustain && hold[v])
-        {
-        }
+        if(stage[v] == ADSR::Sustain && hold[v]) {}
         else
         {
             pin[v] =
@@ -104,11 +100,8 @@ void ENV::iterate(int v) noexcept
             if (departed[v] >= delta[v]) next_stage(v);
             ocv[env::cvo::a].store(pin[v]);
         }
-        // if (std::isnan(ocv[env::cvo::a].load())) ocv[env::cvo::a].store(0.0f);
-        // return ocv[env::cvo::a].load();
     }
     ocv[env::cvo::a].store(0.0f);
-
 }
 
 void ENV::process() noexcept

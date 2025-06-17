@@ -39,7 +39,7 @@ namespace core
             struct stereo { enum { l, r }; };
         private:
             uint8_t note[settings::poly];
-            int voiceIterator = 0;
+            int voiceIterator = 1;
             std::set<int> active;
             bool standby = false;
             Module<float>* mixer; 

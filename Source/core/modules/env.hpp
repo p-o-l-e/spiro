@@ -65,7 +65,6 @@ namespace core
             uint departed[settings::poly]{};                    // Current sample
             int stage[settings::poly]{};                        // Current stage
             env::Node<float> node[env::Segments][settings::poly];
-            void next_stage(int) noexcept;
             void iterate(int) noexcept;
 
         public:
@@ -73,6 +72,7 @@ namespace core
             bool gate[settings::poly] {};                            // Active voice
             bool hold[settings::poly] {};
             const int id = 0;
+            void next_stage(int) noexcept;
             void start(float, int) noexcept;          
             void jump(int, int) noexcept;                       // Jump to stage N 
             void process() noexcept override;
