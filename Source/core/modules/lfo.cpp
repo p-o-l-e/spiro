@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "lfo.hpp"
+#include "interface/lfo_interface.hpp"
 #include "lfo_interface.hpp"
 #include "node.hpp"
 
@@ -36,35 +37,35 @@ namespace core
 
     float LFO::sine()
     {
-        phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * tao / settings::sample_rate;
+        phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return cosf(phase) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
     float LFO::ramp()
     {
-        phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * tao / settings::sample_rate;
+        phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return atanf(tanf(phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
     float LFO::saw()
     {
-        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
+        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return atanf(tanf(pi - phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
     float LFO::square()
     {
-        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
+        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return (phase > 0.0f ? 1.0f : 0.0f) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
     float LFO::triangle()
     {
-        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * tao / settings::sample_rate;
+        phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
         return tan(sin(phase)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load()) * 0.65f;
     }

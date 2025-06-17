@@ -121,6 +121,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/constants_246efb6.o \
   $(JUCE_OBJDIR)/iospecs_50015419.o \
   $(JUCE_OBJDIR)/utility_d1772542.o \
+  $(JUCE_OBJDIR)/com_457f0672.o \
   $(JUCE_OBJDIR)/cro_4ab9bf51.o \
   $(JUCE_OBJDIR)/env_ae1577de.o \
   $(JUCE_OBJDIR)/lfo_1257ad26.o \
@@ -252,6 +253,11 @@ $(JUCE_OBJDIR)/iospecs_50015419.o: ../../Source/core/setup/iospecs.cpp
 $(JUCE_OBJDIR)/utility_d1772542.o: ../../Source/core/utility/utility.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling utility.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/com_457f0672.o: ../../Source/core/modules/com.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling com.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/cro_4ab9bf51.o: ../../Source/core/modules/cro.cpp

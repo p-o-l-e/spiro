@@ -66,6 +66,8 @@
             <FILE id="vTMENC" name="vco_interface.hpp" compile="0" resource="0"
                   file="Source/core/modules/interface/vco_interface.hpp"/>
           </GROUP>
+          <FILE id="JNiZAD" name="com.cpp" compile="1" resource="0" file="Source/core/modules/com.cpp"/>
+          <FILE id="dDGIYj" name="com.hpp" compile="0" resource="0" file="Source/core/modules/com.hpp"/>
           <FILE id="kme0ME" name="cro.cpp" compile="1" resource="0" file="Source/core/modules/cro.cpp"/>
           <FILE id="YO0pqh" name="cro.hpp" compile="0" resource="0" file="Source/core/modules/cro.hpp"/>
           <FILE id="XZRHPq" name="env.cpp" compile="1" resource="0" file="Source/core/modules/env.cpp"/>

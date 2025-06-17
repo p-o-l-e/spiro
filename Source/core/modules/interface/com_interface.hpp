@@ -15,11 +15,9 @@ namespace core
         constexpr int ic { 0 };
         constexpr int oc { 2 };
 
-        struct ctl { enum {                                           }; };              // Controls
-        struct cvi { enum {                                           }; };              // CV in
         struct cvo { enum { p_wheel, m_wheel                          }; };              // CV out
 
-        constexpr std::string prefix    { "com"                              };
+        constexpr std::string prefix { "com" };
         
         constexpr core::Control set_i[ic]
         {
@@ -40,7 +38,7 @@ namespace core
         
         constexpr core::Descriptor descriptor
         {
-            core::map::module::type::snh, 
+            core::map::module::type::com, 
             { &ic, &oc, &cc },
             &prefix, 
             { set_i, set_o, set_c }, 

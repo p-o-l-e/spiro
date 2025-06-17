@@ -26,6 +26,7 @@
 #include "modules/vco.hpp"
 #include "rack.hpp"
 #include "setup/midi.h"
+#include <atomic>
 #include <set>
 #include <cstdint>
 #include <functional>
@@ -43,6 +44,7 @@ namespace core
             std::set<int> active;
             bool standby = false;
             Module<float>* mixer; 
+            Module<float>* com;
             ENV* envelope[4];
             VCO* oscillator[4];
             void noteOn (uint8_t, uint8_t);

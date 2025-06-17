@@ -21,6 +21,7 @@
 ******************************************************************************************************************************/
 #include "spiro.hpp"
 #include "modules/env.hpp"
+#include "modules/interface/com_interface.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "modules/vco.hpp"
 #include "setup/midi.h"
@@ -41,11 +42,13 @@ namespace core
     Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
     {
         mixer = rack.at(map::module::type::mix, 0);
+        com   = rack.at(map::module::type::com, 0);
+
         for(int i = 0; i < 4; ++i) 
         {
             envelope[i]   = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
             oscillator[i] = dynamic_cast<VCO*>(rack.at(map::module::type::vco, i));
-
+            
             envelope[i]->onStart = [=](int voice)
             {
                 oscillator[i]->note[voice] = note[voice];
@@ -61,6 +64,7 @@ namespace core
                 envelope[i]->gate[voice]   = false;
                 active.erase(voice);
             };
+
             for(int voice = 0; voice < settings::poly; ++voice)
             {
                 oscillator[i]->pin[voice] = &envelope[i]->pin[voice];
@@ -120,12 +124,23 @@ namespace core
     {
         switch(status & 0xF0) 
         {
-            case MidiMessage::NOTE_OFF:
-                noteOff(msb);
-                break;
-
             case MidiMessage::NOTE_ON:
                 lsb ? noteOn (msb, lsb) : noteOff(msb);
+                break;
+
+            case MidiMessage::NOTE_OFF:
+                noteOff(msb);
+                break;            
+            
+            case MidiMessage::PITCH_BEND:
+                com->ocv[com::cvo::p_wheel].store(float((lsb | (msb << 7)) - 8192.0f) / 8192.0f);
+                break;
+
+            case MidiMessage::CONTROL_CHANGE:
+                if(msb == 1)  // Mod Wheel (CC #1)
+                {
+                    com->ocv[com::cvo::m_wheel].store(lsb / 127.0f * 2.0f - 1.0f);
+                }
                 break;
 
             default:

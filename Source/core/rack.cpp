@@ -1,4 +1,5 @@
 #include "rack.hpp"
+#include "modules/interface/descriptor.hxx"
 #include <cstdint>
 #include <locale>
 
@@ -60,6 +61,7 @@ namespace core
             case map::module::type::vcf: return new VCF(); break;
             case map::module::type::vco: return new VCO(); break;
             case map::module::type::cro: return new CRO(); break;
+            case map::module::type::com: return new COM(); break;
             default: break;
         }
         return nullptr;
