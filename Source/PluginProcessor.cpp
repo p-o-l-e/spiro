@@ -22,6 +22,8 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "core/uid.hpp"
+#include <cstdint>
 
 
 Processor::Processor(): AudioProcessor
@@ -38,6 +40,39 @@ Processor::Processor(): AudioProcessor
     parameters = new juce::RangedAudioParameter*[core::grid.count(core::Control::parameter)];    
     matrix = new juce::AudioProcessorParameter*[core::grid.count(core::Control::input) * core::grid.count(core::Control::output)];
     sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
+
+    sockets->bay->on_connect = [this](uint32_t out)
+    {
+        auto uid = core::decode_uid(out);
+        auto idx = this->spiro.rack.index(uid.mt, uid.mp);
+        this->spiro.standby.emplace(idx);
+        this->spiro.rack.setActive(idx, true);
+        std::cout<<"Active connections on index "<<idx<<" : "<<this->spiro.rack.isActive(idx)<<"\n";
+        std::cout<<"OnConnect: ";
+        for(auto o: this->spiro.standby)
+        {
+            std::cout<<o<< " ";
+        }
+        std::cout<<"\n";
+    };
+
+    sockets->bay->on_disconnect = [this](uint32_t out)
+    {
+        auto uid = core::decode_uid(out);
+        auto idx = this->spiro.rack.index(uid.mt, uid.mp);
+        this->spiro.rack.setActive(idx, false);
+        if(!this->spiro.rack.isActive(idx)) this->spiro.standby.erase(idx);
+
+        std::cout<<"Active connections on index "<<idx<<" : "<<this->spiro.rack.isActive(idx)<<"\n";
+        std::cout<<"OnDisconnect: ";
+        for(auto o: this->spiro.standby)
+        {
+            std::cout<<o<< " ";
+        }
+        std::cout<<"\n";
+
+    };
+
     spiro.bay = sockets->bay;
 }
 

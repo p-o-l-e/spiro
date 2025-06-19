@@ -24,7 +24,10 @@
 #include "primitives.hpp"
 #include "canvas.hpp"
 #include "constants.hpp"
+#include <cstdint>
+#include <functional>
 #include <atomic>
+#include <utility>
 
 #define SOCKET_IN       1
 #define SOCKET_OUT      0
@@ -66,7 +69,7 @@ namespace core {
 
         Patchcord cord;
         RadialSquare<unsigned> bounds { 0, 0, 0 };
-        unsigned id = 0;
+        uint32_t id = 0;
         int pos;                                            // Array position
         bool route = 0;                                     // 0: Output - 1: Input
         bool on = false;                                    // Is connected ?
@@ -96,6 +99,8 @@ namespace core {
             const int get_index(const uint32_t&) const;
             void  connect(Socket*, Socket*);
             void  disconnect(Socket*, Socket*);
+            std::function<void(uint32_t)> on_connect;
+            std::function<void(uint32_t)> on_disconnect;
 
             Canvas<unsigned>    canvas;         // Hit test layer
             Canvas<bool>        matrix;         // Connections matrix

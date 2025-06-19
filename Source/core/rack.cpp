@@ -16,6 +16,12 @@ namespace core
         return node[pos];
     }
 
+    int Rack::index(uint8_t mt, uint8_t mp) const noexcept
+    {
+        uint16_t uid { (static_cast<uint8_t>(mt) << 8) + mp };
+        return indexMap.find(uid)->second;
+    }
+
     void Rack::process(const int& p) noexcept 
     { 
         node[p]->process(); 
@@ -26,12 +32,14 @@ namespace core
         std::cout<<"Rack::Rack()\n"; 
         node = new Module<float>*[grid->sectors]; 
         std::cout<<"-- Space for rack allocated...\n";
+        activeOutputs = new int[grid->sectors];
         for(int i = 0; i < grid->sectors; ++i)
         {
             node[i] = create_node(grid->sector[i].descriptor->type);
-
+            activeOutputs[i] = 0;
         }
         calculateModuleMap();
+        calculateIndexMap();
         std::cout<<"-- Rack built...\n";
     }
 
@@ -41,6 +49,16 @@ namespace core
         {
             uint16_t uid { (static_cast<uint8_t>(node[i]->descriptor->type) << 8) + node[i]->position }; 
             moduleMap.emplace(uid, node[i]);
+        }
+    }
+
+    void Rack::calculateIndexMap()
+    {
+        std::unordered_map<uint16_t, int> r {};
+        for(int i = 0; i < grid->sectors; ++i)
+        {
+            uint16_t uid { (static_cast<uint8_t>(node[i]->descriptor->type) << 8) + node[i]->position }; 
+            indexMap.emplace(uid, i);
         }
     }
 
@@ -71,6 +89,7 @@ namespace core
     { 
         std::cout<<"Rack::~Rack()\n";
         for(int i = 0; i < grid->sectors; ++i) delete node[i]; 
+        delete[] activeOutputs;
         delete[] node;
     }
 }

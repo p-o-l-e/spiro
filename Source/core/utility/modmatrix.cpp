@@ -141,7 +141,8 @@ void Patchbay::connect(Socket* a, Socket* b)
     }
     *a->com = a->data;
     *b->com = b->data;
-
+    
+    on_connect(a->route == SOCKET_OUT? a->id: b->id);
 }
 
 void Patchbay::disconnect(Socket* a, Socket* b)
@@ -164,6 +165,8 @@ void Patchbay::disconnect(Socket* a, Socket* b)
 
     a->to = nullptr;
     b->to = nullptr;
+
+    on_disconnect(a->route == SOCKET_OUT? a->id: b->id);
 }
 
 void Patchbay::clear()

@@ -26,6 +26,7 @@
 #include "modules/vco.hpp"
 #include "setup/midi.h"
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 
 
@@ -33,8 +34,8 @@ namespace core
 {
     void Spiro::process() noexcept
     {
-        for(int o = 0; o < grid->sectors; ++o) rack.process(o);
-
+        // for(int o = 0; o < grid->sectors; ++o) rack.process(o);
+        for(const auto o: standby) rack.process(o);
         out[stereo::l].store(mixer->ocv[stereo::l].load());
         out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
@@ -43,6 +44,7 @@ namespace core
     {
         mixer = rack.at(map::module::type::mix, 0);
         com   = rack.at(map::module::type::com, 0);
+        standby.emplace(rack.index(map::module::type::mix, 0));
 
         for(int i = 0; i < 4; ++i) 
         {

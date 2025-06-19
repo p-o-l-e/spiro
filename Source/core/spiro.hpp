@@ -42,7 +42,6 @@ namespace core
             uint8_t note[settings::poly];
             int voiceIterator = 1;
             std::set<int> active;
-            bool standby = false;
             Module<float>* mixer; 
             Module<float>* com;
             ENV* envelope[4];
@@ -52,6 +51,7 @@ namespace core
             void resetVoice(int);
 
         public:
+            std::set<int> standby;
             const Grid* grid;
             Rack rack;
             DCBlock dcb[2];
