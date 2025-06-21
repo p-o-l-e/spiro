@@ -41,7 +41,10 @@ namespace core
         private:
             uint8_t note[settings::poly];
             int voiceIterator = 1;
-            std::set<int> active;
+            std::set<int> active;                   // Active voices
+            std::set<int> whitelist;                // Active modules
+            std::set<int> blacklist;                // Always ON modules
+            int* activeOutputs;
             Module<float>* mixer; 
             Module<float>* com;
             ENV* envelope[4];
@@ -51,15 +54,15 @@ namespace core
             void resetVoice(int);
 
         public:
-            std::set<int> standby;
             const Grid* grid;
             Rack rack;
-            DCBlock dcb[2];
             Patchbay* bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
             void midiMessage(uint8_t, uint8_t, uint8_t);
             void process() noexcept;
+            void addConnection(int pos) noexcept;
+            void removeConnection(int pos) noexcept;
             Spiro(const Grid*);
-           ~Spiro() = default;
+           ~Spiro();
     };
 };

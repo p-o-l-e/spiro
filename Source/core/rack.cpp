@@ -32,11 +32,9 @@ namespace core
         std::cout<<"Rack::Rack()\n"; 
         node = new Module<float>*[grid->sectors]; 
         std::cout<<"-- Space for rack allocated...\n";
-        activeOutputs = new int[grid->sectors];
         for(int i = 0; i < grid->sectors; ++i)
         {
             node[i] = create_node(grid->sector[i].descriptor->type);
-            activeOutputs[i] = 0;
         }
         calculateModuleMap();
         calculateIndexMap();
@@ -89,7 +87,6 @@ namespace core
     { 
         std::cout<<"Rack::~Rack()\n";
         for(int i = 0; i < grid->sectors; ++i) delete node[i]; 
-        delete[] activeOutputs;
         delete[] node;
     }
 }

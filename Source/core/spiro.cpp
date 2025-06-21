@@ -35,7 +35,7 @@ namespace core
     void Spiro::process() noexcept
     {
         // for(int o = 0; o < grid->sectors; ++o) rack.process(o);
-        for(const auto o: standby) rack.process(o);
+        for(const auto o: whitelist) rack.process(o);
         out[stereo::l].store(mixer->ocv[stereo::l].load());
         out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
@@ -44,10 +44,17 @@ namespace core
     {
         mixer = rack.at(map::module::type::mix, 0);
         com   = rack.at(map::module::type::com, 0);
-        standby.emplace(rack.index(map::module::type::mix, 0));
+        blacklist.emplace(rack.index(map::module::type::mix, 0));
+        whitelist.emplace(rack.index(map::module::type::mix, 0));
+
+        activeOutputs = new int[grid->sectors];
+        for(int i = 0; i < grid->sectors; ++i) activeOutputs[i] = 0;
 
         for(int i = 0; i < 4; ++i) 
         {
+            blacklist.emplace(rack.index(map::module::type::env, i));
+            whitelist.emplace(rack.index(map::module::type::env, i));
+
             envelope[i]   = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
             oscillator[i] = dynamic_cast<VCO*>(rack.at(map::module::type::vco, i));
             
@@ -72,6 +79,11 @@ namespace core
                 oscillator[i]->pin[voice] = &envelope[i]->pin[voice];
             }
         }
+    }
+
+    Spiro::~Spiro()
+    {
+        delete[] activeOutputs; 
     }
 
     void Spiro::noteOn(uint8_t msb, uint8_t lsb)
@@ -148,6 +160,21 @@ namespace core
             default:
                 break;
         }
+    }
+
+    void Spiro::addConnection(int pos) noexcept
+    {
+        ++activeOutputs[pos];
+        auto max = grid->sector[pos].descriptor->cv[map::cv::o];
+        if(activeOutputs[pos] > *max)[[unlikely]] activeOutputs[pos] = *max;
+        whitelist.emplace(pos);
+    }
+    
+    void Spiro::removeConnection(int pos) noexcept
+    {
+        --activeOutputs[pos];
+        if(activeOutputs[pos] < 0)[[unlikely]] activeOutputs[pos] = 0;
+        if(!blacklist.contains(pos))[[likely]] whitelist.erase(pos);
     }
 }
 

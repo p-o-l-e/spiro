@@ -45,32 +45,14 @@ Processor::Processor(): AudioProcessor
     {
         auto uid = core::decode_uid(out);
         auto idx = this->spiro.rack.index(uid.mt, uid.mp);
-        this->spiro.standby.emplace(idx);
-        this->spiro.rack.setActive(idx, true);
-        std::cout<<"Active connections on index "<<idx<<" : "<<this->spiro.rack.isActive(idx)<<"\n";
-        std::cout<<"OnConnect: ";
-        for(auto o: this->spiro.standby)
-        {
-            std::cout<<o<< " ";
-        }
-        std::cout<<"\n";
+        this->spiro.addConnection(idx);
     };
 
     sockets->bay->on_disconnect = [this](uint32_t out)
     {
         auto uid = core::decode_uid(out);
         auto idx = this->spiro.rack.index(uid.mt, uid.mp);
-        this->spiro.rack.setActive(idx, false);
-        if(!this->spiro.rack.isActive(idx)) this->spiro.standby.erase(idx);
-
-        std::cout<<"Active connections on index "<<idx<<" : "<<this->spiro.rack.isActive(idx)<<"\n";
-        std::cout<<"OnDisconnect: ";
-        for(auto o: this->spiro.standby)
-        {
-            std::cout<<o<< " ";
-        }
-        std::cout<<"\n";
-
+        this->spiro.removeConnection(idx);
     };
 
     spiro.bay = sockets->bay;
