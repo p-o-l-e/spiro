@@ -1,0 +1,30 @@
+
+<svg width="119" height="326" viewBox="0 0 119 326" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="mix" data-module="mix" />
+
+  <!-- Inputs -->
+  <rect id="in_l" x="31" y="14" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="l"/>
+  <rect id="in_c" x="31" y="44" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="c"/>
+  <rect id="in_r" x="31" y="74" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="r"/>
+  <rect id="in_alpha" x="1" y="29" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="alpha"/>
+  <rect id="in_theta" x="1" y="59" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="theta"/>
+
+  <!-- Outputs -->
+  <rect id="out_l" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none" data-type="pin" data-name="l"/>
+  <rect id="out_r" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none" data-type="pin" data-name="r"/>
+
+  <!-- Controls -->
+  <rect id="ctl_alpha" x="67" y="17" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="alpha" data-flag="encoder"/>
+  <rect id="ctl_theta" x="67" y="53" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="theta" data-flag="encoder"/>
+  <rect id="ctl_amp" x="57" y="180" width="48" height="48"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="amp" data-flag="A"/>
+</svg>

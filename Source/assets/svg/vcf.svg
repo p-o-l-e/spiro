@@ -1,0 +1,52 @@
+
+<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+  <!-- Module metadata -->
+  <metadata data-prefix="vcf" data-module="vcf" />
+
+  <!-- Inputs (ic = 5) -->
+  <rect id="in_a" x="11" y="37" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="a"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_b" x="11" y="67" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="b"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_c" x="11" y="97" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="c"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_cutoff" x="11" y="127" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="cutoff"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_Q" x="49" y="127" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="Q"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+
+  <!-- Outputs (oc = 3) -->
+  <rect id="out_lp" x="49" y="37" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="lp"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_bp" x="49" y="67" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="bp"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_hp" x="49" y="97" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="hp"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+
+  <!-- Controls (cc = 2) sliders -->
+  <rect id="ctl_cutoff" x="22" y="167" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="cutoff"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B"/>
+  <rect id="ctl_Q" x="22" y="228" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="Q"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B"/>
+
+</svg>

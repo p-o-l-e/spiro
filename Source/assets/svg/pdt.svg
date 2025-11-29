@@ -1,0 +1,16 @@
+
+<svg width="152" height="30" viewBox="0 0 152 30" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="pdt" data-module="pdt" />
+
+  <!-- Inputs -->
+  <rect id="in_a" x="11" y="8" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="a"/>
+  <rect id="in_b" x="49" y="8" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="b"/>
+  <rect id="in_c" x="85" y="8" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="c"/>
+
+  <!-- Output -->
+  <rect id="out_x" x="125" y="8" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="x"/>
+</svg>

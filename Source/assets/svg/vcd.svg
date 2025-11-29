@@ -1,0 +1,61 @@
+
+<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+  <!-- Module metadata -->
+  <metadata data-prefix="vcd" data-module="vcd" />
+
+  <!-- Inputs (ic = 6) -->
+  <rect id="in_time" x="11" y="127" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="time"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_feed" x="49" y="127" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="feed"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_a" x="11" y="7" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="a"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_b" x="11" y="37" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="b"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_c" x="49" y="7" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="c"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="in_d" x="49" y="37" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="d"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+
+  <!-- Outputs (oc = 4) -->
+  <rect id="out_a" x="11" y="67" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="a"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_b" x="49" y="67" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="b"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_c" x="11" y="97" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="c"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_d" x="49" y="97" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="d"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+
+  <!-- Controls (cc = 2) sliders -->
+  <rect id="ctl_time" x="22" y="165" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="time"
+        data-min="0.01" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B"/>
+  <rect id="ctl_feed" x="22" y="226" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="feed"
+        data-min="0.0" data-max="1.0" data-def="0.5" data-skew="2.0" data-step="0.001" data-flag="B"/>
+
+
+</svg>

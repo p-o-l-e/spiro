@@ -1,0 +1,65 @@
+
+<svg width="247" height="270" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- soft_a button -->
+  <rect id="soft_a" x="7" y="73" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_b button -->
+  <rect id="soft_b" x="7" y="103" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_c button -->
+  <rect id="soft_c" x="7" y="133" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_d button -->
+  <rect id="soft_d" x="7" y="163" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_e button -->
+  <rect id="soft_e" x="78" y="222" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_f button -->
+  <rect id="soft_f" x="108" y="222" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_g button -->
+  <rect id="soft_g" x="138" y="222" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- soft_h button -->
+  <rect id="soft_h" x="168" y="222" width="16" height="16"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="button" data-flag="momentary"/>
+
+  <!-- menu radio -->
+  <rect id="menu" x="12" y="226" width="12" height="12"
+        fill="#FFC107" stroke="#FF6F00" stroke-width="1"
+        data-type="button" data-flag="radio"/>
+
+  <!-- scope radio -->
+  <rect id="scope" x="204" y="226" width="12" height="12"
+        fill="#FFC107" stroke="#FF6F00" stroke-width="1"
+        data-type="button" data-flag="radio"/>
+
+  <!-- type parameter -->
+  <rect id="type" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter"/>
+
+  <!-- scale parameter -->
+  <rect id="scale" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter"/>
+
+</svg>
+

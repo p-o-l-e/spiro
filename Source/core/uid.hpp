@@ -40,7 +40,7 @@ namespace core
      * Data : 0x FF FF FF FF
      * index:     3  2  1  0     MSB->LSB
      * ***********************************************************************************************************************/
-    constexpr uint8_t extract_byte(const uint32_t& data, const shift& index) noexcept
+    constexpr uint8_t extract_byte(uint32_t data, shift index) noexcept
     {
         return uint8_t((data >> index) & 0xFF);
     }

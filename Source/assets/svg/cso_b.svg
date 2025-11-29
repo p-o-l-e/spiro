@@ -1,0 +1,40 @@
+
+<svg width="76" height="352" viewBox="0 0 76 352" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="cso" data-module="cso" data-variant="2" />
+
+  <!-- Inputs -->
+  <rect id="in_fm" x="49" y="239" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="fm"/>
+  <rect id="in_warp" x="10" y="239" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="warp"/>
+
+  <!-- Outputs -->
+  <rect id="out_x" x="30" y="269" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="x"/>
+  <rect id="out_y" x="30" y="299" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="y"/>
+  <rect id="out_z" x="30" y="329" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="z"/>
+
+  <!-- Controls -->
+  <rect id="ctl_tune" x="14" y="32" width="48" height="48"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="tune" data-flag="A"/>
+  <rect id="ctl_warp" x="14" y="108" width="48" height="48"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="warp" data-flag="A"/>
+  <rect id="ctl_amp" x="22" y="177" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="amp" data-flag="B"/>
+  <rect id="param_form" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter" data-name="form" data-min="0.0" data-max="3.0" data-step="1.0"/>
+  <rect id="btn_options" x="60" y="5" width="12" height="12"
+        fill="#FFC107" stroke="#FF6F00" stroke-width="1"
+        data-type="button" data-name="options" data-flag="radio"/>
+</svg>

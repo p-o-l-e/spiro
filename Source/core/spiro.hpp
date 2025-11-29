@@ -21,16 +21,13 @@
 ******************************************************************************************************************************/
 #pragma once
 #include "modmatrix.hpp"
-#include "modules/env.hpp"
 #include "modules/node.hpp"
 #include "modules/vco.hpp"
+#include "modules/env.hpp"
 #include "rack.hpp"
-#include "setup/midi.h"
 #include <atomic>
 #include <set>
 #include <cstdint>
-#include <functional>
-
 
 namespace core 
 {
@@ -38,6 +35,7 @@ namespace core
     { 
         public:
             struct stereo { enum { l, r }; };
+
         private:
             uint8_t note[settings::poly];
             int voiceIterator = 1;
@@ -47,8 +45,9 @@ namespace core
             int* activeOutputs;
             Module<float>* mixer; 
             Module<float>* com;
-            ENV* envelope[4];
-            VCO* oscillator[4];
+            const int oscn;
+            ENV** envelope;
+            VCO** oscillator;
             void noteOn (uint8_t, uint8_t);
             void noteOff(uint8_t);
             void resetVoice(int);
@@ -62,6 +61,8 @@ namespace core
             void process() noexcept;
             void addConnection(int pos) noexcept;
             void removeConnection(int pos) noexcept;
+            Spiro operator=(Spiro) = delete;
+            Spiro(const Spiro&) = delete;
             Spiro(const Grid*);
            ~Spiro();
     };

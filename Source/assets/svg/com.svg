@@ -1,0 +1,18 @@
+
+<svg width="76" height="89" viewBox="0 0 76 89" xmlns="http://www.w3.org/2000/svg">
+  <!-- Module metadata -->
+  <metadata data-prefix="com" data-module="com" />
+
+  <!-- Outputs (oc = 2) -->
+  <rect id="out_p_wheel" x="31" y="6" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="p_wheel"
+        data-min="0.0" data-max="1.0" data-def="0.0"
+        data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+  <rect id="out_m_wheel" x="31" y="36" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="m_wheel"
+        data-min="0.0" data-max="1.0" data-def="0.0"
+        data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+
+</svg>

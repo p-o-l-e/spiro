@@ -1,0 +1,47 @@
+
+<svg width="76" height="244" viewBox="0 0 76 244" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="lfo" data-module="lfo" />
+
+  <!-- Inputs -->
+  <rect id="in_fm" x="11" y="67" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="fm"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0"/>
+  <rect id="in_am" x="49" y="67" width="16" height="16"
+        fill="#37474F" stroke="#263238" stroke-width="1"
+        data-type="input" data-name="am"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0"/>
+
+  <!-- Outputs -->
+  <rect id="out_a" x="30" y="7" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="a"/>
+  <rect id="out_b" x="30" y="37" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" stroke-width="1"
+        data-type="output" data-name="b"/>
+
+  <!-- Controls -->
+  <rect id="param_octave" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter" data-name="octave"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-step="0.0"/>
+  <rect id="ctl_delta" x="22" y="106" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="delta"
+        data-min="0.001" data-max="1.0" data-def="0.01" data-skew="0.2" data-step="0.001" data-flag="B"/>
+  <rect id="ctl_amp" x="22" y="166" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
+        data-type="slider" data-name="amp"
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B"/>
+  <rect id="param_form" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter" data-name="form"
+        data-min="0.0" data-max="4.0" data-def="0.0" data-step="1.0"/>
+  <rect id="param_scale" x="0" y="0" width="0" height="0"
+        fill="none" stroke="none"
+        data-type="parameter" data-name="scale"
+        data-min="0.0" data-max="4.0" data-def="0.0" data-step="1.0"/>
+  <rect id="btn_options" x="60" y="227" width="12" height="12"
+        fill="#FFC107" stroke="#FF6F00" stroke-width="1"
+        data-type="button" data-name="options" data-flag="radio"/>
+</svg>

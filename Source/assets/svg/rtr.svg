@@ -1,0 +1,46 @@
+
+<svg width="128" height="326" viewBox="0 0 128 326" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="rtr" data-module="rtr" />
+
+  <!-- Inputs -->
+  <rect id="in_ax" x="15" y="29" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="ax"/>
+  <rect id="in_ay" x="53" y="29" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="ay"/>
+  <rect id="in_az" x="91" y="29" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="az"/>
+  <rect id="in_bx" x="15" y="59" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="bx"/>
+  <rect id="in_by" x="53" y="59" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="by"/>
+  <rect id="in_bz" x="91" y="59" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="bz"/>
+  <rect id="in_cvx" x="15" y="149" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="cvx"/>
+  <rect id="in_cvy" x="53" y="149" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="cvy"/>
+  <rect id="in_cvz" x="91" y="149" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="cvz"/>
+
+  <!-- Outputs -->
+  <rect id="out_ax" x="34" y="89" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="ax"/>
+  <rect id="out_ay" x="72" y="89" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="ay"/>
+  <rect id="out_az" x="110" y="89" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="az"/>
+  <rect id="out_bx" x="34" y="119" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="bx"/>
+  <rect id="out_by" x="72" y="119" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="by"/>
+  <rect id="out_bz" x="110" y="119" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="bz"/>
+
+  <!-- Sliders -->
+  <rect id="ctl_x" x="8" y="187" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="x" data-flag="encoder"/>
+  <rect id="ctl_y" x="46" y="187" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="y" data-flag="encoder"/>
+  <rect id="ctl_z" x="84" y="187" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="z" data-flag="encoder"/>
+</svg>

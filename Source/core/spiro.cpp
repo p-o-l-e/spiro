@@ -20,12 +20,9 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "spiro.hpp"
-#include "modules/env.hpp"
-#include "modules/interface/com_interface.hpp"
-#include "modules/interface/descriptor.hxx"
-#include "modules/vco.hpp"
 #include "setup/midi.h"
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <iostream>
 
@@ -34,14 +31,16 @@ namespace core
 {
     void Spiro::process() noexcept
     {
-        // for(int o = 0; o < grid->sectors; ++o) rack.process(o);
         for(const auto o: whitelist) rack.process(o);
         out[stereo::l].store(mixer->ocv[stereo::l].load());
         out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
 
-    Spiro::Spiro(const Grid* grid): grid(grid), rack(grid)
+    Spiro::Spiro(const Grid* grid): grid(grid), rack(grid), oscn(grid->count(map::module::vco))
     {
+        envelope    = new ENV*[oscn];
+        oscillator  = new VCO*[oscn];
+
         mixer = rack.at(map::module::type::mix, 0);
         com   = rack.at(map::module::type::com, 0);
         blacklist.emplace(rack.index(map::module::type::mix, 0));
@@ -50,7 +49,7 @@ namespace core
         activeOutputs = new int[grid->sectors];
         for(int i = 0; i < grid->sectors; ++i) activeOutputs[i] = 0;
 
-        for(int i = 0; i < 4; ++i) 
+        for(int i = 0; i < oscn; ++i) 
         {
             blacklist.emplace(rack.index(map::module::type::env, i));
             whitelist.emplace(rack.index(map::module::type::env, i));
@@ -83,7 +82,9 @@ namespace core
 
     Spiro::~Spiro()
     {
-        delete[] activeOutputs; 
+        delete[] activeOutputs;
+        delete[] oscillator;
+        delete[] envelope;
     }
 
     void Spiro::noteOn(uint8_t msb, uint8_t lsb)
@@ -99,7 +100,7 @@ namespace core
         }
 
         note[voiceIterator] = msb;
-        for(int i = 0; i < 4; ++i)
+        for(int i = 0; i < oscn; ++i)
         {
             if(oscillator[i]->mode() != VCO::Poly) 
             {
@@ -121,7 +122,7 @@ namespace core
         {
             if (note[voice] == msb) 
             {
-                for (int i = 0; i < 4; ++i) 
+                for (int i = 0; i < oscn; ++i) 
                 {
                     envelope[i]->hold[voice] = false;
                     if (oscillator[i]->mode() == VCO::Freerun) 

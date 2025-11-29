@@ -114,6 +114,7 @@
         <FILE id="wbT7zX" name="uid.hpp" compile="0" resource="0" file="Source/core/uid.hpp"/>
       </GROUP>
       <GROUP id="{22DBE737-6B22-673F-F2EE-8E243637B1D5}" name="assets">
+        <FILE id="XpeXxp" name="BGr.svg" compile="0" resource="1" file="Source/assets/BGr.svg"/>
         <FILE id="qcbEtU" name="BGd.png" compile="0" resource="1" file="Source/assets/BGd.png"/>
         <FILE id="htj8CL" name="B16f.png" compile="0" resource="1" file="Source/assets/B16f.png"/>
         <FILE id="RzhF0h" name="B16n.png" compile="0" resource="1" file="Source/assets/B16n.png"/>

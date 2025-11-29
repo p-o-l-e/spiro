@@ -1,0 +1,22 @@
+
+<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+  <metadata data-prefix="vca" data-module="vca" data-variant="2" />
+
+  <!-- Inputs -->
+  <rect id="in_a" x="49" y="7" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="a"/>
+  <rect id="in_b" x="49" y="37" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="b"/>
+  <rect id="in_amp" x="49" y="127" width="16" height="16"
+        fill="#37474F" stroke="#263238" data-type="input" data-name="amp"/>
+
+  <!-- Outputs -->
+  <rect id="out_a" x="49" y="67" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="a"/>
+  <rect id="out_b" x="49" y="97" width="16" height="16"
+        fill="#546E7A" stroke="#37474F" data-type="output" data-name="b"/>
+
+  <!-- Slider -->
+  <rect id="ctl_amp" x="22" y="226" width="32" height="32"
+        fill="#4CAF50" stroke="#2E7D32" data-type="slider" data-name="amp" data-flag="B"/>
+</svg>

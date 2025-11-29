@@ -47,7 +47,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     sprite[Sprite::Slider][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
 	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
-	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
+	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGr_svg, BinaryData::BGr_svgSize));
    
     bg.setImage(*bg_texture);
     bg.setOpaque(true);

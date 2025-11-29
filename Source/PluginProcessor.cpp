@@ -306,7 +306,7 @@ void Processor::scanPresetDir()
 **************************************************************************************************************************/
 void Processor::getStateInformation(juce::MemoryBlock& destData)
 {
-    listeners.call([this](Listener &l) { l.saveCall(); });
+    listeners.call([this](Listener &L) { L.saveCall(); });
     auto state = tree.copyState();
     state.setProperty(presetNameID, currentPresetName, nullptr);
     std::unique_ptr<juce::XmlElement> xml(state.createXml());   
@@ -330,7 +330,7 @@ void Processor::setStateInformation(const void* data, int sizeInBytes)
             juce::String presetNameLoaded = tree.state.getProperty (presetNameID, "");
         }
     }
-    listeners.call([this](Listener &l) { l.loadCall(); });
+    listeners.call([this](Listener &L) { L.loadCall(); });
 }
 
 void Processor::reset()
@@ -397,7 +397,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
     buffer = std::make_shared<core::wavering<core::Point2D<float>>>(samplesPerBlock * 196 / core::settings::scope_fps);
     if(getActiveEditor())
     {
-        listeners.call([this](Listener &l) { l.resetCall(); });
+        listeners.call([this](Listener &L) { L.resetCall(); });
     }
     reloadParameters();
     suspendProcessing(false);
