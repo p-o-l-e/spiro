@@ -69,9 +69,9 @@ void EnvelopeDisplay::transmit()
         for(uint8_t i = 0; i < nodes; ++i)
         {
             auto uid = core::uid_t { core::map::module::env, id, core::map::cv::c, offset[j] + i }; 
-            auto index = core::grid.getIndex(uid);
+            auto index = processor->spiro.grid->getIndex(uid);
 
-            processor->parameters[index] = processor->tree.getParameter(core::grid.name(uid, true));
+            processor->parameters[index] = processor->tree.getParameter(processor->spiro.grid->name(uid, true));
             float value = env.node[i + 1].data[type[j]];
             if(offset[j] == core::env::ctl::aa)
             {

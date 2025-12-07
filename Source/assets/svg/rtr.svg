@@ -1,6 +1,12 @@
 
 <svg width="128" height="326" viewBox="0 0 128 326" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="rtr" data-module="rtr" />
+    <metadata 
+        data-module="rtr" 
+        data-prefix="rtr"
+        data-cc="3" data-ic="9" data-oc="6" data-vc="1"
+        data-ctl="x,y,z"
+        data-cvi="ax,ay,az,bx,by,bz,cvx,cvy,cvz"
+        data-cvo="ax,ay,az,bx,by,bz" />  
 
   <!-- Inputs -->
   <rect id="in_ax" x="15" y="29" width="16" height="16"

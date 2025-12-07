@@ -5,10 +5,15 @@
               pluginFormats="buildStandalone,buildVST3" pluginVST3Category="Instrument,Synth"
               cppLanguageStandard="20" companyName="pole" pluginCode="pspr"
               pluginManufacturerCode="pole" companyWebsite="https://github.com/p-o-l-e"
-              version="0.5.0" headerPath="../../Source/core&#10;../../Source/core/utility&#10;../../Source/core/graphics&#10;../../Source/core/setup&#10;../../Source/core/modules&#10;../../Source/core/modules/interface">
+              version="0.5.0" headerPath="../../Source/core&#10;../../Source/core/utility&#10;../../Source/core/tools&#10;../../Source/core/graphics&#10;../../Source/core/setup&#10;../../Source/core/modules&#10;../../Source/core/modules/interface">
   <MAINGROUP id="fQRmMz" name="spiro">
     <GROUP id="{8092EC6A-FEE9-DE88-28B8-36D77CA9E780}" name="Source">
       <GROUP id="{E8EF9006-176C-5809-32EF-375440F940F3}" name="core">
+        <GROUP id="{9373BAC1-3D39-397A-DC3A-85AE1B2F803F}" name="tools">
+          <FILE id="OMFwIO" name="nanosvg.h" compile="0" resource="0" file="Source/core/tools/nanosvg.h"/>
+          <FILE id="k5ChGv" name="tinyxml2.cpp" compile="1" resource="0" file="Source/core/tools/tinyxml2.cpp"/>
+          <FILE id="gSOwRZ" name="tinyxml2.h" compile="0" resource="0" file="Source/core/tools/tinyxml2.h"/>
+        </GROUP>
         <GROUP id="{C89373EA-CC8D-8A83-C69C-8C2B629D768E}" name="graphics">
           <FILE id="zCvOqa" name="blur.cpp" compile="1" resource="0" file="Source/core/graphics/blur.cpp"/>
           <FILE id="pZWb3J" name="blur.hpp" compile="0" resource="0" file="Source/core/graphics/blur.hpp"/>
@@ -97,6 +102,8 @@
           <FILE id="Jitj1T" name="vco.cpp" compile="1" resource="0" file="Source/core/modules/vco.cpp"/>
           <FILE id="HYr9fR" name="vco.hpp" compile="0" resource="0" file="Source/core/modules/vco.hpp"/>
         </GROUP>
+        <FILE id="X1wO2e" name="control.cpp" compile="1" resource="0" file="Source/core/control.cpp"/>
+        <FILE id="qFnlzM" name="control.hpp" compile="0" resource="0" file="Source/core/control.hpp"/>
         <FILE id="qyZC9K" name="envelope.hpp" compile="0" resource="0" file="Source/core/envelope.hpp"/>
         <FILE id="MyUaQm" name="modmatrix.cpp" compile="1" resource="0" file="Source/core/utility/modmatrix.cpp"/>
         <FILE id="AfyMxi" name="modmatrix.hpp" compile="0" resource="0" file="Source/core/utility/modmatrix.hpp"/>

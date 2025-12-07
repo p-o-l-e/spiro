@@ -1,6 +1,12 @@
 
 <svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="env" data-module="env" data-variant="2" />
+      <metadata 
+        data-module="env" 
+        data-prefix="env"
+        data-cc="17" data-ic="0" data-oc="1" data-vc="4"
+        data-ctl="at,ht,dt,st,rt,aa,ha,da,sa,ra,af,hf,df,sf,rf,scale,select"
+        data-cvi=""
+        data-cvo="a" />
 
   <!-- Output -->
   <rect id="out_a" x="125" y="8" width="16" height="16"

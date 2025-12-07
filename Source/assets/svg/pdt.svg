@@ -1,6 +1,12 @@
 
 <svg width="152" height="30" viewBox="0 0 152 30" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="pdt" data-module="pdt" />
+    <metadata 
+        data-module="pdt" 
+        data-prefix="pdt"
+        data-cc="0" data-ic="3" data-oc="1" data-vc="1"
+        data-ctl=""
+        data-cvi="a,b,c"
+        data-cvo="x" />
 
   <!-- Inputs -->
   <rect id="in_a" x="11" y="8" width="16" height="16"

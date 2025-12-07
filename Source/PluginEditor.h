@@ -37,6 +37,7 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
 {
     public:
         enum Sprite { Momentary, Radio, Slider };
+        std::unique_ptr<juce::Image> bg_texture;
 		std::unique_ptr<Display> display;
         bool fade = false;
         Processor& processor;
@@ -60,7 +61,6 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
         void setOption(const core::uid_t&, const float, const float);
         void switchEnvelope(uint8_t);
         std::unique_ptr<juce::Image> sprite[3][3];
-        std::unique_ptr<juce::Image> bg_texture;
         juce::ImageComponent bg;
         juce::AudioProcessorValueTreeState& valueTreeState;
         std::unique_ptr<SpriteSlider[]> slider;

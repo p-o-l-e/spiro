@@ -58,7 +58,7 @@ namespace core
 
     struct Descriptor 
     {
-        const map::module::type type = map::module::type::off;
+        const map::module::type type;
         const int* const cv[map::cv::count];
         const std::string* const prefix;
         const Control* const set[map::cv::count];

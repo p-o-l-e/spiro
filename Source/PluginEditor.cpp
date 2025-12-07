@@ -47,7 +47,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     sprite[Sprite::Slider][1] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::P32d_png, BinaryData::P32d_pngSize));
 	sprite[Sprite::Slider][2] = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::E32d_png, BinaryData::E32d_pngSize));
 
-	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGr_svg, BinaryData::BGr_svgSize));
+	bg_texture = std::make_unique<juce::Image>(juce::ImageCache::getFromMemory(BinaryData::BGd_png, BinaryData::BGd_pngSize));
    
     bg.setImage(*bg_texture);
     bg.setOpaque(true);
@@ -60,17 +60,17 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Sliders initialization
     * 
     **************************************************************************************************************************/
-    faders = core::grid.count(core::Control::slider, core::map::flag::fader);
-    sliders = core::grid.count(core::Control::slider) - faders;
+    faders = processor.spiro.grid->count(core::Control::slider, core::map::flag::fader);
+    sliders = processor.spiro.grid->count(core::Control::slider) - faders;
     slider = std::make_unique<SpriteSlider[]>(sliders);
     fader = std::make_unique<Fader[]>(faders);
 
     sliderAttachment.reserve(sliders);
 
-    for(int i = 0, j = 0; i < core::grid.count(core::Control::slider); ++i)
+    for(int i = 0, j = 0; i < processor.spiro.grid->count(core::Control::slider); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::slider);
-        const core::Control* c = core::grid.control(uid);
+        auto uid = processor.spiro.grid->getUID(i, core::Control::slider);
+        const core::Control* c = processor.spiro.grid->control(uid);
         int type = 0;
 
         switch(c->flag) 
@@ -79,7 +79,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 type = 2;
                 slider[i].setPaintingIsUnclipped(true);
                 slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, processor.spiro.grid->name(uid, true), slider[i]));
                 addAndMakeVisible(slider[i]);
                 break;
 
@@ -87,7 +87,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 type = 1;
                 slider[i].setPaintingIsUnclipped(true);
                 slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, processor.spiro.grid->name(uid, true), slider[i]));
                 addAndMakeVisible(slider[i]);
                 break;
 
@@ -95,12 +95,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 type = 0;
                 slider[i].setPaintingIsUnclipped(true);
                 slider[i].init(sprite[Sprite::Slider][type].get(), c->flag & core::map::flag::encoder);
-                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), slider[i]));
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, processor.spiro.grid->name(uid, true), slider[i]));
                 addAndMakeVisible(slider[i]);
                 break;
 
             case core::map::flag::fader:
-                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, core::grid.name(uid, true), fader[j]));
+                sliderAttachment.emplace_back(std::make_unique<SliderAttachment>(valueTreeState, processor.spiro.grid->name(uid, true), fader[j]));
                 addAndMakeVisible(fader[j]);
                 ++j;
                 break;
@@ -114,13 +114,13 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  Buttons initialization
     * 
     **************************************************************************************************************************/
-    button.reserve(core::grid.count(core::Control::button));
-    buttonAttachment.reserve(core::grid.count(core::Control::button));
+    button.reserve(processor.spiro.grid->count(core::Control::button));
+    buttonAttachment.reserve(processor.spiro.grid->count(core::Control::button));
 
-    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
+    for(int i = 0; i < processor.spiro.grid->count(core::Control::button); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::button);
-        const core::Control* c = core::grid.control(uid);
+        auto uid = processor.spiro.grid->getUID(i, core::Control::button);
+        const core::Control* c = processor.spiro.grid->control(uid);
         button.emplace_back(std::make_unique<juce::ImageButton>(c->postfix));
         auto type = Sprite::Momentary;
         switch(c->flag) 
@@ -139,7 +139,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
             *sprite[type][1], 1.0f, {}, 
             *sprite[type][0], 1.0f, {}
         );
-        buttonAttachment.emplace_back(std::make_unique<ButtonAttachment>(valueTreeState, core::grid.name(uid, true), *button[i]));
+        buttonAttachment.emplace_back(std::make_unique<ButtonAttachment>(valueTreeState, processor.spiro.grid->name(uid, true), *button[i]));
         addAndMakeVisible(button[i].get());
     }
    
@@ -160,7 +160,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Main Menu
     * 
     **************************************************************************************************************************/
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
         fade = true;
         display->page = Display::Page::MainMenu;
@@ -172,7 +172,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Scope
     * 
     **************************************************************************************************************************/
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scope }))]->onClick = [this]
     {
         startTimerHz(core::settings::scope_fps);
         fade = false;
@@ -186,9 +186,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - VCOs
     * 
     **************************************************************************************************************************/    
-    for(uint8_t i = 0; i < core::grid.count(core::map::module::vco); ++i)
+    for(uint8_t i = 0; i < processor.spiro.grid->count(core::map::module::vco); ++i)
     {
-        button[(core::grid.getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
+        button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::vco, i, core::map::cv::c, core::vco::ctl::options }))]->onClick = [this, i]
         {
             fade = true;
             display->page = static_cast<Display::Page>(Display::VcoA + i);
@@ -201,9 +201,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Dynamic Systems
     * 
     **************************************************************************************************************************/    
-    for(uint8_t i = 0; i < core::grid.count(core::map::module::cso); ++i)
+    for(uint8_t i = 0; i < processor.spiro.grid->count(core::map::module::cso); ++i)
     {
-        button[(core::grid.getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
+        button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cso, i, core::map::cv::c, core::cso::ctl::options }))]->onClick = [this, i]
         {
             fade = true;
             display->page = static_cast<Display::Page>(Display::CsoA + i);
@@ -216,9 +216,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - LFOs
     * 
     **************************************************************************************************************************/    
-    for(uint8_t i = 0; i < core::grid.count(core::map::module::lfo); ++i)
+    for(uint8_t i = 0; i < processor.spiro.grid->count(core::map::module::lfo); ++i)
     {
-        button[(core::grid.getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
+        button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::lfo, i, core::map::cv::c, core::lfo::ctl::options }))]->onClick = [this, i]
         {
             fade = true;
             display->page = static_cast<Display::Page>(Display::LfoA + i);
@@ -231,9 +231,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Envelope switches
     * 
     **************************************************************************************************************************/    
-    for(uint8_t i = 0; i < core::grid.count(core::map::module::env); ++i)
+    for(uint8_t i = 0; i < processor.spiro.grid->count(core::map::module::env); ++i)
     {
-        button[(core::grid.getIndex(core::uid_t{ core::map::module::env, i, core::map::cv::c, core::env::ctl::select }))]->onClick = [this, i]
+        button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::env, i, core::map::cv::c, core::env::ctl::select }))]->onClick = [this, i]
         {
             switchEnvelope(i);
         };
@@ -243,7 +243,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft A (Jump Up)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sa }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sa }))]->onClick = [this]
     {
         display->row[display->page] = 0;
         display->switchPage(&processor, display->page);
@@ -254,7 +254,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft B (Step Up)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sb }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sb }))]->onClick = [this]
     {
         display->row[display->page]--;
         display->switchPage(&processor, display->page);
@@ -265,7 +265,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft C (Step Down)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sc }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sc }))]->onClick = [this]
     {
         display->row[display->page]++;
         display->switchPage(&processor, display->page);
@@ -276,7 +276,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft D (Jump Down)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sd }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sd }))]->onClick = [this]
     {
         display->row[display->page] = display->rows_max - 1;
         display->switchPage(&processor, display->page);
@@ -287,12 +287,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft E (Jump Left) (Step Left for Scope) (Cancel for Menu)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
     {
         if(display->page == Display::Page::CroA)
         {
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
-            auto control = core::grid.control(uid);
+            auto control = processor.spiro.grid->control(uid);
             setOption(uid, -control->step, control->max);
         }
         else if(display->page == Display::Page::MainMenu)
@@ -306,7 +306,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         else if(display->page == Display::Page::Load) display->mainMenu();
         else 
         {        
-            auto control = core::grid.control(display->uid);
+            auto control = processor.spiro.grid->control(display->uid);
             setOption(display->uid, -control->max, control->max);
             display->switchPage(&processor, display->page);
         }
@@ -317,12 +317,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft F (Step Left) (Step Right for Scope) (Ok for Menu)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
     {
         if(display->page == Display::Page::CroA)
         {
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
-            auto control = core::grid.control(uid);
+            auto control = processor.spiro.grid->control(uid);
             setOption(uid, control->step, control->max);
         }
         else if(display->page == Display::Page::MainMenu)
@@ -366,7 +366,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         }
         else 
         {
-            auto control = core::grid.control(display->uid);
+            auto control = processor.spiro.grid->control(display->uid);
             setOption(display->uid, -control->step, control->max);
             display->switchPage(&processor, display->page);
         }
@@ -377,12 +377,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft G (Step Right) (Scale Down for Scope) (Prior page for Load)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
     {
         if(display->page == Display::Page::CroA)
         {
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
-            auto control = core::grid.control(uid);
+            auto control = processor.spiro.grid->control(uid);
             setOption(uid, -control->step, control->max);
         }
         else if(display->page == Display::Page::MainMenu)   {}
@@ -394,7 +394,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         }
         else 
         {
-            auto control = core::grid.control(display->uid);
+            auto control = processor.spiro.grid->control(display->uid);
             setOption(display->uid, control->step, control->max);
             display->switchPage(&processor, display->page);
         }
@@ -405,12 +405,12 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     *  λ - Soft H (Jump Right) (Scale Up for Scope) (Next page for Load)
     * 
     **************************************************************************************************************************/   
-    button[(core::grid.getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
+    button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
     {
         if(display->page == Display::Page::CroA)
         {
             auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
-            auto control = core::grid.control(uid);
+            auto control = processor.spiro.grid->control(uid);
             setOption(uid, control->step, control->max);
         }
         else if(display->page == Display::Page::MainMenu)   {}
@@ -422,7 +422,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         }
         else 
         {
-            auto control = core::grid.control(display->uid);
+            auto control = processor.spiro.grid->control(display->uid);
             setOption(display->uid, control->max, control->max);
             display->switchPage(&processor, display->page);
         }
@@ -442,9 +442,9 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
 void Editor::setOption(const core::uid_t& uid, const float delta, const float max)
 {
-    auto index = core::grid.getIndex(uid);
+    auto index = processor.spiro.grid->getIndex(uid);
 
-    processor.parameters[index] = processor.tree.getParameter(core::grid.name(uid, true));
+    processor.parameters[index] = processor.tree.getParameter(processor.spiro.grid->name(uid, true));
     float value = processor.parameters[index]->convertFrom0to1(processor.parameters[index]->getValue());
     value += delta;
     if      (value > max) value = max;
@@ -465,9 +465,9 @@ void Editor::setOption(const core::uid_t& uid, const float delta, const float ma
 void Editor::loadMatrix()
 {
     int i = 0;
-    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    for(int x = 0; x < processor.spiro.grid->count(core::Control::input); ++x)
     {
-        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        for(int y = 0; y < processor.spiro.grid->count(core::Control::output); ++y)
         {
             processor.matrix[i] = processor.tree.getParameter("mm" + juce::String(i)); 
             processor.spiro.bay->matrix.set(x, y, core::bool_from_range(processor.matrix[i]->getValue()));
@@ -481,9 +481,9 @@ void Editor::loadMatrix()
 void Editor::saveMatrix()
 {
     int i = 0;
-    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    for(int x = 0; x < processor.spiro.grid->count(core::Control::input); ++x)
     {
-        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        for(int y = 0; y < processor.spiro.grid->count(core::Control::output); ++y)
         {
             processor.matrix[i] = processor.tree.getParameter("mm" + juce::String(i)); 
             processor.matrix[i]->beginChangeGesture();
@@ -497,9 +497,9 @@ void Editor::saveMatrix()
 void Editor::clearMatrix()
 {
     int i = 0;
-    for(int x = 0; x < core::grid.count(core::Control::input); ++x)
+    for(int x = 0; x < processor.spiro.grid->count(core::Control::input); ++x)
     {
-        for(int y = 0; y < core::grid.count(core::Control::output); ++y)
+        for(int y = 0; y < processor.spiro.grid->count(core::Control::output); ++y)
         {
             processor.spiro.bay->matrix.set(x, y, false);
             ++i;
@@ -543,7 +543,7 @@ void Editor::resetCall()
 void Editor::switchEnvelope(uint8_t e)
 {
     auto uid    = core::uid_t { core::map::module::env, e, core::map::cv::c, core::env::ctl::select };
-    auto name   = core::grid.name(uid, true);
+    auto name   = processor.spiro.grid->name(uid, true);
     auto value  = processor.tree.getRawParameterValue(name); 
     env[e].get()->setVisible(*value);
     fader[e].setVisible(*value);
@@ -586,11 +586,12 @@ void Editor::resized()
     processor.suspendProcessing(true);
 
 	bg.setBounds(0, 0, core::constraints::W, core::constraints::H);
+    bg.setVisible(true);
 
     for(int i = 0; i < sliders; ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::slider);
-        auto bounds = core::grid.getBounds(uid);
+        auto uid = processor.spiro.grid->getUID(i, core::Control::slider);
+        auto bounds = processor.spiro.grid->getBounds(uid);
 
         juce::Rectangle<int> r 
         { 
@@ -608,10 +609,10 @@ void Editor::resized()
         fader[i].setBounds(rect);
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
+    for(int i = 0; i < processor.spiro.grid->count(core::Control::button); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::button);
-        auto bounds = core::grid.getBounds(uid);
+        auto uid = processor.spiro.grid->getUID(i, core::Control::button);
+        auto bounds = processor.spiro.grid->getBounds(uid);
         juce::Rectangle<int> r 
         { 
             static_cast<int>(bounds.x + core::constraints::gap_x), 

@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   BGr_svg;
-    const int            BGr_svgSize = 256419;
+    const int            BGr_svgSize = 216339;
 
     extern const char*   BGd_png;
     const int            BGd_pngSize = 2532263;

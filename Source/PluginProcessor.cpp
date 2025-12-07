@@ -22,24 +22,27 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "core/grid.hpp"
 #include "core/uid.hpp"
 #include <cstdint>
 
 
-Processor::Processor(): AudioProcessor
+Processor::Processor():// spiro(new core::Grid(core::settings::create_sector_map())),
+                        spiro(&core::grid),
+                        AudioProcessor
                         (
                             BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                                              .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
                                               tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
-                        ),
-                        spiro(&core::grid)
-
+                        )
+             //           spiro(&core::grid)
+    //                    
 {
     suspendProcessing(true);
     std::cout<<"Processor::Processor()\n"; 
-    parameters = new juce::RangedAudioParameter*[core::grid.count(core::Control::parameter)];    
-    matrix = new juce::AudioProcessorParameter*[core::grid.count(core::Control::input) * core::grid.count(core::Control::output)];
-    sockets = std::make_unique<Sockets>(core::constraints::pbay, core::grid);
+    parameters = new juce::RangedAudioParameter*[spiro.grid->count(core::Control::parameter)];    
+    matrix = new juce::AudioProcessorParameter*[spiro.grid->count(core::Control::input) * spiro.grid->count(core::Control::output)];
+    sockets = std::make_unique<Sockets>(core::constraints::pbay, *spiro.grid);
 
     sockets->bay->on_connect = [this](uint32_t out)
     {
@@ -76,15 +79,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
     suspendProcessing(true);
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
-    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::slider); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::slider);
-        const core::Control* c = core::grid.control(uid);
+        auto uid = spiro.grid->getUID(i, core::Control::slider);
+        const core::Control* c = spiro.grid->control(uid);
         
         layout.add(std::make_unique<juce::AudioParameterFloat> 
         (
-            core::grid.name(uid, true), 
-            core::grid.name(uid, false), 
+            spiro.grid->name(uid, true), 
+            spiro.grid->name(uid, false), 
             juce::NormalisableRange<float>
             (
                 c->min,
@@ -97,35 +100,35 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
         ));
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::parameter); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::parameter); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::parameter);
-        const core::Control* c = core::grid.control(uid);
+        auto uid = spiro.grid->getUID(i, core::Control::parameter);
+        const core::Control* c = spiro.grid->control(uid);
         
         layout.add(std::make_unique<juce::AudioParameterFloat> 
         (
-            core::grid.name(uid, true), 
-            core::grid.name(uid, false), 
+            spiro.grid->name(uid, true), 
+            spiro.grid->name(uid, false), 
             c->min,
             c->max,
             c->def
         ));
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::button); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::button); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::button);
+        auto uid = spiro.grid->getUID(i, core::Control::button);
         layout.add(std::make_unique<juce::AudioParameterBool>
         (
-            core::grid.name(uid, true), 
-            core::grid.name(uid, false),
+            spiro.grid->name(uid, true), 
+            spiro.grid->name(uid, false),
             false
         ));
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::input) * core::grid.count(core::Control::output); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::input) * spiro.grid->count(core::Control::output); ++i)
     {
-        // auto uid = core::grid.getUID(i, core::Control::input);
+        // auto uid = spiro.grid->getUID(i, core::Control::input);
         layout.add(std::make_unique<juce::AudioParameterBool>
         (
             "mm" + juce::String(i),
@@ -341,37 +344,37 @@ void Processor::reset()
 void Processor::reloadParameters()
 {
     suspendProcessing(true);
-    for(int i = 0; i < core::grid.count(core::Control::slider); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::slider); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::slider);
-        auto raw = tree.getRawParameterValue(core::grid.name(uid, true));
+        auto uid = spiro.grid->getUID(i, core::Control::slider);
+        auto raw = tree.getRawParameterValue(spiro.grid->name(uid, true));
         spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
     }
     
-    for(int i = 0; i < core::grid.count(core::Control::parameter); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::parameter); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::parameter);
-        auto name = core::grid.name(uid, true);
+        auto uid = spiro.grid->getUID(i, core::Control::parameter);
+        auto name = spiro.grid->name(uid, true);
         auto raw = tree.getRawParameterValue(name);
         spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
         parameters[i] = tree.getParameter(name);
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::input); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::input); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::input);
+        auto uid = spiro.grid->getUID(i, core::Control::input);
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
         spiro.bay->io[idx].com = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::output); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::output); ++i)
     {
-        auto uid = core::grid.getUID(i, core::Control::output);
+        auto uid = spiro.grid->getUID(i, core::Control::output);
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
         spiro.bay->io[idx].data = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ocv[uid.pp];
     }
 
-    for(int i = 0; i < core::grid.count(core::Control::input) * core::grid.count(core::Control::output); ++i)
+    for(int i = 0; i < spiro.grid->count(core::Control::input) * spiro.grid->count(core::Control::output); ++i)
     {
         matrix[i] = tree.getParameter("mm" + juce::String(i));
     }

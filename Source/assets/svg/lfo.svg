@@ -1,6 +1,12 @@
 
 <svg width="76" height="244" viewBox="0 0 76 244" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="lfo" data-module="lfo" />
+  <metadata 
+        data-module="lfo" 
+        data-prefix="lfo"
+        data-cc="6" data-ic="2" data-oc="2" data-vc="1"
+        data-ctl="octave,delta,amp,form,scale,options"
+        data-cvi="fm,am"
+        data-cvo="a,b" />
 
   <!-- Inputs -->
   <rect id="in_fm" x="11" y="67" width="16" height="16"

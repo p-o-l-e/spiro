@@ -1,7 +1,13 @@
 
 <svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
   <!-- Module metadata -->
-  <metadata data-prefix="vcd" data-module="vcd" />
+      <metadata 
+        data-module="vcd" 
+        data-prefix="vcd"
+        data-cc="2" data-ic="6" data-oc="4" data-vc="1"
+        data-ctl="time,feed"
+        data-cvi="time,feed,a,b,c,d"
+        data-cvo="a,b,c,d" />
 
   <!-- Inputs (ic = 6) -->
   <rect id="in_time" x="11" y="127" width="16" height="16"

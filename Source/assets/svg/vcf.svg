@@ -1,7 +1,13 @@
 
 <svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
   <!-- Module metadata -->
-  <metadata data-prefix="vcf" data-module="vcf" />
+      <metadata 
+        data-module="vcf" 
+        data-prefix="vcf"
+        data-cc="2" data-ic="5" data-oc="3" data-vc="1"
+        data-ctl="cutoff,Q"
+        data-cvi="a,b,c,cutoff,Q"
+        data-cvo="lp,bp,hp" />
 
   <!-- Inputs (ic = 5) -->
   <rect id="in_a" x="11" y="37" width="16" height="16"

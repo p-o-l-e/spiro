@@ -1,6 +1,12 @@
 
 <svg width="119" height="326" viewBox="0 0 119 326" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="mix" data-module="mix" />
+     <metadata 
+        data-module="mix" 
+        data-prefix="mix"
+        data-cc="3" data-ic="5" data-oc="2" data-vc="1"
+        data-ctl="alpha,theta,amp"
+        data-cvi="l,c,r,alpha,theta"
+        data-cvo="l,r" />
 
   <!-- Inputs -->
   <rect id="in_l" x="31" y="14" width="16" height="16"

@@ -1,6 +1,12 @@
 
 <svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="snh" data-module="snh" data-variant="1" />
+    <metadata 
+      data-module="snh" 
+      data-prefix="snh"
+      data-cc="1" data-ic="3" data-oc="1" data-vc="2"
+      data-ctl="time"
+      data-cvi="time,a,b"
+      data-cvo="a" />
 
   <!-- Inputs -->
   <rect id="in_time" x="11" y="127" width="16" height="16"

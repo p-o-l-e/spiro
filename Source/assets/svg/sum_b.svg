@@ -1,6 +1,12 @@
 
 <svg width="76" height="59" viewBox="0 0 76 59" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="sum" data-module="sum" data-variant="2" />
+    <metadata 
+        data-module="sum" 
+        data-prefix="sum"
+        data-cc="0" data-ic="2" data-oc="2" data-vc="1"
+        data-ctl=""
+        data-cvi="a,b"
+        data-cvo="a,b" />
 
   <!-- Inputs -->
   <rect id="in_a" x="11" y="7" width="16" height="16"

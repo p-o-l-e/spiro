@@ -28,6 +28,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include "control.hpp"
 
 namespace core
 {
@@ -38,6 +39,20 @@ namespace core
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
     };
+
+
+    Grid::Grid(const std::pair<const Sector*, std::size_t>& o):
+        sector(o.first), 
+        sectors(o.second),
+        relative(setRelatives(o.first)),
+        elements(countElements(o.first)),
+        modules(countModules(o.first)),
+        controlMap(calculateControlMap(o.first)), idMap(calculateIdMap(o.first))
+    {
+        for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
+        calculateUIDs();
+    };
+
 
     void Grid::calculateUIDs()
     {
@@ -266,7 +281,7 @@ namespace core
         return r;
     }
 
-    const Grid grid(settings::sector_map, settings::sectors);   
+   const Grid grid(settings::sector_map, settings::sectors);   
 }
 
 

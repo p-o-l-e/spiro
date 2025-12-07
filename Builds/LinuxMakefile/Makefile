@@ -39,7 +39,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=0.5.0" "-DJUCE_APP_VERSION_HEX=0x500" $(shell $(PKG_CONFIG) --cflags alsa freetype2 fontconfig libcurl) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I../../Source/core -I../../Source/core/utility -I../../Source/core/graphics -I../../Source/core/setup -I../../Source/core/modules -I../../Source/core/modules/interface $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=0.5.0" "-DJUCE_APP_VERSION_HEX=0x500" $(shell $(PKG_CONFIG) --cflags alsa freetype2 fontconfig libcurl) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I../../Source/core -I../../Source/core/utility -I../../Source/core/tools -I../../Source/core/graphics -I../../Source/core/setup -I../../Source/core/modules -I../../Source/core/modules/interface $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST3 :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_CFLAGS_VST3 := -fPIC -fvisibility=hidden
@@ -78,7 +78,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=0.5.0" "-DJUCE_APP_VERSION_HEX=0x500" $(shell $(PKG_CONFIG) --cflags alsa freetype2 fontconfig libcurl) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I../../Source/core -I../../Source/core/utility -I../../Source/core/graphics -I../../Source/core/setup -I../../Source/core/modules -I../../Source/core/modules/interface $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=0.5.0" "-DJUCE_APP_VERSION_HEX=0x500" $(shell $(PKG_CONFIG) --cflags alsa freetype2 fontconfig libcurl) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I../../Source/core -I../../Source/core/utility -I../../Source/core/tools -I../../Source/core/graphics -I../../Source/core/setup -I../../Source/core/modules -I../../Source/core/modules/interface $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST3 :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_CFLAGS_VST3 := -fPIC -fvisibility=hidden
@@ -116,6 +116,7 @@ OBJECTS_STANDALONE_PLUGIN := \
   $(JUCE_OBJDIR)/include_juce_audio_plugin_client_Standalone_1a871192.o \
 
 OBJECTS_SHARED_CODE := \
+  $(JUCE_OBJDIR)/tinyxml2_b3887320.o \
   $(JUCE_OBJDIR)/blur_63d06e4.o \
   $(JUCE_OBJDIR)/fonts_43e512b1.o \
   $(JUCE_OBJDIR)/constants_246efb6.o \
@@ -136,6 +137,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/vcd_1d9c7148.o \
   $(JUCE_OBJDIR)/vcf_1db8a04a.o \
   $(JUCE_OBJDIR)/vco_1e3773d3.o \
+  $(JUCE_OBJDIR)/control_a4ccf0d6.o \
   $(JUCE_OBJDIR)/modmatrix_12cd0159.o \
   $(JUCE_OBJDIR)/grid_e75db237.o \
   $(JUCE_OBJDIR)/rack_d0e64148.o \
@@ -229,6 +231,11 @@ $(JUCE_OBJDIR)/include_juce_audio_plugin_client_Standalone_1a871192.o: ../../Juc
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling include_juce_audio_plugin_client_Standalone.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_STANDALONE_PLUGIN) $(JUCE_CFLAGS_STANDALONE_PLUGIN) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/tinyxml2_b3887320.o: ../../Source/core/tools/tinyxml2.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling tinyxml2.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/blur_63d06e4.o: ../../Source/core/graphics/blur.cpp
 	-$(V_AT)mkdir -p $(@D)
@@ -328,6 +335,11 @@ $(JUCE_OBJDIR)/vcf_1db8a04a.o: ../../Source/core/modules/vcf.cpp
 $(JUCE_OBJDIR)/vco_1e3773d3.o: ../../Source/core/modules/vco.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling vco.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/control_a4ccf0d6.o: ../../Source/core/control.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling control.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/modmatrix_12cd0159.o: ../../Source/core/utility/modmatrix.cpp

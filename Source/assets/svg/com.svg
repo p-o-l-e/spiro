@@ -1,7 +1,13 @@
 
 <svg width="76" height="89" viewBox="0 0 76 89" xmlns="http://www.w3.org/2000/svg">
   <!-- Module metadata -->
-  <metadata data-prefix="com" data-module="com" />
+      <metadata 
+        data-module="com" 
+        data-prefix="com"
+        data-cc="0" data-ic="0" data-oc="2" data-vc="1"
+        data-ctl=""
+        data-cvi=""
+        data-cvo="p_wheel,m_wheel" />
 
   <!-- Outputs (oc = 2) -->
   <rect id="out_p_wheel" x="31" y="6" width="16" height="16"

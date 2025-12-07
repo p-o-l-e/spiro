@@ -28,16 +28,7 @@
 class Processor: public juce::AudioProcessor
 {
     public:
-        juce::AudioProcessorEditor* createEditor() override;
-        juce::AudioProcessorValueTreeState tree;
-        juce::RangedAudioParameter** parameters;
-        juce::AudioProcessorParameter** matrix;
-        
-        juce::CriticalSection localResourcesLock;
-        juce::CriticalSection parametersLock;
-        juce::CriticalSection sharedResourcesLock;
 
-        juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
         void prepareToPlay(double sampleRate, int samplesPerBlock) override;
         void releaseResources() override;
@@ -89,12 +80,25 @@ class Processor: public juce::AudioProcessor
         void handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
-        core::Spiro spiro;
         std::unique_ptr<Sockets> sockets;
 
         std::shared_ptr<core::wavering<core::Point2D<float>>> buffer;
         
         bool armed = false;
+
+
+        core::Spiro spiro;
+        juce::AudioProcessorEditor* createEditor() override;
+        juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+        juce::AudioProcessorValueTreeState tree;
+        juce::RangedAudioParameter** parameters;
+        juce::AudioProcessorParameter** matrix;
+        
+        juce::CriticalSection localResourcesLock;
+        juce::CriticalSection parametersLock;
+        juce::CriticalSection sharedResourcesLock;
+
+
 
         class Listener 
         {

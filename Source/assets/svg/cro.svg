@@ -1,5 +1,12 @@
 
 <svg width="247" height="270" xmlns="http://www.w3.org/2000/svg">
+    <metadata 
+        data-module="cro" 
+        data-prefix="cro"
+        data-cc="12" data-ic="0" data-oc="0" data-vc="1"
+        data-ctl="sa,sb,sc,sd,se,sf,sg,sh,menu,scope,type,scale"
+        data-cvi=""
+        data-cvo="" />
 
   <!-- soft_a button -->
   <rect id="soft_a" x="7" y="73" width="16" height="16"

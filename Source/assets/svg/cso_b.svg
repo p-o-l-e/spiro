@@ -1,6 +1,12 @@
 
 <svg width="76" height="352" viewBox="0 0 76 352" xmlns="http://www.w3.org/2000/svg">
-  <metadata data-prefix="cso" data-module="cso" data-variant="2" />
+     <metadata 
+        data-module="cso" 
+        data-prefix="cso"
+        data-cc="5" data-ic="2" data-oc="3" data-vc="2"
+        data-ctl="tune,warp,amp,form,options"
+        data-cvi="fm,warp"
+        data-cvo="x,y,z" />
 
   <!-- Inputs -->
   <rect id="in_fm" x="49" y="239" width="16" height="16"
