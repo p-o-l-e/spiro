@@ -1,6 +1,6 @@
 
-<svg width="76" height="59" viewBox="0 0 76 59" xmlns="http://www.w3.org/2000/svg">
-      <metadata 
+<svg width="76" height="59" viewBox="0 0 76 59">
+    <metadata 
         data-module="sum" 
         data-prefix="sum"
         data-cc="0" data-ic="2" data-oc="2" data-vc="1"
@@ -11,11 +11,11 @@
   <!-- Inputs -->
   <rect id="in_a" x="11" y="7" width="16" height="16"
         fill="#37474F" stroke="#263238" data-type="input" data-name="a"/>
-  <rect id="in_b" x="11" y="37" width="16" height="16"
+  <rect id="in_b" x="49" y="7" width="16" height="16"
         fill="#37474F" stroke="#263238" data-type="input" data-name="b"/>
 
   <!-- Outputs -->
-  <rect id="out_a" x="49" y="7" width="16" height="16"
+  <rect id="out_a" x="11" y="37" width="16" height="16"
         fill="#546E7A" stroke="#37474F" data-type="output" data-name="a"/>
   <rect id="out_b" x="49" y="37" width="16" height="16"
         fill="#546E7A" stroke="#37474F" data-type="output" data-name="b"/>

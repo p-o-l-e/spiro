@@ -25,16 +25,17 @@ namespace core {
     }
 
 
-    static void dump_control(const Control* c, const char* label, const std::string &px ) {
+    static void dump_control(const Control* c, const char* label, const std::string &px ) 
+    {
         std::cout << px << label << ":\n";
         std::cout << px << "  type: " << static_cast<int>(c->is) << "\n";
         std::cout << px << "  id: "   << (c->postfix.empty() ? "<empty>" : c->postfix) << "\n";
-        std::cout << px << "  bounds: x=" << c->constrain.x << " y=" << c->constrain.y
-                  << px << " w=" << c->constrain.w << " h=" << c->constrain.h << "\n";
-        std::cout << px << "  range: min=" << c->min << " max=" << c->max
-                  << px << " def=" << c->def << " skew=" << c->skew << " step=" << c->step << "\n";
-        std::cout << px << "  radio=" << c->radio_id << " symmetric=" << (c->symmetric ? "true" : "false")
-                  << px << " flag=0x" << std::hex << c->flag << std::dec << "\n";
+        std::cout << px << "  bounds: x=" << c->constrain.x << " y=" << c->constrain.y << "\n"
+                  << px << "  w=" << c->constrain.w << " h=" << c->constrain.h << "\n";
+        std::cout << px << "  range: min=" << c->min << " max=" << c->max << "\n"
+                  << px << "  def=" << c->def << " skew=" << c->skew << " step=" << c->step << "\n";
+        std::cout << px << "  radio=" << c->radio_id << " symmetric=" << (c->symmetric ? "true" : "false") << "\n"
+                  << px << "  flag=0x" << std::hex << c->flag << std::dec << "\n\n";
     }
 
 
@@ -43,25 +44,22 @@ namespace core {
     {
         using core::map::cv;
 
-        std::cout << px << "Descriptor:\n";
-        std::cout << px << "- module: " << mod_name(d.type) << " : " << (int)d.type << "\n";
-        std::cout << px << "- counts: ic=" << *d.cv[cv::i] << " oc=" << *d.cv[cv::o] << " cc=" << *d.cv[cv::c] << "\n";
-        std::cout << px << "- prefix: " << *d.prefix << "\n";
-        std::cout << px << "- constrain: x=" << d.constrain->x << " y=" << d.constrain->y
-                  << px << " w=" << d.constrain->w << " h=" << d.constrain->h << "\n";
+        std::cout << "\n***************************************************************************************\n";
+        std::cout << px << " ---- Descriptor:\n";
+        std::cout << px << " module: " << mod_name(d.type) << " : " << (int)d.type << "\n";
+        std::cout << px << " counts: ic=" << *d.cv[cv::i] << " oc=" << *d.cv[cv::o] << " cc=" << *d.cv[cv::c] << "\n";
+        std::cout << px << " prefix: " << *d.prefix << "\n";
+        std::cout << px << " constrain: x=" << d.constrain->x << " y=" << d.constrain->y << "\n"
+                  << px << " w=" << d.constrain->w << " h=" << d.constrain->h << "\n\n";
 
-        dump_control(d.set[cv::i], "first CV-in", px);
-        dump_control(d.set[cv::o], "first CV-out", px);
-        dump_control(d.set[cv::c], "first Control", px);
+        std::cout << px << " ---- CV-in set (" << *d.cv[cv::i] << "):\n";
+        for (int i = 0; i < *d.cv[cv::i]; ++i) dump_control(&d.set[cv::i][i], ("  Input   [" + std::to_string(i) + "]").c_str(), px);
 
-        std::cout << px << "- CV-in set (" << *d.cv[cv::i] << "):\n";
-        for (int i = 0; i < *d.cv[cv::i]; ++i) dump_control(&d.set[cv::i][i], ("i[" + std::to_string(i) + "]").c_str(), px);
+        std::cout << px << " ---- CV-out set (" << *d.cv[cv::o] << "):\n";
+        for (int i = 0; i < *d.cv[cv::o]; ++i) dump_control(&d.set[cv::o][i], ("  Output  [" + std::to_string(i) + "]").c_str(), px);
 
-        std::cout << px << "- CV-out set (" << *d.cv[cv::o] << "):\n";
-        for (int i = 0; i < *d.cv[cv::o]; ++i) dump_control(&d.set[cv::o][i], ("o[" + std::to_string(i) + "]").c_str(), px);
-
-        std::cout << px << "- Control set (" << d.cv[cv::c] << "):\n";
-        for (int i = 0; i < *d.cv[cv::c]; ++i) dump_control(&d.set[cv::c][i], ("c[" + std::to_string(i) + "]").c_str(), px);
+        std::cout << px << " ---- Control set (" << *d.cv[cv::c] << "):\n";
+        for (int i = 0; i < *d.cv[cv::c]; ++i) dump_control(&d.set[cv::c][i], ("  Control [" + std::to_string(i) + "]").c_str(), px);
     }
 
     static const std::unordered_map<std::string, map::module::type> module_type_map = {

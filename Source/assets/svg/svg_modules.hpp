@@ -1,14 +1,16 @@
-// Auto-generated from svg/ folder next to this script.
-// Do not edit manually.
+// Auto-generated from *.svg
+
 #pragma once
 
 #include <string>
 
-namespace svg_assets {
+namespace core {
+namespace svg {
+namespace assets {
 
 inline const std::string com = R"SVG(
 
-<svg width="76" height="89" viewBox="0 0 76 89" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="89" viewBox="0 0 76 89">
   <!-- Module metadata -->
       <metadata 
         data-module="com" 
@@ -110,7 +112,7 @@ inline const std::string cro = R"SVG(
 
 inline const std::string cso_a = R"SVG(
 
-<svg width="76" height="352" viewBox="0 0 76 352" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="352" viewBox="0 0 76 352">
     <metadata 
         data-module="cso" 
         data-prefix="cso"
@@ -161,7 +163,7 @@ inline const std::string cso_a = R"SVG(
 
 inline const std::string cso_b = R"SVG(
 
-<svg width="76" height="352" viewBox="0 0 76 352" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="352" viewBox="0 0 76 352">
      <metadata 
         data-module="cso" 
         data-prefix="cso"
@@ -210,7 +212,7 @@ inline const std::string cso_b = R"SVG(
 
 inline const std::string env_a = R"SVG(
 
-<svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
+<svg width="228" height="215" viewBox="0 0 228 215">
       <metadata 
         data-module="env" 
         data-prefix="env"
@@ -233,7 +235,7 @@ inline const std::string env_a = R"SVG(
 
 inline const std::string env_b = R"SVG(
 
-<svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
+<svg width="228" height="215" viewBox="0 0 228 215">
       <metadata 
         data-module="env" 
         data-prefix="env"
@@ -256,7 +258,7 @@ inline const std::string env_b = R"SVG(
 
 inline const std::string env_c = R"SVG(
 
-<svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
+<svg width="228" height="215" viewBox="0 0 228 215">
     <metadata 
         data-module="env" 
         data-prefix="env"
@@ -279,7 +281,7 @@ inline const std::string env_c = R"SVG(
 
 inline const std::string env_d = R"SVG(
 
-<svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
+<svg width="228" height="215" viewBox="0 0 228 215">
       <metadata 
         data-module="env" 
         data-prefix="env"
@@ -302,7 +304,7 @@ inline const std::string env_d = R"SVG(
 
 inline const std::string lfo = R"SVG(
 
-<svg width="76" height="244" viewBox="0 0 76 244" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="244" viewBox="0 0 76 244">
   <metadata 
         data-module="lfo" 
         data-prefix="lfo"
@@ -358,7 +360,7 @@ inline const std::string lfo = R"SVG(
 
 inline const std::string mix = R"SVG(
 
-<svg width="119" height="326" viewBox="0 0 119 326" xmlns="http://www.w3.org/2000/svg">
+<svg width="119" height="326" viewBox="0 0 119 326">
      <metadata 
         data-module="mix" 
         data-prefix="mix"
@@ -397,7 +399,7 @@ inline const std::string mix = R"SVG(
 
 inline const std::string pdt = R"SVG(
 
-<svg width="152" height="30" viewBox="0 0 152 30" xmlns="http://www.w3.org/2000/svg">
+<svg width="152" height="30" viewBox="0 0 152 30">
     <metadata 
         data-module="pdt" 
         data-prefix="pdt"
@@ -422,7 +424,7 @@ inline const std::string pdt = R"SVG(
 
 inline const std::string rtr = R"SVG(
 
-<svg width="128" height="326" viewBox="0 0 128 326" xmlns="http://www.w3.org/2000/svg">
+<svg width="128" height="326" viewBox="0 0 128 326">
     <metadata 
         data-module="rtr" 
         data-prefix="rtr"
@@ -477,7 +479,7 @@ inline const std::string rtr = R"SVG(
 
 inline const std::string snh_a = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
     <metadata 
       data-module="snh" 
       data-prefix="snh"
@@ -506,7 +508,7 @@ inline const std::string snh_a = R"SVG(
 
 inline const std::string snh_b = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
     <metadata 
         data-module="snh" 
         data-prefix="snh"
@@ -535,7 +537,7 @@ inline const std::string snh_b = R"SVG(
 
 inline const std::string sum_a = R"SVG(
 
-<svg width="76" height="59" viewBox="0 0 76 59" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="59" viewBox="0 0 76 59">
       <metadata 
         data-module="sum" 
         data-prefix="sum"
@@ -560,7 +562,7 @@ inline const std::string sum_a = R"SVG(
 
 inline const std::string sum_b = R"SVG(
 
-<svg width="76" height="59" viewBox="0 0 76 59" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="59" viewBox="0 0 76 59">
     <metadata 
         data-module="sum" 
         data-prefix="sum"
@@ -585,7 +587,7 @@ inline const std::string sum_b = R"SVG(
 
 inline const std::string vca_a = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
     <metadata 
         data-module="vca" 
         data-prefix="vca"
@@ -629,7 +631,7 @@ inline const std::string vca_a = R"SVG(
 
 inline const std::string vca_b = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
       <metadata 
         data-module="vca" 
         data-prefix="vca"
@@ -659,7 +661,7 @@ inline const std::string vca_b = R"SVG(
 
 inline const std::string vcd = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
   <!-- Module metadata -->
       <metadata 
         data-module="vcd" 
@@ -729,7 +731,7 @@ inline const std::string vcd = R"SVG(
 
 inline const std::string vcf = R"SVG(
 
-<svg width="76" height="304" viewBox="0 0 76 304" xmlns="http://www.w3.org/2000/svg">
+<svg width="76" height="304" viewBox="0 0 76 304">
   <!-- Module metadata -->
       <metadata 
         data-module="vcf" 
@@ -790,7 +792,7 @@ inline const std::string vcf = R"SVG(
 
 inline const std::string vco = R"SVG(
 
-<svg width="152" height="292" viewBox="0 0 152 292" xmlns="http://www.w3.org/2000/svg">
+<svg width="152" height="292" viewBox="0 0 152 292">
   <!-- Module metadata -->
     <metadata 
         data-module="vco" 
@@ -804,79 +806,79 @@ inline const std::string vco = R"SVG(
   <rect id="in_detune" x="49" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
         data-type="input" data-name="detune"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
   <rect id="in_pll" x="87" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
         data-type="input" data-name="pll"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
   <rect id="in_pwm" x="11" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
         data-type="input" data-name="pwm"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
   <rect id="in_fm" x="125" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
         data-type="input" data-name="fm"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
   <rect id="in_am" x="30" y="269" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
         data-type="input" data-name="am"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
 
   <!-- CV output (oc = 1) -->
   <rect id="out_a" x="106" y="269" width="16" height="16"
         fill="#546E7A" stroke="#37474F" stroke-width="1"
         data-type="output" data-name="a"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="0x0"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-radio="0" data-symmetric="false" data-flag="0"/>
 
   <!-- Controls (cc = 10) -->
   <!-- Parameters with no geometry (octave, form, mode) -->
   <rect id="param_octave" x="0" y="0" width="0" height="0"
         fill="none" stroke="none"
         data-type="parameter" data-name="octave"
-        data-min="0.0" data-max="5.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-flag="0x0"/>
+        data-min="0.0" data-max="5.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-radio="0" data-symmetric="true" data-flag="0"/>
   <rect id="param_form" x="0" y="0" width="0" height="0"
         fill="none" stroke="none"
         data-type="parameter" data-name="form"
-        data-min="0.0" data-max="2.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-flag="0x0"/>
+        data-min="0.0" data-max="2.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-radio="0" data-symmetric="true" data-flag="0"/>
   <rect id="param_mode" x="0" y="0" width="0" height="0"
         fill="none" stroke="none"
         data-type="parameter" data-name="mode"
-        data-min="0.0" data-max="2.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-flag="0x0"/>
+        data-min="0.0" data-max="2.0" data-def="0.0" data-skew="0.5" data-step="1.0" data-radio="0" data-symmetric="true" data-flag="0"/>
 
   <!-- Sliders -->
   <rect id="ctl_detune" x="14" y="32" width="48" height="48"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="detune"
-        data-min="0.0" data-max="1.0" data-def="0.5" data-skew="1.0" data-step="0.001" data-flag="A" data-symmetric="true"/>
+        data-min="0.0" data-max="1.0" data-def="0.5" data-skew="1.0" data-step="0.001" data-symmetric="true" data-radio="0" data-flag="1"/>
   <rect id="ctl_pll" x="90" y="32" width="48" height="48"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="pll"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="A" data-symmetric="false"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-symmetric="false" data-radio="0" data-flag="1"/>
   <rect id="ctl_pwm" x="14" y="108" width="48" height="48"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="pwm"
-        data-min="0.0" data-max="1.0" data-def="0.5" data-skew="1.3" data-step="0.001" data-flag="A" data-symmetric="true"/>
+        data-min="0.0" data-max="1.0" data-def="0.5" data-skew="1.3" data-step="0.001" data-symmetric="true" data-radio="0" data-flag="1"/>
   <rect id="ctl_fm" x="90" y="108" width="48" height="48"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="fm"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="A" data-symmetric="false"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-symmetric="false" data-radio="0" data-flag="1"/>
   <rect id="ctl_am" x="22" y="177" width="32" height="32"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="am"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B" data-symmetric="false"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-symmetric="false" data-radio="0" data-flag="2"/>
   <rect id="ctl_amp" x="98" y="177" width="32" height="32"
         fill="#4CAF50" stroke="#2E7D32" stroke-width="1"
         data-type="slider" data-name="amp"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-flag="B" data-symmetric="false"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.001" data-symmetric="false" data-radio="0" data-flag="2"/>
 
   <!-- Radio/button: options -->
   <rect id="btn_options" x="136" y="5" width="12" height="12"
         fill="#FFC107" stroke="#FF6F00" stroke-width="1"
         data-type="button" data-name="options"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-flag="radio"/>
+        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.5" data-step="0.0" data-symmetric="false" data-radio="255" data-flag="32"/>
 
 
 </svg>
 )SVG";
 
-} // namespace svg_assets
+}}}

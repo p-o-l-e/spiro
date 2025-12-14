@@ -33,7 +33,7 @@
 namespace core
 {
     Grid::Grid(const Sector* s, const int size): 
-    sector(s), sectors(size), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s)),
+    sectors(size), sector(s), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s)),
     controlMap(calculateControlMap(s)), idMap(calculateIdMap(s))
     {
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
@@ -42,8 +42,8 @@ namespace core
 
 
     Grid::Grid(const std::pair<const Sector*, std::size_t>& o):
-        sector(o.first), 
         sectors(o.second),
+        sector(o.first), 
         relative(setRelatives(o.first)),
         elements(countElements(o.first)),
         modules(countModules(o.first)),
@@ -123,7 +123,7 @@ namespace core
     const std::unique_ptr<std::unordered_map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
     {
         auto r = std::make_unique<std::unordered_map<uint32_t, const Control*>>();
-        for(int i = 0; i < settings::sectors; ++i)
+        for(int i = 0; i < sectors; ++i)
         {
             for(int pt = 0; pt < core::map::cv::count; ++pt)
             {
@@ -144,7 +144,7 @@ namespace core
 
         auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
 
-        for(int i = 0; i < settings::sectors; ++i)
+        for(int i = 0; i < sectors; ++i)
         {
             for(int pt = 0; pt < core::map::cv::count; ++pt)
             {
@@ -224,17 +224,16 @@ namespace core
 
     const std::unique_ptr<int[]> Grid::setRelatives(const Sector* d) const
     {
-        int  n = settings::sectors;
-        auto r = std::make_unique<int[]>(n);
-        bool check[n];
-        for(int i = 0; i < n; ++i) check[i] = false;
+        auto r = std::make_unique<int[]>(sectors);
+        bool check[sectors];
+        for(int i = 0; i < sectors; ++i) check[i] = false;
 
-        for(int s = 0; s < n; ++s)
+        for(int s = 0; s < sectors; ++s)
         {
             int pos = 0;
             auto carry = d[s].descriptor->type;
 
-            for(int i = s; i < n; ++i)
+            for(int i = s; i < sectors; ++i)
             {
                 if(!check[i])
                 {
@@ -252,10 +251,9 @@ namespace core
     
     const std::unique_ptr<int[]> Grid::countElements(const Sector* d) const
     {
-        int  length = settings::sectors;
         auto r = std::make_unique<int[]>(Control::count);
         for(int i = 0; i < Control::count; ++i) r[i] = 0;
-        for(int i = 0; i < length; ++i)
+        for(int i = 0; i < sectors; ++i)
         {
             for(int t = 0; t < map::cv::count; ++t)
             {
@@ -272,16 +270,14 @@ namespace core
     {
         auto r = std::make_unique<int[]>(map::module::count);
         for(int i = 0; i < map::module::count; ++i) r[i] = 0;
-        int length = settings::sectors;
 
-        for(int i = 0; i < length; ++i)
+        for(int i = 0; i < sectors; ++i)
         {
             ++r[d[i].descriptor->type];
         }
         return r;
     }
 
-   const Grid grid(settings::sector_map, settings::sectors);   
 }
 
 

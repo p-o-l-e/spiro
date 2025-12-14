@@ -1,10 +1,9 @@
-
 #!/usr/bin/env bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SVG_DIR="$SCRIPT_DIR"
-OUT="$SCRIPT_DIR/svg_assets.hpp"
+SVG_DIR="$SCRIPT_DIR/modules/"
+OUT="$SCRIPT_DIR/svg_modules.hpp"
 
 if [[ ! -d "$SVG_DIR" ]]; then
   echo "Error: directory '$SVG_DIR' not found next to script" >&2
@@ -20,15 +19,16 @@ sanitize_id() {
   echo "$name"
 }
 
-# Begin header
 cat > "$OUT" <<'HDR'
-// Auto-generated from svg/ folder next to this script.
-// Do not edit manually.
+// Auto-generated from *.svg
+
 #pragma once
 
 #include <string>
 
-namespace svg_assets {
+namespace core {
+namespace svg {
+namespace assets {
 
 HDR
 
@@ -45,7 +45,7 @@ for f in "$SVG_DIR"/*.svg "$SVG_DIR"/*.SVG; do
   } >> "$OUT"
 done
 
-echo "} // namespace svg_assets" >> "$OUT"
+echo "}}}" >> "$OUT"
 
 echo "Generated header: $OUT"
 

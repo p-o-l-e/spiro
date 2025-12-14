@@ -27,8 +27,8 @@
 #include <cstdint>
 
 
-Processor::Processor():// spiro(new core::Grid(core::settings::create_sector_map())),
-                        spiro(&core::grid),
+Processor::Processor(): spiro(new core::Grid(core::settings::create_sector_map())),
+                       // spiro(&core::grid),
                         AudioProcessor
                         (
                             BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)

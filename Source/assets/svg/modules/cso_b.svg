@@ -1,6 +1,6 @@
 
-<svg width="76" height="352" viewBox="0 0 76 352" xmlns="http://www.w3.org/2000/svg">
-    <metadata 
+<svg width="76" height="352" viewBox="0 0 76 352">
+     <metadata 
         data-module="cso" 
         data-prefix="cso"
         data-cc="5" data-ic="2" data-oc="3" data-vc="2"
@@ -11,12 +11,10 @@
   <!-- Inputs -->
   <rect id="in_fm" x="49" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
-        data-type="input" data-name="fm"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.0"/>
+        data-type="input" data-name="fm"/>
   <rect id="in_warp" x="10" y="239" width="16" height="16"
         fill="#37474F" stroke="#263238" stroke-width="1"
-        data-type="input" data-name="warp"
-        data-min="0.0" data-max="1.0" data-def="0.0" data-skew="0.2" data-step="0.0"/>
+        data-type="input" data-name="warp"/>
 
   <!-- Outputs -->
   <rect id="out_x" x="30" y="269" width="16" height="16"
@@ -42,7 +40,7 @@
   <rect id="param_form" x="0" y="0" width="0" height="0"
         fill="none" stroke="none"
         data-type="parameter" data-name="form" data-min="0.0" data-max="3.0" data-step="1.0"/>
-  <rect id="btn_options" x="120" y="5" width="12" height="12"
+  <rect id="btn_options" x="60" y="5" width="12" height="12"
         fill="#FFC107" stroke="#FF6F00" stroke-width="1"
         data-type="button" data-name="options" data-flag="radio"/>
 </svg>

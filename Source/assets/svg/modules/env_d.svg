@@ -1,5 +1,5 @@
 
-<svg width="228" height="215" viewBox="0 0 228 215" xmlns="http://www.w3.org/2000/svg">
+<svg width="228" height="215" viewBox="0 0 228 215">
       <metadata 
         data-module="env" 
         data-prefix="env"
@@ -9,12 +9,12 @@
         data-cvo="a" />
 
   <!-- Output -->
-  <rect id="out_a" x="125" y="8" width="16" height="16"
+  <rect id="out_a" x="201" y="8" width="16" height="16"
         fill="#546E7A" stroke="#37474F" data-type="output" data-name="a"/>
 
   <!-- Controls -->
   <rect id="ctl_scale" x="0" y="0" width="0" height="0"
         fill="none" stroke="none" data-type="slider" data-name="scale" data-flag="fader"/>
-  <rect id="btn_select" x="127" y="56" width="12" height="12"
+  <rect id="btn_select" x="203" y="56" width="12" height="12"
         fill="#FFC107" stroke="#FF6F00" data-type="button" data-name="select" data-flag="radio"/>
 </svg>
