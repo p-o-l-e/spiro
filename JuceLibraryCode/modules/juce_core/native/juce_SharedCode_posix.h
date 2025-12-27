@@ -55,10 +55,7 @@ void CriticalSection::exit() const noexcept         { pthread_mutex_unlock (&loc
 //==============================================================================
 void JUCE_CALLTYPE Thread::sleep (int millisecs)
 {
-    struct timespec time;
-    time.tv_sec = millisecs / 1000;
-    time.tv_nsec = (millisecs % 1000) * 1000000;
-    nanosleep (&time, nullptr);
+    std::this_thread::sleep_for (std::chrono::milliseconds (millisecs));
 }
 
 void JUCE_CALLTYPE Process::terminate()
@@ -193,7 +190,7 @@ namespace
     }
 
    #if ! JUCE_WASM
-    // if this file doesn't exist, find a parent of it that does..
+    // if this file doesn't exist, find a parent of it that does
     bool juce_doStatFS (File f, struct statfs& result)
     {
         for (int i = 5; --i >= 0;)
@@ -321,7 +318,7 @@ static bool setFileModeFlags (const String& fullPath, mode_t flags, bool shouldS
 
 bool File::setFileReadOnlyInternal (bool shouldBeReadOnly) const
 {
-    // Hmm.. should we give global write permission or just the current user?
+    // Should we give global write permission or just the current user?
     return setFileModeFlags (fullPath, S_IWUSR | S_IWGRP | S_IWOTH, ! shouldBeReadOnly);
 }
 
@@ -710,7 +707,7 @@ void juce_runSystemCommand (const String& command)
 String juce_getOutputFromCommand (const String&);
 String juce_getOutputFromCommand (const String& command)
 {
-    // slight bodge here, as we just pipe the output into a temp file and read it...
+    // slight bodge here, as we just pipe the output into a temp file and read it
     auto tempFile = File::getSpecialLocation (File::tempDirectory)
                       .getNonexistentChildFile (String::toHexString (Random::getSystemRandom().nextInt()), ".tmp", false);
 
@@ -729,7 +726,7 @@ class InterProcessLock::Pimpl
 public:
     Pimpl (const String&, int)  {}
 
-    int handle = 1, refCount = 1;  // On iOS just fake success..
+    int handle = 1, refCount = 1;  // on iOS just fake success
 };
 
 #else
@@ -741,7 +738,7 @@ public:
     {
        #if JUCE_MAC
         if (! createLockFile (File ("~/Library/Caches/com.juce.locks").getChildFile (lockName), timeOutMillisecs))
-            // Fallback if the user's home folder is on a network drive with no ability to lock..
+            // fallback if the user's home folder is on a network drive with no ability to lock
             createLockFile (File ("/tmp/com.juce.locks").getChildFile (lockName), timeOutMillisecs);
 
        #else
@@ -798,7 +795,7 @@ public:
         }
 
         closeFile();
-        return true; // only false if there's a file system error. Failure to lock still returns true.
+        return true; // only false if there's a file system error. Failure to lock still returns true
     }
 
     void closeFile()
@@ -1130,7 +1127,7 @@ public:
             }
             else if (result == 0)
             {
-                // we're the child process..
+                // we're the child process
                 close (pipeHandles[0]);   // close the read handle
 
                 if ((streamFlags & wantStdOut) != 0)
@@ -1158,7 +1155,7 @@ public:
             }
             else
             {
-                // we're the parent process..
+                // we're the parent process
                 childPID = result;
                 pipeHandle = pipeHandles[0];
                 close (pipeHandles[1]); // close the write handle

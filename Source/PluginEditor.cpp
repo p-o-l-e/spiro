@@ -150,7 +150,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
         env[i].get()->setPaintingIsUnclipped(true);
         addAndMakeVisible(env[i].get());
     }
-    processor.addListener(this);
+    processor.addCustomListener(this);
 
     resetCall();
     addAndMakeVisible(processor.sockets.get());

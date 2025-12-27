@@ -91,6 +91,8 @@ public:
         return upToDate;
     }
 
+    std::optional<Direct2DPixelDataPage> getPageContainingPoint (Point<int> pt) const;
+
 private:
     ImagePixelDataBackupExtensions* parentBackupExtensions = nullptr;
     ImagePixelData::Ptr backingData;
@@ -136,13 +138,8 @@ public:
 
     ~Direct2DPixelData() override;
 
-    /*  Creates new software image storage with content matching the content of this image.
-        Does not copy any hardware resources.
-    */
-    ImagePixelData::Ptr clone() override
-    {
-        return new Direct2DPixelData (backingData->clone(), State::drawn);
-    }
+    /*  Creates new image storage with content matching the content of this image. */
+    ImagePixelData::Ptr clone() override;
 
     std::unique_ptr<ImageType> createType() const override
     {
@@ -205,6 +202,7 @@ private:
 
     Direct2DPixelData (ImagePixelData::Ptr, State);
     auto getIteratorForDevice (ComSmartPtr<ID2D1Device1>);
+    Direct2DPixelDataPages& getPagesStructForDevice (ComSmartPtr<ID2D1Device1>);
 
     /*  Attempts to copy the content of the corresponding texture in graphics storage into
         persistent software storage.
@@ -224,6 +222,8 @@ private:
     */
     bool createPersistentBackup (ComSmartPtr<ID2D1Device1> deviceHint);
 
+    void moveValidatedImageSection (Point<int> destTopLeft, Rectangle<int> sourceRect) override;
+
     struct Context;
     std::unique_ptr<Context> createNativeContext();
 
@@ -236,6 +236,12 @@ private:
     bool needsBackup() const override;
     bool canBackup() const override;
 
+    static void copyPages (ComSmartPtr<ID2D1Device1>,
+                           Direct2DPixelData&,
+                           Direct2DPixelData&,
+                           Point<int>,
+                           Rectangle<int>);
+
     void adapterCreated (DxgiAdapter::Ptr) override {}
     void adapterRemoved (DxgiAdapter::Ptr adapter) override
     {
@@ -245,6 +251,8 @@ private:
         if (mostRecentDevice == adapter->direct2DDevice)
             mostRecentDevice = nullptr;
     }
+
+    ComSmartPtr<ID2D1Device1> getMostRelevantDevice();
 
     SharedResourcePointer<DirectX> directX;
     ImagePixelData::Ptr backingData;

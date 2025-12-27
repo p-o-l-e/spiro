@@ -49,11 +49,10 @@ private:
     {
         return std::tie (justification,
                          readingDir,
-                         maxWidth,
+                         wordWrapWidth,
                          alignmentWidth,
                          height,
                          fontsForRange,
-                         language,
                          firstLineIndent,
                          leading,
                          additiveLineSpacing,
@@ -81,28 +80,28 @@ public:
         The alignment width can be overriden using withAlignmentWidth, but currently we only need
         to do this for the TextEditor.
     */
-    [[nodiscard]] ShapedTextOptions withMaxWidth (float x) const
+    [[nodiscard]] ShapedTextOptions withWordWrapWidth (float x) const
     {
-        return withMember (*this, &ShapedTextOptions::maxWidth, x);
+        return withMember (*this, &ShapedTextOptions::wordWrapWidth, x);
     }
 
     /*  With this option each line will be aligned only if it's shorter or equal to the alignment
         width. Otherwise, the line's x anchor will be 0.0f. This is in contrast to using
-        withMaxWidth only, which will modify the x anchor of RTL lines that are too long, to ensure
+        withWordWrapWidth only, which will modify the x anchor of RTL lines that are too long, to ensure
         that it's the logical end of the text that falls outside the visible bounds.
 
         The alignment width is also a distinct value from the value used for soft wrapping which is
-        specified using withMaxWidth.
+        specified using withWordWrapWidth.
 
         This option is specifically meant to support an existing TextEditor behaviour, where text
         can be aligned even when word wrapping is off. You probably don't need to use this function,
         unless you want to reproduce the particular behaviour seen in the TextEditor, and should
-        only use withMaxWidth, if alignment is required.
+        only use withWordWrapWidth, if alignment is required.
 
         With this option off, text is either not aligned, or aligned to the width specified using
-        withMaxWidth.
+        withWordWrapWidth.
 
-        When this option is in use, it overrides the width specified in withMaxWidth for alignment
+        When this option is in use, it overrides the width specified in withWordWrapWidth for alignment
         purposes, but not for line wrapping purposes.
 
         It also accommodates the fact that the TextEditor has a scrolling feature and text never
@@ -130,11 +129,6 @@ public:
     [[nodiscard]] ShapedTextOptions withFonts (const detail::RangedValues<Font>& x) const
     {
         return withMember (*this, &ShapedTextOptions::fontsForRange, x);
-    }
-
-    [[nodiscard]] ShapedTextOptions withLanguage (StringRef x) const
-    {
-        return withMember (*this, &ShapedTextOptions::language, x);
     }
 
     [[nodiscard]] ShapedTextOptions withFirstLineIndent (float x) const
@@ -179,6 +173,17 @@ public:
         return withMember (*this, &ShapedTextOptions::ellipsis, std::move (x));
     }
 
+    /*  Draw each line in its entirety even if it goes beyond wordWrapWidth. This means that even
+        if configured, an ellipsis will never be inserted.
+
+        This is used by the TextEditor where the Viewport guarantees that all text will be viewable
+        even beyond the word wrap width.
+    */
+    [[nodiscard]] ShapedTextOptions withDrawLinesInFull (bool x = true) const
+    {
+        return withMember (*this, &ShapedTextOptions::drawLinesInFull, std::move (x));
+    }
+
     [[nodiscard]] ShapedTextOptions withReadingDirection (std::optional<TextDirection> x) const
     {
         return withMember (*this, &ShapedTextOptions::readingDir, x);
@@ -191,11 +196,10 @@ public:
 
     const auto& getReadingDirection() const             { return readingDir; }
     const auto& getJustification() const                { return justification; }
-    const auto& getMaxWidth() const                     { return maxWidth; }
+    const auto& getWordWrapWidth() const                { return wordWrapWidth; }
     const auto& getAlignmentWidth() const               { return alignmentWidth; }
     const auto& getHeight() const                       { return height; }
     const auto& getFontsForRange() const                { return fontsForRange; }
-    const auto& getLanguage() const                     { return language; }
     const auto& getFirstLineIndent() const              { return firstLineIndent; }
     const auto& getLeading() const                      { return leading; }
     const auto& getAdditiveLineSpacing() const          { return additiveLineSpacing; }
@@ -203,12 +207,13 @@ public:
     const auto& getTrailingWhitespacesShouldFit() const { return trailingWhitespacesShouldFit; }
     const auto& getMaxNumLines() const                  { return maxNumLines; }
     const auto& getEllipsis() const                     { return ellipsis; }
+    const auto& getDrawLinesInFull() const              { return drawLinesInFull; }
     const auto& getAllowBreakingInsideWord() const      { return allowBreakingInsideWord; }
 
 private:
     Justification justification { Justification::topLeft };
     std::optional<TextDirection> readingDir;
-    std::optional<float> maxWidth;
+    std::optional<float> wordWrapWidth;
     std::optional<float> alignmentWidth;
     std::optional<float> height;
 
@@ -220,13 +225,13 @@ private:
         return result;
     });
 
-    String language = SystemStats::getDisplayLanguage();
     float firstLineIndent = 0.0f;
     float leading = 1.0f;
     float additiveLineSpacing = 0.0f;
     bool baselineAtZero = false;
     bool allowBreakingInsideWord = false;
     bool trailingWhitespacesShouldFit = true;
+    bool drawLinesInFull = false;
     int64 maxNumLines = std::numeric_limits<int64>::max();
     String ellipsis;
 };
@@ -259,7 +264,7 @@ struct ShapedGlyph
     bool isPlaceholderForLigature() const { return distanceFromLigature > 0; }
 
     int8_t getDistanceFromLigature() const { return distanceFromLigature; }
-    int8_t getNumTrailingLigaturePlaceholders() const { return -distanceFromLigature; }
+    int8_t getNumTrailingLigaturePlaceholders() const { return (int8_t) -distanceFromLigature; }
 
     Point<float> advance;
     Point<float> offset;

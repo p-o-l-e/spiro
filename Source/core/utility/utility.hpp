@@ -162,7 +162,7 @@ constexpr bool bool_from_range(const float value, const float min = 0.0f, const 
     return value > ((max - min) * 0.5f);
 }
 
-inline const int rand_in_range(const int l, const int r) noexcept
+inline int rand_in_range(const int l, const int r) noexcept
 { 
     return (rand() % (r - l + 1)) + l;
 }

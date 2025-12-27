@@ -126,7 +126,7 @@ public:
                 finalTarget->itemDropped (details);
             }
 
-            // careful - this object could now be deleted..
+            // careful - this object could now be deleted
         }
     }
 
@@ -479,7 +479,11 @@ void DragAndDropContainer::startDragging (const var& sourceDescription,
         const auto relPos = sourceComponent->getLocalPoint (nullptr, lastMouseDown).toDouble();
         const auto clipped = (image.getBounds().toDouble() / scaleFactor).getConstrainedPoint (relPos);
 
-        Image fade (Image::SingleChannel, image.getWidth(), image.getHeight(), true);
+        Image fade (Image::SingleChannel,
+                    image.getWidth(),
+                    image.getHeight(),
+                    true,
+                    *image.getPixelData()->createType());
         {
             Graphics fadeContext (fade);
 
@@ -495,7 +499,11 @@ void DragAndDropContainer::startDragging (const var& sourceDescription,
             fadeContext.fillAll();
         }
 
-        Image composite (Image::ARGB, image.getWidth(), image.getHeight(), true);
+        Image composite (Image::ARGB,
+                         image.getWidth(),
+                         image.getHeight(),
+                         true,
+                         *image.getPixelData()->createType());
         {
             Graphics compositeContext (composite);
 
@@ -535,7 +543,7 @@ void DragAndDropContainer::startDragging (const var& sourceDescription,
 
    #if JUCE_WINDOWS
     // Under heavy load, the layered window's paint callback can often be lost by the OS,
-    // so forcing a repaint at least once makes sure that the window becomes visible..
+    // so forcing a repaint at least once makes sure that the window becomes visible.
     if (auto* peer = dragImageComponent->getPeer())
         peer->performAnyPendingRepaintsNow();
    #endif

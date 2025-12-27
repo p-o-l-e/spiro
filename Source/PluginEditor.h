@@ -45,8 +45,8 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
         void timerCallback() override;
         // void visibilityChanged() override { loadMatrix(); } /// Hm....
         void minimisationStateChanged(bool isNowMinimised) override { isNowMinimised ? saveMatrix() : loadMatrix(); }
-        void focusGained(juce::Component::FocusChangeType cause) override { loadMatrix(); }
-        void focusLost(juce::Component::FocusChangeType cause) override { saveMatrix(); }
+        //void focusGained(juce::Component::FocusChangeType cause) override { loadMatrix(); }
+        //void focusLost(juce::Component::FocusChangeType cause) override { saveMatrix(); }
 
         Editor(Processor&, juce::AudioProcessorValueTreeState&);
        ~Editor() override;

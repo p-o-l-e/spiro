@@ -39,8 +39,8 @@ namespace core {
     }
 
 
-
-    static void dump_descriptor(const core::Descriptor& d, const std::string& px)
+    
+    inline void dump_descriptor(const core::Descriptor& d, const std::string& px)
     {
         using core::map::cv;
 
@@ -61,6 +61,7 @@ namespace core {
         std::cout << px << " ---- Control set (" << *d.cv[cv::c] << "):\n";
         for (int i = 0; i < *d.cv[cv::c]; ++i) dump_control(&d.set[cv::c][i], ("  Control [" + std::to_string(i) + "]").c_str(), px);
     }
+    
 
     static const std::unordered_map<std::string, map::module::type> module_type_map = {
         {"off", map::module::off},

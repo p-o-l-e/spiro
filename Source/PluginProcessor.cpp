@@ -27,16 +27,13 @@
 #include <cstdint>
 
 
-Processor::Processor(): spiro(new core::Grid(core::settings::create_sector_map())),
-                       // spiro(&core::grid),
-                        AudioProcessor
+Processor::Processor(): AudioProcessor
                         (
                             BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                                             .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)),
-                                              tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout()
-                        )
-             //           spiro(&core::grid)
-    //                    
+                                             .withInput  ("Input",  juce::AudioChannelSet::stereo(), false)
+                        ),
+                        spiro(new core::Grid(core::settings::create_sector_map())),
+                        tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout())
 {
     suspendProcessing(true);
     std::cout<<"Processor::Processor()\n"; 
@@ -157,16 +154,24 @@ int Processor::getCurrentProgram()
     return currentPresetPosition;
 }
 
-void Processor::setCurrentProgram(int index) {}
+void Processor::setCurrentProgram(int index) 
+{
+    currentPresetPosition = index; /// Warning
+}
 
 const juce::String Processor::getProgramName(int index) 
 {
-    return currentPresetName;
+    if(index < (int)presets.size())
+    {
+        return presets[index].first;
+    }
+    return juce::String {};
 }
 
-void Processor::changeProgramName(int index, const juce::String& newName)
+void Processor::changeProgramName(int index, const juce::String& newName) 
 {
-
+    currentPresetPosition = index; // Warning
+    currentPresetName = newName; //// Warning 
 }
 
 juce::Result Processor::getPresetsFolder()
@@ -193,6 +198,12 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
     getStateInformation(newPresetFileContent);
 
     auto presetFile = preset_directory.getChildFile(presetName);
+    if(skipIfPresetWithThisNameExists)
+    {
+        return false; /// --------> CHECK
+    }
+
+
     auto tempFile = preset_directory.getChildFile("temp");
 
     auto file = presetFile.create();
@@ -416,7 +427,7 @@ void Processor::releaseResources()
 *  MIDI
 * 
 ******************************************************************************************************************************/
-void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void Processor::handleMIDI(juce::MidiBuffer& midiMessages)
 {
     for(const auto metadata : midiMessages) 
     {
@@ -435,7 +446,7 @@ void Processor::handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
 ******************************************************************************************************************************/
 void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& midiMessages)
 {
-	handleMIDI(data, midiMessages);
+	handleMIDI(midiMessages);
 	data.clear();
 	int samples = data.getNumSamples();
 	float* DataL = data.getWritePointer(0);
@@ -461,8 +472,8 @@ juce::AudioProcessorEditor* Processor::createEditor()
     return new Editor(*this, tree);
 }
 
-
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new Processor();
 }
+

@@ -30,6 +30,9 @@
 
 class EnvelopeDisplay: public juce::Component
 {
+    private:
+        Processor *processor;
+
     public:
         enum Stage { A, D, S, R, Stages };
         const int nodes = 5;
@@ -43,7 +46,7 @@ class EnvelopeDisplay: public juce::Component
         core::Rectangle<int>        scope_bounds;   // Scope constraints
         std::unique_ptr<float[]>    data;
         juce::Colour colour = colour_set[10];
-        void plot(juce::Graphics&, float);
+        void plot(juce::Graphics&);
         void sync();                                // Load from tree
         void load();                                // Load to display
         void transmit();                            // Save to tree
@@ -78,6 +81,7 @@ class EnvelopeDisplay: public juce::Component
 
             void mouseUp(const juce::MouseEvent& event) override
             {
+                if(event.source.isMouse())[[likely]]
                 parent->transmit();            
             }
 
@@ -118,7 +122,6 @@ class EnvelopeDisplay: public juce::Component
 
     private:
 
-        Processor *processor;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeDisplay)
 };
 

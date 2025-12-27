@@ -377,6 +377,12 @@ void TextEditor::setJustification (Justification j)
     }
 }
 
+void TextEditor::setLineSpacing (float newLineSpacing) noexcept
+{
+    lineSpacing = jmax (1.0f, newLineSpacing);
+    updateBaseShapedTextOptions();
+}
+
 //==============================================================================
 void TextEditor::setFont (const Font& newFont)
 {
@@ -811,8 +817,24 @@ float TextEditor::getYOffset() const
 {
     const auto bottomY = getMaximumTextHeight();
 
+    const auto juce7LineSpacingOffset = std::invoke ([&]
+    {
+         if (approximatelyEqual (lineSpacing, 1.0f) || textStorage->isEmpty())
+             return 0.0f;
+
+         const auto& lineMetrics = textStorage->front().value->getShapedText().getLineMetricsForGlyphRange();
+
+         if (lineMetrics.isEmpty())
+             return 0.0f;
+
+         const auto& line = lineMetrics.front().value;
+
+         jassert (lineSpacing >= 1.0f);
+         return line.maxAscent * (1.0f / lineSpacing - 1.0f);
+    });
+
     if (justification.testFlags (Justification::top) || isTextStorageHeightGreaterEqualThan ((float) bottomY))
-        return 0;
+        return juce7LineSpacingOffset;
 
     auto bottom = jmax (0.0f, (float) bottomY - getTextStorageHeight());
 
@@ -924,10 +946,13 @@ TextEditor::CaretEdge TextEditor::getTextSelectionEdge (int index, Edge edge) co
 void TextEditor::updateBaseShapedTextOptions()
 {
     auto options = detail::ShapedText::Options{}.withTrailingWhitespacesShouldFit (true)
-                                                .withJustification (getJustificationType().getOnlyHorizontalFlags());
+                                                .withJustification (getJustificationType().getOnlyHorizontalFlags())
+                                                .withDrawLinesInFull()
+                                                .withLeading (lineSpacing);
 
     if (wordWrap)
-        options = options.withMaxWidth ((float) getMaximumTextWidth());
+        options = options.withWordWrapWidth ((float) getMaximumTextWidth())
+                         .withAllowBreakingInsideWord();
     else
         options = options.withAlignmentWidth ((float) getMaximumTextWidth());
 
@@ -1459,7 +1484,7 @@ void TextEditor::drawContent (Graphics& g)
                                                            selectedTextRanges.getIntersectionsStartingAtZeroWith (glyphsRange));
 
             paragraph->getShapedText().accessTogetherWith (drawGlyphRuns,
-                                                           glyphColours,
+                                                           glyphColours.getIntersectionsStartingAtZeroWith (glyphsRange),
                                                            textSelectionMask.getIntersectionsStartingAtZeroWith (glyphsRange),
                                                            underlining.getIntersectionsStartingAtZeroWith (glyphsRange));
         }
@@ -1557,8 +1582,8 @@ void TextEditor::mouseDown (const MouseEvent& e)
 
             menuActive = true;
 
-            m.showMenuAsync (PopupMenu::Options(),
-                             [safeThis = SafePointer<TextEditor> { this }] (int menuResult)
+            m.showMenuAsync (PopupMenu::Options().withTargetComponent (this).withMousePosition(),
+                             [safeThis = SafePointer { this }] (int menuResult)
                              {
                                  if (auto* editor = safeThis.getComponent())
                                  {
@@ -1927,7 +1952,7 @@ bool TextEditor::keyStateChanged (const bool isKeyDown)
         return false;
 
     // (overridden to avoid forwarding key events to the parent)
-    return ! ModifierKeys::currentModifiers.isCommandDown();
+    return ! ModifierKeys::getCurrentModifiers().isCommandDown();
 }
 
 //==============================================================================
@@ -2157,7 +2182,7 @@ float TextEditor::getJustificationOffsetX() const
 
 TextEditor::CaretEdge TextEditor::getDefaultCursorEdge() const
 {
-    return { { getJustificationOffsetX(), 0.0f }, currentFont.getHeight() };
+    return { { getJustificationOffsetX(), 0.0f }, currentFont.getHeight() * lineSpacing };
 }
 
 TextEditor::CaretEdge TextEditor::getCursorEdge (const CaretState& tempCaret) const
@@ -2176,7 +2201,7 @@ TextEditor::CaretEdge TextEditor::getCursorEdge (const CaretState& tempCaret) co
         const auto& lastParagraph = textStorage->back().value;
 
         return { { getJustificationOffsetX(), lastParagraph->getTop() + lastParagraph->getHeight() },
-                 currentFont.getHeight() };
+                 currentFont.getHeight() * lineSpacing };
     }
 
     return getTextSelectionEdge (visualIndex, tempCaret.getEdge());

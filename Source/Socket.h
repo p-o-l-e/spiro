@@ -41,7 +41,7 @@ class Sockets: public juce::Component
         juce::Colour colour_normal = colour_set[9];
         juce::Colour colour_highlighted = colour_set[26];
         core::Patchbay* bay = nullptr;
-        void drawMask(juce::Graphics&, juce::Colour);
+        void drawMask(juce::Graphics&);
         void drawCords(juce::Graphics&, float);
         juce::MouseCursor cursor;
         void load();

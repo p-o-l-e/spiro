@@ -28,7 +28,8 @@
 class Processor: public juce::AudioProcessor
 {
     public:
-
+        core::Spiro spiro;
+        juce::AudioProcessorValueTreeState tree;
 
         void prepareToPlay(double sampleRate, int samplesPerBlock) override;
         void releaseResources() override;
@@ -39,7 +40,7 @@ class Processor: public juce::AudioProcessor
         void setStateInformation(const void* data, int sizeInBytes) override;
 
         double getTailLengthSeconds() const override { return 0.0; };
-        bool isBusesLayoutSupported(const BusesLayout& layouts) const override { return true; };
+        bool isBusesLayoutSupported(const BusesLayout& layouts) const override { return layouts.getNumChannels(false, 0) == 2; };
         bool hasEditor() const override { return true; }
         bool acceptsMidi() const override { return true; };
         bool producesMidi() const override { return false; };
@@ -77,7 +78,7 @@ class Processor: public juce::AudioProcessor
 
         const juce::String getName() const override { return JucePlugin_Name; };
         const juce::String getProgramName (int index) override;
-        void handleMIDI(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
+        void handleMIDI(juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
         std::unique_ptr<Sockets> sockets;
@@ -87,10 +88,8 @@ class Processor: public juce::AudioProcessor
         bool armed = false;
 
 
-        core::Spiro spiro;
         juce::AudioProcessorEditor* createEditor() override;
         juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-        juce::AudioProcessorValueTreeState tree;
         juce::RangedAudioParameter** parameters;
         juce::AudioProcessorParameter** matrix;
         
@@ -109,8 +108,8 @@ class Processor: public juce::AudioProcessor
                 virtual void resetCall() {};
         };
     
-        void addListener(Listener *l)       { listeners.add(l);     }
-        void removeListener(Listener *l)    { listeners.remove(l);  }
+        void addCustomListener(Listener *l) { listeners.add(l);     }
+        void removeCustomListener(Listener *l) { listeners.remove(l);  }
 
         Processor();
        ~Processor() override;

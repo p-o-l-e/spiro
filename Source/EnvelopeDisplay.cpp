@@ -64,11 +64,11 @@ void EnvelopeDisplay::transmit()
         core::breakpoint::Time
     };
 
-    for(int j = 0; j < core::breakpoint::Count; ++j)
+    for(uint8_t j = 0; j < core::breakpoint::Count; ++j)
     {
         for(uint8_t i = 0; i < nodes; ++i)
         {
-            auto uid = core::uid_t { core::map::module::env, id, core::map::cv::c, offset[j] + i }; 
+            auto uid = core::uid_t { core::map::module::env, id, core::map::cv::c, uint8_t(offset[j] + i) }; 
             auto index = processor->spiro.grid->getIndex(uid);
 
             processor->parameters[index] = processor->tree.getParameter(processor->spiro.grid->name(uid, true));
@@ -136,7 +136,7 @@ void EnvelopeDisplay::paint (juce::Graphics& g)
     NP[R].cR = scope_bounds.w  + gap; 
 
     updateNodes();
-    plot(g, 0.0f);
+    plot(g);
     g.setColour(colour);
     for(int i = 0; i < Stages; ++i)
     {
@@ -166,9 +166,9 @@ void EnvelopeDisplay::resized()
     repaint();
 }
 
-void EnvelopeDisplay::plot(juce::Graphics& g, float scale)
+void EnvelopeDisplay::plot(juce::Graphics& g)
 {
-    float h  = area.getHeight();
+    float h = area.getHeight();
     
     env.generate(data.get(), scope_bounds.w);
 

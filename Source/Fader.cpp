@@ -22,21 +22,13 @@
 #include "Fader.h"
 #include "Colours.hpp"
 
-
-void SpiroLF::drawRotarySlider(juce::Graphics& g,
-    int x, int y, int width, int height, float sliderPos,
-    float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider)
-{
-
-}
-
 juce::Label* SpiroLF::createSliderTextBox(juce::Slider &slider)
 {
     auto localBounds = slider.getLocalBounds().toFloat();
     auto *l = new juce::Label();
     l->setJustificationType(juce::Justification::right );
     l->setInterceptsMouseClicks(false, false);
-    l->setFont(juce::Font(11.0f));//localBounds.getHeight() * 0.8f));
+    l->setFont(juce::FontOptions(11.0f));//localBounds.getHeight() * 0.8f));
     l->setColour(juce::Label::textColourId, colour_set[10]); 
     l->setColour(juce::Label::backgroundColourId, colour_set[13].withAlpha(0.8f)); 
 

@@ -370,13 +370,13 @@ public:
         @param keepExistingContent  if this is true, it will try to preserve as much of the
                                     old data as it can in the new buffer.
         @param clearExtraSpace      if this is true, then any extra channels or space that is
-                                    allocated will be also be cleared. If false, then this space is left
+                                    allocated will also be cleared. If false, then this space is left
                                     uninitialised.
         @param avoidReallocating    if this is true, then changing the buffer's size won't reduce the
                                     amount of memory that is currently allocated (but it will still
                                     increase it if the new size is bigger than the amount it currently has).
                                     If this is false, then a new allocation will be done so that the buffer
-                                    uses takes up the minimum amount of memory that it needs.
+                                    uses the minimum amount of memory that it needs.
     */
     void setSize (int newNumChannels,
                   int newNumSamples,
@@ -487,16 +487,33 @@ public:
         jassert (dataToReferTo != nullptr);
         jassert (newNumChannels >= 0 && newNumSamples >= 0);
 
-        if (allocatedBytes != 0)
-        {
-            allocatedBytes = 0;
-            allocatedData.free();
-        }
-
-        numChannels = newNumChannels;
         size = newNumSamples;
 
-        allocateChannels (dataToReferTo, newStartSample);
+        if (newNumChannels <= numChannels)
+        {
+            numChannels = newNumChannels;
+
+            std::transform (dataToReferTo, dataToReferTo + numChannels, channels, [&] (auto* src)
+            {
+                jassert (src != nullptr);
+                return src + newStartSample;
+            });
+
+            channels[numChannels] = nullptr;
+            isClear = false;
+        }
+        else
+        {
+            if (allocatedBytes != 0)
+            {
+                allocatedBytes = 0;
+                allocatedData.free();
+            }
+
+            numChannels = newNumChannels;
+            allocateChannels (dataToReferTo, newStartSample);
+        }
+
         jassert (! isClear);
     }
 
@@ -1167,6 +1184,15 @@ private:
 
         allocatedBytes = (size_t) numChannels * (size_t) size * sizeof (Type) + channelListSize + 32;
         allocatedData.malloc (allocatedBytes);
+
+        if (allocatedData.get() == nullptr)
+        {
+            // Allocation failure!
+            jassertfalse;
+            allocatedBytes = 0;
+            return;
+        }
+
         channels = unalignedPointerCast<Type**> (allocatedData.get());
         auto chan = unalignedPointerCast<Type*> (allocatedData + channelListSize);
 
@@ -1237,7 +1263,7 @@ private:
 
     int numChannels = 0, size = 0;
     size_t allocatedBytes = 0;
-    Type** channels;
+    Type** channels = nullptr;
     HeapBlock<char, true> allocatedData;
     Type* preallocatedChannelSpace[32];
     bool isClear = false;

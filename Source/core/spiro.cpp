@@ -57,7 +57,7 @@ namespace core
             envelope[i]   = dynamic_cast<ENV*>(rack.at(map::module::type::env, i));
             oscillator[i] = dynamic_cast<VCO*>(rack.at(map::module::type::vco, i));
             
-            envelope[i]->onStart = [=](int voice)
+            envelope[i]->onStart = [this, i](int voice)
             {
                 oscillator[i]->note[voice] = note[voice];
                 oscillator[i]->gate[voice] = true;
@@ -66,7 +66,7 @@ namespace core
                 active.emplace(voice);
             };
 
-            envelope[i]->onFinish = [=](int voice) 
+            envelope[i]->onFinish = [this, i](int voice) 
             {
                 oscillator[i]->gate[voice] = false;
                 envelope[i]->gate[voice]   = false;

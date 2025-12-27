@@ -5,9 +5,10 @@
 
 namespace core
 {
-    Module<float>* Rack::at(const map::module::type& type, const int& pos) const noexcept
+    Module<float>* Rack::at(const map::module::type& type, const uint8_t& pos) const noexcept
     {
-        uint16_t uid { (static_cast<uint8_t>(type) << 8) + pos };
+        uint16_t uid = static_cast<uint8_t>(type) << 8;
+        uid += pos;
         return moduleMap.find(uid)->second;
     }
 
@@ -18,7 +19,7 @@ namespace core
 
     int Rack::index(uint8_t mt, uint8_t mp) const noexcept
     {
-        uint16_t uid { (static_cast<uint8_t>(mt) << 8) + mp };
+        uint16_t uid = (mt << 8) + mp;
         return indexMap.find(uid)->second;
     }
 
@@ -45,7 +46,8 @@ namespace core
     {
         for(int i = 0; i < grid->sectors; ++i)
         {
-            uint16_t uid { (static_cast<uint8_t>(node[i]->descriptor->type) << 8) + node[i]->position }; 
+            uint16_t uid = static_cast<uint8_t>(node[i]->descriptor->type) << 8;
+            uid += node[i]->position ; 
             moduleMap.emplace(uid, node[i]);
         }
     }
@@ -55,7 +57,8 @@ namespace core
         std::unordered_map<uint16_t, int> r {};
         for(int i = 0; i < grid->sectors; ++i)
         {
-            uint16_t uid { (static_cast<uint8_t>(node[i]->descriptor->type) << 8) + node[i]->position }; 
+            uint16_t uid = static_cast<uint8_t>(node[i]->descriptor->type) << 8;
+            uid += node[i]->position; 
             indexMap.emplace(uid, i);
         }
     }

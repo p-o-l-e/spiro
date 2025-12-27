@@ -22,6 +22,7 @@
 #include "Display.h"
 #include "blur.hpp"
 #include "fonts.h"
+#include <cstddef>
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -122,7 +123,7 @@ void Display::croMenu()
             prior.x = raw.x * gain + center_x;
             prior.y = raw.y * gain + center_y;
 
-            for(unsigned i = 0; i < data->segments - 1; i++)
+            for(int i = 0; i < data->segments - 1; i++)
             {
                 auto raw = data->get();
                 float x = raw.x * gain + center_x;
@@ -135,14 +136,16 @@ void Display::croMenu()
         else if(scope_type->load() > 0.5f)
         {
             int queueSize = newlyPopped.size();
-            for(int i = 0; i < notInterpolatedData.size(); ++i)
+            for(size_t i = 0; i < notInterpolatedData.size(); ++i)
             {
                 auto f = data->get();
                 notInterpolatedData.at(i) = f.x + f.y;
             }
+
             interpolator.process(ratio, notInterpolatedData.data(), newlyPopped.data(), queueSize);             // resample data
             std::copy(sampleData.data() + queueSize, sampleData.data() + sampleData.size(), newData.begin());   // shift & add new data
-            int n = sampleData.size() - queueSize;
+            size_t n = sampleData.size() - queueSize;
+
             for(int i = 0; i < queueSize; ++i)
             {
                 if(n >= newData.size()) n = 0;
@@ -359,6 +362,8 @@ OledLabel::OledLabel(const float* c): contrast(c)
 
 void OledLabel::paint(juce::Graphics& g)
 {
+    if(g.isClipEmpty()) return; // Prevent warning
+
     auto area = getLocalBounds();
     canvas->clr(0.0f);
     core::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, *contrast);

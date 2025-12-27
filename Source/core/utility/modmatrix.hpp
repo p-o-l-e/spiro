@@ -96,7 +96,7 @@ namespace core {
             int counter = 0;
 
         public:
-            const int get_index(const uint32_t&) const;
+            int get_index(const uint32_t&) const;
             void  connect(Socket*, Socket*);
             void  disconnect(Socket*, Socket*);
             std::function<void(uint32_t)> on_connect;

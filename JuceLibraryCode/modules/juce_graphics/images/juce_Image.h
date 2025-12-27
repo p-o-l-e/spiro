@@ -48,12 +48,12 @@ class ImagePixelData;
     To draw into an image, create a Graphics object for it.
     e.g. @code
 
-    // create a transparent 500x500 image..
+    // create a transparent 500x500 image
     Image myImage (Image::RGB, 500, 500, true);
 
     Graphics g (myImage);
     g.setColour (Colours::red);
-    g.fillEllipse (20, 20, 300, 200);  // draws a red ellipse in our image.
+    g.fillEllipse (20, 20, 300, 200);  // draws a red ellipse in our image
     @endcode
 
     Other useful ways to create an image are with the ImageCache class, or the
@@ -343,13 +343,19 @@ public:
             The coordinate you provide here isn't checked, so it's the caller's responsibility to make
             sure it's not out-of-range.
         */
-        inline uint8* getLinePointer (int y) const noexcept                 { return data + (size_t) y * (size_t) lineStride; }
+        inline uint8* getLinePointer (int y) const noexcept
+        {
+            return data + (ptrdiff_t) y * (ptrdiff_t) lineStride;
+        }
 
         /** Returns a pointer to a pixel in the image.
             The coordinates you give here are not checked, so it's the caller's responsibility to make sure they're
             not out-of-range.
         */
-        inline uint8* getPixelPointer (int x, int y) const noexcept         { return data + (size_t) y * (size_t) lineStride + (size_t) x * (size_t) pixelStride; }
+        inline uint8* getPixelPointer (int x, int y) const noexcept
+        {
+            return data + (ptrdiff_t) y * (ptrdiff_t) lineStride + (ptrdiff_t) x * (ptrdiff_t) pixelStride;
+        }
 
         /** Returns the colour of a given pixel.
             For performance reasons, this won't do any bounds-checking on the coordinates, so it's the caller's
@@ -442,10 +448,12 @@ public:
     explicit Image (ReferenceCountedObjectPtr<ImagePixelData>) noexcept;
 
     //==============================================================================
-   #if JUCE_ALLOW_STATIC_NULL_VARIABLES && ! defined (DOXYGEN)
+   #if JUCE_ALLOW_STATIC_NULL_VARIABLES
+    /** @cond */
     /* A null Image object that can be used when you need to return an invalid image. */
     [[deprecated ("If you need a default-constructed var, just use Image() or {}.")]]
     static const Image null;
+    /** @endcond */
    #endif
 
 private:
@@ -605,6 +613,10 @@ public:
     */
     virtual int getSharedCount() const noexcept;
 
+    //==============================================================================
+    /** Copies a section of the image to somewhere else within itself. */
+    void moveImageSection (Point<int> destTopLeft, Rectangle<int> sourceRect);
+
     /** Applies a native blur effect to this image, if available.
         This blur applies to all channels of the input image. It may be more expensive to
         calculate than a box blur, but should produce higher-quality results.
@@ -689,6 +701,12 @@ public:
     virtual NativeExtensions getNativeExtensions();
 
 private:
+    /*  Called by moveImageSection().
+        The source and destination rects are both guaranteed to be within the image bounds, and
+        non-empty.
+    */
+    virtual void moveValidatedImageSection (Point<int> destTopLeft, Rectangle<int> sourceRect);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ImagePixelData)
 };
 

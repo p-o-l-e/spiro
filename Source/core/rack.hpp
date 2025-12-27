@@ -19,7 +19,7 @@ namespace core
             Module<float>* create_node(const map::module::type&);
 
         public:
-            Module<float>* at(const map::module::type&, const int&) const noexcept;
+            Module<float>* at(const map::module::type&, const uint8_t&) const noexcept;
             Module<float>* at(const int&) const noexcept;
             int index(uint8_t, uint8_t) const noexcept;
             void process(const int&) noexcept;

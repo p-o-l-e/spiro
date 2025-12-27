@@ -24,6 +24,7 @@
 #include "grid.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "uid.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -40,7 +41,6 @@ namespace core
         calculateUIDs();
     };
 
-
     Grid::Grid(const std::pair<const Sector*, std::size_t>& o):
         sectors(o.second),
         sector(o.first), 
@@ -52,7 +52,6 @@ namespace core
         for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
     };
-
 
     void Grid::calculateUIDs()
     {
@@ -74,7 +73,7 @@ namespace core
         }
     }
 
-    const int Grid::count(const Control::type& ct, map::flag::type ft) const
+    int Grid::count(const Control::type& ct, map::flag::type ft) const
     {
         int n = 0;
         for(int i = 0; i < sectors; ++i)
@@ -93,7 +92,7 @@ namespace core
         return n;
     }
 
-    const int Grid::getIndex(const uid_t& uid) const
+    int Grid::getIndex(const uid_t& uid) const
     {
         uint32_t hash = encode_uid(uid);
         auto t = control(uid)->is;
@@ -104,7 +103,7 @@ namespace core
         return -1;
     }
 
-    const int Grid::getIndex(const uint32_t hash) const
+    int Grid::getIndex(const uint32_t hash) const
     {
         auto uid = decode_uid(hash);
         auto t = control(uid)->is;
@@ -125,14 +124,13 @@ namespace core
         auto r = std::make_unique<std::unordered_map<uint32_t, const Control*>>();
         for(int i = 0; i < sectors; ++i)
         {
-            for(int pt = 0; pt < core::map::cv::count; ++pt)
+            for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
             {
-                for(int pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
+                for(uint8_t pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
                 {   
                     uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
                     r->emplace(encode_uid(uid), &d[i].descriptor->set[pt][pp]);
                 }
-
             }
         }
         return r;
@@ -146,9 +144,9 @@ namespace core
 
         for(int i = 0; i < sectors; ++i)
         {
-            for(int pt = 0; pt < core::map::cv::count; ++pt)
+            for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
             {
-                for(int pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
+                for(uint8_t pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
                 {
                     core::uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
 
@@ -170,9 +168,7 @@ namespace core
             }
         }
         return r;
- 
     }
-
 
     const Sector* Grid::getSector(const map::module::type& mt, const int mp) const
     {
@@ -191,7 +187,7 @@ namespace core
         return decode_uid(indices[type][index]);
     }
 
-    const uint32_t Grid::getHash(const int index, const Control::type& type) const
+    uint32_t Grid::getHash(const int index, const Control::type& type) const
     {
         return indices[type][index];
     }
@@ -221,10 +217,9 @@ namespace core
         return snake ? idMap->find(encode_uid(uid))->second.first : idMap->find(encode_uid(uid))->second.second;
     }
 
-
-    const std::unique_ptr<int[]> Grid::setRelatives(const Sector* d) const
+    const std::unique_ptr<uint8_t[]> Grid::setRelatives(const Sector* d) const
     {
-        auto r = std::make_unique<int[]>(sectors);
+        auto r = std::make_unique<uint8_t[]>(sectors);
         bool check[sectors];
         for(int i = 0; i < sectors; ++i) check[i] = false;
 
@@ -277,7 +272,6 @@ namespace core
         }
         return r;
     }
-
 }
 
 

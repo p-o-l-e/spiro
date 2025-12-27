@@ -65,7 +65,7 @@ Sockets::~Sockets()
     delete bay;
 }
 
-void Sockets::drawMask(juce::Graphics& g, juce::Colour colour) // For debug puposes
+void Sockets::drawMask(juce::Graphics& g) // For debug puposes
 {
     auto h  = area.getHeight();
     auto w  = area.getWidth();

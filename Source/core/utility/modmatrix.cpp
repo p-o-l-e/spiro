@@ -392,7 +392,7 @@ void Patchbay::set_socket(const Point2D<int>* o, const int& radius, const uint32
     ++counter;
 }
 
-const int Patchbay::get_index(const uint32_t& id) const
+int Patchbay::get_index(const uint32_t& id) const
 {
     for(int i = 0; i < nodes; ++i)
     {
