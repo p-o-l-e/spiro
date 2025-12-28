@@ -289,26 +289,40 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/   
     button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::se }))]->onClick = [this]
     {
-        if(display->page == Display::Page::CroA)
+        switch (display->page) 
         {
-            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
-            auto control = processor.spiro.grid->control(uid);
-            setOption(uid, -control->step, control->max);
-        }
-        else if(display->page == Display::Page::MainMenu)
-        {
-            startTimerHz(core::settings::scope_fps);
-            fade = false;
-            display->page = Display::Page::CroA;
-            display->croMenu();
-        }
-        else if(display->page == Display::Page::Save) display->mainMenu();
-        else if(display->page == Display::Page::Load) display->mainMenu();
-        else 
-        {        
-            auto control = processor.spiro.grid->control(display->uid);
-            setOption(display->uid, -control->max, control->max);
-            display->switchPage(&processor, display->page);
+            case Display::Page::CroA: 
+            {
+                auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
+                auto control = processor.spiro.grid->control(uid);
+                setOption(uid, -control->step, control->max);
+                break; 
+            }
+            case Display::Page::MainMenu: 
+            {
+                startTimerHz(core::settings::scope_fps);
+                fade = false;
+                display->page = Display::Page::CroA;
+                display->croMenu();
+                break; 
+            }
+            case Display::Page::Save: 
+            {
+                display->mainMenu();
+                break; 
+            }
+            case Display::Page::Load: 
+            {
+                display->mainMenu();
+                break; 
+            }
+            default: 
+            {
+                auto control = processor.spiro.grid->control(display->uid);
+                setOption(display->uid, -control->max, control->max);
+                display->switchPage(&processor, display->page);
+                break; 
+            }
         }
     };
 
@@ -319,56 +333,74 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/   
     button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sf }))]->onClick = [this]
     {
-        if(display->page == Display::Page::CroA)
+        switch(display->page)
         {
-            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
-            auto control = processor.spiro.grid->control(uid);
-            setOption(uid, control->step, control->max);
-        }
-        else if(display->page == Display::Page::MainMenu)
-        {
-            if(display->row[display->page] == 0)
+            case Display::Page::CroA:
             {
-                startTimerHz(core::settings::scope_fps);
-                display->page = Display::Page::Save;
-                display->saveMenu();
-                display->grabKeyboardFocus();
-                display->inputBox.setText(processor.currentPresetName);
+                auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::type };
+                auto control = processor.spiro.grid->control(uid);
+                setOption(uid, control->step, control->max);
+                break;
             }
-            else if(display->row[display->page] == 1)
+            case Display::Page::MainMenu:
             {
-                display->page = Display::Page::Load;
+                switch(display->row[display->page])
+                {
+                    case 0:
+                    {
+                        startTimerHz(core::settings::scope_fps);
+                        display->page = Display::Page::Save;
+                        display->saveMenu();
+                        display->grabKeyboardFocus();
+                        display->inputBox.setText(processor.currentPresetName);
+                        break;
+                    }
+                    case 1:
+                    {
+                        display->page = Display::Page::Load;
+                        processor.scanPresetDir();
+                        display->loadMenu(&processor.presets);          
+                        break;
+                    }
+                    case 2:
+                    {
+                        // INIT 
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                break;
+            }
+            case Display::Page::Save:
+            {
+                auto presetName = display->inputBox.getText();
+                if(!presetName.isEmpty()) 
+                {
+                    processor.savePreset(presetName, false);
+                    display->page = Display::Page::MainMenu;
+                    display->mainMenu();
+                }
+                break;
+            }
+            case Display::Page::Load:
+            {
+                processor.loadPreset(processor.presets.at(display->row[Display::Page::Load] + display->load_page * display->rows_max).first);
+                loadMatrix();
+                for(int i = 0; i < envn; ++i) switchEnvelope(i);
                 processor.scanPresetDir();
-                display->loadMenu(&processor.presets);          
-            }
-            else if(display->row[display->page] == 2)
-            {
-                // INIT 
-            }
-        }
-        else if(display->page == Display::Page::Save)
-        {
-            auto presetName = display->inputBox.getText();
-            if(!presetName.isEmpty()) 
-            {
-                processor.savePreset(presetName, false);
-                display->page = Display::Page::MainMenu;
                 display->mainMenu();
+                break;
             }
-        }
-        else if(display->page == Display::Page::Load)
-        {
-            processor.loadPreset(processor.presets.at(display->row[Display::Page::Load] + display->load_page * display->rows_max).first);
-            loadMatrix();
-            for(int i = 0; i < envn; ++i) switchEnvelope(i);
-            processor.scanPresetDir();
-            display->mainMenu();
-        }
-        else 
-        {
-            auto control = processor.spiro.grid->control(display->uid);
-            setOption(display->uid, -control->step, control->max);
-            display->switchPage(&processor, display->page);
+            default:
+            {
+                auto control = processor.spiro.grid->control(display->uid);
+                setOption(display->uid, -control->step, control->max);
+                display->switchPage(&processor, display->page);
+                break;
+            }
         }
     };
 
@@ -379,24 +411,36 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/   
     button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sg }))]->onClick = [this]
     {
-        if(display->page == Display::Page::CroA)
+        switch (display->page)
         {
-            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
-            auto control = processor.spiro.grid->control(uid);
-            setOption(uid, -control->step, control->max);
-        }
-        else if(display->page == Display::Page::MainMenu)   {}
-        else if(display->page == Display::Page::Save)       {}
-        else if(display->page == Display::Page::Load)       
-        {
-            display->load_page--;
-            display->loadMenu(&processor.presets);           
-        }
-        else 
-        {
-            auto control = processor.spiro.grid->control(display->uid);
-            setOption(display->uid, control->step, control->max);
-            display->switchPage(&processor, display->page);
+            case Display::Page::CroA:
+            {
+                auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
+                auto control = processor.spiro.grid->control(uid);
+                setOption(uid, -control->step, control->max);
+                break;
+            }
+            case Display::Page::MainMenu:
+            {
+                break;
+            }
+            case Display::Page::Save:
+            {
+                break;
+            }
+            case Display::Page::Load:
+            {
+                display->load_page--;
+                display->loadMenu(&processor.presets);
+                break;
+            }
+            default: 
+            {
+                auto control = processor.spiro.grid->control(display->uid);
+                setOption(display->uid, control->step, control->max);
+                display->switchPage(&processor, display->page);
+                break;
+            }
         }
     };
 
@@ -407,27 +451,38 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     **************************************************************************************************************************/   
     button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::sh }))]->onClick = [this]
     {
-        if(display->page == Display::Page::CroA)
+        switch(display->page)
         {
-            auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
-            auto control = processor.spiro.grid->control(uid);
-            setOption(uid, control->step, control->max);
-        }
-        else if(display->page == Display::Page::MainMenu)   {}
-        else if(display->page == Display::Page::Save)       {}
-        else if(display->page == Display::Page::Load)       
-        {
-            display->load_page++;
-            display->loadMenu(&processor.presets);        
-        }
-        else 
-        {
-            auto control = processor.spiro.grid->control(display->uid);
-            setOption(display->uid, control->max, control->max);
-            display->switchPage(&processor, display->page);
+            case Display::Page::CroA:
+            {
+                auto uid = core::uid_t { core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::scale };
+                auto control = processor.spiro.grid->control(uid);
+                setOption(uid, control->step, control->max);
+                break;
+            }
+            case Display::Page::MainMenu:  
+            {
+                break;
+            }
+            case Display::Page::Save:
+            {
+                break;
+            }
+            case Display::Page::Load:
+            {
+                display->load_page++;
+                display->loadMenu(&processor.presets);   
+                break;
+            }
+            default:
+            {
+                auto control = processor.spiro.grid->control(display->uid);
+                setOption(display->uid, control->max, control->max);
+                display->switchPage(&processor, display->page);
+                break;
+            }
         }
     };
-
 
     setResizable(false, false);
     setSize (core::constraints::W, core::constraints::H);
@@ -437,7 +492,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
     startTimerHz(core::settings::scope_fps);
     std::cout<<"-- Editor created\n";
-
 } 
 
 void Editor::setOption(const core::uid_t& uid, const float delta, const float max)
@@ -453,8 +507,6 @@ void Editor::setOption(const core::uid_t& uid, const float delta, const float ma
     processor.parameters[index]->setValueNotifyingHost(processor.parameters[index]->convertTo0to1(value));
     processor.parameters[index]->endChangeGesture();
 }
-
-
 
 /*****************************************************************************************************************************
 * 
@@ -508,7 +560,6 @@ void Editor::clearMatrix()
     processor.sockets->load();
     processor.sockets->repaint();
 }
-
 
 void Editor::loadCall() 
 { 

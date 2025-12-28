@@ -161,7 +161,7 @@
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-Wfatal-errors&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="spiro_dbg" optimisation="3"
-                       extraCompilerFlags="-DDEBUG_MODE&#10;-Wall&#10;-Wextra&#10;-Wpedantic&#10;-Werror&#10;-Wfatal-errors"/>
+                       extraCompilerFlags="-DDEBUG_MODE&#10;-Wall&#10;-Wextra&#10;-Wpedantic&#10;-Werror&#10;-Wfatal-errors&#10;-pedantic"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="spiro" linkTimeOptimisation="1"
                        extraCompilerFlags="-Wunused&#10;-Wall &#10;-Wextra &#10;-Wpedantic&#10;-pedantic"/>
       </CONFIGURATIONS>

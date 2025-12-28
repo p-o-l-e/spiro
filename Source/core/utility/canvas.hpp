@@ -41,45 +41,44 @@ namespace core {
            ~Canvas();
     };
 
-
-template <typename T>
-constexpr void Canvas<T>::set(const unsigned& x, const unsigned& y, const T& value) noexcept
-{
-    unsigned index = x + y * width;
-    if(index < size)[[likely]]
+    template <typename T>
+    constexpr void Canvas<T>::set(const unsigned& x, const unsigned& y, const T& value) noexcept
     {
-        data[index] = value;
+        unsigned index = x + y * width;
+        if(index < size)[[likely]]
+        {
+            data[index] = value;
+        }
     }
-}
 
-template <typename T>
-constexpr T Canvas<T>::get(const unsigned& x, const unsigned& y) const noexcept
-{
-    unsigned index = x + y * width;
-    if(index < size)[[likely]]
+    template <typename T>
+    constexpr T Canvas<T>::get(const unsigned& x, const unsigned& y) const noexcept
     {
-        return data[index];
+        unsigned index = x + y * width;
+        if(index < size)[[likely]]
+        {
+            return data[index];
+        }
+        return T {};
     }
-    return T { 0 };
-}
 
-template <typename T>
-constexpr void Canvas<T>::clr(const T& value) noexcept
-{
-    for(unsigned i = 0; i < size; ++i) data[i] = value;
-}
+    template <typename T>
+    constexpr void Canvas<T>::clr(const T& value) noexcept
+    {
+        for(unsigned i = 0; i < size; ++i) data[i] = value;
+    }
 
-template <typename T>
-constexpr Canvas<T>::Canvas(const unsigned& x, const unsigned& y) noexcept: width(x), height(y), size(x * y)
-{
-    data = new T[size];
-}
+    template <typename T>
+    constexpr Canvas<T>::Canvas(const unsigned& x, const unsigned& y) noexcept: width(x), height(y), size(x * y)
+    {
+        data = new T[size];
+    }
 
-template <typename T>
-inline Canvas<T>::~Canvas()
-{
-    delete[] data;
-}
+    template <typename T>
+    inline Canvas<T>::~Canvas()
+    {
+        delete[] data;
+    }
 }; // namespace core
 
 
