@@ -30,7 +30,7 @@ namespace core
     using namespace vcf;
     int VCF::idc = 0;
 
-    VCF::VCF(): id(idc++), Module(idc, &vcf::descriptor)
+    VCF::VCF(): Module(idc, &vcf::descriptor), id(idc++)
     { 
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;

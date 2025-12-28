@@ -78,7 +78,7 @@ namespace core
         for(int i = 0; i < lfo::oc; ++i) ocv[i].store(0.0f);
     }
 
-    LFO::LFO(): id(idc++), Module(idc, &lfo::descriptor)
+    LFO::LFO(): Module(idc, &lfo::descriptor), id(idc++)
     {
         reset();
     };

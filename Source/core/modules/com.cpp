@@ -32,7 +32,7 @@ namespace core
     {
     };
 
-    COM::COM(): id(idc++), Module(idc, &com::descriptor)
+    COM::COM(): Module(idc, &com::descriptor), id(idc++)
     { 
     };
 }

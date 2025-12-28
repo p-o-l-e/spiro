@@ -34,7 +34,7 @@ namespace core
         ocv[cvo::b].store(ocv[cvo::a]);
     };
 
-    SUM::SUM(): id(idc++), Module(idc, &sum::descriptor[0])
+    SUM::SUM(): Module(idc, &sum::descriptor[0]), id(idc++)
     { 
     };
 }

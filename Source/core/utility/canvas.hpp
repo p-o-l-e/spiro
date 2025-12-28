@@ -29,9 +29,10 @@ namespace core {
     {
         private:
             T* data;
-        public:   
+        public:
             const unsigned width;
             const unsigned height;             
+            const unsigned size;
             constexpr void set(const unsigned&, const unsigned&, const T&) noexcept;
             constexpr T    get(const unsigned&, const unsigned&) const noexcept;
             constexpr T*   raw() const noexcept { return data; }
@@ -44,27 +45,34 @@ namespace core {
 template <typename T>
 constexpr void Canvas<T>::set(const unsigned& x, const unsigned& y, const T& value) noexcept
 {
-    if((x < width) && (y < height))
-    data[x + y * width] = value;
+    unsigned index = x + y * width;
+    if(index < size)[[likely]]
+    {
+        data[index] = value;
+    }
 }
 
 template <typename T>
 constexpr T Canvas<T>::get(const unsigned& x, const unsigned& y) const noexcept
 {
-    if((x < width) && (y < height)) return data[x + y * width];
-    return data[0];
+    unsigned index = x + y * width;
+    if(index < size)[[likely]]
+    {
+        return data[index];
+    }
+    return T { 0 };
 }
 
 template <typename T>
 constexpr void Canvas<T>::clr(const T& value) noexcept
 {
-    for(unsigned i = 0; i < (height * width); ++i) data[i] = value;
+    for(unsigned i = 0; i < size; ++i) data[i] = value;
 }
 
 template <typename T>
-constexpr Canvas<T>::Canvas(const unsigned& x, const unsigned& y) noexcept: width(x), height(y)
+constexpr Canvas<T>::Canvas(const unsigned& x, const unsigned& y) noexcept: width(x), height(y), size(x * y)
 {
-    data = new T[height * width];
+    data = new T[size];
 }
 
 template <typename T>

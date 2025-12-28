@@ -56,7 +56,7 @@ namespace core
 
     }
 
-    RTR::RTR(): id(idc++), Module(idc, &rtr::descriptor)
+    RTR::RTR(): Module(idc, &rtr::descriptor), id(idc++)
     { 
     };
 

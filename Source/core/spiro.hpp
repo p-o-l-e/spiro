@@ -34,7 +34,9 @@ namespace core
     class Spiro
     { 
         public:
-            struct stereo { enum { l, r }; };
+            struct stereo { enum { l, r }; }; 
+            const Grid* grid;
+            Rack rack;
 
         private:
             uint8_t note[settings::poly];
@@ -53,8 +55,6 @@ namespace core
             void resetVoice(int);
 
         public:
-            const Grid* grid;
-            Rack rack;
             Patchbay* bay = nullptr;
             std::atomic<float> out[2];                       // LR Output
             void midiMessage(uint8_t, uint8_t, uint8_t);

@@ -15,9 +15,9 @@ namespace core
         constexpr int ic { 5 };
         constexpr int oc { 3 };
 
-        struct ctl { enum { cutoff, Q                                 }; };              // Controls
-        struct cvi { enum { a, b, c, cutoff, Q                        }; };              // CV in
-        struct cvo { enum { lp, bp, hp                                }; };              // CV out
+        struct ctl { enum id { cutoff, Q                                 }; };              // Controls
+        struct cvi { enum id { a, b, c, cutoff, Q                        }; };              // CV in
+        struct cvo { enum id { lp, bp, hp                                }; };              // CV out
 
         constexpr std::string prefix    { "vcf"                            };
         

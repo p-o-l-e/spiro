@@ -12,13 +12,13 @@ namespace core
     namespace env 
     {
         constexpr int cc { 17 };
-        constexpr int ic {  0 };
+        constexpr int ic {  1 };
         constexpr int oc {  1 };
         constexpr int vc {  4 }; // Variants
 
-        struct ctl { enum { at, ht, dt, st, rt, aa, ha, da, sa, ra, af, hf, df, sf, rf, scale, select }; };         // Controls
-        struct cvi { enum {     }; };                                                                               // CV in
-        struct cvo { enum { a   }; };                                                                               // CV out
+        struct ctl { enum id { at, ht, dt, st, rt, aa, ha, da, sa, ra, af, hf, df, sf, rf, scale, select }; };         // Controls
+        struct cvi { enum id {     }; };                                                                               // CV in
+        struct cvo { enum id { a   }; };                                                                               // CV out
         
         constexpr int idxl[] { ctl::aa, ctl::ha, ctl::da, ctl::sa, ctl::ra };
         constexpr int idxt[] { ctl::at, ctl::ht, ctl::dt, ctl::st, ctl::rt };
@@ -28,6 +28,7 @@ namespace core
         
         constexpr core::Control set_i[ic]
         {
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr core::Control set_o[vc][oc]

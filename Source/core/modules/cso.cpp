@@ -192,7 +192,7 @@ void CSO::tsucs()
     }
 }
 
-CSO::CSO(): id(idc++), Module(idc, &cso::descriptor[0])
+CSO::CSO(): Module(idc, &cso::descriptor[0]), id(idc++)
 {
 }
 

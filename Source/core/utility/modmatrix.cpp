@@ -257,6 +257,8 @@ int Patchbay::down_test(const float& x, const float& y, const int& mb)
 
 int Patchbay::up_test(const float& x, const float& y, const int& mb)
 {
+    if(mb == -1)[[unlikely]] return 0;
+
     auto stamp = canvas.get(x, y); 
 
     if(stamp && src)
@@ -336,6 +338,8 @@ void Patchbay::deselect()
 
 void Patchbay::move_test(const float& x, const float& y, const int& mb)
 {
+    if(mb == -1)[[unlikely]] return;
+
     auto stamp = canvas.get(x, y);
     if(stamp)
     {

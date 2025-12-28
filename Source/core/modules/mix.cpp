@@ -45,7 +45,7 @@ namespace core
         ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
     }
 
-    MIX::MIX(): id(idc++), Module(idc, &mix::descriptor)
+    MIX::MIX(): Module(idc, &mix::descriptor), id(idc++)
     {
     }
 }

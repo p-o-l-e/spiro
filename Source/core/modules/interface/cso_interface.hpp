@@ -18,9 +18,9 @@ namespace core
         constexpr int oc { 3 };
         constexpr int vc { 2 };
 
-        struct ctl { enum { tune, warp, amp, form, options    }; };             // Controls
-        struct cvi { enum { fm, warp                          }; };             // CV in
-        struct cvo { enum { x, y, z                           }; };             // CV out
+        struct ctl { enum id { tune, warp, amp, form, options    }; };             // Controls
+        struct cvi { enum id { fm, warp                          }; };             // CV in
+        struct cvo { enum id { x, y, z                           }; };             // CV out
 
         constexpr std::string prefix { "cso" };
         

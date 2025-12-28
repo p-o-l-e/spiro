@@ -11,16 +11,17 @@ namespace core
     **********************************************************************************************************************/
     namespace com 
     {
-        constexpr int cc { 0 };
-        constexpr int ic { 0 };
+        constexpr int cc { 1 };
+        constexpr int ic { 1 };
         constexpr int oc { 2 };
 
-        struct cvo { enum { p_wheel, m_wheel                          }; };              // CV out
+        struct cvo { enum id { p_wheel, m_wheel                          }; };              // CV out
 
         constexpr std::string prefix { "com" };
         
         constexpr core::Control set_i[ic]
         {
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr core::Control set_o[oc]
@@ -32,6 +33,7 @@ namespace core
 
         constexpr core::Control set_c[cc]
         {
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr Rectangle<float> constrain { 0.0f, 0.0f,  76.0f,  89.0f };

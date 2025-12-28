@@ -29,7 +29,7 @@ namespace core
     using namespace vcd;
     int VCD::idc = 0;
 
-    VCD::VCD(): id(idc++), Module(idc, &vcd::descriptor)
+    VCD::VCD(): Module(idc, &vcd::descriptor), id(idc++)
     {
         reset();
     }

@@ -44,7 +44,7 @@ namespace core {
         ocv[0].store( o ? s : 0.0f);
     };
 
-    PDT::PDT(): id(idc++), Module(idc, &pdt::descriptor)
+    PDT::PDT(): Module(idc, &pdt::descriptor), id(idc++)
     { 
     };
 }

@@ -34,7 +34,7 @@ namespace core
 
     }
 
-    CRO::CRO(): id(idc++), Module(idc, &cro::descriptor)    
+    CRO::CRO(): Module(idc, &cro::descriptor), id(idc++)
     {
     }
 }

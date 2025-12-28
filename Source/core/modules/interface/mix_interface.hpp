@@ -15,9 +15,9 @@ namespace core
         constexpr int ic { 5 };
         constexpr int oc { 2 };
 
-        struct ctl { enum { alpha, theta, amp,                }; };              // Controls
-        struct cvi { enum { l, c, r, alpha, theta             }; };             // CV in
-        struct cvo { enum { l, r                              }; };             // CV out
+        struct ctl { enum id { alpha, theta, amp,                }; };              // Controls
+        struct cvi { enum id { l, c, r, alpha, theta             }; };             // CV in
+        struct cvo { enum id { l, r                              }; };             // CV out
 
         constexpr std::string prefix    { "mix"                                             };
         

@@ -184,7 +184,7 @@ namespace core
         }
     }
 
-    VCO::VCO(): id(idc++), Module(idc, &vco::descriptor)
+    VCO::VCO(): Module(idc, &vco::descriptor), id(idc++)
     {
         reset();
     }

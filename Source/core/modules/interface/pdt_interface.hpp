@@ -12,13 +12,13 @@ namespace core
     **********************************************************************************************************************/
     namespace pdt 
     {
-        constexpr int cc { 0 };
+        constexpr int cc { 1 };
         constexpr int ic { 3 };
         constexpr int oc { 1 };
 
-        struct ctl { enum {                                   }; };             // Controls
-        struct cvi { enum { a, b, c                           }; };             // CV in
-        struct cvo { enum { x                                 }; };             // CV out
+        struct ctl { enum id {                                   }; };             // Controls
+        struct cvi { enum id { a, b, c                           }; };             // CV in
+        struct cvo { enum id { x                                 }; };             // CV out
 
         constexpr std::string prefix    { "pdt"                                             };
         
@@ -39,6 +39,7 @@ namespace core
         constexpr core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr Rectangle<float> constrain { 0.0f, 0.0f, 152.0f,  30.0f };

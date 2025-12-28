@@ -54,7 +54,7 @@ void SNH::reset()
     scale = 40.0f;
 }
 
-SNH::SNH(): id(idc++), Module(idc, &snh::descriptor[0])
+SNH::SNH(): Module(idc, &snh::descriptor[0]), id(idc++)
 {
     reset();
 }

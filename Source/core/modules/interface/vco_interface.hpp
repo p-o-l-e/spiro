@@ -16,9 +16,9 @@ namespace core
         constexpr int ic {  5 };
         constexpr int oc {  1 };
 
-        struct ctl { enum { octave, detune, pll, pwm, fm, am, amp, form, mode, options  }; };              // Controls
-        struct cvi { enum {         detune, pll, pwm, fm, am                            }; };              // CV in
-        struct cvo { enum {         main                                                }; };              // CV out
+        struct ctl { enum id { octave, detune, pll, pwm, fm, am, amp, form, mode, options  }; };              // Controls
+        struct cvi { enum id {         detune, pll, pwm, fm, am                            }; };              // CV in
+        struct cvo { enum id {         main                                                }; };              // CV out
 
         constexpr std::string prefix { "vco" };
         

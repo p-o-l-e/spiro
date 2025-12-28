@@ -115,7 +115,7 @@ void ENV::process() noexcept
     }
 }
 
-core::ENV::ENV(): id(idc++), Module(idc, &env::descriptor[0])
+core::ENV::ENV(): Module(idc, &env::descriptor[0]), id(idc++)
 {
     for(int v = 0; v < settings::poly; ++v)
     {

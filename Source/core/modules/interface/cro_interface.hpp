@@ -12,22 +12,24 @@ namespace core
     namespace cro 
     {
         constexpr int cc { 12 };
-        constexpr int ic {  0 };
-        constexpr int oc {  0 };
+        constexpr int ic {  1 };
+        constexpr int oc {  1 };
 
-        struct ctl { enum { sa, sb, sc, sd, se, sf, sg, sh, menu, scope, type, scale    }; };              // Controls
-        struct cvi { enum {                                                             }; };              // CV in
-        struct cvo { enum {                                                             }; };              // CV out
+        struct ctl { enum id { sa, sb, sc, sd, se, sf, sg, sh, menu, scope, type, scale    }; };              // Controls
+        struct cvi { enum id {                                                             }; };              // CV in
+        struct cvo { enum id {                                                             }; };              // CV out
 
         constexpr std::string prefix { "cro" };
         
         constexpr core::Control set_i[ic]
         {
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
         constexpr core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ----- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
+            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
 
         constexpr core::Control set_c[cc]

@@ -15,9 +15,9 @@ namespace core
         constexpr int ic { 9 };
         constexpr int oc { 6 };
 
-        struct ctl { enum { x, y, z                                   }; };             // Controls
-        struct cvi { enum { ax, ay, az, bx, by, bz, cvx, cvy, cvz     }; };             // CV in
-        struct cvo { enum { ax, ay, az, bx, by, bz                    }; };             // CV out
+        struct ctl { enum id { x, y, z                                   }; };             // Controls
+        struct cvi { enum id { ax, ay, az, bx, by, bz, cvx, cvy, cvz     }; };             // CV in
+        struct cvo { enum id { ax, ay, az, bx, by, bz                    }; };             // CV out
 
         constexpr std::string prefix    { "rtr"                                             };
         

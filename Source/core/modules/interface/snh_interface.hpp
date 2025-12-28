@@ -16,9 +16,9 @@ namespace core
         constexpr int oc { 1 };
         constexpr int vc { 2 }; // Variants
 
-        struct ctl { enum { time                                      }; };              // Controls
-        struct cvi { enum { time, a, b                                }; };              // CV in
-        struct cvo { enum { a                                         }; };              // CV out
+        struct ctl { enum id { time                                      }; };              // Controls
+        struct cvi { enum id { time, a, b                                }; };              // CV in
+        struct cvo { enum id { a                                         }; };              // CV out
 
         constexpr std::string prefix    { "snh"                              };
         

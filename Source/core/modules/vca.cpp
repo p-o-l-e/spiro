@@ -50,7 +50,7 @@ namespace core
         ocv[cvo::b].store(o);
     };
 
-    VCA::VCA(): id(idc++), Module(idc, &vca::descriptor[0])
+    VCA::VCA(): Module(idc, &vca::descriptor[0]), id(idc++)
     {  
     };
 }
