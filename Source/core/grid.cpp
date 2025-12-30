@@ -220,7 +220,7 @@ namespace core
     const std::unique_ptr<uint8_t[]> Grid::setRelatives(const Sector* d) const
     {
         auto r = std::make_unique<uint8_t[]>(sectors);
-        bool check[sectors];
+        auto check = std::make_unique<bool[]>(sectors);
         for(int i = 0; i < sectors; ++i) check[i] = false;
 
         for(int s = 0; s < sectors; ++s)

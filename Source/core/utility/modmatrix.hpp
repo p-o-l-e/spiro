@@ -64,8 +64,8 @@ namespace core {
     **************************************************************************************************************************/
     struct Socket
     {
-        const unsigned* w;
-        const unsigned* h;
+        const size_t* w;
+        const size_t* h;
 
         Patchcord cord;
         RadialSquare<unsigned> bounds { 0, 0, 0 };

@@ -30,21 +30,21 @@ namespace core {
         private:
             T* data;
         public:
-            const unsigned width;
-            const unsigned height;             
-            const unsigned size;
-            constexpr void set(const unsigned&, const unsigned&, const T&) noexcept;
-            constexpr T    get(const unsigned&, const unsigned&) const noexcept;
+            const size_t width;
+            const size_t height;             
+            const size_t size;
+            constexpr void set(size_t, size_t, const T&) noexcept;
+            constexpr T    get(size_t, size_t) const noexcept;
             constexpr T*   raw() const noexcept { return data; }
             constexpr void clr(const T&) noexcept;
-            constexpr Canvas(const unsigned&, const unsigned&) noexcept;
+            constexpr Canvas(size_t, size_t) noexcept;
            ~Canvas();
     };
 
     template <typename T>
-    constexpr void Canvas<T>::set(const unsigned& x, const unsigned& y, const T& value) noexcept
+    constexpr void Canvas<T>::set(size_t x, size_t y, const T& value) noexcept
     {
-        unsigned index = x + y * width;
+        size_t index = x + y * width;
         if(index < size)[[likely]]
         {
             data[index] = value;
@@ -52,9 +52,9 @@ namespace core {
     }
 
     template <typename T>
-    constexpr T Canvas<T>::get(const unsigned& x, const unsigned& y) const noexcept
+    constexpr T Canvas<T>::get(size_t x, size_t y) const noexcept
     {
-        unsigned index = x + y * width;
+        size_t index = x + y * width;
         if(index < size)[[likely]]
         {
             return data[index];
@@ -65,11 +65,11 @@ namespace core {
     template <typename T>
     constexpr void Canvas<T>::clr(const T& value) noexcept
     {
-        for(unsigned i = 0; i < size; ++i) data[i] = value;
+        for(size_t i = 0; i < size; ++i) data[i] = value;
     }
 
     template <typename T>
-    constexpr Canvas<T>::Canvas(const unsigned& x, const unsigned& y) noexcept: width(x), height(y), size(x * y)
+    constexpr Canvas<T>::Canvas(size_t x, size_t y) noexcept: width(x), height(y), size(x * y)
     {
         data = new T[size];
     }

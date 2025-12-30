@@ -47,14 +47,14 @@ namespace core {
     constexpr void wavering<T>::set(const T& value) noexcept
     {
         data[i] = value;
-        if (++i >= segments) i = 0;
+        if (++i >= segments)[[unlikely]] i = 0;
     }
 
     template <typename T>
     constexpr T wavering<T>::get() noexcept
     {
         auto value = data[o];
-        if (++o >= segments) o = 0;
+        if (++o >= segments)[[unlikely]] o = 0;
         return value;
     }
 

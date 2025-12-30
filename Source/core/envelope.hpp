@@ -18,6 +18,7 @@ class Envelope
         float theta = 0.0f;                 // Level difference
         unsigned delta = 0;
         float prior = 0.0f;
+
     public:
         breakpoint  node[env::Segments];
         unsigned    time[env::Segments];
