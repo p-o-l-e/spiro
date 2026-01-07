@@ -50,16 +50,19 @@ Before building, ensure you have:
 1.  **Clone the Repository**
     ```
     git clone https://github.com/p-o-l-e/spiro.git
-    cd spiro/Builds/LinuxMakefile
+
     ```
 3.  **Compile** 
     ```
-    make CONFIG=Release
+    mkdir build
+    cd build
+    cmake ..
+    make
     
     ```
 4.  **Run (Standalone Mode)**
     ```
-    ./build/spiro
+    ./build/Spiro_artefacts/Standalone/spiro
     
     ```
 
