@@ -29,6 +29,7 @@
 *.blend1
 
 render/
+assets/source/
 build/
 .cache/
 compile_commands.json
