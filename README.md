@@ -5,7 +5,7 @@
 
 **Semi-modular VST / Standalone Synthesizer**
 
-![UI](./Source/assets/screen_a.jpg)
+![UI](./assets/screenshot_main.jpg)
 
 
 Features marked with `*` are **unstable**.
