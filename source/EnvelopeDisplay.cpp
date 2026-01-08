@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "EnvelopeDisplay.h"
+#include "Colours.hpp"
 #include "PluginProcessor.h"
 #include "core/modules/interface/descriptor.hxx"
 #include "core/modules/interface/env_interface.hpp"
@@ -124,8 +125,11 @@ void EnvelopeDisplay::load()
     repaint();
 }
 
-void EnvelopeDisplay::paint (juce::Graphics& g)
+void EnvelopeDisplay::paint(juce::Graphics& g)
 {
+    g.setColour(palette::bg_normal);
+    g.fillRect(getLocalBounds());
+
     NP[A].cL = gap + 1;
     NP[A].cR = NP[D].x - gap;
     NP[D].cL = NP[A].x + gap;

@@ -63,7 +63,7 @@ target_include_directories(SharedCode INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/utility"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/modules"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/modules/interface"
-    "${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools"
+    #"${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/setup"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/graphics"
 
@@ -82,9 +82,9 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/utility/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/utility/*.cpp"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.cpp"
+    #"${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.h"
+    #"${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.hpp"
+    #"${CMAKE_CURRENT_SOURCE_DIR}/source/core/tools/*.cpp"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/setup/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/core/setup/*.hpp"
@@ -139,7 +139,7 @@ target_link_libraries(SharedCode
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE SharedCode)
 
-#include(SpiroIPP)
-#include(Tests)
-#include(Benchmarks)
-#include(GitHubENV)
+include(SpiroIPP)
+include(Tests)
+include(Benchmarks)
+include(GitHubENV)

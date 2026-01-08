@@ -21,8 +21,9 @@
 ******************************************************************************************************************************/
 
 #pragma once
+#include "juce_graphics/juce_graphics.h"
 #include <JuceHeader.h>
-
+/*
 inline const juce::Colour colour_set[] = 
 {
     juce::Colour::fromFloatRGBA (1.09f, 0.71f, 0.20f, 1.0f), // 0 : Yellow
@@ -55,3 +56,15 @@ inline const juce::Colour colour_set[] =
     juce::Colour::fromRGBA      ( 0x00,  0x96,  0x88, 0xFF), // 27 GreenBlue
 
 };
+*/
+
+namespace palette {
+    inline const juce::Colour bg_normal         = juce::Colour::fromRGBA      ( 0x28,  0x35,  0x3C, 0xFF);
+    inline const juce::Colour bg_dimmed         = juce::Colour::fromRGBA      ( 0x1F,  0x2A,  0x2F, 0xFF);
+    inline const juce::Colour cord_normal       = juce::Colour::fromFloatRGBA (0.15f, 0.32f, 0.32f, 1.0f);
+    inline const juce::Colour cord_highlighted  = juce::Colour::fromFloatRGBA (0.40f, 0.52f, 0.63f, 1.0f);
+    inline const juce::Colour envelope          = juce::Colour::fromRGBA      ( 0x05,  0x15,  0x17, 0xFF);
+    inline const juce::Colour marine            = juce::Colour::fromRGBA      ( 0x00,  0x96,  0x88, 0xFF);
+    inline const juce::Colour bg_warm           = juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f);
+
+}

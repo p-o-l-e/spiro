@@ -20,8 +20,10 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "Display.h"
+#include "Colours.hpp"
 #include "blur.hpp"
 #include "fonts.h"
+#include "juce_graphics/juce_graphics.h"
 #include <cstddef>
 
 void Display::switchPage(Processor* o, const Page p)
@@ -94,6 +96,8 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
 void Display::paint(juce::Graphics& g)
 {
     if(page == CroA) [[likely]] croMenu();
+    g.setColour(palette::bg_dimmed);
+    g.fillRect(getLocalBounds());
 
     for(int y = 0; y < area.h; y++)
     {

@@ -38,8 +38,8 @@ class Sockets: public juce::Component
         core::Socket* from_grid(int, bool);
 
     public:
-        juce::Colour colour_normal = colour_set[9];
-        juce::Colour colour_highlighted = colour_set[26];
+        juce::Colour colour_normal = palette::cord_normal;
+        juce::Colour colour_highlighted = palette::cord_highlighted;
         core::Patchbay* bay = nullptr;
         void drawMask(juce::Graphics&);
         void drawCords(juce::Graphics&, float);

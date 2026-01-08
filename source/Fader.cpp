@@ -29,8 +29,8 @@ juce::Label* SpiroLF::createSliderTextBox(juce::Slider &slider)
     l->setJustificationType(juce::Justification::right );
     l->setInterceptsMouseClicks(false, false);
     l->setFont(juce::FontOptions(11.0f));//localBounds.getHeight() * 0.8f));
-    l->setColour(juce::Label::textColourId, colour_set[10]); 
-    l->setColour(juce::Label::backgroundColourId, colour_set[13].withAlpha(0.8f)); 
+    l->setColour(juce::Label::textColourId, palette::envelope); 
+    l->setColour(juce::Label::backgroundColourId, palette::bg_warm.withAlpha(0.8f)); 
 
     return l;
 }
@@ -50,9 +50,9 @@ Fader::Fader()
 {
     setLookAndFeel(&lf);
     setSliderStyle(juce::Slider::LinearHorizontal);
-    setColour(juce::Slider::trackColourId, colour_set[27].withAlpha(0.85f)); // 13 - 3
-    setColour(juce::Slider::textBoxBackgroundColourId, colour_set[10].withAlpha(0.25f));
-    setColour(juce::Slider::textBoxOutlineColourId, colour_set[10].withAlpha(0.0f)); 
+    setColour(juce::Slider::trackColourId, palette::marine.withAlpha(0.85f)); // 13 - 3
+    setColour(juce::Slider::textBoxBackgroundColourId, palette::envelope.withAlpha(0.25f));
+    setColour(juce::Slider::textBoxOutlineColourId, palette::envelope.withAlpha(0.0f)); 
 
     setTextBoxIsEditable(false);
 

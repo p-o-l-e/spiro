@@ -10,7 +10,7 @@ TEST_CASE ("one is equal to one", "[dummy]")
 
 TEST_CASE ("Plugin instance", "[instance]")
 {
-    PluginProcessor testPlugin;
+    Processor testPlugin;
 
     SECTION ("name")
     {

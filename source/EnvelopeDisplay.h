@@ -45,7 +45,7 @@ class EnvelopeDisplay: public juce::Component
         juce::Rectangle<int>        area;           // Display bounds
         core::Rectangle<int>        scope_bounds;   // Scope constraints
         std::unique_ptr<float[]>    data;
-        juce::Colour colour = colour_set[10];
+        juce::Colour colour = palette::envelope;
         void plot(juce::Graphics&);
         void sync();                                // Load from tree
         void load();                                // Load to display

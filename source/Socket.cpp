@@ -79,7 +79,7 @@ void Sockets::drawMask(juce::Graphics& g) // For debug puposes
         {
             auto c = bay->canvas.get(x, y);
             float alpha = c ? 1.0f : 0.0f;
-            bmp.setPixelColour(x, y, colour_set[c&0xFF].withAlpha(alpha));
+            //bmp.setPixelColour(x, y, colour_set[c&0xFF].withAlpha(alpha));
         }
     }
     g.setOpacity(1.0f);

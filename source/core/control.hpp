@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include "modules/interface/descriptor.hxx"
 
@@ -84,3 +85,4 @@ namespace core {
     
 }
 }
+*/
