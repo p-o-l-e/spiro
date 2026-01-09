@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2025 POLE
+* Copyright (c) 2022-2026 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #pragma once
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "juce_opengl/juce_opengl.h"
 
 namespace glyph
 {
@@ -53,14 +54,14 @@ struct OledLabel: public juce::TextEditor
 };
 
 
-class Display: public juce::ImageComponent
+class Display: public juce::Component, private juce::OpenGLRenderer
 {
     public:
 		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, MainMenu, About, COUNT };
 
 	private:
         Processor *processor;
-		std::unique_ptr<juce::Image> image;
+		std::unique_ptr<juce::Image> framebuffer;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
 		std::vector<float> sampleData;                  // Data currently displayed
@@ -71,7 +72,8 @@ class Display: public juce::ImageComponent
         core::Point2D<int> prior {};
 		double ratio = 1.0f;
         const float contrast = 0.6f;
-
+        juce::OpenGLContext openGLContext;
+        std::atomic<bool> needsUpload { true };
 		int last_page = 0;
         int stepX = 10, stepY = 10;
         constexpr static bool X = true, Y = false;
@@ -98,7 +100,7 @@ class Display: public juce::ImageComponent
         core::uid_t uid;
 		const core::Rectangle<int> area;
         void switchPage(Processor*, const Page); 
-		void paint(juce::Graphics& g) override;
+	
         void offMenu();
         void croMenu();
     	void moduleMenu(core::Spiro*, const core::map::module::type&, const int);
@@ -121,6 +123,13 @@ class Display: public juce::ImageComponent
         void removeListener(Listener *l) { listeners.remove(l); }
         juce::ListenerList<Listener> listeners;
 
+        virtual void newOpenGLContextCreated() override {};
+        virtual void renderOpenGL() override;
+        virtual void openGLContextClosing() override {};
+      
+        juce::OpenGLTexture framebufferTexture;
+        juce::OpenGLFrameBuffer glFramebuffer;
+        std::unique_ptr<juce::Image> tempSoftwareImage; 
 };
 
 

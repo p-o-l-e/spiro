@@ -23,10 +23,10 @@
 
 #include <JuceHeader.h>
 
-class SpiroLF : public juce::LookAndFeel_V4
+class SpiroLookAndFeel : public juce::LookAndFeel_V4
 {
     public:
-        SpiroLF() {};
+        SpiroLookAndFeel() {};
         juce::Label *createSliderTextBox(juce::Slider &) override;
         juce::Slider::SliderLayout getSliderLayout(juce::Slider &slider) override;
     private:
@@ -49,5 +49,5 @@ class Fader: public juce::Slider
         Fader();
        ~Fader();
     private:
-        SpiroLF lf;
+        SpiroLookAndFeel lf;
 };

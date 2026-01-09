@@ -3,7 +3,7 @@
 #include "module_headers.hpp"
 #include "modules/node.hpp"
 #include <cstdint>
-#include <unordered_map>
+#include <flat_map>
 
 namespace core
 {
@@ -11,8 +11,8 @@ namespace core
     {
         private:
             const Grid* const grid;
-            std::unordered_map<uint16_t, Module<float>*> moduleMap;
-            std::unordered_map<uint16_t, int> indexMap;
+            std::flat_map<uint16_t, Module<float>*> moduleMap;
+            std::flat_map<uint16_t, int> indexMap;
             void calculateModuleMap();
             void calculateIndexMap();
             Module<float>** node;

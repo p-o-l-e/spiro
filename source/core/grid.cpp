@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <flat_map>
 #include <utility>
 #include "control.hpp"
 
@@ -119,9 +119,9 @@ namespace core
         return controlMap->find(encode_uid(uid))->second;
     }
 
-    const std::unique_ptr<std::unordered_map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
+    const std::unique_ptr<std::flat_map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
     {
-        auto r = std::make_unique<std::unordered_map<uint32_t, const Control*>>();
+        auto r = std::make_unique<std::flat_map<uint32_t, const Control*>>();
         for(int i = 0; i < sectors; ++i)
         {
             for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
@@ -136,9 +136,9 @@ namespace core
         return r;
     }
     
-    const std::unique_ptr<std::unordered_map<uint32_t, std::pair<std::string, std::string>>> Grid::calculateIdMap(const Sector* d) const
+    const std::unique_ptr<std::flat_map<uint32_t, std::pair<std::string, std::string>>> Grid::calculateIdMap(const Sector* d) const
     {
-        auto r = std::make_unique<std::unordered_map<uint32_t, std::pair<std::string, std::string>>>();
+        auto r = std::make_unique<std::flat_map<uint32_t, std::pair<std::string, std::string>>>();
 
         auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
 

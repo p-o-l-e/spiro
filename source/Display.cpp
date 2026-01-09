@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2025 POLE
+* Copyright (c) 2022-2026 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 #include "fonts.h"
 #include "juce_graphics/juce_graphics.h"
 #include <cstddef>
+
+using namespace juce::gl;
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -91,25 +93,47 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     repaint();
 }
 
-
-
-void Display::paint(juce::Graphics& g)
+void Display::renderOpenGL()
 {
-    if(page == CroA) [[likely]] croMenu();
-    g.setColour(palette::bg_dimmed);
-    g.fillRect(getLocalBounds());
+    if (page == CroA) croMenu();
+    juce::OpenGLHelpers::clear (palette::bg_dimmed);
 
-    for(int y = 0; y < area.h; y++)
+    // Reuse exact pixel logic offscreen (compute to temp image)
+    if (tempSoftwareImage == nullptr || tempSoftwareImage->getWidth() != area.w || tempSoftwareImage->getHeight() != area.h)
+        tempSoftwareImage.reset (new juce::Image (juce::Image::ARGB, area.w, area.h, true));
+
+    for(int y = 0; y < area.h; y++) 
     {
-        for(int x = 0; x < area.w; x++)
+        for(int x = 0; x < area.w; x++) 
         {
             float c = canvas.get()->get(x, y);
             float l = layer.get()->get(x, y);
-            image->setPixelAt(x, y, juce::Colour::fromFloatRGBA(2.5f * (c + l) , 0.71f * (c + l) * 2, 0.20f, c+l));
-            canvas.get()->set(x, y, c * 0.6f);
+            float val = c + l;
+            tempSoftwareImage->setPixelAt(x, y, juce::Colour::fromFloatRGBA(2.5f * val, 0.71f * val * 2, 0.20f * val, val));
+            canvas.get()->set(x, y, c * 0.6f);  // Decay
         }
     }
-    g.drawImageAt(*image, 0, 0, false);
+
+    // Upload to GL texture (performant via PBO implicitly)
+    framebufferTexture.loadImage (*tempSoftwareImage);
+
+    // Bind and render quad with texture (screen fill)
+    glFramebuffer.makeCurrentRenderingTarget();  // FBO active [web:20]
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_TEXTURE_2D);
+    framebufferTexture.bind();
+    glColor4f(1, 1, 1, 1);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-1, -1);  // Bottom-left: tex top-left
+        glTexCoord2f(0, 1); glVertex2f(-1,  1);  // Top-left: tex bottom-left  
+        glTexCoord2f(1, 1); glVertex2f( 1,  1);  // Top-right: tex bottom-right
+        glTexCoord2f(1, 0); glVertex2f( 1, -1);  // Bottom-right: tex top-right
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFlush();
 }
 
 void Display::croMenu()
@@ -328,16 +352,28 @@ void Display::resized()
 {
     inputBox.setBounds(0, 0, 1, 1);
     reset();
+    
+    const auto bounds = getLocalBounds().toFloat();
+    if (openGLContext.isActive()) 
+    {
+        framebufferTexture.loadImage (*framebuffer);  // Loads Image to GL texture [web:24]
+        glFramebuffer.makeCurrentRenderingTarget();   // Binds FBO for offscreen render 
+    }
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
 {
-    image = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
+    framebuffer = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
     canvas = std::make_unique<core::Canvas<float>>(area.w, area.h);
     canvas.get()->clr(0.0f);
     layer = std::make_unique<core::Canvas<float>>(area.w, area.h);
     layer.get()->clr(0.0f);
     inputBox.canvas = layer.get();
+    
+    openGLContext.setRenderer(this); 
+    openGLContext.attachTo(*this);
+    openGLContext.setContinuousRepainting(true);
+
     addAndMakeVisible(inputBox);
     reset();
 }

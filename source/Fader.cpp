@@ -22,7 +22,7 @@
 #include "Fader.h"
 #include "Colours.hpp"
 
-juce::Label* SpiroLF::createSliderTextBox(juce::Slider &slider)
+juce::Label* SpiroLookAndFeel::createSliderTextBox(juce::Slider &slider)
 {
     auto localBounds = slider.getLocalBounds().toFloat();
     auto *l = new juce::Label();
@@ -30,12 +30,12 @@ juce::Label* SpiroLF::createSliderTextBox(juce::Slider &slider)
     l->setInterceptsMouseClicks(false, false);
     l->setFont(juce::FontOptions(11.0f));//localBounds.getHeight() * 0.8f));
     l->setColour(juce::Label::textColourId, palette::envelope); 
-    l->setColour(juce::Label::backgroundColourId, palette::bg_warm.withAlpha(0.8f)); 
+    l->setColour(juce::Label::backgroundColourId, palette::rose_charcoal.withAlpha(0.8f)); 
 
     return l;
 }
 
-juce::Slider::SliderLayout SpiroLF::getSliderLayout(juce::Slider &slider)
+juce::Slider::SliderLayout SpiroLookAndFeel::getSliderLayout(juce::Slider &slider)
 {
     auto localBounds = slider.getLocalBounds().toFloat();
     juce::Slider::SliderLayout layout;
@@ -44,7 +44,6 @@ juce::Slider::SliderLayout SpiroLF::getSliderLayout(juce::Slider &slider)
     layout.sliderBounds = slider.getLocalBounds();
     return layout;
 }
-
 
 Fader::Fader()
 {

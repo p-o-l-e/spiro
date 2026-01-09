@@ -23,40 +23,7 @@
 #pragma once
 #include "juce_graphics/juce_graphics.h"
 #include <JuceHeader.h>
-/*
-inline const juce::Colour colour_set[] = 
-{
-    juce::Colour::fromFloatRGBA (1.09f, 0.71f, 0.20f, 1.0f), // 0 : Yellow
-    juce::Colour::fromFloatRGBA (0.93f, 0.60f, 0.46f, 1.0f), // 1 : Coral
-    juce::Colour::fromFloatRGBA (0.97f, 0.55f, 0.42f, 1.0f), // 2 : DarkPeach
-    juce::Colour::fromFloatRGBA (0.76f, 0.91f, 0.55f, 1.0f), // 3 : PaleOlive
-    juce::Colour::fromFloatRGBA (0.43f, 0.83f, 1.00f, 1.0f), // 4 : Blue
-    juce::Colour::fromFloatRGBA (0.84f, 0.84f, 0.84f, 1.0f), // 5 : GreyPlastic
-    juce::Colour::fromFloatRGBA (0.10f,	0.13f, 0.15f, 1.0f), // 6 : Almost Black
-    juce::Colour::fromFloatRGBA (0.15f,	0.20f, 0.22f, 1.0f), // 7 : Charcoal grey
-    juce::Colour::fromFloatRGBA (0.05f,	0.08f, 0.10f, 1.0f), // 8 : Mostly Black
-    juce::Colour::fromFloatRGBA (0.15f,	0.32f, 0.32f, 1.0f), // 9 : Grey/Blue
-    juce::Colour::fromRGBA      ( 0x05,  0x15,  0x17, 0xFF), // 10: Asphalt grey
-    juce::Colour::fromFloatRGBA (1.00f,	0.79f, 0.42f, 1.0f), // 11: Wheat
-    juce::Colour::fromFloatRGBA (0.69f, 0.71f, 0.50f, 0.8f), // 12
-    juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f), // 13
-    juce::Colour::fromFloatRGBA (0.59f, 0.51f, 0.30f, 0.8f), // 14
-    juce::Colour::fromFloatRGBA (0.49f, 0.71f, 0.40f, 0.8f), // 15
-    juce::Colour::fromFloatRGBA (1.09f, 0.71f, 0.20f, 0.8f), // 16
-    juce::Colour::fromFloatRGBA (0.69f, 0.71f, 0.50f, 0.8f), // 17
-    juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f), // 18
-    juce::Colour::fromFloatRGBA (0.59f, 0.51f, 0.30f, 0.8f), // 19
-    juce::Colour::fromFloatRGBA (0.49f, 0.71f, 0.40f, 0.8f), // 20
-    juce::Colour::fromFloatRGBA (1.09f, 0.71f, 0.20f, 0.8f), // 21
-    juce::Colour::fromFloatRGBA (0.90f, 0.61f, 0.30f, 1.0f), // 22
-    juce::Colour::fromFloatRGBA (0.80f, 0.71f, 0.40f, 1.0f), // 23
-    juce::Colour::fromFloatRGBA (0.89f, 0.81f, 0.20f, 1.0f), // 24
-    juce::Colour::fromFloatRGBA (0.79f, 0.61f, 0.40f, 1.0f), // 25
-    juce::Colour::fromFloatRGBA (0.40f,	0.52f, 0.63f, 1.0f), // 26 
-    juce::Colour::fromRGBA      ( 0x00,  0x96,  0x88, 0xFF), // 27 GreenBlue
 
-};
-*/
 
 namespace palette {
     inline const juce::Colour bg_normal         = juce::Colour::fromRGBA      ( 0x28,  0x35,  0x3C, 0xFF);
@@ -65,6 +32,6 @@ namespace palette {
     inline const juce::Colour cord_highlighted  = juce::Colour::fromFloatRGBA (0.40f, 0.52f, 0.63f, 1.0f);
     inline const juce::Colour envelope          = juce::Colour::fromRGBA      ( 0x05,  0x15,  0x17, 0xFF);
     inline const juce::Colour marine            = juce::Colour::fromRGBA      ( 0x00,  0x96,  0x88, 0xFF);
-    inline const juce::Colour bg_warm           = juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f);
+    inline const juce::Colour rose_charcoal     = juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f);
 
 }

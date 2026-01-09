@@ -54,7 +54,7 @@ namespace core
 
     void Rack::calculateIndexMap()
     {
-        std::unordered_map<uint16_t, int> r {};
+        std::flat_map<uint16_t, int> r {};
         for(int i = 0; i < grid->sectors; ++i)
         {
             uint16_t uid = static_cast<uint8_t>(node[i]->descriptor->type) << 8;
