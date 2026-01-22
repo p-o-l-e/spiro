@@ -25,8 +25,84 @@
 #include "fonts.h"
 #include "juce_graphics/juce_graphics.h"
 #include <cstddef>
+#include <string_view>
 
 using namespace juce::gl;
+
+
+namespace shader
+{
+    namespace vertex 
+    {
+        constexpr std::string_view passthrough(R"(
+            attribute vec4 position;
+            attribute vec2 texCoord;
+            varying vec2 vTexCoord;
+            void main() {
+                vTexCoord = texCoord;
+                gl_Position = position;
+            })"
+        );
+    }
+
+    namespace fragment 
+    {
+        constexpr std::string_view brt_extract(R"(
+            uniform sampler2D texture;
+            uniform float threshold;
+            varying vec2 vTexCoord;
+            void main() {
+                vec4 color = texture2D(texture, vTexCoord);
+                float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+                if(brightness > threshold)
+                    gl_FragColor = color;
+                else
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            })"
+        );  
+
+        constexpr std::string_view blur_gauss(R"(
+            uniform sampler2D texture;
+            uniform vec2 direction;
+            uniform vec2 resolution;
+            varying vec2 vTexCoord;
+            void main() {
+                vec2 off = direction / resolution;
+                vec4 sum = vec4(0.0);
+                sum += texture2D(texture, vTexCoord - off * 4.0) * 0.0162162162;
+                sum += texture2D(texture, vTexCoord - off * 3.0) * 0.0540540541;
+                sum += texture2D(texture, vTexCoord - off * 2.0) * 0.1216216216;
+                sum += texture2D(texture, vTexCoord - off * 1.0) * 0.1945945946;
+                sum += texture2D(texture, vTexCoord) * 0.2270270270;
+                sum += texture2D(texture, vTexCoord + off * 1.0) * 0.1945945946;
+                sum += texture2D(texture, vTexCoord + off * 2.0) * 0.1216216216;
+                sum += texture2D(texture, vTexCoord + off * 3.0) * 0.0540540541;
+                sum += texture2D(texture, vTexCoord + off * 4.0) * 0.0162162162;
+                gl_FragColor = sum;
+            })"
+        );
+
+        constexpr std::string_view combined(R"(
+            uniform sampler2D originalTexture;
+            uniform sampler2D bloomTexture;
+            uniform float intensity;
+            varying vec2 vTexCoord;
+            void main() {
+                vec4 original = texture2D(originalTexture, vTexCoord);
+                vec4 bloom = texture2D(bloomTexture, vTexCoord);
+                gl_FragColor = original + bloom * intensity;
+            })"
+        );
+    }
+   
+}
+
+
+
+
+
+
+
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -93,47 +169,148 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     repaint();
 }
 
+void Display::openGLContextClosing()
+{
+    // Clean up when context is closing
+    brightnessShader.reset();
+    blurShader.reset();
+    combineShader.reset();
+    brightnessFBO.release();
+    sceneFBO.release();
+    bloomFBO[0].release();
+    bloomFBO[1].release();
+}
+
+void Display::createShaders()
+{
+    brightnessShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    brightnessShader->addVertexShader(std::string(shader::vertex::passthrough));
+    brightnessShader->addFragmentShader(std::string(shader::fragment::brt_extract));
+    brightnessShader->link();
+    brightnessShader->use();
+    
+    // Gaussian blur shader
+    blurShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    blurShader->addVertexShader(std::string(shader::vertex::passthrough));
+    blurShader->addFragmentShader(std::string(shader::fragment::blur_gauss));
+    blurShader->link();
+    blurShader->use();
+    
+    // Gaussian blur shader
+    combineShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    combineShader->addVertexShader(std::string(shader::vertex::passthrough));
+    combineShader->addFragmentShader(std::string(shader::fragment::combined));
+    combineShader->link();
+    combineShader->use();
+    
+}
+
+void Display::renderQuad()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex2f( 1.0f, -1.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex2f( 1.0f,  1.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f,  1.0f);
+    glEnd();
+}
+
 void Display::renderOpenGL()
 {
-    if (page == CroA) croMenu();
-    juce::OpenGLHelpers::clear (palette::bg_dimmed);
+    // sceneFBO.makeCurrentRenderingTarget();
+    juce::OpenGLHelpers::clear(palette::bg_dimmed);
+    renderScope3();
+    
+    // sceneFBO.releaseAsRenderingTarget();
+    
+    /*
+    brightnessFBO.makeCurrentRenderingTarget();
+    juce::OpenGLHelpers::clear(juce::Colours::black);
 
-    // Reuse exact pixel logic offscreen (compute to temp image)
-    if (tempSoftwareImage == nullptr || tempSoftwareImage->getWidth() != area.w || tempSoftwareImage->getHeight() != area.h)
-        tempSoftwareImage.reset (new juce::Image (juce::Image::ARGB, area.w, area.h, true));
 
-    for(int y = 0; y < area.h; y++) 
-    {
-        for(int x = 0; x < area.w; x++) 
-        {
-            float c = canvas.get()->get(x, y);
-            float l = layer.get()->get(x, y);
-            float val = c + l;
-            tempSoftwareImage->setPixelAt(x, y, juce::Colour::fromFloatRGBA(2.5f * val, 0.71f * val * 2, 0.20f * val, val));
-            canvas.get()->set(x, y, c * 0.6f);  // Decay
-        }
-    }
-
-    // Upload to GL texture (performant via PBO implicitly)
-    framebufferTexture.loadImage (*tempSoftwareImage);
-
-    // Bind and render quad with texture (screen fill)
-    glFramebuffer.makeCurrentRenderingTarget();  // FBO active [web:20]
-    glClear(GL_COLOR_BUFFER_BIT);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glEnable(GL_TEXTURE_2D);
-    framebufferTexture.bind();
-    glColor4f(1, 1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, sceneFBO.getTextureID());
+    renderQuad();
+    glDisable(GL_TEXTURE_2D);
+    brightnessFBO.releaseAsRenderingTarget();
+    
+    GLuint currentTexture = sceneFBO.getTextureID();
+    */
+    /* 
+    for(int i = 0; i < blurPasses; ++i)
+    {
+        bloomFBO[0].makeCurrentRenderingTarget();
+        glUseProgram(0);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, currentTexture);
+        renderQuad();
+        glDisable(GL_TEXTURE_2D);
+        bloomFBO[0].releaseAsRenderingTarget();
+        
+        bloomFBO[1].makeCurrentRenderingTarget();
+        glUseProgram(0);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, bloomFBO[0].getTextureID());
+        renderQuad();
+        glDisable(GL_TEXTURE_2D);
+        bloomFBO[1].releaseAsRenderingTarget();
+        
+        currentTexture = bloomFBO[1].getTextureID();
+    }
+    */
+   
+    /*
+    juce::OpenGLHelpers::clear(palette::bg_dimmed);
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(-1, -1);  // Bottom-left: tex top-left
-        glTexCoord2f(0, 1); glVertex2f(-1,  1);  // Top-left: tex bottom-left  
-        glTexCoord2f(1, 1); glVertex2f( 1,  1);  // Top-right: tex bottom-right
-        glTexCoord2f(1, 0); glVertex2f( 1, -1);  // Bottom-right: tex top-right
-    glEnd();
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, currentTexture);
+    renderQuad();
+    glDisable(GL_TEXTURE_2D);
+    */
+}
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+void Display::renderScope3() noexcept
+{
+    if(auto data = _data.lock())
+    {
+        float ndc_w = 2.0f / area.w;
+        float ndc_h = 2.0f / area.h;
+        float center_x = -1.0f + (area.w * 0.5f * ndc_w);
+        float center_y = -1.0f + (area.h * 0.5f * ndc_h);
+        float gain = (*scope_scale + 1.0f) * 10.0f * std::max(ndc_w, ndc_h);
 
-    glFlush();
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glLineWidth(1.0f);
+        glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
+
+        glBegin(GL_LINE_STRIP);
+
+            auto raw = data->get();
+
+            for(int i = 0; i < windowSamplesCRO3; ++i)
+            {
+                auto raw = data->get();
+                float x = raw.x * gain + center_x;
+                float y = raw.y * gain + center_y;
+                glVertex2f(x, y);
+            }
+
+        glEnd();
+        glDisable(GL_BLEND);
+        glDisable(GL_LINE_SMOOTH);
+    
+    }
 }
 
 void Display::croMenu()
@@ -298,8 +475,6 @@ void Display::hSoft(const int a, const int b, const int c, const int d)
     core::draw_glyph(layer.get(), gtFont, d, step * 23, offset, contrast);
 }
 
-
-
 void Display::offMenu()
 {
     inputBox.setVisible(false);
@@ -314,9 +489,6 @@ void Display::offMenu()
     layerOn = true;
     repaint();
 }
-
-
-
 
 // void Display::EnvelopeMenu(core::envelope* env, int id)
 // {
@@ -347,6 +519,16 @@ void Display::offMenu()
 //  repaint();
 // }
 
+void Display::newOpenGLContextCreated()
+{
+    sceneFBO.initialise(openGLContext, area.w, area.h);
+    brightnessFBO.initialise(openGLContext, area.w, area.h);
+
+    bloomFBO[0].initialise(openGLContext, area.w, area.h);
+    bloomFBO[1].initialise(openGLContext, area.w, area.h);
+    
+    createShaders();
+};
 
 void Display::resized()
 {
@@ -359,6 +541,19 @@ void Display::resized()
         framebufferTexture.loadImage (*framebuffer);  // Loads Image to GL texture [web:24]
         glFramebuffer.makeCurrentRenderingTarget();   // Binds FBO for offscreen render 
     }
+
+    if (openGLContext.isAttached())
+    {
+        brightnessFBO.release();
+        bloomFBO[0].release();
+        bloomFBO[1].release();
+        sceneFBO.release();
+        
+        brightnessFBO.initialise(openGLContext, getWidth(), getHeight());
+        bloomFBO[0].initialise(openGLContext, getWidth(), getHeight());
+        bloomFBO[1].initialise(openGLContext, getWidth(), getHeight());
+        sceneFBO.initialise(openGLContext, getWidth(), getHeight());
+    }
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
@@ -369,7 +564,14 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     layer = std::make_unique<core::Canvas<float>>(area.w, area.h);
     layer.get()->clr(0.0f);
     inputBox.canvas = layer.get();
-    
+
+    windowSamplesCRO3 = int(core::settings::sample_rate * (windowMsCRO3 * 0.001f));
+  
+    juce::OpenGLPixelFormat pixelFormat;
+    pixelFormat.multisamplingLevel = 8;
+    openGLContext.setPixelFormat(pixelFormat);
+
+    setOpaque(true);
     openGLContext.setRenderer(this); 
     openGLContext.attachTo(*this);
     openGLContext.setContinuousRepainting(true);
@@ -380,6 +582,8 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
 
 Display::~Display()
 {
+    openGLContext.setContinuousRepainting(false);
+    openGLContext.detach();
 }
 
 OledLabel::OledLabel(const float* c): contrast(c) 
@@ -399,7 +603,6 @@ OledLabel::OledLabel(const float* c): contrast(c)
     setColour(juce::TextEditor::ColourIds::shadowColourId,            juce::Colour::fromRGBA(0,0,0,0));
 }
 
-
 void OledLabel::paint(juce::Graphics& g)
 {
     if(g.isClipEmpty()) return; // Prevent warning
@@ -416,7 +619,6 @@ void OledLabel::paint(juce::Graphics& g)
     core::draw_glyph(canvas, gtFont, glyph::Cancel,  49, 155, *contrast);
     core::draw_glyph(canvas, gtFont, glyph::Ok,  79, 155, *contrast);
 }
-
 
 void Display::reset()
 {

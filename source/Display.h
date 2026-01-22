@@ -76,8 +76,13 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         std::atomic<bool> needsUpload { true };
 		int last_page = 0;
         int stepX = 10, stepY = 10;
+        float windowMsCRO3 = 50.0f;
+        float windowSamplesCRO3;
         constexpr static bool X = true, Y = false;
         constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
+
+
+
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
@@ -123,13 +128,104 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         void removeListener(Listener *l) { listeners.remove(l); }
         juce::ListenerList<Listener> listeners;
 
-        virtual void newOpenGLContextCreated() override {};
+        virtual void newOpenGLContextCreated() override;
         virtual void renderOpenGL() override;
-        virtual void openGLContextClosing() override {};
+        virtual void openGLContextClosing() override;
+
+        void createShaders();
+        void renderQuad();
+
+        void renderScope2() noexcept;
+        void renderScope3() noexcept;
       
         juce::OpenGLTexture framebufferTexture;
         juce::OpenGLFrameBuffer glFramebuffer;
-        std::unique_ptr<juce::Image> tempSoftwareImage; 
+
+        juce::OpenGLFrameBuffer brightnessFBO;
+        juce::OpenGLFrameBuffer sceneFBO;
+        juce::OpenGLFrameBuffer bloomFBO[2];
+
+
+        std::unique_ptr<juce::OpenGLShaderProgram> brightnessShader;
+        std::unique_ptr<juce::OpenGLShaderProgram> blurShader;
+        std::unique_ptr<juce::OpenGLShaderProgram> combineShader;
+        
+        float bloomThreshold = 0.3f; 
+        float bloomIntensity = 3.5f;
+        int blurPasses = 3;        
+
+    private:
+        struct Vertex
+        {
+            float position[3];
+            float normal[3];
+            float colour[4];
+            float texCoord[2];
+        };
+
+        struct Attributes
+        {
+            public:
+                explicit Attributes(juce::OpenGLShaderProgram& shaderProgram)
+                {
+                    position      .reset(createAttribute(shaderProgram, "position"));
+                    normal        .reset(createAttribute(shaderProgram, "normal"));
+                    sourceColour  .reset(createAttribute(shaderProgram, "sourceColour"));
+                    textureCoordIn.reset(createAttribute(shaderProgram, "textureCoordIn"));
+                }
+
+                void enable()
+                {
+                    using namespace ::juce::gl;
+
+                    if(position.get() != nullptr)
+                    {
+                        glVertexAttribPointer(position->attributeID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+                        glEnableVertexAttribArray(position->attributeID);
+                    }
+
+                    if(normal.get() != nullptr)
+                    {
+                        glVertexAttribPointer(normal->attributeID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float) * 3));
+                        glEnableVertexAttribArray(normal->attributeID);
+                    }
+
+                    if(sourceColour.get() != nullptr)
+                    {
+                        glVertexAttribPointer(sourceColour->attributeID, 4, GL_FLOAT, GL_FALSE, sizeof (Vertex), (GLvoid*)(sizeof(float) * 6));
+                        glEnableVertexAttribArray(sourceColour->attributeID);
+                    }
+
+                    if(textureCoordIn.get() != nullptr)
+                    {
+                        glVertexAttribPointer(textureCoordIn->attributeID, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float) * 10));
+                        glEnableVertexAttribArray(textureCoordIn->attributeID);
+                    }
+                }
+
+                void disable()
+                {
+                    using namespace ::juce::gl;
+
+                    if(position != nullptr)       glDisableVertexAttribArray(position->attributeID);
+                    if(normal != nullptr)         glDisableVertexAttribArray(normal->attributeID);
+                    if(sourceColour != nullptr)   glDisableVertexAttribArray(sourceColour->attributeID);
+                    if(textureCoordIn != nullptr) glDisableVertexAttribArray(textureCoordIn->attributeID);
+                }
+
+                std::unique_ptr<juce::OpenGLShaderProgram::Attribute> position, normal, sourceColour, textureCoordIn;
+
+            private:
+                static juce::OpenGLShaderProgram::Attribute* createAttribute(juce::OpenGLShaderProgram& shader, const char* attributeName)
+                {
+                    using namespace ::juce::gl;
+
+                    if (glGetAttribLocation(shader.getProgramID(), attributeName) < 0)
+                        return nullptr;
+
+                    return new juce::OpenGLShaderProgram::Attribute(shader, attributeName);
+                }
+        };
 };
 
 

@@ -29,15 +29,15 @@ namespace core {
     {
         private:
             T* data;
-            std::atomic<int>  i = 0;
-            std::atomic<int>  o = 0;
+            T* i = nullptr;
+            T* o = nullptr;
 
         public:
             const int segments;
             constexpr void set(const T&) noexcept;
             constexpr T  get() noexcept;
             constexpr T* raw() const noexcept { return data; }
-            constexpr wavering(const int& n): segments(n) { data = new T[segments]{}; }
+            constexpr wavering(const int& n);
             wavering& operator=(const wavering&);
             wavering(const wavering&);
            ~wavering() { delete[] data; }
@@ -46,16 +46,27 @@ namespace core {
     template <typename T>
     constexpr void wavering<T>::set(const T& value) noexcept
     {
-        data[i] = value;
-        if (++i >= segments)[[unlikely]] i = 0;
+        *i = value;
+        ++i;
+        if(i >= data + segments)[[unlikely]] i = data;
     }
 
     template <typename T>
     constexpr T wavering<T>::get() noexcept
     {
-        auto value = data[o];
-        if (++o >= segments)[[unlikely]] o = 0;
+        T value = *o;
+        
+        ++o;
+        if (o >= data + segments)[[unlikely]] o = data;
         return value;
+    }
+
+    template <typename T>
+    constexpr wavering<T>::wavering(const int& n): segments(n) 
+    { 
+        data = new T[segments]{}; 
+        i = data;
+        o = data;
     }
 
     template <typename T>
@@ -66,8 +77,8 @@ namespace core {
         {
             data[j] = other.data[j];
         }
-        i.store(other.i.load());
-        o.store(other.o.load());
+        i = data;
+        o = data;
     }
 
     template <typename T>
@@ -81,8 +92,8 @@ namespace core {
             {
                 data[j] = other.data[j];
             }
-            i.store(other.i.load());
-            o.store(other.o.load());
+            i = data;
+            o = data;
         }
         return *this;
     }
