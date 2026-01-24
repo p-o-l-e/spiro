@@ -613,13 +613,8 @@ Editor::~Editor()
 
 void Editor::timerCallback()  
 { 
-    repaint(juce::Rectangle<int>
-    {
-        core::constraints::oled.x,
-        core::constraints::oled.y, 
-        core::constraints::oled.w,
-        core::constraints::oled.h
-    }); 
+    display->openGLContext.triggerRepaint();
+
     static int f = 0;
     if(fade) ++f;
     if(f > core::settings::scope_fps) { fade = false; f = 0; stopTimer(); };

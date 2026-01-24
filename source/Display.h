@@ -24,6 +24,7 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "juce_opengl/juce_opengl.h"
+#include <chrono>
 
 namespace glyph
 {
@@ -72,12 +73,22 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         core::Point2D<int> prior {};
 		double ratio = 1.0f;
         const float contrast = 0.6f;
-        juce::OpenGLContext openGLContext;
         std::atomic<bool> needsUpload { true };
 		int last_page = 0;
         int stepX = 10, stepY = 10;
+
+        float ndcW;
+        float ndcH;
+        float ndcCenterX;
+        float ndcCenterY;
         float windowMsCRO3 = 50.0f;
         float windowSamplesCRO3;
+        unsigned long samplesLastProduced = 0;
+
+        using clock = std::chrono::steady_clock;
+        clock::time_point lastFrameTime { clock::now() };
+        double sampleAccumulator = 0.0;
+
         constexpr static bool X = true, Y = false;
         constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
 
@@ -88,7 +99,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 	public:
         std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
 	    OledLabel inputBox { &contrast };
-
+        juce::OpenGLContext openGLContext;
 		bool layerOn = false;
 		const int rows_max = 12;
 		int files = 0;

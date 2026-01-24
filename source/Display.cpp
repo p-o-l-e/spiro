@@ -22,7 +22,9 @@
 #include "Display.h"
 #include "Colours.hpp"
 #include "blur.hpp"
+#include "constants.hpp"
 #include "fonts.h"
+#include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
 #include <cstddef>
 #include <string_view>
@@ -280,29 +282,43 @@ void Display::renderOpenGL()
 
 void Display::renderScope3() noexcept
 {
+    auto now = clock::now(); 
+    std::chrono::duration<double> dt = now - lastFrameTime;
+    lastFrameTime = now;
+    double deltaSeconds = dt.count(); // how many samples should have passed in this time
+    double samplesToReadF = double(core::settings::sample_rate) * deltaSeconds;
+    int samplesToRead = int(samplesToReadF);
+    sampleAccumulator += (samplesToReadF - samplesToRead); 
+    
+    if (sampleAccumulator >= 1.0) 
+    {
+        ++samplesToRead; 
+        sampleAccumulator -= 1.0; 
+    }
+
+
+
     if(auto data = _data.lock())
     {
-        float ndc_w = 2.0f / area.w;
-        float ndc_h = 2.0f / area.h;
-        float center_x = -1.0f + (area.w * 0.5f * ndc_w);
-        float center_y = -1.0f + (area.h * 0.5f * ndc_h);
-        float gain = (*scope_scale + 1.0f) * 10.0f * std::max(ndc_w, ndc_h);
+        unsigned long current = data->written();
+        unsigned long produced = current - samplesLastProduced;
+        samplesLastProduced = current;
+
+        float gain = (*scope_scale + 1.0f) * 10.0f * std::max(ndcW, ndcH);
 
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glLineWidth(1.0f);
+        glLineWidth(1.5f);
         glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
 
         glBegin(GL_LINE_STRIP);
-
-            auto raw = data->get();
-
-            for(int i = 0; i < windowSamplesCRO3; ++i)
+  
+            for(int i = 0; i < produced; ++i)
             {
                 auto raw = data->get();
-                float x = raw.x * gain + center_x;
-                float y = raw.y * gain + center_y;
+                float x = raw.x * gain + ndcCenterX;
+                float y = raw.y * gain + ndcCenterY;
                 glVertex2f(x, y);
             }
 
@@ -554,6 +570,11 @@ void Display::resized()
         bloomFBO[1].initialise(openGLContext, getWidth(), getHeight());
         sceneFBO.initialise(openGLContext, getWidth(), getHeight());
     }
+
+    ndcW = 2.0f / area.w;
+    ndcH = 2.0f / area.h;
+    ndcCenterX = -1.0f + (area.w * 0.5f * ndcW);
+    ndcCenterY = -1.0f + (area.h * 0.5f * ndcH);
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
@@ -574,7 +595,7 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     setOpaque(true);
     openGLContext.setRenderer(this); 
     openGLContext.attachTo(*this);
-    openGLContext.setContinuousRepainting(true);
+    openGLContext.setContinuousRepainting(false);
 
     addAndMakeVisible(inputBox);
     reset();

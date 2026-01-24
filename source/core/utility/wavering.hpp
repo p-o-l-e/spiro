@@ -21,6 +21,8 @@
 *
 ******************************************************************************************************************************/
 #pragma once
+#include <iostream>
+#include <atomic>
 
 namespace core {
 
@@ -29,13 +31,16 @@ namespace core {
     {
         private:
             T* data;
-            T* i = nullptr;
-            T* o = nullptr;
+            T* i;
+            T* o;
+            std::atomic<unsigned long> got = 0;
 
         public:
             const int segments;
             constexpr void set(const T&) noexcept;
             constexpr T  get() noexcept;
+            void advance(int) noexcept;
+            unsigned long written() noexcept { return got.load(std::memory_order_relaxed); }
             constexpr T* raw() const noexcept { return data; }
             constexpr wavering(const int& n);
             wavering& operator=(const wavering&);
@@ -47,18 +52,34 @@ namespace core {
     constexpr void wavering<T>::set(const T& value) noexcept
     {
         *i = value;
-        ++i;
-        if(i >= data + segments)[[unlikely]] i = data;
+        if(++i >= data + segments)[[unlikely]]
+        {
+            i = data;
+           *i = value;
+        }
+        got.fetch_add(1, std::memory_order_relaxed);
     }
 
     template <typename T>
     constexpr T wavering<T>::get() noexcept
     {
         T value = *o;
-        
-        ++o;
-        if (o >= data + segments)[[unlikely]] o = data;
+        if(++o >= data + segments)[[unlikely]] o = data;
         return value;
+    }
+
+    template <typename T>
+    void wavering<T>::advance(int n) noexcept
+    {
+        T* p = o + n;
+
+        while (p >= data + segments)
+            p -= segments;
+
+        while (p < data)
+            p += segments;
+
+        o = p;
     }
 
     template <typename T>
@@ -70,7 +91,7 @@ namespace core {
     }
 
     template <typename T>
-    wavering<T>::wavering(const wavering& other) : segments(other.segments)
+    wavering<T>::wavering(const wavering& other): segments(other.segments)
     {
         data = new T[segments] {};
         for (int j = 0; j < segments; ++j)
