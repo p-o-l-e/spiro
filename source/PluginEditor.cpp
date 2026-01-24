@@ -585,7 +585,7 @@ void Editor::resetCall()
        core::constraints::oled.w,
        core::constraints::oled.h
     );
-    display->setOpaque(true); // MUST
+    display->setOpaque(true);
 	display->setPaintingIsUnclipped(true);
 
     addAndMakeVisible(display.get());

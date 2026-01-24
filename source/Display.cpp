@@ -26,85 +26,11 @@
 #include "fonts.h"
 #include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
+#include "core/graphics/shaders.hpp"
 #include <cstddef>
 #include <string_view>
 
 using namespace juce::gl;
-
-
-namespace shader
-{
-    namespace vertex 
-    {
-        constexpr std::string_view passthrough(R"(
-            attribute vec4 position;
-            attribute vec2 texCoord;
-            varying vec2 vTexCoord;
-            void main() {
-                vTexCoord = texCoord;
-                gl_Position = position;
-            })"
-        );
-    }
-
-    namespace fragment 
-    {
-        constexpr std::string_view brt_extract(R"(
-            uniform sampler2D texture;
-            uniform float threshold;
-            varying vec2 vTexCoord;
-            void main() {
-                vec4 color = texture2D(texture, vTexCoord);
-                float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-                if(brightness > threshold)
-                    gl_FragColor = color;
-                else
-                    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-            })"
-        );  
-
-        constexpr std::string_view blur_gauss(R"(
-            uniform sampler2D texture;
-            uniform vec2 direction;
-            uniform vec2 resolution;
-            varying vec2 vTexCoord;
-            void main() {
-                vec2 off = direction / resolution;
-                vec4 sum = vec4(0.0);
-                sum += texture2D(texture, vTexCoord - off * 4.0) * 0.0162162162;
-                sum += texture2D(texture, vTexCoord - off * 3.0) * 0.0540540541;
-                sum += texture2D(texture, vTexCoord - off * 2.0) * 0.1216216216;
-                sum += texture2D(texture, vTexCoord - off * 1.0) * 0.1945945946;
-                sum += texture2D(texture, vTexCoord) * 0.2270270270;
-                sum += texture2D(texture, vTexCoord + off * 1.0) * 0.1945945946;
-                sum += texture2D(texture, vTexCoord + off * 2.0) * 0.1216216216;
-                sum += texture2D(texture, vTexCoord + off * 3.0) * 0.0540540541;
-                sum += texture2D(texture, vTexCoord + off * 4.0) * 0.0162162162;
-                gl_FragColor = sum;
-            })"
-        );
-
-        constexpr std::string_view combined(R"(
-            uniform sampler2D originalTexture;
-            uniform sampler2D bloomTexture;
-            uniform float intensity;
-            varying vec2 vTexCoord;
-            void main() {
-                vec4 original = texture2D(originalTexture, vTexCoord);
-                vec4 bloom = texture2D(bloomTexture, vTexCoord);
-                gl_FragColor = original + bloom * intensity;
-            })"
-        );
-    }
-   
-}
-
-
-
-
-
-
-
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -160,7 +86,7 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     
     core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
     vSoft(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown);
-    hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
+    // hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
 
     uid.mt = mt;
     uid.mp = mp;
@@ -187,46 +113,130 @@ void Display::createShaders()
 {
     brightnessShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     brightnessShader->addVertexShader(std::string(shader::vertex::passthrough));
-    brightnessShader->addFragmentShader(std::string(shader::fragment::brt_extract));
+    brightnessShader->addFragmentShader(std::string(shader::fragment::red_gate));
     brightnessShader->link();
-    brightnessShader->use();
-    
-    // Gaussian blur shader
-    blurShader.reset(new juce::OpenGLShaderProgram(openGLContext));
-    blurShader->addVertexShader(std::string(shader::vertex::passthrough));
-    blurShader->addFragmentShader(std::string(shader::fragment::blur_gauss));
-    blurShader->link();
-    blurShader->use();
-    
-    // Gaussian blur shader
-    combineShader.reset(new juce::OpenGLShaderProgram(openGLContext));
-    combineShader->addVertexShader(std::string(shader::vertex::passthrough));
-    combineShader->addFragmentShader(std::string(shader::fragment::combined));
-    combineShader->link();
-    combineShader->use();
-    
+
+    attrPos = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*brightnessShader, "position");
+    attrTex = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*brightnessShader, "texCoord");
+    uniTex  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "tex");
+
+    createQuadBuffers();
 }
+
+void Display::createQuadBuffers()
+{
+    if (quadVBO == 0)
+    {
+        static const GLfloat verts[] =
+        {
+            -1.0f, -1.0f,
+             1.0f, -1.0f,
+            -1.0f,  1.0f,
+             1.0f,  1.0f
+        };
+
+        glGenBuffers(1, &quadVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+    }
+
+    if (quadTBO == 0)
+    {
+        static const GLfloat tex[] =
+        {
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f
+        };
+
+        glGenBuffers(1, &quadTBO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(tex), tex, GL_STATIC_DRAW);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Display::bakeTextures()
+{
+    core::Canvas<float> canvas(area.w, area.h);
+    canvas.clr(0.0f);
+    hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
+
+    std::vector<uint8_t> temp(canvas.size);
+
+    for (size_t i = 0; i < canvas.size; ++i)
+    {
+        float v = std::clamp(canvas.raw()[i], 0.0f, 1.0f);
+        temp[i] = static_cast<uint8_t>(v * 255.0f);
+    }
+
+    croTexture.bind();
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RED,
+        (GLsizei)canvas.width,
+        (GLsizei)canvas.height,
+        0,
+        GL_RED,
+        GL_UNSIGNED_BYTE,
+        temp.data()
+    );
+}
+
+
+
+
+
+
 
 void Display::renderQuad()
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
-        glTexCoord2f(1.0f, 0.0f); glVertex2f( 1.0f, -1.0f);
-        glTexCoord2f(1.0f, 1.0f); glVertex2f( 1.0f,  1.0f);
-        glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f,  1.0f);
-    glEnd();
+    if (attrPos->attributeID < 0 || attrTex->attributeID < 0)
+        return;
+
+    brightnessShader->use();
+
+    glActiveTexture(GL_TEXTURE0);
+    croTexture.bind();
+    uniTex->set(0);
+
+    // position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glEnableVertexAttribArray(attrPos->attributeID);
+    glVertexAttribPointer(attrPos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    // texcoord buffer
+    glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
+    glEnableVertexAttribArray(attrTex->attributeID);
+    glVertexAttribPointer(attrTex->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableVertexAttribArray(attrPos->attributeID);
+    glDisableVertexAttribArray(attrTex->attributeID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+
+
+
+
 
 void Display::renderOpenGL()
 {
     // sceneFBO.makeCurrentRenderingTarget();
-    juce::OpenGLHelpers::clear(palette::bg_dimmed);
-    renderScope3();
+    croMenu();
     
     // sceneFBO.releaseAsRenderingTarget();
     
@@ -280,123 +290,100 @@ void Display::renderOpenGL()
     */
 }
 
-void Display::renderScope3() noexcept
+void Display::renderScope3(bool Skip) noexcept
 {
-    auto now = clock::now(); 
-    std::chrono::duration<double> dt = now - lastFrameTime;
-    lastFrameTime = now;
-    double deltaSeconds = dt.count(); // how many samples should have passed in this time
-    double samplesToReadF = double(core::settings::sample_rate) * deltaSeconds;
-    int samplesToRead = int(samplesToReadF);
-    sampleAccumulator += (samplesToReadF - samplesToRead); 
-    
-    if (sampleAccumulator >= 1.0) 
-    {
-        ++samplesToRead; 
-        sampleAccumulator -= 1.0; 
-    }
-
-
+    //renderQuad();
+    //glUseProgram(0);
 
     if(auto data = _data.lock())
     {
         unsigned long current = data->written();
-        unsigned long produced = current - samplesLastProduced;
+        unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
 
-        float gain = (*scope_scale + 1.0f) * 10.0f * std::max(ndcW, ndcH);
+        if(Skip)
+        {
+            data->advance(samplesToRead);
+        }
+        else
+        {
+            float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
 
-        glEnable(GL_LINE_SMOOTH);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glLineWidth(1.5f);
-        glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glLineWidth(1.5f);
+            glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
 
-        glBegin(GL_LINE_STRIP);
-  
-            for(int i = 0; i < produced; ++i)
-            {
-                auto raw = data->get();
-                float x = raw.x * gain + ndcCenterX;
-                float y = raw.y * gain + ndcCenterY;
-                glVertex2f(x, y);
-            }
+            glBegin(GL_LINE_STRIP);
+      
+                for(unsigned long i = 0; i < samplesToRead; ++i)
+                {
+                    auto raw = data->get();
+                    float x = raw.x * gain + ndcCenterX;
+                    float y = raw.y * gain + ndcCenterY;
+                    glVertex2f(x, y);
+                }
 
-        glEnd();
-        glDisable(GL_BLEND);
-        glDisable(GL_LINE_SMOOTH);
-    
+            glEnd();
+            glDisable(GL_BLEND);
+            glDisable(GL_LINE_SMOOTH);
+        }
+    }
+}
+
+void Display::renderScope2(bool Skip) noexcept
+{
+    if(auto data = _data.lock())
+    {
+        unsigned long current = data->written();
+        unsigned long samplesToRead = current - samplesLastProduced;
+        samplesLastProduced = current;
+
+        if(Skip)
+        {
+            data->advance(samplesToRead);
+        }
+        else
+        {
+            float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
+
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glLineWidth(1.5f);
+            glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
+
+            glBegin(GL_LINE_STRIP);
+      
+                for(unsigned long i = 0; i < samplesToRead; ++i)
+                {
+                    auto raw = data->get();
+                    float x = core::remap(float(i), float(0), float(samplesToRead - 1), -1.0f, 1.0f);
+                    float y = ndcCenterY + gain * raw.y;
+                    glVertex2f(x, y);
+                }
+
+            glEnd();
+            glDisable(GL_BLEND);
+            glDisable(GL_LINE_SMOOTH);
+        }
     }
 }
 
 void Display::croMenu()
-{
-    if(auto data = _data.lock())
+{    
+    juce::OpenGLHelpers::clear(palette::bg_dimmed);
+    
+    if(scope_type->load() < 0.5f)
     {
-        layer.get()->clr(0.0f);
-        float center_y = area.h / 2;
-        float center_x = area.w / 2;
-        auto gain = (*scope_scale + 1.0f) * 10.0f;
-
-        if(scope_type->load() < 0.5f)
-        {
-            auto raw = data->get();
-            prior.x = raw.x * gain + center_x;
-            prior.y = raw.y * gain + center_y;
-
-            for(int i = 0; i < data->segments - 1; i++)
-            {
-                auto raw = data->get();
-                float x = raw.x * gain + center_x;
-                float y = raw.y * gain + center_y;
-                lineSDFAABB(canvas.get(), prior.x, prior.y, x, y, 0.8f / (i + 1), 0.01f / (i + 1)) ;
-                prior.x = x;
-                prior.y = y;
-            }
-        }
-        else if(scope_type->load() > 0.5f)
-        {
-            int queueSize = newlyPopped.size();
-            for(size_t i = 0; i < notInterpolatedData.size(); ++i)
-            {
-                auto f = data->get();
-                notInterpolatedData.at(i) = f.x + f.y;
-            }
-
-            interpolator.process(ratio, notInterpolatedData.data(), newlyPopped.data(), queueSize);             // resample data
-            std::copy(sampleData.data() + queueSize, sampleData.data() + sampleData.size(), newData.begin());   // shift & add new data
-            size_t n = sampleData.size() - queueSize;
-
-            for(int i = 0; i < queueSize; ++i)
-            {
-                if(n >= newData.size()) n = 0;
-                newData.at(n) = newlyPopped.at(i);
-                ++n;
-            }
-            sampleData = newData;                                                                               // set data to plot equal to shifted data
-
-            auto data_ = sampleData.data();
-            auto numSamples = sampleData.size();
-
-            for(size_t i = 1; i < numSamples; ++i) // for each point map and draw line
-            {
-                lineSDFAABB
-                (
-                    canvas.get(), 
-                    juce::jmap(float(i - 1), float(0), float(numSamples - 1), 0.0f, float(area.w)),
-                    center_y - gain * data_[i - 1],
-                    juce::jmap(float(i), float(0), float(numSamples - 1), 0.0f, float(area.w)),
-                    center_y - gain * data_[i],
-                    0.8f,
-                    0.01f
-                );
-            }
-        }
-        core::boxBlur(canvas.get(), 1);
-        layerOn = true;
-        hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus);
+        renderScope3(skipScopeRender);
     }
-    else listeners.call([this](Listener &l) { l.bufferDisconnected(); });
+    else if(scope_type->load() >= 0.5f)
+    {
+        renderScope2(skipScopeRender);
+    }
+   // hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, layer.get());
 }
 
 
@@ -444,7 +431,7 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
     }
 
     vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    hSoft(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight);
+    // hSoft(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight, &layer.get());
     layerOn = true;
     repaint();
 }
@@ -466,7 +453,7 @@ void Display::mainMenu()
     core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
 
     vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    hSoft(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty);
+    // hSoft(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty, &layer.get());
     layerOn = true;
     repaint();
 }
@@ -481,14 +468,14 @@ void Display::vSoft(const int a, const int b, const int c, const int d)
     core::draw_glyph(layer.get(), gtFont, d, offset, step * 26, contrast);
 }
 
-void Display::hSoft(const int a, const int b, const int c, const int d)
+void Display::hSoft(int a, int b, int c, int d, core::Canvas<float>* layer)
 {
     auto step = area.w / 30;
     auto offset = area.h - area.h / 15;
-    core::draw_glyph(layer.get(), gtFont, a, step *  8, offset, contrast);
-    core::draw_glyph(layer.get(), gtFont, b, step * 13, offset, contrast);
-    core::draw_glyph(layer.get(), gtFont, c, step * 18, offset, contrast);
-    core::draw_glyph(layer.get(), gtFont, d, step * 23, offset, contrast);
+    core::draw_glyph(layer, gtFont, a, step *  8, offset, contrast);
+    core::draw_glyph(layer, gtFont, b, step * 13, offset, contrast);
+    core::draw_glyph(layer, gtFont, c, step * 18, offset, contrast);
+    core::draw_glyph(layer, gtFont, d, step * 23, offset, contrast);
 }
 
 void Display::offMenu()
@@ -500,7 +487,7 @@ void Display::offMenu()
     core::draw_text_label(layer.get(), gtFont, "COPYRIGHT(C) 2022-2025", 10, 30, contrast);
     core::draw_text_label(layer.get(), gtFont, "MIT LICENSE   [ POLE ]", 10, 40, contrast);
 
-    hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
+    // hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
 
     layerOn = true;
     repaint();
@@ -537,13 +524,8 @@ void Display::offMenu()
 
 void Display::newOpenGLContextCreated()
 {
-    sceneFBO.initialise(openGLContext, area.w, area.h);
-    brightnessFBO.initialise(openGLContext, area.w, area.h);
-
-    bloomFBO[0].initialise(openGLContext, area.w, area.h);
-    bloomFBO[1].initialise(openGLContext, area.w, area.h);
-    
     createShaders();
+    //bakeTextures();
 };
 
 void Display::resized()
@@ -575,6 +557,7 @@ void Display::resized()
     ndcH = 2.0f / area.h;
     ndcCenterX = -1.0f + (area.w * 0.5f * ndcW);
     ndcCenterY = -1.0f + (area.h * 0.5f * ndcH);
+    scopeScaleMultiplier = 10.0f * std::max(ndcW, ndcH);
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
@@ -586,8 +569,6 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     layer.get()->clr(0.0f);
     inputBox.canvas = layer.get();
 
-    windowSamplesCRO3 = int(core::settings::sample_rate * (windowMsCRO3 * 0.001f));
-  
     juce::OpenGLPixelFormat pixelFormat;
     pixelFormat.multisamplingLevel = 8;
     openGLContext.setPixelFormat(pixelFormat);
@@ -643,21 +624,5 @@ void OledLabel::paint(juce::Graphics& g)
 
 void Display::reset()
 {
-    // set attributes
-    int displayLength = (int)(time_scale->load() * core::settings::sample_rate);
-    ratio = (double)displayLength / (double)area.w;
-    displayLength /= ratio;
-    // resize buffers
-    double dataLength = area.w;//core::settings::sample_rate/core::settings::scope_fps / ratio;
-    sampleData.resize(dataLength);
-    newData.resize(dataLength);
-    newlyPopped.resize(dataLength);
-    notInterpolatedData.resize(core::settings::sample_rate/core::settings::scope_fps);
-    // fill all buffers with 0
-    std::fill(sampleData.begin(), sampleData.end(), 0);
-    std::fill(newlyPopped.begin(), newlyPopped.end(), 0);
-    std::fill(notInterpolatedData.begin(), notInterpolatedData.end(), 0);
-    std::fill(newData.begin(), newData.end(), 0);
-    // reset interpolator
-    interpolator.reset();
+
 }

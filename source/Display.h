@@ -65,13 +65,10 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		std::unique_ptr<juce::Image> framebuffer;
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
-		std::vector<float> sampleData;                  // Data currently displayed
-		std::vector<float> newlyPopped;                 // Last popped array
-		std::vector<float> notInterpolatedData;         // Raw new data
-		std::vector<float> newData;                     // Interpolated new data
-		juce::Interpolators::Linear interpolator;
-        core::Point2D<int> prior {};
-		double ratio = 1.0f;
+
+        
+        juce::OpenGLTexture croTexture;
+
         const float contrast = 0.6f;
         std::atomic<bool> needsUpload { true };
 		int last_page = 0;
@@ -81,9 +78,9 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         float ndcH;
         float ndcCenterX;
         float ndcCenterY;
-        float windowMsCRO3 = 50.0f;
-        float windowSamplesCRO3;
+        float scopeScaleMultiplier;
         unsigned long samplesLastProduced = 0;
+        bool skipScopeRender = false;
 
         using clock = std::chrono::steady_clock;
         clock::time_point lastFrameTime { clock::now() };
@@ -91,7 +88,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 
         constexpr static bool X = true, Y = false;
         constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
-
+        void bakeTextures();
 
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
@@ -123,7 +120,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		void mainMenu();
 		void saveMenu();
 		void vSoft(const int, const int, const int, const int);
-		void hSoft(const int, const int, const int, const int);
+		void hSoft(int, int, int, int, core::Canvas<float>*);
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
@@ -144,10 +141,11 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         virtual void openGLContextClosing() override;
 
         void createShaders();
+        void createQuadBuffers();
         void renderQuad();
-
-        void renderScope2() noexcept;
-        void renderScope3() noexcept;
+    
+        void renderScope2(bool Skip) noexcept;
+        void renderScope3(bool Skip) noexcept;
       
         juce::OpenGLTexture framebufferTexture;
         juce::OpenGLFrameBuffer glFramebuffer;
@@ -157,10 +155,16 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         juce::OpenGLFrameBuffer bloomFBO[2];
 
 
+GLuint quadVBO = 0;
+GLuint quadTBO = 0;
         std::unique_ptr<juce::OpenGLShaderProgram> brightnessShader;
         std::unique_ptr<juce::OpenGLShaderProgram> blurShader;
         std::unique_ptr<juce::OpenGLShaderProgram> combineShader;
-        
+
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrPos; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniTex;
+
         float bloomThreshold = 0.3f; 
         float bloomIntensity = 3.5f;
         int blurPasses = 3;        

@@ -167,6 +167,12 @@ inline int rand_in_range(const int l, const int r) noexcept
     return (rand() % (r - l + 1)) + l;
 }
 
+template <typename T>
+constexpr T remap(T source, T source_min, T source_max, T target_min, T target_max) noexcept
+{
+    return target_min + ((target_max - target_min) * (source - source_min)) / (source_max - source_min);
+}
+
 constexpr bool sign(const float data) noexcept
 {
     return data > 0.0f ? true : false;
