@@ -1,5 +1,5 @@
 /*****************************************************************************************************************************
-* Copyright (c) 2022-2025 POLE
+* Copyright (c) 2022-2026 POLE
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 *
 ******************************************************************************************************************************/
 #pragma once
-#include <iostream>
 #include <atomic>
 
 namespace core {

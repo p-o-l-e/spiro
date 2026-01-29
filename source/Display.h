@@ -23,8 +23,10 @@
 #pragma once
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "canvas.hpp"
 #include "juce_opengl/juce_opengl.h"
 #include <chrono>
+#include <cstdint>
 
 namespace glyph
 {
@@ -66,10 +68,72 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
 
-        
+        std::unique_ptr<juce::OpenGLShaderProgram> brightnessShader;
+        // Scope
+        std::unique_ptr<juce::OpenGLShaderProgram> flatShader;
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> linePos;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> lineColor;
+        // Threshold
+        std::unique_ptr<juce::OpenGLShaderProgram> thresholdShader;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uThresholdTex; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uThreshold;
+        // --- Horizontal blur ---
+        std::unique_ptr<juce::OpenGLShaderProgram> hblurShader; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uHBlurTex; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uHBlurTexelSize; 
+        // --- Vertical blur --- 
+        std::unique_ptr<juce::OpenGLShaderProgram> vblurShader; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uVBlurTex; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uVBlurTexelSize;
+        // Composite pass
+        std::unique_ptr<juce::OpenGLShaderProgram> bloomCompositeShader;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uBloomTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uBaseTex;
+        // Afterglow
+        std::unique_ptr<juce::OpenGLShaderProgram> afterglowFadeShader;
+        std::unique_ptr<juce::OpenGLShaderProgram> afterglowAccumulateShader;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowFadeTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowDecay;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowPrevTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowNewTex;
+
+
+        std::unique_ptr<juce::OpenGLShaderProgram> graticuleShader;
+
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratColor;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratThickness;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratRes;
+
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrPos; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> postPosHBlur; 
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> postPosVBlur;
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> postPosThreshold;
+        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> postPosComposite;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniTex;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniFgColor;
+        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniBgColor;
+
         juce::OpenGLTexture croTexture;
 
-        const float contrast = 0.6f;
+        GLuint scopeVBO;
+        GLuint scopeFBO, scopeTex; 
+        GLuint blurFBO_H, blurTex_H; 
+        GLuint blurFBO_V, blurTex_V;
+        GLuint fsQuadVBO;
+
+        GLuint afterglowFBO = 0; 
+        GLuint afterglowTex = 0; 
+        GLuint afterglowTempFBO = 0; 
+        GLuint afterglowTempTex = 0;
+        // juce::OpenGLFrameBuffer scopeFBO;
+        // juce::OpenGLFrameBuffer bloomFBO[2];
+        GLuint scopeFBO_MSAA; GLuint scopeColorBuffer_MSAA;
+        float blurTexelSizeX = 0.0f;   // 1.0f / area.w
+        float blurTexelSizeY = 0.0f;   // 1.0f / area.h
+
+    const float contrast = 0.6f;
+        const uint8_t opacity = 0xAF;
         std::atomic<bool> needsUpload { true };
 		int last_page = 0;
         int stepX = 10, stepY = 10;
@@ -82,15 +146,17 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         unsigned long samplesLastProduced = 0;
         bool skipScopeRender = false;
 
-        using clock = std::chrono::steady_clock;
-        clock::time_point lastFrameTime { clock::now() };
-        double sampleAccumulator = 0.0;
-
         constexpr static bool X = true, Y = false;
         constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
+        void bakeTexture(core::Canvas<uint8_t>*);
         void bakeTextures();
-
-
+        void createShaders();
+        void createBloomFBOs();
+        void createQuadBuffers();
+        void renderQuad();
+        void renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr);
+        void renderScope2(bool Skip) noexcept;
+        void renderScope3(bool Skip) noexcept;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
@@ -120,7 +186,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		void mainMenu();
 		void saveMenu();
 		void vSoft(const int, const int, const int, const int);
-		void hSoft(int, int, int, int, core::Canvas<float>*);
+		void hSoft(int, int, int, int, core::Canvas<uint8_t>*);
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();
@@ -140,111 +206,23 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         virtual void renderOpenGL() override;
         virtual void openGLContextClosing() override;
 
-        void createShaders();
-        void createQuadBuffers();
-        void renderQuad();
+
     
-        void renderScope2(bool Skip) noexcept;
-        void renderScope3(bool Skip) noexcept;
+
       
         juce::OpenGLTexture framebufferTexture;
         juce::OpenGLFrameBuffer glFramebuffer;
 
-        juce::OpenGLFrameBuffer brightnessFBO;
-        juce::OpenGLFrameBuffer sceneFBO;
-        juce::OpenGLFrameBuffer bloomFBO[2];
 
 
-GLuint quadVBO = 0;
-GLuint quadTBO = 0;
-        std::unique_ptr<juce::OpenGLShaderProgram> brightnessShader;
-        std::unique_ptr<juce::OpenGLShaderProgram> blurShader;
-        std::unique_ptr<juce::OpenGLShaderProgram> combineShader;
+        GLuint quadVBO = 0;
+        GLuint quadTBO = 0;
 
-        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrPos; 
-        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrTex;
-        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniTex;
+
 
         float bloomThreshold = 0.3f; 
         float bloomIntensity = 3.5f;
         int blurPasses = 3;        
 
-    private:
-        struct Vertex
-        {
-            float position[3];
-            float normal[3];
-            float colour[4];
-            float texCoord[2];
-        };
-
-        struct Attributes
-        {
-            public:
-                explicit Attributes(juce::OpenGLShaderProgram& shaderProgram)
-                {
-                    position      .reset(createAttribute(shaderProgram, "position"));
-                    normal        .reset(createAttribute(shaderProgram, "normal"));
-                    sourceColour  .reset(createAttribute(shaderProgram, "sourceColour"));
-                    textureCoordIn.reset(createAttribute(shaderProgram, "textureCoordIn"));
-                }
-
-                void enable()
-                {
-                    using namespace ::juce::gl;
-
-                    if(position.get() != nullptr)
-                    {
-                        glVertexAttribPointer(position->attributeID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-                        glEnableVertexAttribArray(position->attributeID);
-                    }
-
-                    if(normal.get() != nullptr)
-                    {
-                        glVertexAttribPointer(normal->attributeID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float) * 3));
-                        glEnableVertexAttribArray(normal->attributeID);
-                    }
-
-                    if(sourceColour.get() != nullptr)
-                    {
-                        glVertexAttribPointer(sourceColour->attributeID, 4, GL_FLOAT, GL_FALSE, sizeof (Vertex), (GLvoid*)(sizeof(float) * 6));
-                        glEnableVertexAttribArray(sourceColour->attributeID);
-                    }
-
-                    if(textureCoordIn.get() != nullptr)
-                    {
-                        glVertexAttribPointer(textureCoordIn->attributeID, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float) * 10));
-                        glEnableVertexAttribArray(textureCoordIn->attributeID);
-                    }
-                }
-
-                void disable()
-                {
-                    using namespace ::juce::gl;
-
-                    if(position != nullptr)       glDisableVertexAttribArray(position->attributeID);
-                    if(normal != nullptr)         glDisableVertexAttribArray(normal->attributeID);
-                    if(sourceColour != nullptr)   glDisableVertexAttribArray(sourceColour->attributeID);
-                    if(textureCoordIn != nullptr) glDisableVertexAttribArray(textureCoordIn->attributeID);
-                }
-
-                std::unique_ptr<juce::OpenGLShaderProgram::Attribute> position, normal, sourceColour, textureCoordIn;
-
-            private:
-                static juce::OpenGLShaderProgram::Attribute* createAttribute(juce::OpenGLShaderProgram& shader, const char* attributeName)
-                {
-                    using namespace ::juce::gl;
-
-                    if (glGetAttribLocation(shader.getProgramID(), attributeName) < 0)
-                        return nullptr;
-
-                    return new juce::OpenGLShaderProgram::Attribute(shader, attributeName);
-                }
-        };
 };
-
-
-
-
-
 

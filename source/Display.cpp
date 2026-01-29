@@ -22,15 +22,55 @@
 #include "Display.h"
 #include "Colours.hpp"
 #include "blur.hpp"
+#include "canvas.hpp"
 #include "constants.hpp"
 #include "fonts.h"
 #include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
 #include "core/graphics/shaders.hpp"
+#include "shapes.hpp"
 #include <cstddef>
+#include <cstdint>
 #include <string_view>
 
 using namespace juce::gl;
+
+static void drawGraticule(core::Canvas<uint8_t>* canvas)
+{
+    int vlines = 11;
+    int hlines = 9;
+    uint8_t c = 0x4F;
+
+    int vpart = canvas->height / hlines;
+    int hpart = canvas->width  / vlines;
+
+    int step = std::max(vpart, hpart);
+    
+    int hgap = (canvas->width  - (vlines - 1) * step) / 2;
+    int vgap = (canvas->height - (hlines - 1) * step) / 2;
+
+    int md = step / 3;
+
+    for(int h = 0; h < hlines; ++h)
+    {
+        core::draw_line_h(canvas, hgap, vgap + h * step, canvas->width - hgap, c);
+    }
+
+    for(int v = 0; v < vlines; ++v)
+    {
+        core::draw_line_v(canvas, hgap + v * step, vgap, canvas->height - vgap, c);
+    }
+
+    for(int h = 0; h < (hlines - 1) * 5; ++h)
+    {
+        core::draw_line_h(canvas, hgap + canvas->width/2 - md, vgap + h * step / 5, canvas->width - hgap - canvas->width/2 + md, c);
+    }
+
+    for(int v = 0; v < (vlines - 1) * 5; ++v)
+    {
+        core::draw_line_v(canvas, hgap + v * step / 5, canvas->height / 2 - md + hgap ,  canvas->height / 2 - hgap + md, c);
+    }
+}
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -101,13 +141,7 @@ void Display::openGLContextClosing()
 {
     // Clean up when context is closing
     brightnessShader.reset();
-    blurShader.reset();
-    combineShader.reset();
-    brightnessFBO.release();
-    sceneFBO.release();
-    bloomFBO[0].release();
-    bloomFBO[1].release();
-}
+ }
 
 void Display::createShaders()
 {
@@ -119,6 +153,92 @@ void Display::createShaders()
     attrPos = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*brightnessShader, "position");
     attrTex = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*brightnessShader, "texCoord");
     uniTex  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "tex");
+
+    uniFgColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "fgColor");
+    uniBgColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "bgColor");
+
+    flatShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    flatShader->addVertexShader(std::string(shader::vertex::flat));
+    flatShader->addFragmentShader(std::string(shader::fragment::flat));
+    flatShader->link();
+
+    linePos = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*flatShader, "position"); 
+    lineColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*flatShader, "color");
+
+
+
+
+
+    thresholdShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    thresholdShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    thresholdShader->addFragmentShader(std::string(shader::fragment::threshold));
+    thresholdShader->link();
+    
+    uThresholdTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*thresholdShader, "tex");
+    uThreshold = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*thresholdShader, "threshold");
+
+
+
+    bloomCompositeShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    bloomCompositeShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    bloomCompositeShader->addFragmentShader(std::string(shader::fragment::tex_add));
+    bloomCompositeShader->link();
+
+    uBaseTex  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "baseTex");
+    uBloomTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "bloomTex");
+   
+    
+    postPosThreshold = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*thresholdShader, "position");
+    postPosComposite = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*bloomCompositeShader, "position");
+
+    // --- HBLUR ---
+    hblurShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    hblurShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    hblurShader->addFragmentShader(std::string(shader::fragment::hblur));
+    hblurShader->link();
+
+    uHBlurTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*hblurShader, "tex");
+    uHBlurTexelSize = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*hblurShader, "texelSize");
+    postPosHBlur = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*hblurShader, "position");
+
+    // --- VBLUR ---
+    vblurShader.reset(new juce::OpenGLShaderProgram(openGLContext));
+    vblurShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    vblurShader->addFragmentShader(std::string(shader::fragment::vblur));
+    vblurShader->link();
+
+    uVBlurTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*vblurShader, "tex");
+    uVBlurTexelSize = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*vblurShader, "texelSize");
+    postPosVBlur = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*vblurShader, "position");
+
+
+    // Afterglow
+    afterglowFadeShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
+    afterglowFadeShader->addVertexShader(std::string(shader::vertex::ndc_to_uv)); 
+    afterglowFadeShader->addFragmentShader(std::string(shader::fragment::afterglow_fade)); 
+    afterglowFadeShader->link();
+
+    uAfterglowFadeTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowFadeShader, "tex"); 
+    uAfterglowDecay = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowFadeShader, "decay");
+
+    afterglowAccumulateShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
+    afterglowAccumulateShader->addVertexShader(std::string(shader::vertex::ndc_to_uv)); 
+    afterglowAccumulateShader->addFragmentShader(std::string(shader::fragment::afterglow_accumulator)); 
+    afterglowAccumulateShader->link(); 
+
+    uAfterglowPrevTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "prevTex"); 
+    uAfterglowNewTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "newTex");
+
+    // Graticule shader
+    graticuleShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
+
+    graticuleShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    graticuleShader->addFragmentShader(std::string(shader::fragment::graticule));
+    graticuleShader->link();
+
+    uGratColor      = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "color");
+    uGratThickness  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "thickness");
+    uGratRes  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "resolution");
 
     createQuadBuffers();
 }
@@ -156,24 +276,69 @@ void Display::createQuadBuffers()
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenBuffers(1, &scopeVBO);
+
+    const float fsQuadVerts[] = {
+        -1.f, -1.f,
+         1.f, -1.f,
+        -1.f,  1.f,
+         1.f,  1.f
+    };
+
+    glGenBuffers(1, &fsQuadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fsQuadVerts), fsQuadVerts, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Display::bakeTextures()
+void Display::createBloomFBOs()
 {
-    core::Canvas<float> canvas(area.w, area.h);
-    canvas.clr(0.0f);
-    hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
+    glGenFramebuffers(1, &scopeFBO_MSAA);
+    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
 
-    std::vector<uint8_t> temp(canvas.size);
+    glGenRenderbuffers(1, &scopeColorBuffer_MSAA);
+    glBindRenderbuffer(GL_RENDERBUFFER, scopeColorBuffer_MSAA);
 
-    for (size_t i = 0; i < canvas.size; ++i)
+    // 4× MSAA (you can use 8 if you want)
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 8, GL_RGBA8, area.w, area.h);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, scopeColorBuffer_MSAA);
+
+    auto makeFBO = [&](GLuint& fbo, GLuint& tex)
     {
-        float v = std::clamp(canvas.raw()[i], 0.0f, 1.0f);
-        temp[i] = static_cast<uint8_t>(v * 255.0f);
-    }
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    croTexture.bind();
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, area.w, area.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+    };
+
+
+    makeFBO(scopeFBO, scopeTex);
+    makeFBO(blurFBO_H, blurTex_H);
+    makeFBO(blurFBO_V, blurTex_V);
+
+    makeFBO(afterglowFBO, afterglowTex); 
+    makeFBO(afterglowTempFBO, afterglowTempTex);
+
+
+    blurTexelSizeX = 1.0f / float(area.w);
+    blurTexelSizeY = 1.0f / float(area.h);
+
+
+}
+
+void Display::bakeTexture(core::Canvas<uint8_t>* canvas)
+{
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -184,26 +349,30 @@ void Display::bakeTextures()
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        GL_RED,
-        (GLsizei)canvas.width,
-        (GLsizei)canvas.height,
+        GL_LUMINANCE,
+        (GLsizei)canvas->width,
+        (GLsizei)canvas->height,
         0,
-        GL_RED,
+        GL_LUMINANCE,
         GL_UNSIGNED_BYTE,
-        temp.data()
+        canvas->raw()
     );
 }
 
+void Display::bakeTextures()
+{
+    core::Canvas<uint8_t> canvas(area.w, area.h);
+    canvas.clr(0);
+    //hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
+    drawGraticule(&canvas);
+    croTexture.bind();
+    bakeTexture(&canvas);
 
-
-
-
-
+}
 
 void Display::renderQuad()
 {
-    if (attrPos->attributeID < 0 || attrTex->attributeID < 0)
-        return;
+    if (attrPos->attributeID < 0 || attrTex->attributeID < 0) return;
 
     brightnessShader->use();
 
@@ -221,119 +390,240 @@ void Display::renderQuad()
     glEnableVertexAttribArray(attrTex->attributeID);
     glVertexAttribPointer(attrTex->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glDisableVertexAttribArray(attrPos->attributeID);
     glDisableVertexAttribArray(attrTex->attributeID);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    uniFgColor->set(palette::cro::fg, 4);
+    uniBgColor->set(palette::cro::bg, 4);
 }
 
-
-
-
+void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBO);
+    glEnableVertexAttribArray(posAttr.attributeID);
+    glVertexAttribPointer(posAttr.attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisableVertexAttribArray(posAttr.attributeID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 
 void Display::renderOpenGL()
 {
-    // sceneFBO.makeCurrentRenderingTarget();
     croMenu();
     
-    // sceneFBO.releaseAsRenderingTarget();
-    
-    /*
-    brightnessFBO.makeCurrentRenderingTarget();
-    juce::OpenGLHelpers::clear(juce::Colours::black);
-
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, sceneFBO.getTextureID());
-    renderQuad();
-    glDisable(GL_TEXTURE_2D);
-    brightnessFBO.releaseAsRenderingTarget();
-    
-    GLuint currentTexture = sceneFBO.getTextureID();
-    */
-    /* 
-    for(int i = 0; i < blurPasses; ++i)
-    {
-        bloomFBO[0].makeCurrentRenderingTarget();
-        glUseProgram(0);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, currentTexture);
-        renderQuad();
-        glDisable(GL_TEXTURE_2D);
-        bloomFBO[0].releaseAsRenderingTarget();
-        
-        bloomFBO[1].makeCurrentRenderingTarget();
-        glUseProgram(0);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, bloomFBO[0].getTextureID());
-        renderQuad();
-        glDisable(GL_TEXTURE_2D);
-        bloomFBO[1].releaseAsRenderingTarget();
-        
-        currentTexture = bloomFBO[1].getTextureID();
-    }
-    */
-   
-    /*
-    juce::OpenGLHelpers::clear(palette::bg_dimmed);
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, currentTexture);
-    renderQuad();
-    glDisable(GL_TEXTURE_2D);
-    */
 }
 
 void Display::renderScope3(bool Skip) noexcept
 {
-    //renderQuad();
-    //glUseProgram(0);
+    // 1) Draw background/UI to main framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
+    renderQuad();
+    // 2) Draw scope into full-res scopeFBO
+    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    if(auto data = _data.lock())
+    glEnable(GL_MULTISAMPLE);
+    
+    if (auto data = _data.lock())
     {
         unsigned long current = data->written();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
 
-        if(Skip)
+        if (Skip)
         {
             data->advance(samplesToRead);
+            return;
         }
-        else
+
+        if (samplesToRead < 0x40)
+            return;
+
+        float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
+        float halfWidth = 0.007f;
+
+        flatShader->use();
+        lineColor->set(palette::cro::fg, 4);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        const unsigned long quadCount = samplesToRead - 1;
+        const unsigned long vertCount = quadCount * 4;
+        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+
+        glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
+        glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
+
+        float* ptr = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        if (!ptr)
+            return;
+
+        float prevX, prevY;
         {
-            float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
-
-            glEnable(GL_LINE_SMOOTH);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glLineWidth(1.5f);
-            glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
-
-            glBegin(GL_LINE_STRIP);
-      
-                for(unsigned long i = 0; i < samplesToRead; ++i)
-                {
-                    auto raw = data->get();
-                    float x = raw.x * gain + ndcCenterX;
-                    float y = raw.y * gain + ndcCenterY;
-                    glVertex2f(x, y);
-                }
-
-            glEnd();
-            glDisable(GL_BLEND);
-            glDisable(GL_LINE_SMOOTH);
+            auto raw = data->get();
+            prevX = raw.x * gain + ndcCenterX;
+            prevY = raw.y * gain + ndcCenterY;
         }
+
+        for (unsigned long i = 1; i < samplesToRead; ++i)
+        {
+            auto raw = data->get();
+            float x = raw.x * gain + ndcCenterX;
+            float y = raw.y * gain + ndcCenterY;
+
+            float dx = x - prevX;
+            float dy = y - prevY;
+
+            float len = std::sqrt(dx*dx + dy*dy);
+            if (len < 1e-9f) len = 1.0f;
+
+            dx /= len;
+            dy /= len;
+
+            float nx = -dy * halfWidth;
+            float ny =  dx * halfWidth;
+
+            *ptr++ = prevX + nx; *ptr++ = prevY + ny;
+            *ptr++ = prevX - nx; *ptr++ = prevY - ny;
+            *ptr++ = x     + nx; *ptr++ = y     + ny;
+            *ptr++ = x     - nx; *ptr++ = y     - ny;
+
+            prevX = x;
+            prevY = y;
+        }
+
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+
+        glEnableVertexAttribArray(linePos->attributeID);
+        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) vertCount);
+
+        glDisableVertexAttribArray(linePos->attributeID);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisable(GL_BLEND);
     }
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
+    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, afterglowTempFBO);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    afterglowFadeShader->use();
+    uAfterglowFadeTex->set(0);
+    uAfterglowDecay->set(0.65f); // tweak to taste
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, afterglowTex);
+
+    renderFullscreenQuad(*postPosThreshold); // any fullscreen quad attrib set
+    //
+    //
+
+    glBindFramebuffer(GL_FRAMEBUFFER, afterglowFBO);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    afterglowAccumulateShader->use();
+    uAfterglowPrevTex->set(0);
+    uAfterglowNewTex->set(1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, afterglowTempTex);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, scopeTex);
+
+    renderFullscreenQuad(*postPosThreshold);
+
+
+    // 3) Threshold: afterglowTex → blurFBO_H
+    glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_H);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    thresholdShader->use();
+    uThresholdTex->set(0);
+    uThreshold->set(0.3f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, afterglowTex);
+
+    renderFullscreenQuad(*postPosThreshold);
+
+
+
+    // 4) Horizontal blur: blurTex_H ← threshold result
+    glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_V);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    hblurShader->use();
+    uHBlurTex->set(0);
+    uHBlurTexelSize->set(1.0f / float(area.w));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, blurTex_H);
+
+    renderFullscreenQuad(*postPosHBlur);
+
+    // 5) Vertical blur: blurTex_V ← blurTex_H
+    glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_H);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    vblurShader->use();
+    uVBlurTex->set(0);
+    uVBlurTexelSize->set(1.0f / float(area.h));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, blurTex_V);
+
+    renderFullscreenQuad(*postPosVBlur);
+
+    // 6) Composite bloom over main framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    bloomCompositeShader->use();
+    uBloomTex->set(0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, blurTex_H);
+
+    renderFullscreenQuad(*postPosComposite);
+    
+
+
+    glDisable(GL_BLEND);
 }
 
 void Display::renderScope2(bool Skip) noexcept
 {
+    renderQuad();
+
     if(auto data = _data.lock())
     {
         unsigned long current = data->written();
@@ -343,37 +633,93 @@ void Display::renderScope2(bool Skip) noexcept
         if(Skip)
         {
             data->advance(samplesToRead);
+            return;
         }
-        else
+
+        if(samplesToRead < 0x40) return;
+
+        float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
+        float halfWidth = 0.007f;
+
+        flatShader->use();
+        lineColor->set(palette::cro::fg, 4);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        const unsigned long quadCount = samplesToRead - 1;
+        const unsigned long vertCount = quadCount * 4;
+        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+
+        glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
+        glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
+
+        float* ptr = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        if(!ptr) return;
+
+        float prevX, prevY;
         {
-            float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
-
-            glEnable(GL_LINE_SMOOTH);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glLineWidth(1.5f);
-            glColor4f(0.65f, 0.60f, 0.30f, 0.8f);
-
-            glBegin(GL_LINE_STRIP);
-      
-                for(unsigned long i = 0; i < samplesToRead; ++i)
-                {
-                    auto raw = data->get();
-                    float x = core::remap(float(i), float(0), float(samplesToRead - 1), -1.0f, 1.0f);
-                    float y = ndcCenterY + gain * raw.y;
-                    glVertex2f(x, y);
-                }
-
-            glEnd();
-            glDisable(GL_BLEND);
-            glDisable(GL_LINE_SMOOTH);
+            auto raw = data->get();
+            prevX = -1.0f;
+            prevY = raw.y * gain + ndcCenterY;
         }
+
+        for(unsigned long i = 1; i < samplesToRead; ++i)
+        {
+            auto raw = data->get();
+            float x = core::remap(float(i), float(0), float(samplesToRead - 1), -1.0f, 1.0f);
+            float y = raw.y * gain + ndcCenterY;
+
+            float dx = x - prevX;
+            float dy = y - prevY;
+
+            float len = std::sqrt(dx*dx + dy*dy);
+            if (len < 1e-9f) len = 1.0f;
+
+            dx /= len;
+            dy /= len;
+
+            float nx = -dy * halfWidth;
+            float ny =  dx * halfWidth;
+
+            *ptr++ = prevX + nx; *ptr++ = prevY + ny;
+            *ptr++ = prevX - nx; *ptr++ = prevY - ny;
+            *ptr++ = x     + nx; *ptr++ = y     + ny;
+            *ptr++ = x     - nx; *ptr++ = y     - ny;
+
+            prevX = x;
+            prevY = y;
+        }
+
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+
+        glEnableVertexAttribArray(linePos->attributeID);
+        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)vertCount);
+
+        glDisableVertexAttribArray(linePos->attributeID);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisable(GL_BLEND);
     }
+
 }
 
 void Display::croMenu()
 {    
     juce::OpenGLHelpers::clear(palette::bg_dimmed);
+
+
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glViewport(0, 0, area.w, area.h);
+    //
+    // graticuleShader->use();
+    //
+    // uGratColor->set(0.2f, 0.8f, 0.2f, 0.15f);
+    // uGratThicknessMajor->set(0.002f);
+    // uGratThicknessMinor->set(0.001f);
+    //
+    // renderFullscreenQuad(*postPosThreshold); // any fullscreen quad attribute
     
     if(scope_type->load() < 0.5f)
     {
@@ -468,14 +814,14 @@ void Display::vSoft(const int a, const int b, const int c, const int d)
     core::draw_glyph(layer.get(), gtFont, d, offset, step * 26, contrast);
 }
 
-void Display::hSoft(int a, int b, int c, int d, core::Canvas<float>* layer)
+void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* layer)
 {
     auto step = area.w / 30;
     auto offset = area.h - area.h / 15;
-    core::draw_glyph(layer, gtFont, a, step *  8, offset, contrast);
-    core::draw_glyph(layer, gtFont, b, step * 13, offset, contrast);
-    core::draw_glyph(layer, gtFont, c, step * 18, offset, contrast);
-    core::draw_glyph(layer, gtFont, d, step * 23, offset, contrast);
+    core::draw_glyph(layer, gtFont, a, step *  8, offset, opacity);
+    core::draw_glyph(layer, gtFont, b, step * 13, offset, opacity);
+    core::draw_glyph(layer, gtFont, c, step * 18, offset, opacity);
+    core::draw_glyph(layer, gtFont, d, step * 23, offset, opacity);
 }
 
 void Display::offMenu()
@@ -524,8 +870,16 @@ void Display::offMenu()
 
 void Display::newOpenGLContextCreated()
 {
+
     createShaders();
-    //bakeTextures();
+    createBloomFBOs();
+    bakeTextures();
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, afterglowFBO);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
 };
 
 void Display::resized()
@@ -538,19 +892,6 @@ void Display::resized()
     {
         framebufferTexture.loadImage (*framebuffer);  // Loads Image to GL texture [web:24]
         glFramebuffer.makeCurrentRenderingTarget();   // Binds FBO for offscreen render 
-    }
-
-    if (openGLContext.isAttached())
-    {
-        brightnessFBO.release();
-        bloomFBO[0].release();
-        bloomFBO[1].release();
-        sceneFBO.release();
-        
-        brightnessFBO.initialise(openGLContext, getWidth(), getHeight());
-        bloomFBO[0].initialise(openGLContext, getWidth(), getHeight());
-        bloomFBO[1].initialise(openGLContext, getWidth(), getHeight());
-        sceneFBO.initialise(openGLContext, getWidth(), getHeight());
     }
 
     ndcW = 2.0f / area.w;
@@ -570,14 +911,22 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     inputBox.canvas = layer.get();
 
     juce::OpenGLPixelFormat pixelFormat;
+    pixelFormat.redBits   = 8;
+    pixelFormat.greenBits = 8;
+    pixelFormat.blueBits  = 8;
+    pixelFormat.alphaBits = 8;   // ⭐ critical
     pixelFormat.multisamplingLevel = 8;
     openGLContext.setPixelFormat(pixelFormat);
-
-    setOpaque(true);
     openGLContext.setRenderer(this); 
     openGLContext.attachTo(*this);
-    openGLContext.setContinuousRepainting(false);
 
+
+
+
+    setOpaque(false);
+
+    openGLContext.setComponentPaintingEnabled(false);
+    openGLContext.setContinuousRepainting(false);
     addAndMakeVisible(inputBox);
     reset();
 }

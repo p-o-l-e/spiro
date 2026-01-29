@@ -28,6 +28,7 @@
 #include "iospecs.hpp"
 #include "constants.hpp"
 #include "primitives.hpp"
+#include "wavering.hpp"
 
 namespace core {
 
@@ -199,6 +200,24 @@ struct DCBlock
         }
 };
 
+inline void resampleLinear(wavering<Point2D<float>>& data, int samplesToRead, Point2D<float>* out, int samplesToWrite)
+{
+    for (int i = 0; i < samplesToWrite; ++i)
+    {
+        float t = (float)i * (float)(samplesToRead - 1) / (float)(samplesToWrite - 1);
+
+        int i0 = (int)t;
+        int i1 = i0 + 1;
+        if (i1 >= samplesToRead) i1 = samplesToRead - 1;
+
+        float frac = t - (float)i0;
+
+        auto raw = data.get();
+
+        out[i].x = raw.x + (raw.x - raw.x) * frac;
+        out[i].y = raw.y + (raw.y - raw.y) * frac;
+    }
+}
 
 
 } // Namespace core

@@ -25,6 +25,7 @@
 #pragma once
 
 #include "canvas.hpp"
+#include <cstdint>
 #include <cstring>
 
 namespace core {
@@ -50,7 +51,7 @@ constexpr void draw_square_filled(core::Canvas<T>* canvas, const RadialSquare<T>
 constexpr void draw_glyph(core::Canvas<float>* canvas, const char* font, int id, int xo, int yo, const float colour)
 {
     int pos = id * 7;
-    u_int8_t stencil = 0b1;
+    uint8_t stencil = 0b1;
     for(int y = 0; y < 8; y++)
     {
         for(int x = 0; x < 7; x++)
@@ -58,6 +59,36 @@ constexpr void draw_glyph(core::Canvas<float>* canvas, const char* font, int id,
             if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
         }
         stencil<<=1;
+    }
+}
+
+constexpr void draw_line_v(core::Canvas<uint8_t>* canvas, int xo, int yo, int ye, uint8_t c)
+{
+    for(int i = yo; i <= ye; i++)
+    {
+        canvas->set(xo, i, c);
+    }
+}
+
+constexpr void draw_line_h(core::Canvas<uint8_t>* canvas, int xo, int yo, int xe, uint8_t c)
+{
+    for(int i = xo; i <= xe; i++)
+    {
+        canvas->set(i, yo, c);
+    }
+}
+
+constexpr void draw_glyph(core::Canvas<uint8_t>* canvas, const char* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
+{
+    int pos = id * w;
+    uint8_t stencil = 0b1;
+    for(int y = 0; y < h; ++y)
+    {
+        for(int x = 0; x < w; ++x)
+        {
+            if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
+        }
+        stencil <<= 1;
     }
 }
 

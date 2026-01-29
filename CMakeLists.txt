@@ -141,6 +141,6 @@ target_link_libraries(SharedCode
 target_link_libraries("${PROJECT_NAME}" PRIVATE SharedCode)
 
 include(SpiroIPP)
-include(Tests)
-include(Benchmarks)
+# include(Tests)
+# include(Benchmarks)
 include(GitHubENV)

@@ -22,6 +22,7 @@
 
 #pragma once
 #include "juce_graphics/juce_graphics.h"
+#include "juce_opengl/juce_opengl.h"
 #include <JuceHeader.h>
 
 
@@ -33,5 +34,11 @@ namespace palette {
     inline const juce::Colour envelope          = juce::Colour::fromRGBA      ( 0x05,  0x15,  0x17, 0xFF);
     inline const juce::Colour marine            = juce::Colour::fromRGBA      ( 0x00,  0x96,  0x88, 0xFF);
     inline const juce::Colour rose_charcoal     = juce::Colour::fromFloatRGBA (0.69f, 0.31f, 0.40f, 0.8f);
+    inline const juce::Colour transparent       = juce::Colour::fromRGBA      ( 0x00,  0x00,  0x00, 0x00);
+    
+    namespace cro {
+        inline const GLfloat fg[4]  { 0.65f, 0.62f, 0.38f, 0.8f };
+        inline const GLfloat bg[4]  { 0.12f, 0.16f, 0.18f, 0.8f };
+    }
 
 }
