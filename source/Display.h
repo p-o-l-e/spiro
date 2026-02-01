@@ -27,6 +27,7 @@
 #include "juce_opengl/juce_opengl.h"
 #include <chrono>
 #include <cstdint>
+#include <string_view>
 
 namespace glyph
 {
@@ -56,6 +57,21 @@ struct OledLabel: public juce::TextEditor
    ~OledLabel() = default;
 };
 
+namespace core {
+
+    struct Shader
+    {
+        const int attributes;
+        const int uniforms;
+
+        const std::string_view* const vertex;
+        const std::string_view* const fragment;
+
+        juce::OpenGLShaderProgram* shaderProgram = nullptr;
+        juce::OpenGLShaderProgram::Attribute* attribute = nullptr;
+        juce::OpenGLShaderProgram::Uniform* uniform = nullptr;
+    };
+}
 
 class Display: public juce::Component, private juce::OpenGLRenderer
 {
@@ -121,18 +137,20 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         GLuint blurFBO_H, blurTex_H; 
         GLuint blurFBO_V, blurTex_V;
         GLuint fsQuadVBO;
-
+        GLuint quadVBO = 0;
+        GLuint quadTBO = 0;
         GLuint afterglowFBO = 0; 
         GLuint afterglowTex = 0; 
         GLuint afterglowTempFBO = 0; 
         GLuint afterglowTempTex = 0;
-        // juce::OpenGLFrameBuffer scopeFBO;
-        // juce::OpenGLFrameBuffer bloomFBO[2];
+
         GLuint scopeFBO_MSAA; GLuint scopeColorBuffer_MSAA;
         float blurTexelSizeX = 0.0f;   // 1.0f / area.w
         float blurTexelSizeY = 0.0f;   // 1.0f / area.h
 
-    const float contrast = 0.6f;
+        void renderBloom() noexcept;
+
+        const float contrast = 0.6f;
         const uint8_t opacity = 0xAF;
         std::atomic<bool> needsUpload { true };
 		int last_page = 0;
@@ -205,24 +223,6 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         virtual void newOpenGLContextCreated() override;
         virtual void renderOpenGL() override;
         virtual void openGLContextClosing() override;
-
-
-    
-
-      
-        juce::OpenGLTexture framebufferTexture;
-        juce::OpenGLFrameBuffer glFramebuffer;
-
-
-
-        GLuint quadVBO = 0;
-        GLuint quadTBO = 0;
-
-
-
-        float bloomThreshold = 0.3f; 
-        float bloomIntensity = 3.5f;
-        int blurPasses = 3;        
 
 };
 

@@ -62,17 +62,17 @@ constexpr void draw_glyph(core::Canvas<float>* canvas, const char* font, int id,
     }
 }
 
-constexpr void draw_line_v(core::Canvas<uint8_t>* canvas, int xo, int yo, int ye, uint8_t c)
+constexpr void drawVLine(core::Canvas<uint8_t>* canvas, unsigned xo, unsigned yo, unsigned ye, uint8_t c) noexcept
 {
-    for(int i = yo; i <= ye; i++)
+    for(unsigned i = yo; i <= ye; i++)
     {
         canvas->set(xo, i, c);
     }
 }
 
-constexpr void draw_line_h(core::Canvas<uint8_t>* canvas, int xo, int yo, int xe, uint8_t c)
+constexpr void drawHLine(core::Canvas<uint8_t>* canvas, unsigned xo, unsigned yo, unsigned xe, uint8_t c) noexcept
 {
-    for(int i = xo; i <= xe; i++)
+    for(unsigned i = xo; i <= xe; i++)
     {
         canvas->set(i, yo, c);
     }

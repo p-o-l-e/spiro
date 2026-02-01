@@ -35,41 +35,123 @@
 
 using namespace juce::gl;
 
-static void drawGraticule(core::Canvas<uint8_t>* canvas)
+
+
+static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas,
+                                    uint8_t intensity = 0x5F,
+                                    unsigned vdiv = 10,
+                                    unsigned hdiv = 8,
+                                    unsigned minGap = 5) noexcept
 {
-    int vlines = 11;
-    int hlines = 9;
-    uint8_t c = 0x4F;
+    const float W = float(canvas->width);
+    const float H = float(canvas->height);
 
-    int vpart = canvas->height / hlines;
-    int hpart = canvas->width  / vlines;
+    // usable area after enforcing minGap
+    const float usableW = std::max(0.0f, W - 2.0f * float(minGap));
+    const float usableH = std::max(0.0f, H - 2.0f * float(minGap));
 
-    int step = std::max(vpart, hpart);
-    
-    int hgap = (canvas->width  - (vlines - 1) * step) / 2;
-    int vgap = (canvas->height - (hlines - 1) * step) / 2;
+    // enforce square divisions
+    const float stepX = usableW / vdiv;
+    const float stepY = usableH / hdiv;
+    const float step  = std::min(stepX, stepY);
 
-    int md = step / 3;
+    // actual grid size
+    const float gridW = step * vdiv;
+    const float gridH = step * hdiv;
 
-    for(int h = 0; h < hlines; ++h)
+    // center the grid inside the minGap box
+    const float hgap = (W - gridW) * 0.5f;
+    const float vgap = (H - gridH) * 0.5f;
+
+    // center coordinates
+    const float cx = hgap + gridW * 0.5f;
+    const float cy = vgap + gridH * 0.5f;
+
+    // minor tick spacing
+    const float sub = step / 5.0f;
+
+    // -----------------------------
+    // Major vertical lines
+    // -----------------------------
+    for (unsigned i = 0; i <= vdiv; ++i)
     {
-        core::draw_line_h(canvas, hgap, vgap + h * step, canvas->width - hgap, c);
+        float x = hgap + i * step;
+        int xi = int(std::round(x));
+        core::drawVLine(canvas, xi,
+                        int(std::round(vgap)),
+                        int(std::round(vgap + gridH)),
+                        intensity);
     }
 
-    for(int v = 0; v < vlines; ++v)
+    // -----------------------------
+    // Major horizontal lines
+    // -----------------------------
+    for (unsigned i = 0; i <= hdiv; ++i)
     {
-        core::draw_line_v(canvas, hgap + v * step, vgap, canvas->height - vgap, c);
+        float y = vgap + i * step;
+        int yi = int(std::round(y));
+        core::drawHLine(canvas,
+                        int(std::round(hgap)),
+                        yi,
+                        int(std::round(hgap + gridW)),
+                        intensity);
     }
 
-    for(int h = 0; h < (hlines - 1) * 5; ++h)
+    // -----------------------------
+    // Minor vertical ticks (center only)
+    // -----------------------------
+    const float tickH = step * 0.2f;
+
+    for (unsigned i = 0; i < vdiv * 5; ++i)
     {
-        core::draw_line_h(canvas, hgap + canvas->width/2 - md, vgap + h * step / 5, canvas->width - hgap - canvas->width/2 + md, c);
+        float x = hgap + i * sub;
+        int xi = int(std::round(x));
+
+        core::drawVLine(canvas, xi,
+                        int(std::round(cy - tickH)),
+                        int(std::round(cy + tickH)),
+                        intensity);
     }
 
-    for(int v = 0; v < (vlines - 1) * 5; ++v)
+    // -----------------------------
+    // Minor horizontal ticks (center only)
+    // -----------------------------
+    const float tickW = step * 0.2f;
+
+    for (unsigned i = 0; i < hdiv * 5; ++i)
     {
-        core::draw_line_v(canvas, hgap + v * step / 5, canvas->height / 2 - md + hgap ,  canvas->height / 2 - hgap + md, c);
+        float y = vgap + i * sub;
+        int yi = int(std::round(y));
+
+        core::drawHLine(canvas,
+                        int(std::round(cx - tickW)),
+                        yi,
+                        int(std::round(cx + tickW)),
+                        intensity);
     }
+
+    // -----------------------------
+    // Dotted lines at ±2.4 divisions
+    // -----------------------------
+    const float dottedOffset = step * 2.4f;
+
+    const int yt = int(std::round(cy - dottedOffset));
+    const int yb = int(std::round(cy + dottedOffset));
+
+    for (unsigned i = 0; i < vdiv * 5; ++i)
+    {
+        int x = int(std::round(hgap + i * sub));
+        canvas->set(x, yt, intensity);
+        canvas->set(x, yb, intensity);
+    }
+}
+
+static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept
+{
+    core::drawHLine(canvas, 0, 0, canvas->width, 0xFF);
+    core::drawHLine(canvas, 0, canvas->height - 1, canvas->width, 0xFF);
+    core::drawVLine(canvas, 0, 0, canvas->height, 0xFF);
+    core::drawVLine(canvas, canvas->width - 1, 0, canvas->height, 0xFF);
 }
 
 void Display::switchPage(Processor* o, const Page p)
@@ -165,10 +247,6 @@ void Display::createShaders()
     linePos = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*flatShader, "position"); 
     lineColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*flatShader, "color");
 
-
-
-
-
     thresholdShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     thresholdShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
     thresholdShader->addFragmentShader(std::string(shader::fragment::threshold));
@@ -176,8 +254,6 @@ void Display::createShaders()
     
     uThresholdTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*thresholdShader, "tex");
     uThreshold = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*thresholdShader, "threshold");
-
-
 
     bloomCompositeShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     bloomCompositeShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
@@ -230,16 +306,16 @@ void Display::createShaders()
     uAfterglowNewTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "newTex");
 
     // Graticule shader
-    graticuleShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
+    //graticuleShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
 
-    graticuleShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
-    graticuleShader->addFragmentShader(std::string(shader::fragment::graticule));
-    graticuleShader->link();
-
-    uGratColor      = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "color");
-    uGratThickness  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "thickness");
-    uGratRes  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "resolution");
-
+    //graticuleShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
+    // graticuleShader->addFragmentShader(std::string(shader::fragment::graticule));
+    // graticuleShader->link();
+    //
+    // uGratColor      = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "color");
+    // uGratThickness  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "thickness");
+    // uGratRes  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "resolution");
+    //
     createQuadBuffers();
 }
 
@@ -294,14 +370,15 @@ void Display::createQuadBuffers()
 
 void Display::createBloomFBOs()
 {
+    const int MSAA = 8;
+
     glGenFramebuffers(1, &scopeFBO_MSAA);
     glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
 
     glGenRenderbuffers(1, &scopeColorBuffer_MSAA);
     glBindRenderbuffer(GL_RENDERBUFFER, scopeColorBuffer_MSAA);
 
-    // 4× MSAA (you can use 8 if you want)
-    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 8, GL_RGBA8, area.w, area.h);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, MSAA, GL_RGBA8, area.w, area.h);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, scopeColorBuffer_MSAA);
 
@@ -322,7 +399,6 @@ void Display::createBloomFBOs()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
     };
 
-
     makeFBO(scopeFBO, scopeTex);
     makeFBO(blurFBO_H, blurTex_H);
     makeFBO(blurFBO_V, blurTex_V);
@@ -330,10 +406,8 @@ void Display::createBloomFBOs()
     makeFBO(afterglowFBO, afterglowTex); 
     makeFBO(afterglowTempFBO, afterglowTempTex);
 
-
     blurTexelSizeX = 1.0f / float(area.w);
     blurTexelSizeY = 1.0f / float(area.h);
-
 
 }
 
@@ -363,162 +437,16 @@ void Display::bakeTextures()
 {
     core::Canvas<uint8_t> canvas(area.w, area.h);
     canvas.clr(0);
-    //hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
+    hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
     drawGraticule(&canvas);
+    //drawBorder(&canvas);
     croTexture.bind();
     bakeTexture(&canvas);
 
 }
 
-void Display::renderQuad()
+void Display::renderBloom() noexcept
 {
-    if (attrPos->attributeID < 0 || attrTex->attributeID < 0) return;
-
-    brightnessShader->use();
-
-    glActiveTexture(GL_TEXTURE0);
-    croTexture.bind();
-    uniTex->set(0);
-
-    // position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glEnableVertexAttribArray(attrPos->attributeID);
-    glVertexAttribPointer(attrPos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    // texcoord buffer
-    glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
-    glEnableVertexAttribArray(attrTex->attributeID);
-    glVertexAttribPointer(attrTex->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    glDisableVertexAttribArray(attrPos->attributeID);
-    glDisableVertexAttribArray(attrTex->attributeID);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    uniFgColor->set(palette::cro::fg, 4);
-    uniBgColor->set(palette::cro::bg, 4);
-}
-
-void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr)
-{
-    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBO);
-    glEnableVertexAttribArray(posAttr.attributeID);
-    glVertexAttribPointer(posAttr.attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glDisableVertexAttribArray(posAttr.attributeID);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-
-void Display::renderOpenGL()
-{
-    croMenu();
-    
-}
-
-void Display::renderScope3(bool Skip) noexcept
-{
-    // 1) Draw background/UI to main framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, area.w, area.h);
-    renderQuad();
-    // 2) Draw scope into full-res scopeFBO
-    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
-    glViewport(0, 0, area.w, area.h);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glEnable(GL_MULTISAMPLE);
-    
-    if (auto data = _data.lock())
-    {
-        unsigned long current = data->written();
-        unsigned long samplesToRead = current - samplesLastProduced;
-        samplesLastProduced = current;
-
-        if (Skip)
-        {
-            data->advance(samplesToRead);
-            return;
-        }
-
-        if (samplesToRead < 0x40)
-            return;
-
-        float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
-        float halfWidth = 0.007f;
-
-        flatShader->use();
-        lineColor->set(palette::cro::fg, 4);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        const unsigned long quadCount = samplesToRead - 1;
-        const unsigned long vertCount = quadCount * 4;
-        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
-
-        glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
-        glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
-
-        float* ptr = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-        if (!ptr)
-            return;
-
-        float prevX, prevY;
-        {
-            auto raw = data->get();
-            prevX = raw.x * gain + ndcCenterX;
-            prevY = raw.y * gain + ndcCenterY;
-        }
-
-        for (unsigned long i = 1; i < samplesToRead; ++i)
-        {
-            auto raw = data->get();
-            float x = raw.x * gain + ndcCenterX;
-            float y = raw.y * gain + ndcCenterY;
-
-            float dx = x - prevX;
-            float dy = y - prevY;
-
-            float len = std::sqrt(dx*dx + dy*dy);
-            if (len < 1e-9f) len = 1.0f;
-
-            dx /= len;
-            dy /= len;
-
-            float nx = -dy * halfWidth;
-            float ny =  dx * halfWidth;
-
-            *ptr++ = prevX + nx; *ptr++ = prevY + ny;
-            *ptr++ = prevX - nx; *ptr++ = prevY - ny;
-            *ptr++ = x     + nx; *ptr++ = y     + ny;
-            *ptr++ = x     - nx; *ptr++ = y     - ny;
-
-            prevX = x;
-            prevY = y;
-        }
-
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-
-        glEnableVertexAttribArray(linePos->attributeID);
-        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) vertCount);
-
-        glDisableVertexAttribArray(linePos->attributeID);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDisable(GL_BLEND);
-    }
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
-    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
-
-
-
     glBindFramebuffer(GL_FRAMEBUFFER, afterglowTempFBO);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
@@ -526,15 +454,13 @@ void Display::renderScope3(bool Skip) noexcept
 
     afterglowFadeShader->use();
     uAfterglowFadeTex->set(0);
-    uAfterglowDecay->set(0.65f); // tweak to taste
+    uAfterglowDecay->set(0.75f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, afterglowTex);
 
-    renderFullscreenQuad(*postPosThreshold); // any fullscreen quad attrib set
-    //
-    //
-
+    renderFullscreenQuad(*postPosThreshold);
+   
     glBindFramebuffer(GL_FRAMEBUFFER, afterglowFBO);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
@@ -552,7 +478,6 @@ void Display::renderScope3(bool Skip) noexcept
 
     renderFullscreenQuad(*postPosThreshold);
 
-
     // 3) Threshold: afterglowTex → blurFBO_H
     glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_H);
     glViewport(0, 0, area.w, area.h);
@@ -567,8 +492,6 @@ void Display::renderScope3(bool Skip) noexcept
     glBindTexture(GL_TEXTURE_2D, afterglowTex);
 
     renderFullscreenQuad(*postPosThreshold);
-
-
 
     // 4) Horizontal blur: blurTex_H ← threshold result
     glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_V);
@@ -614,17 +537,171 @@ void Display::renderScope3(bool Skip) noexcept
     glBindTexture(GL_TEXTURE_2D, blurTex_H);
 
     renderFullscreenQuad(*postPosComposite);
-    
 
+}
+
+void Display::renderQuad()
+{
+    if (attrPos->attributeID < 0 || attrTex->attributeID < 0) return;
+
+    brightnessShader->use();
+
+    glActiveTexture(GL_TEXTURE0);
+    croTexture.bind();
+    uniTex->set(0);
+
+    // position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glEnableVertexAttribArray(attrPos->attributeID);
+    glVertexAttribPointer(attrPos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    // texcoord buffer
+    glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
+    glEnableVertexAttribArray(attrTex->attributeID);
+    glVertexAttribPointer(attrTex->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableVertexAttribArray(attrPos->attributeID);
+    glDisableVertexAttribArray(attrTex->attributeID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    uniFgColor->set(palette::cro::fg, 4);
+    uniBgColor->set(palette::cro::bg, 4);
+}
+
+void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBO);
+    glEnableVertexAttribArray(posAttr.attributeID);
+    glVertexAttribPointer(posAttr.attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisableVertexAttribArray(posAttr.attributeID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Display::renderOpenGL()
+{
+    croMenu();
+}
+
+void Display::renderScope3(bool Skip) noexcept
+{
+    // 1) Draw background/UI to main framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
+    renderQuad();
+    // 2) Draw scope into full-res scopeFBO
+    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glEnable(GL_MULTISAMPLE);
+    
+    if(auto data = _data.lock())
+    {
+        unsigned long current = data->written();
+        unsigned long samplesToRead = current - samplesLastProduced;
+        samplesLastProduced = current;
+
+        if(Skip)
+        {
+            data->advance(samplesToRead);
+            return;
+        }
+
+        if(samplesToRead < 0x40) return;
+
+        float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
+        float halfWidth = 0.007f;
+
+        flatShader->use();
+        lineColor->set(palette::cro::fg, 4);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        const unsigned long quadCount = samplesToRead - 1;
+        const unsigned long vertCount = quadCount * 4;
+        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+
+        glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
+        glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
+
+        float* ptr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        if(!ptr) return;
+
+        float prevX, prevY;
+        {
+            auto raw = data->get();
+            prevX = raw.x * gain + ndcCenterX;
+            prevY = raw.y * gain + ndcCenterY;
+        }
+
+        for(unsigned long i = 1; i < samplesToRead; ++i)
+        {
+            auto raw = data->get();
+            float x = raw.x * gain + ndcCenterX;
+            float y = raw.y * gain + ndcCenterY;
+
+            float dx = x - prevX;
+            float dy = y - prevY;
+
+            float len = std::sqrt(dx*dx + dy*dy);
+            if (len < 1e-9f) len = 1.0f;
+
+            dx /= len;
+            dy /= len;
+
+            float nx = -dy * halfWidth;
+            float ny =  dx * halfWidth;
+
+            *ptr++ = prevX + nx; *ptr++ = prevY + ny;
+            *ptr++ = prevX - nx; *ptr++ = prevY - ny;
+            *ptr++ = x     + nx; *ptr++ = y     + ny;
+            *ptr++ = x     - nx; *ptr++ = y     - ny;
+
+            prevX = x;
+            prevY = y;
+        }
+
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+
+        glEnableVertexAttribArray(linePos->attributeID);
+        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) vertCount);
+
+        glDisableVertexAttribArray(linePos->attributeID);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisable(GL_BLEND);
+    }
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
+    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+
+    renderBloom();
 
     glDisable(GL_BLEND);
 }
 
 void Display::renderScope2(bool Skip) noexcept
 {
+    // 1) Draw background/UI to main framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
     renderQuad();
+    // 2) Draw scope into full-res scopeFBO
+    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    if(auto data = _data.lock())
+    glEnable(GL_MULTISAMPLE);    if(auto data = _data.lock())
     {
         unsigned long current = data->written();
         unsigned long samplesToRead = current - samplesLastProduced;
@@ -703,24 +780,19 @@ void Display::renderScope2(bool Skip) noexcept
         glDisable(GL_BLEND);
     }
 
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
+    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+
+    renderBloom();
+
+    glDisable(GL_BLEND);
 }
 
 void Display::croMenu()
 {    
     juce::OpenGLHelpers::clear(palette::bg_dimmed);
 
-
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // glViewport(0, 0, area.w, area.h);
-    //
-    // graticuleShader->use();
-    //
-    // uGratColor->set(0.2f, 0.8f, 0.2f, 0.15f);
-    // uGratThicknessMajor->set(0.002f);
-    // uGratThicknessMinor->set(0.001f);
-    //
-    // renderFullscreenQuad(*postPosThreshold); // any fullscreen quad attribute
-    
     if(scope_type->load() < 0.5f)
     {
         renderScope3(skipScopeRender);
@@ -729,7 +801,6 @@ void Display::croMenu()
     {
         renderScope2(skipScopeRender);
     }
-   // hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, layer.get());
 }
 
 
@@ -814,14 +885,14 @@ void Display::vSoft(const int a, const int b, const int c, const int d)
     core::draw_glyph(layer.get(), gtFont, d, offset, step * 26, contrast);
 }
 
-void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* layer)
+void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
 {
-    auto step = area.w / 30;
-    auto offset = area.h - area.h / 15;
-    core::draw_glyph(layer, gtFont, a, step *  8, offset, opacity);
-    core::draw_glyph(layer, gtFont, b, step * 13, offset, opacity);
-    core::draw_glyph(layer, gtFont, c, step * 18, offset, opacity);
-    core::draw_glyph(layer, gtFont, d, step * 23, offset, opacity);
+    auto step = canvas->width / 30;
+    auto offset = canvas->height - canvas->height / 17;
+    core::draw_glyph(canvas, gtFont, a, step *  8 + 4, offset, opacity);
+    core::draw_glyph(canvas, gtFont, b, step * 13 + 4, offset, opacity);
+    core::draw_glyph(canvas, gtFont, c, step * 18 + 4, offset, opacity);
+    core::draw_glyph(canvas, gtFont, d, step * 23 + 4, offset, opacity);
 }
 
 void Display::offMenu()
@@ -888,11 +959,6 @@ void Display::resized()
     reset();
     
     const auto bounds = getLocalBounds().toFloat();
-    if (openGLContext.isActive()) 
-    {
-        framebufferTexture.loadImage (*framebuffer);  // Loads Image to GL texture [web:24]
-        glFramebuffer.makeCurrentRenderingTarget();   // Binds FBO for offscreen render 
-    }
 
     ndcW = 2.0f / area.w;
     ndcH = 2.0f / area.h;
@@ -919,9 +985,6 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     openGLContext.setPixelFormat(pixelFormat);
     openGLContext.setRenderer(this); 
     openGLContext.attachTo(*this);
-
-
-
 
     setOpaque(false);
 

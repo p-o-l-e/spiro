@@ -1,8 +1,21 @@
 #include <string>
+#include <vector>
 #include <string_view>
 
 namespace shader
 {
+    struct Descriptor 
+    {
+        enum Type { Vertex, Fragment };
+        const Type type;
+
+        const std::string_view shader;
+        
+        const std::vector<std::string> attribute;
+        const std::vector<std::string> uniform;
+        const std::vector<std::string> varying;
+    };
+
     namespace vertex 
     {
         constexpr std::string_view passthrough(R"(
@@ -189,44 +202,97 @@ namespace shader
             }
 
         )");
+    }
+    
+    namespace descriptor {
+    
+        static const Descriptor passthrough {
+            Descriptor::Vertex,
+            shader::vertex::passthrough,
+            { "position", "texCoord" },
+            { },
+            { "vTex" }
+        };
 
-        constexpr std::string_view graticule(R"(
+        static const Descriptor flat_v {
+            Descriptor::Vertex,
+            shader::vertex::flat,
+            { "position" },
+            { },
+            { "vPos" }
+        };
 
+        static const Descriptor ndc_to_uv {
+            Descriptor::Vertex,
+            shader::vertex::ndc_to_uv,
+            { "position" },
+            { },
+            { "vTex" }
+        };
 
+        static const Descriptor flat_f {
+            Descriptor::Fragment,
+            shader::fragment::flat,
+            { },
+            { "color" },
+            { "vPos" }
+        };
 
+        static const Descriptor threshold {
+            Descriptor::Fragment,
+            shader::fragment::threshold,
+            { },
+            { "tex", "threshold" },
+            { "vTex" }
+        };
 
-uniform vec4 color;
-uniform float thickness;   // in pixels
-uniform vec2 resolution;
+        static const Descriptor hblur {
+            Descriptor::Fragment,
+            shader::fragment::hblur,
+            { },
+            { "tex", "texelSize" },
+            { "vTex" }
+        };
 
-varying vec2 vTex;
+        static const Descriptor vblur {
+            Descriptor::Fragment,
+            shader::fragment::vblur,
+            { },
+            { "tex", "texelSize" },
+            { "vTex" }
+        };
 
-float line1D(float coordPx, float spacingPx, float t)
-{
-    float dist = abs(mod(coordPx, spacingPx) - spacingPx * 0.5);
-    return 1.0 - smoothstep(t, t + 1.0, dist);
-}
+        static const Descriptor tex_add {
+            Descriptor::Fragment,
+            shader::fragment::tex_add,
+            { },
+            { "baseTex", "bloomTex" },
+            { "vTex" }
+        };
 
-void main()
-{
-    // snap to pixel centers
-    vec2 coordPx = floor(vTex * resolution) + 0.5;
+        static const Descriptor red_gate {
+            Descriptor::Fragment,
+            shader::fragment::red_gate,
+            { },
+            { "tex", "fgColor", "bgColor" },
+            { "vTex" }
+        };
 
-    float spacingPx = resolution.y * 0.2;
+        static const Descriptor afterglow_fade {
+            Descriptor::Fragment,
+            shader::fragment::afterglow_fade,
+            { },
+            { "tex", "decay" },
+            { "vTex" }
+        };
 
-    float lx = line1D(coordPx.x, spacingPx, thickness);
-    float ly = line1D(coordPx.y, spacingPx, thickness);
-
-    float v = max(lx, ly);
-
-    gl_FragColor = color * v;
-}
-
-
-
-
-
-        )");
+        static const Descriptor afterglow_accumulator {
+            Descriptor::Fragment,
+            shader::fragment::afterglow_accumulator,
+            { },
+            { "prevTex", "newTex" },
+            { "vTex" }
+        };
 
     }
    
