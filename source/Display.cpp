@@ -27,7 +27,7 @@
 #include "fonts.h"
 #include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
-#include "core/graphics/shaders.hpp"
+#include "shader_descriptor.hpp"
 #include "shapes.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -35,124 +35,8 @@
 
 using namespace juce::gl;
 
-
-
-static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas,
-                                    uint8_t intensity = 0x5F,
-                                    unsigned vdiv = 10,
-                                    unsigned hdiv = 8,
-                                    unsigned minGap = 5) noexcept
-{
-    const float W = float(canvas->width);
-    const float H = float(canvas->height);
-
-    // usable area after enforcing minGap
-    const float usableW = std::max(0.0f, W - 2.0f * float(minGap));
-    const float usableH = std::max(0.0f, H - 2.0f * float(minGap));
-
-    // enforce square divisions
-    const float stepX = usableW / vdiv;
-    const float stepY = usableH / hdiv;
-    const float step  = std::min(stepX, stepY);
-
-    // actual grid size
-    const float gridW = step * vdiv;
-    const float gridH = step * hdiv;
-
-    // center the grid inside the minGap box
-    const float hgap = (W - gridW) * 0.5f;
-    const float vgap = (H - gridH) * 0.5f;
-
-    // center coordinates
-    const float cx = hgap + gridW * 0.5f;
-    const float cy = vgap + gridH * 0.5f;
-
-    // minor tick spacing
-    const float sub = step / 5.0f;
-
-    // -----------------------------
-    // Major vertical lines
-    // -----------------------------
-    for (unsigned i = 0; i <= vdiv; ++i)
-    {
-        float x = hgap + i * step;
-        int xi = int(std::round(x));
-        core::drawVLine(canvas, xi,
-                        int(std::round(vgap)),
-                        int(std::round(vgap + gridH)),
-                        intensity);
-    }
-
-    // -----------------------------
-    // Major horizontal lines
-    // -----------------------------
-    for (unsigned i = 0; i <= hdiv; ++i)
-    {
-        float y = vgap + i * step;
-        int yi = int(std::round(y));
-        core::drawHLine(canvas,
-                        int(std::round(hgap)),
-                        yi,
-                        int(std::round(hgap + gridW)),
-                        intensity);
-    }
-
-    // -----------------------------
-    // Minor vertical ticks (center only)
-    // -----------------------------
-    const float tickH = step * 0.2f;
-
-    for (unsigned i = 0; i < vdiv * 5; ++i)
-    {
-        float x = hgap + i * sub;
-        int xi = int(std::round(x));
-
-        core::drawVLine(canvas, xi,
-                        int(std::round(cy - tickH)),
-                        int(std::round(cy + tickH)),
-                        intensity);
-    }
-
-    // -----------------------------
-    // Minor horizontal ticks (center only)
-    // -----------------------------
-    const float tickW = step * 0.2f;
-
-    for (unsigned i = 0; i < hdiv * 5; ++i)
-    {
-        float y = vgap + i * sub;
-        int yi = int(std::round(y));
-
-        core::drawHLine(canvas,
-                        int(std::round(cx - tickW)),
-                        yi,
-                        int(std::round(cx + tickW)),
-                        intensity);
-    }
-
-    // -----------------------------
-    // Dotted lines at ±2.4 divisions
-    // -----------------------------
-    const float dottedOffset = step * 2.4f;
-
-    const int yt = int(std::round(cy - dottedOffset));
-    const int yb = int(std::round(cy + dottedOffset));
-
-    for (unsigned i = 0; i < vdiv * 5; ++i)
-    {
-        int x = int(std::round(hgap + i * sub));
-        canvas->set(x, yt, intensity);
-        canvas->set(x, yb, intensity);
-    }
-}
-
-static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept
-{
-    core::drawHLine(canvas, 0, 0, canvas->width, 0xFF);
-    core::drawHLine(canvas, 0, canvas->height - 1, canvas->width, 0xFF);
-    core::drawVLine(canvas, 0, 0, canvas->height, 0xFF);
-    core::drawVLine(canvas, canvas->width - 1, 0, canvas->height, 0xFF);
-}
+static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
+static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
 void Display::switchPage(Processor* o, const Page p)
 {
@@ -227,6 +111,8 @@ void Display::openGLContextClosing()
 
 void Display::createShaders()
 {
+    using namespace core;
+
     brightnessShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     brightnessShader->addVertexShader(std::string(shader::vertex::passthrough));
     brightnessShader->addFragmentShader(std::string(shader::fragment::red_gate));
@@ -239,13 +125,14 @@ void Display::createShaders()
     uniFgColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "fgColor");
     uniBgColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*brightnessShader, "bgColor");
 
-    flatShader.reset(new juce::OpenGLShaderProgram(openGLContext));
-    flatShader->addVertexShader(std::string(shader::vertex::flat));
-    flatShader->addFragmentShader(std::string(shader::fragment::flat));
-    flatShader->link();
+    shader[ShaderType::Solid] = std::make_unique<Shader>
+    (
+        &openGLContext,
+        &core::shader::postprocess::descriptor,
+        &core::shader::solid::descriptor
+    );
+    
 
-    linePos = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*flatShader, "position"); 
-    lineColor = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*flatShader, "color");
 
     thresholdShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     thresholdShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
@@ -257,11 +144,11 @@ void Display::createShaders()
 
     bloomCompositeShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     bloomCompositeShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
-    bloomCompositeShader->addFragmentShader(std::string(shader::fragment::tex_add));
+    bloomCompositeShader->addFragmentShader(std::string(shader::fragment::combine_add));
     bloomCompositeShader->link();
 
-    uBaseTex  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "baseTex");
-    uBloomTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "bloomTex");
+    uBaseTex  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "uTexA");
+    uBloomTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*bloomCompositeShader, "uTexB");
    
     
     postPosThreshold = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*thresholdShader, "position");
@@ -291,7 +178,7 @@ void Display::createShaders()
     // Afterglow
     afterglowFadeShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
     afterglowFadeShader->addVertexShader(std::string(shader::vertex::ndc_to_uv)); 
-    afterglowFadeShader->addFragmentShader(std::string(shader::fragment::afterglow_fade)); 
+    afterglowFadeShader->addFragmentShader(std::string(shader::fragment::afterglow)); 
     afterglowFadeShader->link();
 
     uAfterglowFadeTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowFadeShader, "tex"); 
@@ -299,23 +186,12 @@ void Display::createShaders()
 
     afterglowAccumulateShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
     afterglowAccumulateShader->addVertexShader(std::string(shader::vertex::ndc_to_uv)); 
-    afterglowAccumulateShader->addFragmentShader(std::string(shader::fragment::afterglow_accumulator)); 
+    afterglowAccumulateShader->addFragmentShader(std::string(shader::fragment::combine_add)); 
     afterglowAccumulateShader->link(); 
 
-    uAfterglowPrevTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "prevTex"); 
-    uAfterglowNewTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "newTex");
+    uAfterglowPrevTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "uTexA"); 
+    uAfterglowNewTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*afterglowAccumulateShader, "uTexB");
 
-    // Graticule shader
-    //graticuleShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
-
-    //graticuleShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
-    // graticuleShader->addFragmentShader(std::string(shader::fragment::graticule));
-    // graticuleShader->link();
-    //
-    // uGratColor      = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "color");
-    // uGratThickness  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "thickness");
-    // uGratRes  = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*graticuleShader, "resolution");
-    //
     createQuadBuffers();
 }
 
@@ -478,7 +354,7 @@ void Display::renderBloom() noexcept
 
     renderFullscreenQuad(*postPosThreshold);
 
-    // 3) Threshold: afterglowTex → blurFBO_H
+    // Threshold: afterglowTex → blurFBO_H
     glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_H);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
@@ -493,7 +369,7 @@ void Display::renderBloom() noexcept
 
     renderFullscreenQuad(*postPosThreshold);
 
-    // 4) Horizontal blur: blurTex_H ← threshold result
+    // Horizontal blur: blurTex_H ← threshold result
     glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_V);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
@@ -508,7 +384,7 @@ void Display::renderBloom() noexcept
 
     renderFullscreenQuad(*postPosHBlur);
 
-    // 5) Vertical blur: blurTex_V ← blurTex_H
+    // Vertical blur: blurTex_V ← blurTex_H
     glBindFramebuffer(GL_FRAMEBUFFER, blurFBO_H);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
@@ -523,7 +399,7 @@ void Display::renderBloom() noexcept
 
     renderFullscreenQuad(*postPosVBlur);
 
-    // 6) Composite bloom over main framebuffer
+    // Composite bloom over main framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
 
@@ -589,6 +465,7 @@ void Display::renderOpenGL()
 
 void Display::renderScope3(bool Skip) noexcept
 {
+    using namespace core::shader;
     // 1) Draw background/UI to main framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
@@ -618,8 +495,8 @@ void Display::renderScope3(bool Skip) noexcept
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
         float halfWidth = 0.007f;
 
-        flatShader->use();
-        lineColor->set(palette::cro::fg, 4);
+        shader[ShaderType::Solid]->use();
+        shader[ShaderType::Solid]->fU[solid::uniform::color]->set(palette::cro::fg, 4);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -670,19 +547,21 @@ void Display::renderScope3(bool Skip) noexcept
 
         glUnmapBuffer(GL_ARRAY_BUFFER);
 
-        glEnableVertexAttribArray(linePos->attributeID);
-        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+        auto attributeID = shader[ShaderType::Solid]->vA[postprocess::attribute::position]->attributeID;
 
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) vertCount);
+        glEnableVertexAttribArray(attributeID);
+        glVertexAttribPointer(attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-        glDisableVertexAttribArray(linePos->attributeID);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)vertCount);
+
+        glDisableVertexAttribArray(attributeID);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDisable(GL_BLEND);
     }
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
-    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     renderBloom();
 
@@ -691,6 +570,7 @@ void Display::renderScope3(bool Skip) noexcept
 
 void Display::renderScope2(bool Skip) noexcept
 {
+    using namespace core::shader;
     // 1) Draw background/UI to main framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
@@ -701,7 +581,9 @@ void Display::renderScope2(bool Skip) noexcept
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glEnable(GL_MULTISAMPLE);    if(auto data = _data.lock())
+    glEnable(GL_MULTISAMPLE);    
+
+    if(auto data = _data.lock())
     {
         unsigned long current = data->written();
         unsigned long samplesToRead = current - samplesLastProduced;
@@ -716,10 +598,10 @@ void Display::renderScope2(bool Skip) noexcept
         if(samplesToRead < 0x40) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
-        float halfWidth = 0.007f;
+        float halfWidth = 1.0f/ (float)area.w;
 
-        flatShader->use();
-        lineColor->set(palette::cro::fg, 4);
+        shader[ShaderType::Solid]->use();
+        shader[ShaderType::Solid]->fU[solid::uniform::color]->set(palette::cro::fg, 4);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -770,12 +652,13 @@ void Display::renderScope2(bool Skip) noexcept
 
         glUnmapBuffer(GL_ARRAY_BUFFER);
 
-        glEnableVertexAttribArray(linePos->attributeID);
-        glVertexAttribPointer(linePos->attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+        auto attributeID = shader[ShaderType::Solid]->vA[postprocess::attribute::position]->attributeID;
+        glEnableVertexAttribArray(attributeID);
+        glVertexAttribPointer(attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
         glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)vertCount);
 
-        glDisableVertexAttribArray(linePos->attributeID);
+        glDisableVertexAttribArray(attributeID);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDisable(GL_BLEND);
     }
@@ -802,7 +685,6 @@ void Display::croMenu()
         renderScope2(skipScopeRender);
     }
 }
-
 
 void Display::saveMenu()
 {
@@ -889,10 +771,10 @@ void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
 {
     auto step = canvas->width / 30;
     auto offset = canvas->height - canvas->height / 17;
-    core::draw_glyph(canvas, gtFont, a, step *  8 + 4, offset, opacity);
-    core::draw_glyph(canvas, gtFont, b, step * 13 + 4, offset, opacity);
-    core::draw_glyph(canvas, gtFont, c, step * 18 + 4, offset, opacity);
-    core::draw_glyph(canvas, gtFont, d, step * 23 + 4, offset, opacity);
+    core::drawGlyph(canvas, gtFont, a, step *  8 + 4, offset, opacity);
+    core::drawGlyph(canvas, gtFont, b, step * 13 + 4, offset, opacity);
+    core::drawGlyph(canvas, gtFont, c, step * 18 + 4, offset, opacity);
+    core::drawGlyph(canvas, gtFont, d, step * 23 + 4, offset, opacity);
 }
 
 void Display::offMenu()
@@ -1037,4 +919,82 @@ void OledLabel::paint(juce::Graphics& g)
 void Display::reset()
 {
 
+}
+
+static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
+{
+    const float W = float(canvas->width);
+    const float H = float(canvas->height);
+    // usable area after enforcing minGap
+    const float usableW = std::max(0.0f, W - 2.0f * float(minGap));
+    const float usableH = std::max(0.0f, H - 2.0f * float(minGap));
+    // enforce square divisions
+    const float stepX = usableW / vdiv;
+    const float stepY = usableH / hdiv;
+    const float step  = std::min(stepX, stepY);
+    // actual grid size
+    const float gridW = step * vdiv;
+    const float gridH = step * hdiv;
+    // center the grid inside the minGap box
+    const float hgap = (W - gridW) * 0.5f;
+    const float vgap = (H - gridH) * 0.5f;
+    // center coordinates
+    const float cx = hgap + gridW * 0.5f;
+    const float cy = vgap + gridH * 0.5f;
+    // minor tick spacing
+    const float sub = step / 5.0f;
+    // Major vertical lines
+    for (unsigned i = 0; i <= vdiv; ++i)
+    {
+        float x = hgap + i * step;
+        int xi = int(std::round(x));
+        core::drawVLine(canvas, xi, int(std::round(vgap)), int(std::round(vgap + gridH)), intensity);
+    }
+    // Major horizontal lines
+    for (unsigned i = 0; i <= hdiv; ++i)
+    {
+        float y = vgap + i * step;
+        int yi = int(std::round(y));
+        core::drawHLine(canvas, int(std::round(hgap)), yi, int(std::round(hgap + gridW)), intensity);
+    }
+    // Minor vertical ticks
+    const float tickH = step * 0.2f;
+
+    for (unsigned i = 0; i < vdiv * 5; ++i)
+    {
+        float x = hgap + i * sub;
+        int xi = int(std::round(x));
+
+        core::drawVLine(canvas, xi, int(std::round(cy - tickH)), int(std::round(cy + tickH)), intensity);
+    }
+    // Minor horizontal ticks
+    const float tickW = step * 0.2f;
+
+    for (unsigned i = 0; i < hdiv * 5; ++i)
+    {
+        float y = vgap + i * sub;
+        int yi = int(std::round(y));
+
+        core::drawHLine(canvas, int(std::round(cx - tickW)), yi, int(std::round(cx + tickW)), intensity);
+    }
+    // Dotted lines at ±2.4 divisions
+    const float dottedOffset = step * 2.4f;
+
+    const int yt = int(std::round(cy - dottedOffset));
+    const int yb = int(std::round(cy + dottedOffset));
+
+    for (unsigned i = 0; i < vdiv * 5; ++i)
+    {
+        int x = int(std::round(hgap + i * sub));
+        canvas->set(x, yt, intensity);
+        canvas->set(x, yb, intensity);
+    }
+}
+
+static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept
+{
+    core::drawHLine(canvas, 0, 0, canvas->width, 0xFF);
+    core::drawHLine(canvas, 0, canvas->height - 1, canvas->width, 0xFF);
+    core::drawVLine(canvas, 0, 0, canvas->height, 0xFF);
+    core::drawVLine(canvas, canvas->width - 1, 0, canvas->height, 0xFF);
 }

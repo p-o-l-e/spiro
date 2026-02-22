@@ -1,20 +1,9 @@
 #include <string>
-#include <vector>
+#include <span>
 #include <string_view>
 
-namespace shader
-{
-    struct Descriptor 
-    {
-        enum Type { Vertex, Fragment };
-        const Type type;
-
-        const std::string_view shader;
-        
-        const std::vector<std::string> attribute;
-        const std::vector<std::string> uniform;
-        const std::vector<std::string> varying;
-    };
+namespace core {
+namespace shader {
 
     namespace vertex 
     {
@@ -31,7 +20,7 @@ namespace shader
 
         )");
         
-        constexpr std::string_view flat(R"(
+        constexpr std::string_view postprocess(R"(
 
             attribute vec2 position; 
             varying vec2 vPos; 
@@ -59,7 +48,7 @@ namespace shader
 
     namespace fragment 
     {
-        constexpr std::string_view flat(R"(
+        constexpr std::string_view solid(R"(
 
             uniform float color[4];
             varying vec2 vPos;
@@ -95,17 +84,17 @@ namespace shader
             void main()
             {
                 vec4 sum = vec4(0.0);
-                sum += texture2D(tex, vTex + vec2(-5.0 * texelSize, 0.0)) * 0.01;
-                sum += texture2D(tex, vTex + vec2(-4.0 * texelSize, 0.0)) * 0.02;
-                sum += texture2D(tex, vTex + vec2(-3.0 * texelSize, 0.0)) * 0.03;
-                sum += texture2D(tex, vTex + vec2(-2.0 * texelSize, 0.0)) * 0.05;
-                sum += texture2D(tex, vTex + vec2(-1.0 * texelSize, 0.0)) * 0.12;
-                sum += texture2D(tex, vTex) * 0.5;
-                sum += texture2D(tex, vTex + vec2( 1.0 * texelSize, 0.0)) * 0.12;
-                sum += texture2D(tex, vTex + vec2( 2.0 * texelSize, 0.0)) * 0.05;
-                sum += texture2D(tex, vTex + vec2( 3.0 * texelSize, 0.0)) * 0.03;
-                sum += texture2D(tex, vTex + vec2( 4.0 * texelSize, 0.0)) * 0.02;
-                sum += texture2D(tex, vTex + vec2( 5.0 * texelSize, 0.0)) * 0.01;
+                sum += texture2D(tex, vTex + vec2(-5.0 * texelSize, 0.0)) * 0.010;
+                sum += texture2D(tex, vTex + vec2(-4.0 * texelSize, 0.0)) * 0.015;
+                sum += texture2D(tex, vTex + vec2(-3.0 * texelSize, 0.0)) * 0.027;
+                sum += texture2D(tex, vTex + vec2(-2.0 * texelSize, 0.0)) * 0.056;
+                sum += texture2D(tex, vTex + vec2(-1.0 * texelSize, 0.0)) * 0.164;
+                sum += texture2D(tex, vTex) * 0.455;
+                sum += texture2D(tex, vTex + vec2( 1.0 * texelSize, 0.0)) * 0.164;
+                sum += texture2D(tex, vTex + vec2( 2.0 * texelSize, 0.0)) * 0.056;
+                sum += texture2D(tex, vTex + vec2( 3.0 * texelSize, 0.0)) * 0.027;
+                sum += texture2D(tex, vTex + vec2( 4.0 * texelSize, 0.0)) * 0.015;
+                sum += texture2D(tex, vTex + vec2( 5.0 * texelSize, 0.0)) * 0.010;
                 gl_FragColor = sum;
             }
 
@@ -120,33 +109,33 @@ namespace shader
             void main()
             {
                 vec4 sum = vec4(0.0);
-                sum += texture2D(tex, vTex + vec2( 0.0, -5.0 * texelSize)) * 0.01;
-                sum += texture2D(tex, vTex + vec2( 0.0, -4.0 * texelSize)) * 0.02;
-                sum += texture2D(tex, vTex + vec2( 0.0, -3.0 * texelSize)) * 0.03;
-                sum += texture2D(tex, vTex + vec2( 0.0, -2.0 * texelSize)) * 0.05;
-                sum += texture2D(tex, vTex + vec2( 0.0, -1.0 * texelSize)) * 0.12;
-                sum += texture2D(tex, vTex) * 0.5;
-                sum += texture2D(tex, vTex + vec2( 0.0,  1.0 * texelSize)) * 0.12;
-                sum += texture2D(tex, vTex + vec2( 0.0,  2.0 * texelSize)) * 0.05;
-                sum += texture2D(tex, vTex + vec2( 0.0,  3.0 * texelSize)) * 0.03;
-                sum += texture2D(tex, vTex + vec2( 0.0,  4.0 * texelSize)) * 0.02;
-                sum += texture2D(tex, vTex + vec2( 0.0,  5.0 * texelSize)) * 0.01;
+                sum += texture2D(tex, vTex + vec2( 0.0, -5.0 * texelSize)) * 0.010;
+                sum += texture2D(tex, vTex + vec2( 0.0, -4.0 * texelSize)) * 0.015;
+                sum += texture2D(tex, vTex + vec2( 0.0, -3.0 * texelSize)) * 0.027;
+                sum += texture2D(tex, vTex + vec2( 0.0, -2.0 * texelSize)) * 0.056;
+                sum += texture2D(tex, vTex + vec2( 0.0, -1.0 * texelSize)) * 0.164;
+                sum += texture2D(tex, vTex) * 0.455;
+                sum += texture2D(tex, vTex + vec2( 0.0,  1.0 * texelSize)) * 0.164;
+                sum += texture2D(tex, vTex + vec2( 0.0,  2.0 * texelSize)) * 0.056;
+                sum += texture2D(tex, vTex + vec2( 0.0,  3.0 * texelSize)) * 0.027;
+                sum += texture2D(tex, vTex + vec2( 0.0,  4.0 * texelSize)) * 0.015;
+                sum += texture2D(tex, vTex + vec2( 0.0,  5.0 * texelSize)) * 0.010;
                 gl_FragColor = sum;
             }
 
         )");
 
-        constexpr std::string_view tex_add(R"(
+        constexpr std::string_view combine_add(R"(
 
-            uniform sampler2D baseTex;
-            uniform sampler2D bloomTex;
+            uniform sampler2D uTexA;
+            uniform sampler2D uTexB;
             varying vec2 vTex;
 
             void main()
             {
-                vec4 base = texture2D(baseTex, vTex);
-                vec4 bloom = texture2D(bloomTex, vTex);
-                gl_FragColor = base + bloom; // additive glow
+                vec4 a = texture2D(uTexA, vTex);
+                vec4 b = texture2D(uTexB, vTex);
+                gl_FragColor = a + b;
             }
 
         )");
@@ -170,7 +159,7 @@ namespace shader
 
         )");
 
-        constexpr std::string_view afterglow_fade(R"(
+        constexpr std::string_view afterglow(R"(
 
             uniform sampler2D tex;
             uniform float decay;
@@ -188,113 +177,6 @@ namespace shader
 
         )");
 
-        constexpr std::string_view afterglow_accumulator(R"(
-
-            uniform sampler2D prevTex;
-            uniform sampler2D newTex;
-            varying vec2 vTex;
-
-            void main()
-            {
-                vec4 old = texture2D(prevTex, vTex);
-                vec4 now = texture2D(newTex, vTex);
-                gl_FragColor = old + now;
-            }
-
-        )");
     }
-    
-    namespace descriptor {
-    
-        static const Descriptor passthrough {
-            Descriptor::Vertex,
-            shader::vertex::passthrough,
-            { "position", "texCoord" },
-            { },
-            { "vTex" }
-        };
-
-        static const Descriptor flat_v {
-            Descriptor::Vertex,
-            shader::vertex::flat,
-            { "position" },
-            { },
-            { "vPos" }
-        };
-
-        static const Descriptor ndc_to_uv {
-            Descriptor::Vertex,
-            shader::vertex::ndc_to_uv,
-            { "position" },
-            { },
-            { "vTex" }
-        };
-
-        static const Descriptor flat_f {
-            Descriptor::Fragment,
-            shader::fragment::flat,
-            { },
-            { "color" },
-            { "vPos" }
-        };
-
-        static const Descriptor threshold {
-            Descriptor::Fragment,
-            shader::fragment::threshold,
-            { },
-            { "tex", "threshold" },
-            { "vTex" }
-        };
-
-        static const Descriptor hblur {
-            Descriptor::Fragment,
-            shader::fragment::hblur,
-            { },
-            { "tex", "texelSize" },
-            { "vTex" }
-        };
-
-        static const Descriptor vblur {
-            Descriptor::Fragment,
-            shader::fragment::vblur,
-            { },
-            { "tex", "texelSize" },
-            { "vTex" }
-        };
-
-        static const Descriptor tex_add {
-            Descriptor::Fragment,
-            shader::fragment::tex_add,
-            { },
-            { "baseTex", "bloomTex" },
-            { "vTex" }
-        };
-
-        static const Descriptor red_gate {
-            Descriptor::Fragment,
-            shader::fragment::red_gate,
-            { },
-            { "tex", "fgColor", "bgColor" },
-            { "vTex" }
-        };
-
-        static const Descriptor afterglow_fade {
-            Descriptor::Fragment,
-            shader::fragment::afterglow_fade,
-            { },
-            { "tex", "decay" },
-            { "vTex" }
-        };
-
-        static const Descriptor afterglow_accumulator {
-            Descriptor::Fragment,
-            shader::fragment::afterglow_accumulator,
-            { },
-            { "prevTex", "newTex" },
-            { "vTex" }
-        };
-
-    }
-   
 }
-
+}

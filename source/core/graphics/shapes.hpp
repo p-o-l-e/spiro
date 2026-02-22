@@ -78,7 +78,7 @@ constexpr void drawHLine(core::Canvas<uint8_t>* canvas, unsigned xo, unsigned yo
     }
 }
 
-constexpr void draw_glyph(core::Canvas<uint8_t>* canvas, const char* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
+constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const char* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
 {
     int pos = id * w;
     uint8_t stencil = 0b1;
@@ -101,7 +101,16 @@ constexpr void draw_text_label(core::Canvas<float>* canvas, const char* font, co
     }
 }
 
-inline float capsule_sdf(float px, float py, float ax, float ay, float bx, float by, float r) 
+constexpr void drawTextLabel(core::Canvas<uint8_t>* canvas, const char* font, const char* text, int xo, int yo, const uint8_t opacity, int w = 7)
+{
+    int n = strlen(text);
+    for(int i = 0; i < n; i++)
+    {
+        drawGlyph(canvas, font, text[i] - 32, xo + i * (w + 1), yo, opacity);
+    }
+}
+
+inline float capsuleSDF(float px, float py, float ax, float ay, float bx, float by, float r) 
 {
     float pax = px - ax, pay = py - ay, bax = bx - ax, bay = by - ay;
     float h = fmaxf(fminf((pax * bax + pay * bay) / (bax * bax + bay * bay), 1.0f), 0.0f);
@@ -124,7 +133,7 @@ constexpr void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, floa
     {
         for(int x = xo; x <= xe; x++)
         {
-            alphablend(canvas, x, y, std::max(std::min(0.5f - capsule_sdf(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
+            alphablend(canvas, x, y, std::max(std::min(0.5f - capsuleSDF(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
         }
     }
 }

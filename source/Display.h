@@ -24,9 +24,10 @@
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "canvas.hpp"
-#include "juce_opengl/juce_opengl.h"
+#include "JuceShader.hpp"
 #include <chrono>
 #include <cstdint>
+#include <memory>
 #include <string_view>
 
 namespace glyph
@@ -57,26 +58,22 @@ struct OledLabel: public juce::TextEditor
    ~OledLabel() = default;
 };
 
-namespace core {
 
-    struct Shader
-    {
-        const int attributes;
-        const int uniforms;
-
-        const std::string_view* const vertex;
-        const std::string_view* const fragment;
-
-        juce::OpenGLShaderProgram* shaderProgram = nullptr;
-        juce::OpenGLShaderProgram::Attribute* attribute = nullptr;
-        juce::OpenGLShaderProgram::Uniform* uniform = nullptr;
-    };
-}
 
 class Display: public juce::Component, private juce::OpenGLRenderer
 {
     public:
 		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, MainMenu, About, COUNT };
+        enum ShaderType 
+        {
+            Solid,
+            Threshold,
+            HBlur,
+            VBlur,
+            CombineAdd,
+            Afterglow,
+            Size
+        };
 
 	private:
         Processor *processor;
@@ -84,11 +81,9 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		std::unique_ptr<core::Canvas<float>> canvas;
 		std::unique_ptr<core::Canvas<float>> layer;
 
+        std::unique_ptr<Shader> shader[ShaderType::Size];
+
         std::unique_ptr<juce::OpenGLShaderProgram> brightnessShader;
-        // Scope
-        std::unique_ptr<juce::OpenGLShaderProgram> flatShader;
-        std::unique_ptr<juce::OpenGLShaderProgram::Attribute> linePos;
-        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> lineColor;
         // Threshold
         std::unique_ptr<juce::OpenGLShaderProgram> thresholdShader;
         std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uThresholdTex; 
@@ -114,11 +109,11 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowNewTex;
 
 
-        std::unique_ptr<juce::OpenGLShaderProgram> graticuleShader;
+        //std::unique_ptr<juce::OpenGLShaderProgram> graticuleShader;
 
-        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratColor;
-        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratThickness;
-        std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratRes;
+        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratColor;
+        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratThickness;
+        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratRes;
 
         std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrPos; 
         std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrTex;
