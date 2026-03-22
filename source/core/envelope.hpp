@@ -15,23 +15,23 @@ struct breakpoint
 class Envelope
 {
     private:
-        float theta = 0.0f;                 // Level difference
+        float theta = 0.0f;
         unsigned delta = 0;
         float prior = 0.0f;
 
     public:
-        breakpoint  node[env::Segments];
-        unsigned    time[env::Segments];
-        float      value[env::Segments];
-        float      curve[env::Segments];
-        uint  departed;                     // Current sample
-        int   stage = 0;                    // Current stage
-        void  start();          
-        void  next_stage();
-        void  reset();
+        breakpoint node[env::Segments];
+        unsigned time[env::Segments];
+        float value[env::Segments];
+        float curve[env::Segments];
+        unsigned departed;
+        int stage = 0;
+        void start();          
+        void next_stage();
+        void reset();
         float iterate();
-        bool  regenerate = false;
-        void  generate(float*, const int);        // Compute Envelope to given array
+        bool regenerate = false;
+        void generate(float*, const int);
         Envelope();
        ~Envelope() = default;
 };

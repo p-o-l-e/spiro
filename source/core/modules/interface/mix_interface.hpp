@@ -15,13 +15,13 @@ namespace core
         constexpr int ic { 5 };
         constexpr int oc { 2 };
 
-        struct ctl { enum id { alpha, theta, amp,                }; };              // Controls
+        struct ctl { enum id { alpha, theta, amp,                }; };             // Controls
         struct cvi { enum id { l, c, r, alpha, theta             }; };             // CV in
         struct cvo { enum id { l, r                              }; };             // CV out
 
-        constexpr std::string prefix    { "mix"                                             };
+        constexpr std::string_view prefix    { "mix"                                             };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input ,    {  31.00f,  14.00f,  16.00f,  16.00f }, "l"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -31,14 +31,14 @@ namespace core
             { Control::type::input ,    {   1.00f,  59.00f,  16.00f,  16.00f }, "theta"  , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::pin      , {    0.0f,    0.0f,    0.0f,    0.0f }, "l"      , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
             { Control::type::pin      , {    0.0f,    0.0f,    0.0f,    0.0f }, "r"      , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        constexpr core::Control set_c[cc]
+        const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::slider   , {  67.00f,  17.00f,  32.00f,  32.00f }, "alpha"  , 0.00f, 1.00f, 0.00f, 1.00f, 0.001f, 0x00, false, map::flag::encoder  },

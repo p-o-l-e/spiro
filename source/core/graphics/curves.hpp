@@ -28,7 +28,7 @@
 
 namespace core {
 
-    constexpr Point2D<float> interpolateBezier(const Point2D<float>& p0, const Point2D<float>& p1, const Point2D<float>& p2, const Point2D<float>& p3, const float& t) noexcept // t always lies between 0 and 1
+    const inline Point2D<float> interpolateBezier(const Point2D<float>& p0, const Point2D<float>& p1, const Point2D<float>& p2, const Point2D<float>& p3, const float& t) noexcept // t always lies between 0 and 1
     {
         return Point2D<float>
         {

@@ -60,7 +60,7 @@ namespace core
     {
         const map::module::type type;
         const int* const cv[map::cv::count];
-        const std::string* const prefix;
+        const std::string_view* const prefix;
         const Control* const set[map::cv::count];
         const Rectangle<float>* const constrain; 
     };

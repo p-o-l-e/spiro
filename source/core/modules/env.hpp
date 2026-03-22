@@ -45,7 +45,7 @@ namespace core
         template <typename Real>
         struct Node 
         {
-            uint T;
+            unsigned T;
             Real L;
             Real F;
         };
@@ -60,9 +60,9 @@ namespace core
         private:
             static int idc;  
             float theta[settings::poly]{};                      // Change in value_scale
-            uint delta[settings::poly]{};                       // Time delta
+            unsigned delta[settings::poly]{};                       // Time delta
             float time_multiplier; 
-            uint departed[settings::poly]{};                    // Current sample
+            unsigned departed[settings::poly]{};                    // Current sample
             int stage[settings::poly]{};                        // Current stage
             env::Node<float> node[env::Segments][settings::poly];
             void iterate(int) noexcept;

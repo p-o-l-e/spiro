@@ -163,19 +163,22 @@ namespace core
         }
     }
 
-    void Spiro::addConnection(int pos) noexcept
+    void Spiro::addConnection(int moduleIndex) noexcept
     {
-        ++activeOutputs[pos];
-        auto max = grid->sector[pos].descriptor->cv[map::cv::o];
-        if(activeOutputs[pos] > *max)[[unlikely]] activeOutputs[pos] = *max;
-        whitelist.emplace(pos);
+        ++activeOutputs[moduleIndex];
+        auto max = grid->sector[moduleIndex].descriptor->cv[map::cv::o];
+        if(activeOutputs[moduleIndex] > *max)[[unlikely]] activeOutputs[moduleIndex] = *max;
+        whitelist.emplace(moduleIndex);
     }
     
-    void Spiro::removeConnection(int pos) noexcept
+    void Spiro::removeConnection(int moduleIndex) noexcept
     {
-        --activeOutputs[pos];
-        if(activeOutputs[pos] < 0)[[unlikely]] activeOutputs[pos] = 0;
-        if(!blacklist.contains(pos))[[likely]] whitelist.erase(pos);
+        if(--activeOutputs[moduleIndex] < 0)[[unlikely]] activeOutputs[moduleIndex] = 0;
+        if(!blacklist.contains(moduleIndex))[[likely]]
+        {
+            if(!activeOutputs[moduleIndex]) 
+                whitelist.erase(moduleIndex);
+        }
     }
 }
 

@@ -20,9 +20,9 @@ namespace core
         struct cvi { enum id { a, b, amp                         }; };              // CV in
         struct cvo { enum id { a, b                              }; };              // CV out
 
-        constexpr std::string prefix    { "vca"                      };
+        constexpr std::string_view prefix    { "vca"                      };
         
-        constexpr core::Control set_i[vc][ic]
+        const core::Control set_i[vc][ic]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -38,7 +38,7 @@ namespace core
             }
         };
         
-        constexpr core::Control set_o[vc][oc]
+        const core::Control set_o[vc][oc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -52,7 +52,7 @@ namespace core
             }
         };
 
-        constexpr core::Control set_c[vc][cc]
+        const core::Control set_c[vc][cc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------

@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <flat_map>
+#include <map>
 #include <utility>
 #include "control.hpp"
 
@@ -119,9 +119,9 @@ namespace core
         return controlMap->find(encode_uid(uid))->second;
     }
 
-    const std::unique_ptr<std::flat_map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
+    const std::unique_ptr<std::map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
     {
-        auto r = std::make_unique<std::flat_map<uint32_t, const Control*>>();
+        auto r = std::make_unique<std::map<uint32_t, const Control*>>();
         for(int i = 0; i < sectors; ++i)
         {
             for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
@@ -136,9 +136,9 @@ namespace core
         return r;
     }
     
-    const std::unique_ptr<std::flat_map<uint32_t, std::pair<std::string, std::string>>> Grid::calculateIdMap(const Sector* d) const
+    const std::unique_ptr<std::map<uint32_t, std::pair<std::string, std::string>>> Grid::calculateIdMap(const Sector* d) const
     {
-        auto r = std::make_unique<std::flat_map<uint32_t, std::pair<std::string, std::string>>>();
+        auto r = std::make_unique<std::map<uint32_t, std::pair<std::string, std::string>>>();
 
         auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
 
@@ -153,11 +153,11 @@ namespace core
                     std::string id {};
                     std::string name {};
 
-                    id += *d[i].descriptor->prefix + "_";
+                    id += std::string(*d[i].descriptor->prefix) + "_";
                     id += std::to_string(relative[i]) + "_";
                     id += d[i].descriptor->set[pt][pp].postfix;
 
-                    name += caps(*d[i].descriptor->prefix) + " ";
+                    name += caps(std::string(*d[i].descriptor->prefix)) + " ";
                     name += std::string(1, relative[i] + 'A') + " ";
                     name += caps(d[i].descriptor->set[pt][pp].postfix);
 

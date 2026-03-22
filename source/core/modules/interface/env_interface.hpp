@@ -24,14 +24,14 @@ namespace core
         constexpr int idxt[] { ctl::at, ctl::ht, ctl::dt, ctl::st, ctl::rt };
         constexpr int idxf[] { ctl::af, ctl::hf, ctl::df, ctl::sf, ctl::rf };
 
-        constexpr std::string prefix    { "env" };
+        constexpr std::string_view prefix    { "env" };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
             { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[vc][oc]
+        const core::Control set_o[vc][oc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
@@ -48,7 +48,7 @@ namespace core
             }
         };
 
-        constexpr core::Control set_c[vc][cc]
+        const core::Control set_c[vc][cc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ---- ID ------- MIN -- MAX -- DEF - SKEW - STEP -- RAD - SYM -- FLAG --------

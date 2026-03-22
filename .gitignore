@@ -31,7 +31,10 @@
 render/
 assets/source/
 build/
+build_unix/
+out/
 .cache/
 compile_commands.json
+.vs
 .vscode
 .idea

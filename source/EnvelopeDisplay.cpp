@@ -30,10 +30,13 @@
 #include <cstdint>
 #include <iostream>
 
-EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID): processor(p), id(ID), NP(this, this, this, this)
+EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID)
+    :processor(p), id(ID)
+
 {
-    for(int i = 0; i < Stages; ++i)
+    for (int i = 0; i < Stages; ++i)
     {
+        NP[i] = new NodePoint(this);
         addAndMakeVisible(NP[i]);
     }
 }
@@ -92,6 +95,8 @@ void EnvelopeDisplay::transmit()
 EnvelopeDisplay::~EnvelopeDisplay()
 {
     transmit();
+    for (int i = Stages - 1; i >= 0; --i)
+        delete NP[i];
 }
 
 void EnvelopeDisplay::updateNodes()
@@ -100,8 +105,8 @@ void EnvelopeDisplay::updateNodes()
     env.node[0].data[core::breakpoint::Level].store(0.0f);
     for(int i = 0; i < Stages; ++i)
     {
-        env.node[i + 1].data[core::breakpoint::Level].store(scope_bounds.h - NP[i].y + gap);
-        env.node[i + 1].data[core::breakpoint::Time].store(NP[i].x - gap);
+        env.node[i + 1].data[core::breakpoint::Level].store(scope_bounds.h - NP[i]->y + gap);
+        env.node[i + 1].data[core::breakpoint::Time].store(NP[i]->x - gap);
     }
     env.node[5].data[core::breakpoint::Time].store(scope_bounds.w);
     env.node[5].data[core::breakpoint::Level].store(0.0f);
@@ -118,9 +123,9 @@ void EnvelopeDisplay::load()
     }
     for(int i = 0; i < Stages; ++i)
     {
-        NP[i].y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Level].load() - gap;
-        NP[i].x = env.node[i + 1].data[core::breakpoint::Time].load() + gap;
-        NP[i].setCentrePosition(NP[i].x, NP[i].y);
+        NP[i]->y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Level].load() - gap;
+        NP[i]->x = env.node[i + 1].data[core::breakpoint::Time].load() + gap;
+        NP[i]->setCentrePosition(NP[i]->x, NP[i]->y);
     }
     repaint();
 }
@@ -130,21 +135,21 @@ void EnvelopeDisplay::paint(juce::Graphics& g)
     g.setColour(palette::bg_normal);
     g.fillRect(getLocalBounds());
 
-    NP[A].cL = gap + 1;
-    NP[A].cR = NP[D].x - gap;
-    NP[D].cL = NP[A].x + gap;
-    NP[D].cR = NP[S].x - gap;
-    NP[S].cL = NP[D].x + gap;
-    NP[S].cR = NP[R].x - gap;
-    NP[R].cL = NP[S].x + gap;
-    NP[R].cR = scope_bounds.w  + gap; 
+    NP[A]->cL = gap + 1;
+    NP[A]->cR = NP[D]->x - gap;
+    NP[D]->cL = NP[A]->x + gap;
+    NP[D]->cR = NP[S]->x - gap;
+    NP[S]->cL = NP[D]->x + gap;
+    NP[S]->cR = NP[R]->x - gap;
+    NP[R]->cL = NP[S]->x + gap;
+    NP[R]->cR = scope_bounds.w  + gap; 
 
     updateNodes();
     plot(g);
     g.setColour(colour);
     for(int i = 0; i < Stages; ++i)
     {
-        g.drawLine(NP[i].x, NP[i].y, NP[i].x, area.getHeight() - gap, 1.0f);
+        g.drawLine(NP[i]->x, NP[i]->y, NP[i]->x, area.getHeight() - gap, 1.0f);
     }
     g.drawHorizontalLine
     (
@@ -201,18 +206,18 @@ void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)
         env.node[p].data[core::breakpoint::Form].store(0.0f) :
         env.node[p].data[core::breakpoint::Form].store(env.node[p].data[core::breakpoint::Form].load() + 1.0f);
     };
-    if     ((event.x >       0) && (event.x < NP[A].x)) l(1);
-    else if((event.x > NP[A].x) && (event.x < NP[D].x)) l(2);
-    else if((event.x > NP[D].x) && (event.x < NP[S].x)) l(3);
-    else if((event.x > NP[S].x) && (event.x < NP[R].x)) l(4);
-    else if((event.x > NP[R].x) && (event.x < area.getWidth())) l(5);
+    if     ((event.x >        0) && (event.x < NP[A]->x)) l(1);
+    else if((event.x > NP[A]->x) && (event.x < NP[D]->x)) l(2);
+    else if((event.x > NP[D]->x) && (event.x < NP[S]->x)) l(3);
+    else if((event.x > NP[S]->x) && (event.x < NP[R]->x)) l(4);
+    else if((event.x > NP[R]->x) && (event.x < area.getWidth())) l(5);
     repaint();
 }
 
 void EnvelopeDisplay::setDefaults()
 {
-    NP[A].setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
-    NP[D].setBounds(area.getWidth() /  5, area.getHeight() /  3, diameter, diameter);
-    NP[S].setBounds(area.getWidth() /  3, area.getHeight() /  3, diameter, diameter);
-    NP[R].setBounds(area.getWidth() /  2, area.getHeight() /  2, diameter, diameter);
+    NP[A]->setBounds(area.getWidth() / 14, area.getHeight() / 10, diameter, diameter);
+    NP[D]->setBounds(area.getWidth() /  5, area.getHeight() /  3, diameter, diameter);
+    NP[S]->setBounds(area.getWidth() /  3, area.getHeight() /  3, diameter, diameter);
+    NP[R]->setBounds(area.getWidth() /  2, area.getHeight() /  2, diameter, diameter);
 }

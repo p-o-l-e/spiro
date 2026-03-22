@@ -24,7 +24,7 @@
 #include <cstdint>
 #include <memory>
 #include <sys/types.h>
-#include <flat_map>
+#include <map>
 #include <utility>
 #include "interface_headers.hpp"
 #include "modules/interface/cro_interface.hpp"
@@ -69,10 +69,10 @@ namespace core
             const std::unique_ptr<int[]> elements; 
             const std::unique_ptr<int[]> modules;
             std::unique_ptr<uint32_t[]>  indices[Control::count];
-            const std::unique_ptr<std::flat_map<uint32_t, const Control*>> controlMap;
-            const std::unique_ptr<std::flat_map<uint32_t, std::pair<std::string, std::string>>> idMap;
-            const std::unique_ptr<std::flat_map<uint32_t, const Control*>> calculateControlMap(const Sector*) const;
-            const std::unique_ptr<std::flat_map<uint32_t, std::pair<std::string, std::string>>> calculateIdMap(const Sector*) const;
+            const std::unique_ptr<std::map<uint32_t, const Control*>> controlMap;
+            const std::unique_ptr<std::map<uint32_t, std::pair<std::string, std::string>>> idMap;
+            const std::unique_ptr<std::map<uint32_t, const Control*>> calculateControlMap(const Sector*) const;
+            const std::unique_ptr<std::map<uint32_t, std::pair<std::string, std::string>>> calculateIdMap(const Sector*) const;
 
             const std::unique_ptr<uint8_t[]> setRelatives(const Sector*) const;
             const std::unique_ptr<int[]> countElements(const Sector*) const;

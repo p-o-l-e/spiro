@@ -90,22 +90,22 @@ namespace core
         return fE;
     }
 
-    constexpr float fTriangle(const float& x, const float& f) noexcept
+    inline float fTriangle(const float& x, const float& f) noexcept
     {
         return acosf((1.0f - f) * cosf(x)) - pi * 0.5f; 
     }
 
-    constexpr float fSquare(const float& x, const float& f) noexcept
+    inline float fSquare(const float& x, const float& f) noexcept
     {
         return atanf(cos(x)/f);
     }
 
-    constexpr float fRamp(const float& x) noexcept
+    inline float fRamp(const float& x) noexcept
     {
         return atanf(tanf(x))/(pi * 0.5f);
     }
 
-    constexpr float fPulse(const float& phase, const float& pw, const float& f) noexcept
+    inline float fPulse(const float& phase, const float& pw, const float& f) noexcept
     {
         return atanf((cosf(phase) + pw)/f) / (pi * 0.5f);
     }

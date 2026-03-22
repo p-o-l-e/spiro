@@ -72,6 +72,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
             VBlur,
             CombineAdd,
             Afterglow,
+            AfterglowAccu,
             Size
         };
 

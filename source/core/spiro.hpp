@@ -27,7 +27,7 @@
 #include "rack.hpp"
 #include <atomic>
 #include <unordered_set>
-#include <flat_set>
+#include <set>
 #include <cstdint>
 
 namespace core 
@@ -43,8 +43,8 @@ namespace core
             uint8_t note[settings::poly];
             int voiceIndex = 1;
             std::unordered_set<int> active;             // Active voices
-            std::flat_set<int> whitelist;               // Active modules
-            std::flat_set<int> blacklist;               // Always ON modules
+            std::set<int> whitelist;               // Active modules
+            std::set<int> blacklist;               // Always ON modules
             int* activeOutputs;
             Module<float>* mixer; 
             Module<float>* com;

@@ -43,7 +43,7 @@ namespace core
         eax     = 0.0f;
         departed  = 0;
         data = std::make_unique<float[]>(length);
-        for (uint i = 0; i < length; i++)  data.get()[i] = 0.0f;
+        for (unsigned i = 0; i < length; i++)  data.get()[i] = 0.0f;
 
         for(int i = 0; i < cc; ++i) ccv[i] = &zero;
         for(int i = 0; i < ic; ++i) icv[i] = &zero;

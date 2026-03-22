@@ -113,7 +113,8 @@ class EnvelopeDisplay: public juce::Component
             }
         };
 
-        NodePoint NP[Stages];
+        NodePoint* NP[Stages];
+
         void mouseUp(const juce::MouseEvent&) override { transmit(); };
         void mouseDown(const juce::MouseEvent&) override;
 

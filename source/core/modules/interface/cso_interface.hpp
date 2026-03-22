@@ -22,16 +22,16 @@ namespace core
         struct cvi { enum id { fm, warp                          }; };             // CV in
         struct cvo { enum id { x, y, z                           }; };             // CV out
 
-        constexpr std::string prefix { "cso" };
+        constexpr std::string_view prefix { "cso" };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input    , {  49.00f, 239.00f,  16.00f,  16.00f }, "fm"     , 0.00f, 1.00f, 0.00f, 0.20f, 0.000f, 0x00, false, 0x00000000  },
             { Control::type::input    , {  10.00f, 239.00f,  16.00f,  16.00f }, "warp"   , 0.00f, 1.00f, 0.00f, 0.20f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::output   , {  30.00f, 269.00f,  16.00f,  16.00f }, "x"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -39,7 +39,7 @@ namespace core
             { Control::type::output   , {  30.00f, 329.00f,  16.00f,  16.00f }, "z"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        constexpr core::Control set_c[vc][cc]
+        const core::Control set_c[vc][cc]
         {
             {
             // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------

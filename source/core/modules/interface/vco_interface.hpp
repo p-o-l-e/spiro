@@ -20,9 +20,9 @@ namespace core
         struct cvi { enum id {         detune, pll, pwm, fm, am                            }; };              // CV in
         struct cvo { enum id {         main                                                }; };              // CV out
 
-        constexpr std::string prefix { "vco" };
+        constexpr std::string_view prefix { "vco" };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ----- MIN -- MAX -- DEF - SKEW -- STEP - RAD -- SYM ------ FLAG ----------
             { Control::type::input    , {  49.00f, 239.00f,  16.00f,  16.00f }, "detune" , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000          },
@@ -32,13 +32,13 @@ namespace core
             { Control::type::input    , {  30.00f, 269.00f,  16.00f,  16.00f }, "am"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000          },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ----- MIN -- MAX -- DEF - SKEW -- STEP - RAD -- SYM ------ FLAG ----------
             { Control::type::output   , { 106.00f, 269.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000          },
         };
 
-        constexpr core::Control set_c[cc]
+        const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ----- MIN -- MAX -- DEF - SKEW -- STEP - RAD -- SYM ------ FLAG ----------
             { Control::type::parameter, {   0.00f,   0.00f,   0.00f,   0.00f }, "octave" , 0.00f, 5.00f, 0.00f, 0.50f, 1.000f, 0x00, false, 0x00000000          },

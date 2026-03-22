@@ -19,9 +19,9 @@ namespace core
         struct cvi { enum id { ax, ay, az, bx, by, bz, cvx, cvy, cvz     }; };             // CV in
         struct cvo { enum id { ax, ay, az, bx, by, bz                    }; };             // CV out
 
-        constexpr std::string prefix    { "rtr"                                             };
+        constexpr std::string_view prefix    { "rtr"                                             };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input    , {  15.00f,  29.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -35,7 +35,7 @@ namespace core
             { Control::type::input    , {  91.00f, 149.00f,  16.00f,  16.00f }, "cvz"    , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::output   , {  34.00f,  89.00f,  16.00f,  16.00f }, "ax"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -47,7 +47,7 @@ namespace core
 
         };
 
-        constexpr core::Control set_c[cc]
+        const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::slider   , {   8.00f, 187.00f,  32.00f,  32.00f }, "x"      , 0.00f,   tao, 0.00f, 1.00f, 0.001f, 0x00, false, map::flag::encoder  },

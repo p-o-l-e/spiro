@@ -19,9 +19,9 @@ namespace core
         struct cvi { enum id { time, feed, a, b, c, d                    }; };              // CV in
         struct cvo { enum id { a, b, c, d                                }; };              // CV out
 
-        constexpr std::string prefix    { "vcd"                              };
+        constexpr std::string_view prefix    { "vcd"                              };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input    , {  11.00f, 127.00f,  16.00f,  16.00f }, "time"   , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -32,7 +32,7 @@ namespace core
             { Control::type::input    , {  49.00f,  37.00f,  16.00f,  16.00f }, "d"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::output   , {  11.00f,  67.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -41,7 +41,7 @@ namespace core
             { Control::type::output   , {  49.00f,  97.00f,  16.00f,  16.00f }, "d"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        constexpr core::Control set_c[cc]
+        const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::slider   , {  22.00f, 165.00f,  32.00f,  32.00f }, "time"   , 0.01f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },

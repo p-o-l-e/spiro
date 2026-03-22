@@ -474,6 +474,20 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 display->loadMenu(&processor.presets);   
                 break;
             }
+
+            case Display::Page::CsoA:
+            case Display::Page::CsoB:
+            case Display::Page::EnvA:
+            case Display::Page::EnvB:
+            case Display::Page::EnvC:
+            case Display::Page::EnvD:
+            case Display::Page::LfoA:
+            case Display::Page::LfoB:
+            case Display::Page::VcoA:
+            case Display::Page::VcoB:
+            case Display::Page::VcoC:
+            case Display::Page::VcoD:
+        
             default:
             {
                 auto control = processor.spiro.grid->control(display->uid);

@@ -183,7 +183,7 @@ void Patchbay::draw()
 {
     for(int i = 0; i < nodes; i++)
     {
-        draw_square_filled<uint>(&canvas, io[i].bounds, io[i].id);
+        draw_square_filled<unsigned>(&canvas, io[i].bounds, io[i].id);
     }
 }
 

@@ -35,7 +35,7 @@
 
 using namespace juce::gl;
 
-static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
+static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
 static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
 void Display::switchPage(Processor* o, const Page p)
@@ -132,7 +132,12 @@ void Display::createShaders()
         &core::shader::solid::descriptor
     );
     
-
+    shader[ShaderType::Afterglow] = std::make_unique<Shader>
+    (
+        &openGLContext,
+        &core::shader::ndc_to_uv::descriptor,
+        &core::shader::afterglow::descriptor
+    );
 
     thresholdShader.reset(new juce::OpenGLShaderProgram(openGLContext));
     thresholdShader->addVertexShader(std::string(shader::vertex::ndc_to_uv));
@@ -598,7 +603,7 @@ void Display::renderScope2(bool Skip) noexcept
         if(samplesToRead < 0x40) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
-        float halfWidth = 1.0f/ (float)area.w;
+        float halfWidth = 1.0f / (float)area.w * 2.0f;
 
         shader[ShaderType::Solid]->use();
         shader[ShaderType::Solid]->fU[solid::uniform::color]->set(palette::cro::fg, 4);
@@ -921,7 +926,7 @@ void Display::reset()
 
 }
 
-static constexpr void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
+static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
 {
     const float W = float(canvas->width);
     const float H = float(canvas->height);

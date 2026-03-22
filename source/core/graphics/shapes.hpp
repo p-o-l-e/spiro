@@ -48,7 +48,7 @@ constexpr void draw_square_filled(core::Canvas<T>* canvas, const RadialSquare<T>
     }
 }
 
-constexpr void draw_glyph(core::Canvas<float>* canvas, const char* font, int id, int xo, int yo, const float colour)
+constexpr void draw_glyph(core::Canvas<float>* canvas, const uint8_t* font, int id, int xo, int yo, const float colour)
 {
     int pos = id * 7;
     uint8_t stencil = 0b1;
@@ -78,7 +78,7 @@ constexpr void drawHLine(core::Canvas<uint8_t>* canvas, unsigned xo, unsigned yo
     }
 }
 
-constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const char* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
+constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
 {
     int pos = id * w;
     uint8_t stencil = 0b1;
@@ -92,7 +92,7 @@ constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const char* font, int id
     }
 }
 
-constexpr void draw_text_label(core::Canvas<float>* canvas, const char* font, const char* text, int xo, int yo, const float colour)
+const inline void draw_text_label(core::Canvas<float>* canvas, const uint8_t* font, const char* text, int xo, int yo, const float colour)
 {
     int n = strlen(text);
     for(int i = 0; i < n; i++)
@@ -101,7 +101,7 @@ constexpr void draw_text_label(core::Canvas<float>* canvas, const char* font, co
     }
 }
 
-constexpr void drawTextLabel(core::Canvas<uint8_t>* canvas, const char* font, const char* text, int xo, int yo, const uint8_t opacity, int w = 7)
+const inline void drawTextLabel(core::Canvas<uint8_t>* canvas, const uint8_t* font, const char* text, int xo, int yo, const uint8_t opacity, int w = 7)
 {
     int n = strlen(text);
     for(int i = 0; i < n; i++)
@@ -123,7 +123,7 @@ inline void alphablend(core::Canvas<float>* canvas, int x, int y, float alpha)
     canvas->set(x, y, canvas->get(x, y) * (1.0f - alpha) + alpha);
 }
 
-constexpr void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
+const inline void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
 {
     int xo = (int)floor(std::min(ax, bx) - radius);
     int xe = (int) ceil(std::max(ax, bx) + radius);

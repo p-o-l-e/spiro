@@ -19,9 +19,9 @@ namespace core
         struct cvi { enum id { a, b, c, cutoff, Q                        }; };              // CV in
         struct cvo { enum id { lp, bp, hp                                }; };              // CV out
 
-        constexpr std::string prefix    { "vcf"                            };
+        constexpr std::string_view prefix    { "vcf"                            };
         
-        constexpr core::Control set_i[ic]
+        const core::Control set_i[ic]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::input    , {  11.00f,  37.00f,  16.00f,  16.00f }, "a"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -31,7 +31,7 @@ namespace core
             { Control::type::input    , {  49.00f, 127.00f,  16.00f,  16.00f }, "Q"      , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
         
-        constexpr core::Control set_o[oc]
+        const core::Control set_o[oc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::output   , {  49.00f,  37.00f,  16.00f,  16.00f }, "lp"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
@@ -39,7 +39,7 @@ namespace core
             { Control::type::output   , {  49.00f,  97.00f,  16.00f,  16.00f }, "hp"     , 0.00f, 1.00f, 0.00f, 0.50f, 0.000f, 0x00, false, 0x00000000  },
         };
 
-        constexpr core::Control set_c[cc]
+        const core::Control set_c[cc]
         {
         // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
             { Control::type::slider   , {  22.00f, 167.00f,  32.00f,  32.00f }, "cutoff" , 0.00f, 1.00f, 0.00f, 0.20f, 0.001f, 0x00, false, map::flag::B  },
