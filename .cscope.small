@@ -1,0 +1,788 @@
+cscope 15 $HOME/input/current/spiro/Spiro.0.5.6 -q 0000000081 0000003769
+	@source/core/utility/utility.hpp
+
+27 #´agm¨
+Úû
+
+
+28 
+	~"io¥ecs.hµ
+"
+
+29 
+	~"cÚ¡ªts.hµ
+"
+
+30 
+	~"´im™ives.hµ
+"
+
+31 
+	~"wav”šg.hµ
+"
+
+33 
+Çme¥aû
+ 
+	gcÜe
+ {
+
+37 
+	sOÃPÞe
+
+
+39 
+	g´iv©e
+:
+
+40 
+a
+;
+
+41 
+	gb
+;
+
+42 
+	gz
+;
+
+44 
+	gpublic
+:
+
+45 
+»£t
+(cÚ¡ 
+ms
+)
+
+47 
+a
+ = 
+expf
+(- 
+o
+ / (
+ms
+ * 0.001à* 
+£‰šgs
+::
+§m¶e_¿‹
+));
+
+48 
+	gb
+ = 1.0à- 
+a
+;
+
+49 
+	gz
+ = 0.0f;
+
+51 
+cÚ¡ex´
+ 
+´oûss
+(cÚ¡ 
+š
+è
+	gnÛxû±
+
+
+53 
+	gz
+ = (
+š
+ * 
+b
+è+ (
+z
+ * 
+a
+);
+
+54  
+	gz
+;
+
+56 
+OÃPÞe
+(è{ 
+»£t
+(10.0f); };
+
+61 
+	sAÎPass
+
+
+63 
+	g´iv©e
+:
+
+64 
+y
+ = 0.0f;
+
+65 
+	gpublic
+:
+
+66 
+a
+ = 0.5f;
+
+67 
+cÚ¡ex´
+ 
+´oûss
+(cÚ¡ 
+š
+è
+	gnÛxû±
+
+
+69 
+	gout
+ = 
+y
+ + 
+a
+ * 
+š
+;
+
+70 
+	gy
+ = 
+š
+ - 
+a
+ * 
+out
+;
+
+71  
+	gout
+;
+
+77 
+	sEnv–ÝeFÞlow”
+
+
+79 
+	ga
+;
+
+80 
+	gr
+;
+
+81 
+	g’v–Ýe
+ = 0.0f;
+
+83 
+šlše
+ 
+š™
+(const , const , const );
+
+84 
+šlše
+ 
+´oûss
+(cÚ¡ 
+š
+è
+	gnÛxû±
+;
+
+87 
+šlše
+ 
+	gEnv–ÝeFÞlow”
+::
+š™
+(cÚ¡ 
+aMs
+, cÚ¡ 
+rMs
+, cÚ¡ 
+§m¶e_¿‹
+)
+
+89 
+	ga
+ = 
+pow
+Ð0.01, 1.0 / ( 
+aMs
+ * 
+§m¶e_¿‹
+ * 0.001 ) );
+
+90 
+	gr
+ = 
+pow
+Ð0.01, 1.0 / ( 
+rMs
+ * 
+§m¶e_¿‹
+ * 0.001 ) );
+
+93 
+šlše
+ 
+	gEnv–ÝeFÞlow”
+::
+´oûss
+(cÚ¡ 
+š
+è
+nÛxû±
+
+
+95 
+f
+ = 
+çbs
+(
+š
+);
+
+96 ià(
+	gf
+ > 
+	g’v–Ýe
+è’v–Ýð
+a
+ * ( 
+’v–Ýe
+ - 
+f
+ ) + f;
+
+97 
+	g’v–Ýe
+ = 
+r
+ * ( 
+’v–Ýe
+ - 
+f
+ ) + f;
+
+102 
+	sLim™”
+
+
+104 
+Env–ÝeFÞlow”
+ 
+	ge
+;
+
+105 
+	gth»shÞd
+ = 0.01f;
+
+106 
+šlše
+ 
+š™
+(const , const , const );
+
+107 
+šlše
+ 
+´oûss
+(cÚ¡ 
+š
+è
+	gnÛxû±
+;
+
+108 
+šlše
+ 
+Lim™”
+();
+
+111 
+šlše
+ 
+	gLim™”
+::
+Lim™”
+()
+
+113 
+š™
+(1.0f, 10.0f, 
+£‰šgs
+::
+§m¶e_¿‹
+);
+
+116 
+šlše
+ 
+	gLim™”
+::
+š™
+(cÚ¡ 
+aMs
+, cÚ¡ 
+rMs
+, cÚ¡ 
+§m¶e_¿‹
+)
+
+118 
+	ge
+.
+š™
+(
+aMs
+, 
+rMs
+, 
+§m¶e_¿‹
+);
+
+121 
+šlše
+ 
+	gLim™”
+::
+´oûss
+(cÚ¡ 
+š
+è
+nÛxû±
+
+
+123 
+out
+ = 
+š
+;
+
+124 
+	ge
+.
+´oûss
+(
+out
+);
+
+125 if(
+	ge
+.
+	g’v–Ýe
+>
+	gth»shÞd
+)
+
+127 
+	gout
+ /ð
+expf
+(
+e
+.
+’v–Ýe
+ - 
+th»shÞd
+);
+
+129  
+	gout
+;
+
+134 
+cÚ¡ex´
+ 
+xçde
+(cÚ¡ 
+a
+, cÚ¡ 
+b
+, cÚ¡ 
+f
+è
+	gnÛxû±
+
+
+136  
+a
+ * 
+	gf
+ + 
+	gb
+ * (1.0f - f);
+
+141 
+	g‹m¶©e
+ <
+ty³Çme
+ 
+	gT
+>
+
+142 
+cÚ¡ex´
+ 
+	gPošt2D
+<
+	gT
+> 
+c3c2
+(cÚ¡ 
+Pošt3D
+<
+T
+>& 
+š
+, cÚ¡ 
+a
+, cÚ¡ 
+b
+è
+	gnÛxû±
+
+
+144 autØ
+	gac
+ = 
+a
+ > 0.5f ? (1.0f -‡) * 2.0f :‡ * 2.0f;
+
+145 autØ
+	gbc
+ = 
+b
+ > 0.5f ? (1.0f - b) * 2.0f : b * 2.0f;
+
+146  
+	gPošt2D
+<
+	gT
+> { 
+xçde
+(
+š
+.
+x
+, in.
+y
+, 
+ac
+), xçde(š.y, in.
+z
+, 
+bc
+) };
+
+151 
+cÚ¡ex´
+ 
+DStoMS
+(cÚ¡ 
+§m¶es
+, cÚ¡ 
+§m¶e_¿‹
+è
+	gnÛxû±
+
+
+153  
+	g§m¶es
+ * 1000 / 
+	g§m¶e_¿‹
+;
+
+156 
+cÚ¡ex´
+ 
+MStoDS
+(cÚ¡ 
+ms
+, cÚ¡ 
+§m¶e_¿‹
+è
+	gnÛxû±
+
+
+158  
+ms
+ * 
+	g§m¶e_¿‹
+ / 1000;
+
+161 
+cÚ¡ex´
+ 
+boÞ
+ 
+boÞ_äom_¿nge
+(cÚ¡ 
+v®ue
+, cÚ¡ 
+mš
+ = 0.0f, cÚ¡ 
+max
+ = 1.0fè
+nÛxû±
+
+
+163  
+v®ue
+ > ((
+max
+ - 
+mš
+) * 0.5f);
+
+172 
+	g‹m¶©e
+ <
+ty³Çme
+ 
+	gT
+>
+
+173 
+cÚ¡ex´
+ 
+T
+ 
+»m­
+(T 
+sourû
+, T 
+sourû_mš
+, T 
+sourû_max
+, T 
+rg‘_mš
+, T 
+rg‘_max
+è
+	gnÛxû±
+
+
+175  
+	grg‘_mš
+ + ((
+	grg‘_max
+ -¬g‘_mšè* (
+	gsourû
+ - 
+	gsourû_mš
+)è/ (
+	gsourû_max
+ - source_min);
+
+178 
+cÚ¡ex´
+ 
+boÞ
+ 
+sign
+(cÚ¡ 
+d©a
+è
+	gnÛxû±
+
+
+180  
+	gd©a
+ > 0.0à? 
+	gŒue
+ : 
+çl£
+;
+
+183 
+cÚ¡ex´
+ 
+boÞ
+ 
+sign
+(cÚ¡ 
+d©a
+è
+	gnÛxû±
+
+
+185  
+	gd©a
+ > 0 ? 
+	gŒue
+ : 
+çl£
+;
+
+190 
+	sDCBlock
+
+
+192 
+	g´iv©e
+:
+
+193 
+—x
+ = 0.0f, 
+	gebx
+ = 0.0f;
+
+194 
+	gpublic
+:
+
+195 
+f
+ = 0.9995f;
+
+196 
+cÚ¡ex´
+ 
+´oûss
+(cÚ¡ 
+š
+è
+	gnÛxû±
+
+
+198 
+	gebx
+ = 
+š
+ - 
+—x
+ + 
+f
+ * 
+ebx
+;
+
+199 
+	g—x
+ = 
+š
+;
+
+200  
+	gebx
+;
+
+204 
+šlše
+ 
+»§m¶eLš—r
+(
+wav”šg
+<
+Pošt2D
+<>>& 
+d©a
+, 
+§m¶esToR—d
+, Pošt2D<>* 
+out
+, 
+§m¶esToWr™e
+)
+
+206 
+	gi
+ = 0; i < 
+	g§m¶esToWr™e
+; ++i)
+
+208 
+	gt
+ = ()
+i
+ * ()(
+§m¶esToR—d
+ - 1è/ ()(
+§m¶esToWr™e
+ - 1);
+
+210 
+	gi0
+ = ()
+t
+;
+
+211 
+	gi1
+ = 
+i0
+ + 1;
+
+212 ià(
+	gi1
+ >ð
+§m¶esToR—d
+è
+i1
+ = samplesToRead - 1;
+
+214 
+	gäac
+ = 
+t
+ - ()
+i0
+;
+
+216 autØ
+	g¿w
+ = 
+d©a
+.
+g‘
+();
+
+218 
+	gout
+[
+i
+].
+	gx
+ = 
+¿w
+.
+x
+ + (¿w.x -„aw.xè* 
+äac
+;
+
+219 
+	gout
+[
+i
+].
+	gy
+ = 
+¿w
+.
+y
+ + (¿w.y -„aw.yè* 
+äac
+;
+
+	@
+1
+.
+0
+1
+32
+source/core/utility/utility.hpp
