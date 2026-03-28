@@ -58,8 +58,6 @@ struct OledLabel: public juce::TextEditor
    ~OledLabel() = default;
 };
 
-
-
 class Display: public juce::Component, private juce::OpenGLRenderer
 {
     public:
@@ -80,7 +78,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         Processor *processor;
 		std::unique_ptr<juce::Image> framebuffer;
 		std::unique_ptr<core::Canvas<float>> canvas;
-		std::unique_ptr<core::Canvas<float>> layer;
+		core::Canvas<uint8_t>* layer;
 
         std::unique_ptr<Shader> shader[ShaderType::Size];
 
@@ -109,13 +107,6 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowPrevTex;
         std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uAfterglowNewTex;
 
-
-        //std::unique_ptr<juce::OpenGLShaderProgram> graticuleShader;
-
-        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratColor;
-        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratThickness;
-        //std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uGratRes;
-
         std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrPos; 
         std::unique_ptr<juce::OpenGLShaderProgram::Attribute> attrTex;
         std::unique_ptr<juce::OpenGLShaderProgram::Attribute> postPosHBlur; 
@@ -127,6 +118,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         std::unique_ptr<juce::OpenGLShaderProgram::Uniform> uniBgColor;
 
         juce::OpenGLTexture croTexture;
+        juce::OpenGLTexture moduleTexture;
 
         GLuint scopeVBO;
         GLuint scopeFBO, scopeTex; 
@@ -139,6 +131,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         GLuint afterglowTex = 0; 
         GLuint afterglowTempFBO = 0; 
         GLuint afterglowTempTex = 0;
+        GLuint moduleTextureID;
 
         GLuint scopeFBO_MSAA; GLuint scopeColorBuffer_MSAA;
         float blurTexelSizeX = 0.0f;   // 1.0f / area.w
@@ -149,6 +142,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         const float contrast = 0.6f;
         const uint8_t opacity = 0xAF;
         std::atomic<bool> needsUpload { true };
+        bool redrawTexture = true;
 		int last_page = 0;
         int stepX = 10, stepY = 10;
 
@@ -167,10 +161,11 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         void createShaders();
         void createBloomFBOs();
         void createQuadBuffers();
-        void renderQuad();
-        void renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr);
-        void renderScope2(bool Skip) noexcept;
-        void renderScope3(bool Skip) noexcept;
+        void renderQuad(juce::OpenGLTexture*);
+        void renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute&);
+        void renderScope2(bool) noexcept;
+        void renderScope3(bool) noexcept;
+        void renderModuleMenu() noexcept;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
@@ -199,8 +194,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer
     	void moduleMenu(core::Spiro*, const core::map::module::type&, const int);
 		void mainMenu();
 		void saveMenu();
-		void vSoft(const int, const int, const int, const int);
-		void hSoft(int, int, int, int, core::Canvas<uint8_t>*);
+		void drawSoftGlyphsV(int, int, int, int, core::Canvas<uint8_t>*);
+		void drawSoftGlyphsH(int, int, int, int, core::Canvas<uint8_t>*);
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		void reset();

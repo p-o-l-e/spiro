@@ -30,35 +30,20 @@
 
 namespace core {
 
-
 template <typename T>
-constexpr void draw_square_filled(core::Canvas<T>* canvas, const RadialSquare<T>& sq, const T colour)
+constexpr void drawSquareFilled(core::Canvas<T>& canvas, const SquareXYR<T>& square, const T colour)
 {
-    int xe = sq.xCentre + sq.radius;
-    int ye = sq.yCentre + sq.radius;
-    int xo = sq.xCentre - sq.radius;
-    int yo = sq.yCentre - sq.radius;
+    int xe = square.x + square.r;
+    int ye = square.y + square.r;
+    int xo = square.x - square.r;
+    int yo = square.y - square.r;
 
     for(int y = yo; y <= ye; y++)
     {
         for(int x = xo; x <= xe; x++)
         {
-            canvas->set(x, y, colour);
+            canvas.set(x, y, colour);
         }
-    }
-}
-
-constexpr void draw_glyph(core::Canvas<float>* canvas, const uint8_t* font, int id, int xo, int yo, const float colour)
-{
-    int pos = id * 7;
-    uint8_t stencil = 0b1;
-    for(int y = 0; y < 8; y++)
-    {
-        for(int x = 0; x < 7; x++)
-        {
-            if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
-        }
-        stencil<<=1;
     }
 }
 
@@ -89,15 +74,6 @@ constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, int
             if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
         }
         stencil <<= 1;
-    }
-}
-
-const inline void draw_text_label(core::Canvas<float>* canvas, const uint8_t* font, const char* text, int xo, int yo, const float colour)
-{
-    int n = strlen(text);
-    for(int i = 0; i < n; i++)
-    {
-        draw_glyph(canvas, font, text[i] - 32, xo + i*8, yo, colour);
     }
 }
 

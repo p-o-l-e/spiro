@@ -24,13 +24,21 @@ namespace core {
         T w;
         T h;
     };
-
+    
     template <typename T>
-    struct RadialSquare
+    struct RectangleLTRB
     {
-        T xCentre;
-        T yCentre;
-        T radius;
+        T l;
+        T t;
+        T r;
+        T b;
     };
 
+    template <typename T>
+    struct SquareXYR
+    {
+        T x;
+        T y;
+        T r;
+    };
 } // namespace core

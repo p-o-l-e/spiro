@@ -162,11 +162,12 @@ constexpr bool bool_from_range(const float value, const float min = 0.0f, const 
 {
     return value > ((max - min) * 0.5f);
 }
-
+/*
 inline int rand_in_range(const int l, const int r) noexcept
 { 
     return (rand() % (r - l + 1)) + l;
 }
+*/
 
 template <typename T>
 constexpr T remap(T source, T source_min, T source_max, T target_min, T target_max) noexcept

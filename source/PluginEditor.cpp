@@ -631,7 +631,7 @@ void Editor::timerCallback()
 
     static int f = 0;
     if(fade) ++f;
-    if(f > core::settings::scope_fps) { fade = false; f = 0; stopTimer(); };
+    if(f > core::settings::scope_fps) { fade = false; f = 0; };// stopTimer(); };
 }
 
 /*****************************************************************************************************************************

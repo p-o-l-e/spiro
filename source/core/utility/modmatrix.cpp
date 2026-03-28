@@ -63,8 +63,8 @@ constexpr void Socket::collapse()
 {
     for(int i = 0; i < cord.segments; i++)
     {
-        cord.spline[i].x = bounds.xCentre;
-        cord.spline[i].y = bounds.yCentre;
+        cord.spline[i].x = bounds.x;
+        cord.spline[i].y = bounds.y;
     }
     cord.process();
 }
@@ -123,7 +123,7 @@ Socket::~Socket()
 **************************************************************************************************************************/
 void Patchbay::connect(Socket* a, Socket* b)
 {
-    a->drag(b->bounds.xCentre, b->bounds.yCentre);
+    a->drag(b->bounds.x, b->bounds.y);
     a->on = true;
     b->on = true;
     a->to = b;
@@ -183,7 +183,7 @@ void Patchbay::draw()
 {
     for(int i = 0; i < nodes; i++)
     {
-        draw_square_filled<unsigned>(&canvas, io[i].bounds, io[i].id);
+        drawSquareFilled<unsigned>(canvas, io[i].bounds, io[i].id);
     }
 }
 
@@ -202,7 +202,7 @@ int Patchbay::down_test(const float& x, const float& y, const int& mb)
                 if(io[i].on)
                 {
                     src = io[i].to;
-                    src->drag(io[i].bounds.xCentre, io[i].bounds.yCentre);
+                    src->drag(io[i].bounds.x, io[i].bounds.y);
                     io[i].collapse();
                     disconnect(&io[i], io[i].to);
                     return src->route? 1 : -1;
@@ -385,9 +385,9 @@ Patchbay::~Patchbay()
 
 void Patchbay::set_socket(const Point2D<int>* o, const int& radius, const uint32_t& id, const bool& route, const int& p)
 {
-    io[counter].bounds.xCentre = o->x;
-    io[counter].bounds.yCentre = o->y;
-    io[counter].bounds.radius  = radius;
+    io[counter].bounds.x = o->x;
+    io[counter].bounds.y = o->y;
+    io[counter].bounds.r = radius;
     io[counter].id = id;
     io[counter].pos = p;
     io[counter].route = route;

@@ -68,7 +68,7 @@ namespace core {
         const size_t* h;
 
         Patchcord cord;
-        RadialSquare<unsigned> bounds { 0, 0, 0 };
+        SquareXYR<unsigned> bounds;
         uint32_t id = 0;
         int pos;                                            // Array position
         bool route = 0;                                     // 0: Output - 1: Input

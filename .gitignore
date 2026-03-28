@@ -38,3 +38,7 @@ compile_commands.json
 .vs
 .vscode
 .idea
+.cscope.big
+.cscope.big.in
+.cscope.big.po
+.cscope.files

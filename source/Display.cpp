@@ -40,7 +40,11 @@ static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
 void Display::switchPage(Processor* o, const Page p)
 {
+
+    std::cout << "switchPage..\n";
     page = p;
+    redrawTexture = true;
+
     switch(page)
     {
         case VcoA: moduleMenu(&o->spiro, core::map::module::vco, 0); break;
@@ -60,39 +64,41 @@ void Display::switchPage(Processor* o, const Page p)
 
 void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, const int mp)
 {
+    redrawTexture = true;
+    layer->clr(0x0);
+
     inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
     auto module = o->rack.at(mt, mp);
     auto sector = o->grid->getSector(mt, mp);
     if(row[page] >= sector->options->parameters) row[page] = sector->options->parameters - 1;
     else if(row[page] < 0) row[page] = 0;
     auto description = std::string(sector->options->description) + " " + std::string(1, 'A' + mp);
 
-    core::draw_text_label(layer.get(), gtFont, description.c_str(),   grid(3, X), grid(1, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------", grid(3, X), grid(2, Y), contrast);
+    core::drawTextLabel(layer, gtFont, description.c_str(),   grid(3, X), grid(1, Y), opacity);
+    core::drawTextLabel(layer, gtFont, "-------------------", grid(3, X), grid(2, Y), opacity);
    
     for(int i = 0, cid = 0; i < sector->options->parameters; ++i)
     {
         auto parameter = sector->options->parameterId[i];
-        core::draw_text_label(layer.get(), gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), contrast);
+        core::drawTextLabel(layer, gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), opacity);
         int offset = grid(parameter.size(), X) + grid(3, X);
         if(sector->options->parameterType[i] == core::Options::Choice)
         {
             auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
             parameter = sector->options->choice[cid][p];
-            core::draw_text_label(layer.get(), gtFont, parameter.data(), offset, grid(3, Y) + grid(i, Y), contrast);
+            core::drawTextLabel(layer, gtFont, parameter.data(), offset, grid(3, Y) + grid(i, Y), opacity);
             ++cid;
         }
         else if(sector->options->parameterType[i] == core::Options::Integer) 
         {
             auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
-            core::draw_text_label(layer.get(), gtFont, std::to_string(p).c_str(), offset, grid(3, Y) + grid(i, Y), contrast);
+            core::drawTextLabel(layer, gtFont, std::to_string(p).c_str(), offset, grid(3, Y) + grid(i, Y), opacity);
         }
     }
     
-    core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
-    vSoft(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown);
-    // hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
+    core::drawGlyph(layer, gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), opacity);
+    drawSoftGlyphsV(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown,  layer);
+    drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, layer);
 
     uid.mt = mt;
     uid.mp = mp;
@@ -100,14 +106,13 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     uid.pp = sector->options->parameterPosition[row[page]];
 
     layerOn = true;
-    repaint();
 }
 
 void Display::openGLContextClosing()
 {
     // Clean up when context is closing
     brightnessShader.reset();
- }
+}
 
 void Display::createShaders()
 {
@@ -318,7 +323,7 @@ void Display::bakeTextures()
 {
     core::Canvas<uint8_t> canvas(area.w, area.h);
     canvas.clr(0);
-    hSoft(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
+    drawSoftGlyphsH(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
     drawGraticule(&canvas);
     //drawBorder(&canvas);
     croTexture.bind();
@@ -421,14 +426,14 @@ void Display::renderBloom() noexcept
 
 }
 
-void Display::renderQuad()
+void Display::renderQuad(juce::OpenGLTexture* texture)
 {
     if (attrPos->attributeID < 0 || attrTex->attributeID < 0) return;
 
     brightnessShader->use();
 
     glActiveTexture(GL_TEXTURE0);
-    croTexture.bind();
+    texture->bind();
     uniTex->set(0);
 
     // position buffer
@@ -465,7 +470,26 @@ void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr
 
 void Display::renderOpenGL()
 {
-    croMenu();
+    if(page == Page::CroA) 
+    {
+        if(redrawTexture)
+            bakeTextures();
+
+        croMenu();
+        return;
+    }
+
+    if(redrawTexture) 
+    {
+        std::cout << "Redraw..\n";
+        juce::OpenGLHelpers::clear(palette::bg_dimmed);
+        moduleTexture.bind();
+        bakeTexture(layer);
+        redrawTexture = false;
+    }
+
+    renderModuleMenu();
+    renderBloom();
 }
 
 void Display::renderScope3(bool Skip) noexcept
@@ -474,7 +498,7 @@ void Display::renderScope3(bool Skip) noexcept
     // 1) Draw background/UI to main framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
-    renderQuad();
+    renderQuad(&croTexture);
     // 2) Draw scope into full-res scopeFBO
     glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
     glViewport(0, 0, area.w, area.h);
@@ -579,7 +603,7 @@ void Display::renderScope2(bool Skip) noexcept
     // 1) Draw background/UI to main framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
-    renderQuad();
+    renderQuad(&croTexture);
     // 2) Draw scope into full-res scopeFBO
     glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
     glViewport(0, 0, area.w, area.h);
@@ -677,6 +701,17 @@ void Display::renderScope2(bool Skip) noexcept
     glDisable(GL_BLEND);
 }
 
+void Display::renderModuleMenu() noexcept
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0.12, 0.16, 0.18, 0.8);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    brightnessShader->use();
+    renderQuad(&moduleTexture);
+}
+
 void Display::croMenu()
 {    
     juce::OpenGLHelpers::clear(palette::bg_dimmed);
@@ -702,6 +737,7 @@ void Display::saveMenu()
 
 void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* list)
 {
+    /*
     files = list->size();
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
@@ -734,14 +770,16 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
         core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), grid(4, X), grid(3 + i, Y), contrast);
     }
 
-    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    // hSoft(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight, &layer.get());
+    // drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+    // drawSoftGlyphsH(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight, &layer.get());
     layerOn = true;
     repaint();
+    */
 }
 
 void Display::mainMenu()
 {
+    /*
     page = Page::MainMenu;
 
     if     (row[page] > 2) row[page] = 2;
@@ -756,23 +794,24 @@ void Display::mainMenu()
 
     core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
 
-    vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    // hSoft(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty, &layer.get());
+    // drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+    // drawSoftGlyphsH(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty, &layer.get());
     layerOn = true;
     repaint();
+    */
 }
 
-void Display::vSoft(const int a, const int b, const int c, const int d)
+void Display::drawSoftGlyphsV(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
 {
-    auto step = area.h / 30;
-    auto offset = area.w / 30;
-    core::draw_glyph(layer.get(), gtFont, a, offset, step *  8, contrast);
-    core::draw_glyph(layer.get(), gtFont, b, offset, step * 14, contrast);
-    core::draw_glyph(layer.get(), gtFont, c, offset, step * 20, contrast);
-    core::draw_glyph(layer.get(), gtFont, d, offset, step * 26, contrast);
+    auto step = canvas->height / 30;
+    auto offset = canvas->width / 30;
+    core::drawGlyph(canvas, gtFont, a, offset, step *  8, opacity);
+    core::drawGlyph(canvas, gtFont, b, offset, step * 14, opacity);
+    core::drawGlyph(canvas, gtFont, c, offset, step * 20, opacity);
+    core::drawGlyph(canvas, gtFont, d, offset, step * 26, opacity);
 }
 
-void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
+void Display::drawSoftGlyphsH(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
 {
     auto step = canvas->width / 30;
     auto offset = canvas->height - canvas->height / 17;
@@ -784,6 +823,7 @@ void Display::hSoft(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
 
 void Display::offMenu()
 {
+    /*
     inputBox.setVisible(false);
     layer.get()->clr(0.0f);
     core::draw_text_label(layer.get(), gtFont, "SPIRO    V.0.5.1-ALPHA", 10, 10, contrast);
@@ -791,10 +831,11 @@ void Display::offMenu()
     core::draw_text_label(layer.get(), gtFont, "COPYRIGHT(C) 2022-2025", 10, 30, contrast);
     core::draw_text_label(layer.get(), gtFont, "MIT LICENSE   [ POLE ]", 10, 40, contrast);
 
-    // hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
+    // drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
 
     layerOn = true;
     repaint();
+    */
 }
 
 // void Display::EnvelopeMenu(core::envelope* env, int id)
@@ -819,8 +860,8 @@ void Display::offMenu()
 //  juce::String scale = juce::String::formatted("%d%%", sc);
 //  core::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
 //
-//  vSoft(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-//  hSoft(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
+//  drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
+//  drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
 //
 //  layerOn = true;
 //  repaint();
@@ -859,9 +900,9 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     framebuffer = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
     canvas = std::make_unique<core::Canvas<float>>(area.w, area.h);
     canvas.get()->clr(0.0f);
-    layer = std::make_unique<core::Canvas<float>>(area.w, area.h);
-    layer.get()->clr(0.0f);
-    inputBox.canvas = layer.get();
+    layer = new core::Canvas<uint8_t>(area.w, area.h);
+    layer->clr(0x0);
+    //inputBox.canvas = layer.get();
 
     juce::OpenGLPixelFormat pixelFormat;
     pixelFormat.redBits   = 8;
@@ -885,6 +926,7 @@ Display::~Display()
 {
     openGLContext.setContinuousRepainting(false);
     openGLContext.detach();
+    delete layer;
 }
 
 OledLabel::OledLabel(const float* c): contrast(c) 
@@ -906,6 +948,7 @@ OledLabel::OledLabel(const float* c): contrast(c)
 
 void OledLabel::paint(juce::Graphics& g)
 {
+    /*
     if(g.isClipEmpty()) return; // Prevent warning
 
     auto area = getLocalBounds();
@@ -919,6 +962,7 @@ void OledLabel::paint(juce::Graphics& g)
 
     core::draw_glyph(canvas, gtFont, glyph::Cancel,  49, 155, *contrast);
     core::draw_glyph(canvas, gtFont, glyph::Ok,  79, 155, *contrast);
+    */
 }
 
 void Display::reset()
