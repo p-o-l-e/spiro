@@ -50,18 +50,14 @@ namespace glyph
 
 struct OledLabel: public juce::TextEditor
 {
-    const float* contrast;
-    core::Canvas<float>* canvas;
-    core::Rectangle<int> area;
-    void paint (juce::Graphics& g) override;
-    OledLabel(const float*);
+    OledLabel();
    ~OledLabel() = default;
 };
 
 class Display: public juce::Component, private juce::OpenGLRenderer
 {
     public:
-		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, MainMenu, About, COUNT };
+		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, Main, Info, COUNT };
         enum ShaderType 
         {
             Solid,
@@ -77,8 +73,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 	private:
         Processor *processor;
 		std::unique_ptr<juce::Image> framebuffer;
-		std::unique_ptr<core::Canvas<float>> canvas;
-		core::Canvas<uint8_t>* layer;
+		core::Canvas<uint8_t>* textLayer;
 
         std::unique_ptr<Shader> shader[ShaderType::Size];
 
@@ -142,7 +137,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         const float contrast = 0.6f;
         const uint8_t opacity = 0xAF;
         std::atomic<bool> needsUpload { true };
-        bool redrawTexture = true;
+        bool repaintTexture = true;
 		int last_page = 0;
         int stepX = 10, stepY = 10;
 
@@ -156,23 +151,22 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 
         constexpr static bool X = true, Y = false;
         constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
-        void bakeTexture(core::Canvas<uint8_t>*);
-        void bakeTextures();
+        void bakeTexture(juce::OpenGLTexture*, core::Canvas<uint8_t>*);
         void createShaders();
         void createBloomFBOs();
         void createQuadBuffers();
         void renderQuad(juce::OpenGLTexture*);
         void renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute&);
-        void renderScope2(bool) noexcept;
-        void renderScope3(bool) noexcept;
+        void skipFrames();
+        void renderScope2() noexcept;
+        void renderScope3() noexcept;
         void renderModuleMenu() noexcept;
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Display)
 
 	public:
         std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
-	    OledLabel inputBox { &contrast };
+	    OledLabel inputBox;
         juce::OpenGLContext openGLContext;
-		bool layerOn = false;
 		const int rows_max = 12;
 		int files = 0;
 
@@ -198,7 +192,6 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		void drawSoftGlyphsH(int, int, int, int, core::Canvas<uint8_t>*);
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
-		void reset();
 		Display(Processor*, std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);
 	   ~Display();
 	   	class Listener 

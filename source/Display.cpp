@@ -31,6 +31,7 @@
 #include "shapes.hpp"
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string_view>
 
 using namespace juce::gl;
@@ -38,12 +39,10 @@ using namespace juce::gl;
 static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
 static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
-void Display::switchPage(Processor* o, const Page p)
+void Display::switchPage(Processor* o, const Page currentPage)
 {
-
-    std::cout << "switchPage..\n";
-    page = p;
-    redrawTexture = true;
+    page = currentPage;
+    repaintTexture = true;
 
     switch(page)
     {
@@ -55,17 +54,17 @@ void Display::switchPage(Processor* o, const Page p)
         case CsoB: moduleMenu(&o->spiro, core::map::module::cso, 1); break;
         case LfoA: moduleMenu(&o->spiro, core::map::module::lfo, 0); break;
         case LfoB: moduleMenu(&o->spiro, core::map::module::lfo, 1); break;
-        // case CroA: croMenu(); break;
+        case CroA: break;
+        case Save: saveMenu();
         case Load: loadMenu(&o->presets); break;
-        case MainMenu: mainMenu(); break;
+        case Main: mainMenu(); break;
         default: break;
     }
 }
 
 void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, const int mp)
 {
-    redrawTexture = true;
-    layer->clr(0x0);
+    textLayer->clr(0x0);
 
     inputBox.setVisible(false);
     auto module = o->rack.at(mt, mp);
@@ -74,38 +73,39 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     else if(row[page] < 0) row[page] = 0;
     auto description = std::string(sector->options->description) + " " + std::string(1, 'A' + mp);
 
-    core::drawTextLabel(layer, gtFont, description.c_str(),   grid(3, X), grid(1, Y), opacity);
-    core::drawTextLabel(layer, gtFont, "-------------------", grid(3, X), grid(2, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, description.c_str(),   grid(3, X), grid(1, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, "-------------------", grid(3, X), grid(2, Y), opacity);
    
     for(int i = 0, cid = 0; i < sector->options->parameters; ++i)
     {
         auto parameter = sector->options->parameterId[i];
-        core::drawTextLabel(layer, gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), opacity);
+        core::drawTextLabel(textLayer, gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), opacity);
         int offset = grid(parameter.size(), X) + grid(3, X);
         if(sector->options->parameterType[i] == core::Options::Choice)
         {
             auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
             parameter = sector->options->choice[cid][p];
-            core::drawTextLabel(layer, gtFont, parameter.data(), offset, grid(3, Y) + grid(i, Y), opacity);
+            core::drawTextLabel(textLayer, gtFont, parameter.data(), offset, grid(3, Y) + grid(i, Y), opacity);
             ++cid;
         }
         else if(sector->options->parameterType[i] == core::Options::Integer) 
         {
             auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
-            core::drawTextLabel(layer, gtFont, std::to_string(p).c_str(), offset, grid(3, Y) + grid(i, Y), opacity);
+            core::drawTextLabel(textLayer, gtFont, std::to_string(p).c_str(), offset, grid(3, Y) + grid(i, Y), opacity);
         }
     }
     
-    core::drawGlyph(layer, gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), opacity);
-    drawSoftGlyphsV(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown,  layer);
-    drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, layer);
+    core::drawGlyph(textLayer, gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), opacity);
+    drawSoftGlyphsV(glyph::JumpUp,   glyph::StepUp,   glyph::StepDown,  glyph::JumpDown,  textLayer);
+    drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, textLayer);
 
     uid.mt = mt;
     uid.mp = mp;
     uid.pt = core::map::cv::c;
     uid.pp = sector->options->parameterPosition[row[page]];
 
-    layerOn = true;
+    repaintTexture = true;
+    skipScopeRender = true;
 }
 
 void Display::openGLContextClosing()
@@ -297,8 +297,10 @@ void Display::createBloomFBOs()
 
 }
 
-void Display::bakeTexture(core::Canvas<uint8_t>* canvas)
+void Display::bakeTexture(juce::OpenGLTexture* texture, core::Canvas<uint8_t>* canvas)
 {
+    texture->bind();
+
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -317,18 +319,6 @@ void Display::bakeTexture(core::Canvas<uint8_t>* canvas)
         GL_UNSIGNED_BYTE,
         canvas->raw()
     );
-}
-
-void Display::bakeTextures()
-{
-    core::Canvas<uint8_t> canvas(area.w, area.h);
-    canvas.clr(0);
-    drawSoftGlyphsH(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, &canvas);
-    drawGraticule(&canvas);
-    //drawBorder(&canvas);
-    croTexture.bind();
-    bakeTexture(&canvas);
-
 }
 
 void Display::renderBloom() noexcept
@@ -470,29 +460,57 @@ void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr
 
 void Display::renderOpenGL()
 {
-    if(page == Page::CroA) 
-    {
-        if(redrawTexture)
-            bakeTextures();
+    if(skipScopeRender)
+        skipFrames();
 
-        croMenu();
-        return;
+    switch(page)
+    {
+        case VcoA:
+        case VcoB:
+        case VcoC:
+        case VcoD:
+        case CsoA:
+        case CsoB:  
+        case LfoA:
+        case LfoB: 
+        case Load: 
+        case Save:
+        case Main: 
+            if(repaintTexture) 
+            {
+                bakeTexture(&moduleTexture, textLayer);
+                renderModuleMenu();
+                repaintTexture = false;
+            }
+            break;
+        case CroA: 
+            if(repaintTexture)
+            {
+                textLayer->clr(0x0);
+                drawSoftGlyphsH(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, textLayer);
+                drawGraticule(textLayer);
+                bakeTexture(&croTexture, textLayer);
+            }
+            croMenu();
+            break;
+        default: 
+            break;
     }
 
-    if(redrawTexture) 
-    {
-        std::cout << "Redraw..\n";
-        juce::OpenGLHelpers::clear(palette::bg_dimmed);
-        moduleTexture.bind();
-        bakeTexture(layer);
-        redrawTexture = false;
-    }
-
-    renderModuleMenu();
-    renderBloom();
 }
 
-void Display::renderScope3(bool Skip) noexcept
+void Display::skipFrames()
+{
+    if(auto data = _data.lock())
+    {
+        unsigned long current = data->written();
+        unsigned long samplesToRead = current - samplesLastProduced;
+        samplesLastProduced = current;
+        data->advance(samplesToRead);
+    }
+}
+
+void Display::renderScope3() noexcept
 {
     using namespace core::shader;
     // 1) Draw background/UI to main framebuffer
@@ -512,12 +530,6 @@ void Display::renderScope3(bool Skip) noexcept
         unsigned long current = data->written();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
-
-        if(Skip)
-        {
-            data->advance(samplesToRead);
-            return;
-        }
 
         if(samplesToRead < 0x40) return;
 
@@ -597,7 +609,7 @@ void Display::renderScope3(bool Skip) noexcept
     glDisable(GL_BLEND);
 }
 
-void Display::renderScope2(bool Skip) noexcept
+void Display::renderScope2() noexcept
 {
     using namespace core::shader;
     // 1) Draw background/UI to main framebuffer
@@ -617,12 +629,6 @@ void Display::renderScope2(bool Skip) noexcept
         unsigned long current = data->written();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
-
-        if(Skip)
-        {
-            data->advance(samplesToRead);
-            return;
-        }
 
         if(samplesToRead < 0x40) return;
 
@@ -718,12 +724,14 @@ void Display::croMenu()
 
     if(scope_type->load() < 0.5f)
     {
-        renderScope3(skipScopeRender);
+        renderScope3();
     }
     else if(scope_type->load() >= 0.5f)
     {
-        renderScope2(skipScopeRender);
+        renderScope2();
     }
+
+    skipScopeRender = false;
 }
 
 void Display::saveMenu()
@@ -731,16 +739,28 @@ void Display::saveMenu()
     page = Page::Save;
 
     inputBox.setVisible(true);
-    layerOn = true;
-    repaint();
+    textLayer->clr(0x0);
+    core::drawTextLabel(textLayer, gtFont, "SAVE PRESET:",        30, 10, opacity);
+    core::drawTextLabel(textLayer, gtFont, "-------------------", 30, 20, opacity);
+    core::drawTextLabel(textLayer, gtFont, ">",                   30, 40, opacity);
+
+    auto Text = inputBox.getText().toRawUTF8();
+    core::drawTextLabel(textLayer, gtFont, Text, 46, 40, opacity);
+    int cp = inputBox.getCaretPosition();
+    core::drawTextLabel(textLayer, gtFont, "_", 46 + 8 * cp, 42, opacity);
+
+    core::drawGlyph(textLayer, gtFont, glyph::Cancel, 49, 155, opacity);
+    core::drawGlyph(textLayer, gtFont, glyph::Ok,     79, 155, opacity);
+    
+    repaintTexture = true;
+    skipScopeRender = true;
 }
 
 void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* list)
 {
-    /*
     files = list->size();
     inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
+    textLayer->clr(0x0);
 
     last_page = files / rows_max;
 
@@ -759,46 +779,45 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
     }
 
     juce::String lp ("LOAD PAGE: "); lp += load_page;
-    core::draw_text_label(layer.get(), gtFont, lp.toRawUTF8(),          grid(3, X), grid(1, Y)              , contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------",   grid(3, X), grid(2, Y)              , contrast);
-    core::draw_glyph(layer.get(), gtFont, 113,                          grid(3, X), grid(3 + row[page], Y)  , contrast);
+    core::drawTextLabel(textLayer, gtFont, lp.toRawUTF8(),        grid(3, X), grid(1, Y)            , opacity);
+    core::drawTextLabel(textLayer, gtFont, "-------------------", grid(3, X), grid(2, Y)            , opacity);
+    core::drawGlyph(textLayer, gtFont, 113,                       grid(3, X), grid(3 + row[page], Y), opacity);
 
     for(int i = 0; i < rows_max; ++i)
     {
         int pos = i + rows_max * load_page;
         if(pos >= files) break;
-        core::draw_text_label(layer.get(), gtFont, list->at(pos).first.toRawUTF8(), grid(4, X), grid(3 + i, Y), contrast);
+        core::drawTextLabel(textLayer, gtFont, list->at(pos).first.toRawUTF8(), grid(4, X), grid(3 + i, Y), opacity);
     }
 
-    // drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    // drawSoftGlyphsH(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight, &layer.get());
-    layerOn = true;
-    repaint();
-    */
+    drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown,  textLayer);
+    drawSoftGlyphsH(glyph::Cancel, glyph::Ok,     glyph::StepLeft, glyph::StepRight, textLayer);
+    
+    repaintTexture = true;
+    skipScopeRender = true;
 }
 
 void Display::mainMenu()
 {
-    /*
-    page = Page::MainMenu;
+    page = Page::Main;
 
     if     (row[page] > 2) row[page] = 2;
     else if(row[page] < 0) row[page] = 0;
     inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, "PRESET:",               grid(3, X), grid(1, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "-------------------",   grid(3, X), grid(2, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "SAVE",                  grid(4, X), grid(3, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "LOAD",                  grid(4, X), grid(4, Y), contrast);
-    core::draw_text_label(layer.get(), gtFont, "INIT",                  grid(4, X), grid(5, Y), contrast);
+    textLayer->clr(0x0);
+    core::drawTextLabel(textLayer, gtFont, "PRESET:",               grid(3, X), grid(1, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, "-------------------",   grid(3, X), grid(2, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, "SAVE",                  grid(4, X), grid(3, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, "LOAD",                  grid(4, X), grid(4, Y), opacity);
+    core::drawTextLabel(textLayer, gtFont, "INIT",                  grid(4, X), grid(5, Y), opacity);
 
-    core::draw_glyph(layer.get(), gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), contrast);
+    core::drawGlyph(textLayer, gtFont, glyph::Square, grid(3, X), grid(3, Y) + grid(row[page], Y), opacity);
 
-    // drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
-    // drawSoftGlyphsH(glyph::Cancel, glyph::Ok, glyph::Empty, glyph::Empty, &layer.get());
-    layerOn = true;
-    repaint();
-    */
+    drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown, textLayer);
+    drawSoftGlyphsH(glyph::Cancel, glyph::Ok,     glyph::Empty,    glyph::Empty,    textLayer);
+
+    repaintTexture = true;
+    skipScopeRender = true;
 }
 
 void Display::drawSoftGlyphsV(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
@@ -825,15 +844,14 @@ void Display::offMenu()
 {
     /*
     inputBox.setVisible(false);
-    layer.get()->clr(0.0f);
-    core::draw_text_label(layer.get(), gtFont, "SPIRO    V.0.5.1-ALPHA", 10, 10, contrast);
-    core::draw_text_label(layer.get(), gtFont, "                      ", 10, 20, contrast);
-    core::draw_text_label(layer.get(), gtFont, "COPYRIGHT(C) 2022-2025", 10, 30, contrast);
-    core::draw_text_label(layer.get(), gtFont, "MIT LICENSE   [ POLE ]", 10, 40, contrast);
+    textLayer.get()->clr(0.0f);
+    core::draw_text_label(textLayer.get(), gtFont, "SPIRO    V.0.5.1-ALPHA", 10, 10, contrast);
+    core::draw_text_label(textLayer.get(), gtFont, "                      ", 10, 20, contrast);
+    core::draw_text_label(textLayer.get(), gtFont, "COPYRIGHT(C) 2022-2025", 10, 30, contrast);
+    core::draw_text_label(textLayer.get(), gtFont, "MIT LICENSE   [ POLE ]", 10, 40, contrast);
 
-    // drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &layer.get());
+    // drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight, &textLayer.get());
 
-    layerOn = true;
     repaint();
     */
 }
@@ -841,29 +859,28 @@ void Display::offMenu()
 // void Display::EnvelopeMenu(core::envelope* env, int id)
 // {
 //  inputBox.setVisible(false);
-//  layer.get()->clr(0.0f);
+//  textLayer.get()->clr(0.0f);
 //
 //  switch(id)
 //  {
-//      case 0: core::draw_text_label(layer.get(), gtFont, "ENVELOPE A:", 30, 10, contrast); break;
-//      case 1: core::draw_text_label(layer.get(), gtFont, "ENVELOPE B:", 30, 10, contrast); break;
-//      case 2: core::draw_text_label(layer.get(), gtFont, "ENVELOPE C:", 30, 10, contrast); break;
-//      case 3: core::draw_text_label(layer.get(), gtFont, "ENVELOPE D:", 30, 10, contrast); break;
+//      case 0: core::draw_text_label(textLayer.get(), gtFont, "ENVELOPE A:", 30, 10, contrast); break;
+//      case 1: core::draw_text_label(textLayer.get(), gtFont, "ENVELOPE B:", 30, 10, contrast); break;
+//      case 2: core::draw_text_label(textLayer.get(), gtFont, "ENVELOPE C:", 30, 10, contrast); break;
+//      case 3: core::draw_text_label(textLayer.get(), gtFont, "ENVELOPE D:", 30, 10, contrast); break;
 //         default: break;
 //  }
-//  core::draw_text_label(layer.get(), gtFont, "-------------------", 30, 20, contrast);
+//  core::draw_text_label(textLayer.get(), gtFont, "-------------------", 30, 20, contrast);
 //
-//  core::draw_text_label(layer.get(), gtFont, "SCALE: ", 30, 30, contrast);
+//  core::draw_text_label(textLayer.get(), gtFont, "SCALE: ", 30, 30, contrast);
 //
 //  float percent = env->time_scale->load();
 //  unsigned sc  = roundf(percent * 100.0f);
 //  juce::String scale = juce::String::formatted("%d%%", sc);
-//  core::draw_text_label(layer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
+//  core::draw_text_label(textLayer.get(), gtFont, scale.toRawUTF8(), 96, 30, contrast);
 //
 //  drawSoftGlyphsV(glyph::JumpUp, glyph::StepUp, glyph::StepDown, glyph::JumpDown);
 //  drawSoftGlyphsH(glyph::JumpLeft, glyph::StepLeft, glyph::StepRight, glyph::JumpRight);
 //
-//  layerOn = true;
 //  repaint();
 // }
 
@@ -872,7 +889,6 @@ void Display::newOpenGLContextCreated()
 
     createShaders();
     createBloomFBOs();
-    bakeTextures();
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, afterglowFBO);
@@ -884,7 +900,6 @@ void Display::newOpenGLContextCreated()
 void Display::resized()
 {
     inputBox.setBounds(0, 0, 1, 1);
-    reset();
     
     const auto bounds = getLocalBounds().toFloat();
 
@@ -898,11 +913,8 @@ void Display::resized()
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
 {
     framebuffer = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
-    canvas = std::make_unique<core::Canvas<float>>(area.w, area.h);
-    canvas.get()->clr(0.0f);
-    layer = new core::Canvas<uint8_t>(area.w, area.h);
-    layer->clr(0x0);
-    //inputBox.canvas = layer.get();
+    textLayer = new core::Canvas<uint8_t>(area.w, area.h);
+    textLayer->clr(0x0);
 
     juce::OpenGLPixelFormat pixelFormat;
     pixelFormat.redBits   = 8;
@@ -919,17 +931,20 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     openGLContext.setComponentPaintingEnabled(false);
     openGLContext.setContinuousRepainting(false);
     addAndMakeVisible(inputBox);
-    reset();
+
+    inputBox.onTextChange = [this](){
+        saveMenu();
+    };
 }
 
 Display::~Display()
 {
     openGLContext.setContinuousRepainting(false);
     openGLContext.detach();
-    delete layer;
+    delete textLayer;
 }
 
-OledLabel::OledLabel(const float* c): contrast(c) 
+OledLabel::OledLabel()
 {
     setMultiLine(false, false);
     setTabKeyUsedAsCharacter(false);
@@ -944,30 +959,6 @@ OledLabel::OledLabel(const float* c): contrast(c)
     setColour(juce::TextEditor::ColourIds::outlineColourId,           juce::Colour::fromRGBA(0,0,0,0));
     setColour(juce::TextEditor::ColourIds::focusedOutlineColourId,    juce::Colour::fromRGBA(0,0,0,0));
     setColour(juce::TextEditor::ColourIds::shadowColourId,            juce::Colour::fromRGBA(0,0,0,0));
-}
-
-void OledLabel::paint(juce::Graphics& g)
-{
-    /*
-    if(g.isClipEmpty()) return; // Prevent warning
-
-    auto area = getLocalBounds();
-    canvas->clr(0.0f);
-    core::draw_text_label(canvas, gtFont, "SAVE PRESET:", 30, 10, *contrast);
-    core::draw_text_label(canvas, gtFont, "-------------------", 30, 20, *contrast);
-    core::draw_text_label(canvas, gtFont, ">", 30, 40, *contrast);
-    core::draw_text_label(canvas, gtFont, getText().toRawUTF8(), 46, 40, *contrast);
-    int cp = getCaretPosition();
-    core::draw_text_label(canvas, gtFont, "_", 46 + 8 * cp, 42, *contrast);
-
-    core::draw_glyph(canvas, gtFont, glyph::Cancel,  49, 155, *contrast);
-    core::draw_glyph(canvas, gtFont, glyph::Ok,  79, 155, *contrast);
-    */
-}
-
-void Display::reset()
-{
-
 }
 
 static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept

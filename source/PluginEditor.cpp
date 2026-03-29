@@ -163,7 +163,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     button[(processor.spiro.grid->getIndex(core::uid_t{ core::map::module::cro, 0, core::map::cv::c, core::cro::ctl::menu }))]->onClick = [this]
     {
         fade = true;
-        display->page = Display::Page::MainMenu;
+        display->page = Display::Page::Main;
         display->mainMenu();
     };
 
@@ -298,7 +298,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 setOption(uid, -control->step, control->max);
                 break; 
             }
-            case Display::Page::MainMenu: 
+            case Display::Page::Main: 
             {
                 startTimerHz(core::settings::scope_fps);
                 fade = false;
@@ -342,7 +342,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 setOption(uid, control->step, control->max);
                 break;
             }
-            case Display::Page::MainMenu:
+            case Display::Page::Main:
             {
                 switch(display->row[display->page])
                 {
@@ -380,7 +380,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 if(!presetName.isEmpty()) 
                 {
                     processor.savePreset(presetName, false);
-                    display->page = Display::Page::MainMenu;
+                    display->page = Display::Page::Main;
                     display->mainMenu();
                 }
                 break;
@@ -420,7 +420,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 setOption(uid, -control->step, control->max);
                 break;
             }
-            case Display::Page::MainMenu:
+            case Display::Page::Main:
             {
                 break;
             }
@@ -460,7 +460,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                 setOption(uid, control->step, control->max);
                 break;
             }
-            case Display::Page::MainMenu:  
+            case Display::Page::Main:  
             {
                 break;
             }
