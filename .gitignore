@@ -42,3 +42,4 @@ compile_commands.json
 .cscope.big.in
 .cscope.big.po
 .cscope.files
+build.md

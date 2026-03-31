@@ -21,14 +21,11 @@
 ******************************************************************************************************************************/
 
 #pragma once
-#include "JuceHeader.h"
 #include "PluginProcessor.h"
 #include "canvas.hpp"
 #include "JuceShader.hpp"
-#include <chrono>
 #include <cstdint>
 #include <memory>
-#include <string_view>
 
 namespace glyph
 {
@@ -57,7 +54,7 @@ struct OledLabel: public juce::TextEditor
 class Display: public juce::Component, private juce::OpenGLRenderer
 {
     public:
-		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, EnvA, EnvB, EnvC, EnvD,	Save, Load,	CroA, Main, Info, COUNT };
+		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, Save, Load,	CroA, Main, Info, Limit };
         enum ShaderType 
         {
             Solid,
@@ -177,7 +174,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 
 		Page page = CroA;
         const core::uid_t getUID() const;
-		int row[Page::COUNT] = {};
+		int row[Page::Limit] = {};
 		int load_page = 0;
         core::uid_t uid;
 		const core::Rectangle<int> area;
@@ -193,12 +190,12 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		Display(Processor*, std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);
-	   ~Display();
+	   ~Display() override;
 	   	class Listener 
         {
             public:
                 virtual ~Listener() = default;
-                virtual void bufferDisconnected() {};
+                virtual void bufferDisconnected() {}
         };
         void addListener(Listener *l) { listeners.add(l); }
         void removeListener(Listener *l) { listeners.remove(l); }

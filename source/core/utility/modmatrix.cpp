@@ -44,7 +44,7 @@ constexpr void Patchcord::process()
     }
 }
 
-Patchcord::Patchcord(int j = 8): iterations(j)
+Patchcord::Patchcord(int j): iterations(j)
 {
     data = new Point2D<float>[iterations];
 }
@@ -105,7 +105,7 @@ constexpr void Socket::drag(const float& x, const float& y)
     cord.process();
 }
 
-Socket::Socket(int n = 32): cord(n)
+Socket::Socket(int n): cord(n)
 {
     collapse();
 }

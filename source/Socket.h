@@ -30,28 +30,26 @@ class Sockets: public juce::Component
 {
     private:
         juce::Rectangle<int> area;
-        float opacity   = 0.8f;
-        bool  i_armed   = false;
-        bool  o_armed   = false;
-        bool  drag      = false;
-        int   route     = -1;
-        core::Socket* from_grid(int, bool);
+        float opacity = 0.8f;
+        bool sourceArmed = false;
+        bool targetArmed = false;
+        core::Socket* fromModMatrix(int, bool);
+        juce::MouseCursor cursor;
 
     public:
-        juce::Colour colour_normal = palette::cord_normal;
-        juce::Colour colour_highlighted = palette::cord_highlighted;
+        juce::Colour colourNormal = palette::cord_normal;
+        juce::Colour colourHighlighted = palette::cord_highlighted;
         core::Patchbay* bay = nullptr;
         void drawMask(juce::Graphics&);
         void drawCords(juce::Graphics&, float);
-        juce::MouseCursor cursor;
-        void load();
-        void mouseUp   (const juce::MouseEvent&) override;
-        void mouseDrag (const juce::MouseEvent&) override;
-        void mouseDown (const juce::MouseEvent&) override;
-        void mouseMove (const juce::MouseEvent&) override;
+        void mouseUp(const juce::MouseEvent&) override;
+        void mouseDrag(const juce::MouseEvent&) override;
+        void mouseDown(const juce::MouseEvent&) override;
+        void mouseMove(const juce::MouseEvent&) override;
 
+        void load();
         void resized() override;
         void paint(juce::Graphics& g) override;
         Sockets(const core::Rectangle<int>&, const core::Grid&);
-       ~Sockets();
+       ~Sockets() override;
 };

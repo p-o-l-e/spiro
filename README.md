@@ -46,44 +46,38 @@ Before building, ensure you have:
         
 
 ### **Steps to Build**
+
 **Linux**
 1.  **Clone the Repository**
     ```
     git clone https://github.com/p-o-l-e/spiro.git
-
     ```
 3.  **Compile** 
     ```
     mkdir build
     cd build
-    cmake ..
+    cmake -DCMAKE_BUILD_TYPE=Release ..
     make
-    
     ```
 4.  **Run (Standalone Mode)**
     ```
     ./build/Spiro_artefacts/Standalone/spiro
-    
     ```
 
 **Windows**
 1.  **Clone the Repository**
     ```
     git clone https://github.com/p-o-l-e/spiro.git
-
     ```
 3.  **Compile** 
     ```
     cmake -B build -G "Visual Studio 18 2026"
     cmake --build build --config Release
-    
     ```
 4.  **Run (Standalone Mode)**
     ```
     ./build/Spiro_artefacts/Standalone/spiro
-    
     ```
-
 
 ### **⚠️ Pre-Alpha Caveats:**
 

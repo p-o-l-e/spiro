@@ -121,7 +121,7 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     {
         auto uid = processor.spiro.grid->getUID(i, core::Control::button);
         const core::Control* c = processor.spiro.grid->control(uid);
-        button.emplace_back(std::make_unique<juce::ImageButton>(c->postfix));
+        button.emplace_back(std::make_unique<juce::ImageButton>(std::string(c->postfix)));
         auto type = Sprite::Momentary;
         switch(c->flag) 
         {
@@ -477,10 +477,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
 
             case Display::Page::CsoA:
             case Display::Page::CsoB:
-            case Display::Page::EnvA:
-            case Display::Page::EnvB:
-            case Display::Page::EnvC:
-            case Display::Page::EnvD:
             case Display::Page::LfoA:
             case Display::Page::LfoB:
             case Display::Page::VcoA:
@@ -647,6 +643,8 @@ void Editor::resized()
 
 	bg.setBounds(0, 0, core::constraints::W, core::constraints::H);
     bg.setVisible(true);
+    setResizeLimits(core::constraints::W, core::constraints::H, core::constraints::W, core::constraints::H);
+    setResizable(false, false);
 
     for(int i = 0; i < sliders; ++i)
     {

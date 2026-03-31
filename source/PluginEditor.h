@@ -72,7 +72,6 @@ class Editor: public juce::AudioProcessorEditor, public juce::Timer, /*public En
         std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachment;
         std::vector<std::unique_ptr<SliderAttachment>> sliderAttachment;
         const int envn = 4;
-        int envelope_shown = 0;
         std::vector<std::unique_ptr<EnvelopeDisplay>> env;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Editor)
 };

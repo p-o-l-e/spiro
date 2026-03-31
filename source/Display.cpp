@@ -21,15 +21,11 @@
 ******************************************************************************************************************************/
 #include "Display.h"
 #include "Colours.hpp"
-#include "blur.hpp"
 #include "canvas.hpp"
-#include "constants.hpp"
 #include "fonts.h"
-#include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
-#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <string_view>

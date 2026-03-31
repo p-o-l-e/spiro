@@ -15,6 +15,7 @@ set(BUNDLE_ID "com.spiro.spiro")
 
 # Valid choices: AAX Unity VST VST3 AU AUv3 Standalone
 set(FORMATS Standalone)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Force JUCE to work with sccache
 # instruct MSVC to embed debug info (/Z7) instead of emitting a .pdb

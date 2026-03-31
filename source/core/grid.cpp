@@ -24,6 +24,7 @@
 #include "grid.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "uid.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -106,8 +107,8 @@ namespace core
     int Grid::getIndex(const uint32_t hash) const
     {
         auto uid = decode_uid(hash);
-        auto t = control(uid)->is;
-        for(int i = 0; i < elements[t]; ++i)
+        size_t t = control(uid)->is;
+        for(size_t i = 0; i < elements[t]; ++i)
         {
             if(indices[t][i] == hash) return i;
         }
@@ -122,13 +123,13 @@ namespace core
     const std::unique_ptr<std::map<uint32_t, const Control*>> Grid::calculateControlMap(const Sector* d) const
     {
         auto r = std::make_unique<std::map<uint32_t, const Control*>>();
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
             {
                 for(uint8_t pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
                 {   
-                    uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
+                    uid_t uid { (uint8_t)d[i].descriptor->type, relative[i], pt, pp };
                     r->emplace(encode_uid(uid), &d[i].descriptor->set[pt][pp]);
                 }
             }
@@ -142,13 +143,13 @@ namespace core
 
         auto caps = [](const std::string& s) { return std::string(1, std::toupper(s[0])) + s.substr(1); };
 
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             for(uint8_t pt = 0; pt < core::map::cv::count; ++pt)
             {
                 for(uint8_t pp = 0; pp < *d[i].descriptor->cv[pt]; ++pp)
                 {
-                    core::uid_t uid { d[i].descriptor->type, relative[i], pt, pp };
+                    core::uid_t uid { (uint8_t)d[i].descriptor->type, relative[i], pt, pp };
 
                     std::string id {};
                     std::string name {};
@@ -159,7 +160,7 @@ namespace core
 
                     name += caps(std::string(*d[i].descriptor->prefix)) + " ";
                     name += std::string(1, relative[i] + 'A') + " ";
-                    name += caps(d[i].descriptor->set[pt][pp].postfix);
+                    name += caps(std::string(d[i].descriptor->set[pt][pp].postfix));
 
                     std::pair<std::string, std::string> idName { id, name };
 
@@ -182,12 +183,12 @@ namespace core
         return nullptr;
     }
 
-    const uid_t Grid::getUID(const int index, const Control::type& type) const
+    const uid_t Grid::getUID(size_t index, const Control::type& type) const
     {
         return decode_uid(indices[type][index]);
     }
 
-    uint32_t Grid::getHash(const int index, const Control::type& type) const
+    uint32_t Grid::getHash(size_t index, const Control::type& type) const
     {
         return indices[type][index];
     }
@@ -221,14 +222,14 @@ namespace core
     {
         auto r = std::make_unique<uint8_t[]>(sectors);
         auto check = std::make_unique<bool[]>(sectors);
-        for(int i = 0; i < sectors; ++i) check[i] = false;
+        for(size_t i = 0; i < sectors; ++i) check[i] = false;
 
-        for(int s = 0; s < sectors; ++s)
+        for(size_t s = 0; s < sectors; ++s)
         {
-            int pos = 0;
+            uint8_t pos = 0;
             auto carry = d[s].descriptor->type;
 
-            for(int i = s; i < sectors; ++i)
+            for(size_t i = s; i < sectors; ++i)
             {
                 if(!check[i])
                 {

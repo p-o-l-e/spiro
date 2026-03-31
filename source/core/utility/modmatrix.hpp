@@ -53,7 +53,7 @@ namespace core {
         const int iterations;               // Precision
         bool focused = false;
         constexpr void process();           // Fill spline data
-        Patchcord(int);
+        Patchcord(int j = 8);
        ~Patchcord();
     };
 
@@ -79,7 +79,7 @@ namespace core {
         std::atomic<float>** com  = &data;                  // Pointer to module input pointer
         constexpr void collapse();                          // Collapse to centre
         constexpr void drag(const float&, const float&);
-        Socket(int);
+        Socket(int n = 32);
        ~Socket();
     };
 

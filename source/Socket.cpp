@@ -33,7 +33,7 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
     bay = new core::Patchbay(bounds.w, bounds.h, inputs, outputs);
 
     std::cout  <<"---- Inputs...\n";
-    for(int i = 0; i < inputs; ++i)
+    for(size_t i = 0; i < inputs; ++i)
     {   
         auto hash = o.getHash(i, core::Control::input);
         auto f = o.getBounds(o.getUID(i, core::Control::input));
@@ -45,7 +45,7 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
         bay->set_socket(&offset, SR, hash, SOCKET_IN, i);
     }
     std::cout  <<"---- Outputs...\n";
-    for(int i = 0; i < outputs; ++i)
+    for(size_t i = 0; i < outputs; ++i)
     {
         auto hash = o.getHash(i, core::Control::output);
         auto f = o.getBounds(o.getUID(i, core::Control::output));
@@ -73,12 +73,12 @@ void Sockets::drawMask(juce::Graphics& g) // For debug puposes
     static auto layer = juce::Image(juce::Image::PixelFormat::ARGB, w, h, true);
     static juce::Image::BitmapData bmp(layer, juce::Image::BitmapData::ReadWriteMode::readWrite);
 
-    for(int y = 0; y < h; y++)
+    for(size_t y = 0; y < h; y++)
     {
-        for(int x = 0; x < w; x++)
+        for(size_t x = 0; x < w; x++)
         {
             auto c = bay->canvas.get(x, y);
-            float alpha = c ? 1.0f : 0.0f;
+            //float alpha = c ? 1.0f : 0.0f;
             //bmp.setPixelColour(x, y, colour_set[c&0xFF].withAlpha(alpha));
         }
     }
@@ -92,7 +92,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
     for(int j = 0; j < bay->nodes; j++)
     {
         core::Point2D<float> prior, current = bay->io[j].cord.data[0];
-        bay->io[j].cord.focused ? g.setColour (colour_highlighted.withAlpha(alpha)) : g.setColour (colour_normal.withAlpha(alpha));
+        bay->io[j].cord.focused ? g.setColour (colourHighlighted.withAlpha(alpha)) : g.setColour (colourNormal.withAlpha(alpha));
         for(int i = 0; i < bay->io[j].cord.iterations; i++)
         {
             prior = current;
@@ -103,7 +103,7 @@ void Sockets::drawCords(juce::Graphics& g, float alpha)
     }
 }
 
-core::Socket* Sockets::from_grid(int position, bool route)
+core::Socket* Sockets::fromModMatrix(int position, bool route)
 {
     if(route == SOCKET_IN)
     {
@@ -138,7 +138,7 @@ void Sockets::load()
             bool on = bay->matrix.get(x, y);
             if(on)
             {
-                bay->connect(from_grid(x, SOCKET_IN), from_grid(y, SOCKET_OUT));
+                bay->connect(fromModMatrix(x, SOCKET_IN), fromModMatrix(y, SOCKET_OUT));
             }
         }
     }
@@ -165,12 +165,12 @@ void Sockets::mouseDown(const juce::MouseEvent& event)
     auto t = bay->down_test(event.x, event.y, mb);
     if(t == 1)
     {
-        i_armed = true;
+        targetArmed = true;
         setMouseCursor(juce::MouseCursor::CrosshairCursor);
     }
     else if(t == -1)
     {
-        o_armed = true;
+        sourceArmed = true;
         setMouseCursor(juce::MouseCursor::CrosshairCursor);
     }
     repaint();
@@ -185,8 +185,8 @@ void Sockets::mouseDrag(const juce::MouseEvent& event)
 void Sockets::mouseUp(const juce::MouseEvent& event)
 {
     bay->up_test(event.x, event.y, 0);
-    i_armed = false;
-    o_armed = false;
+    targetArmed = false;
+    sourceArmed = false;
     setMouseCursor(juce::MouseCursor::NormalCursor);
     repaint();
 }

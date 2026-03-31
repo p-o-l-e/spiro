@@ -19,9 +19,9 @@ class Quaternion
         float y;
         float z;
 
-        constexpr Quaternion() : w(1), x(0), y(0), z(0) {}
+        constexpr Quaternion() : w(1.0f), x(0.0f), y(0.0f), z(0.0f) {}
         constexpr Quaternion(const Quaternion &q) : w(q.w), x(q.x), y(q.y), z(q.z) {}
-        constexpr Quaternion(float _x, float _y, float _z) : w(0), x(_x), y(_y), z(_z) {}
+        constexpr Quaternion(float _x, float _y, float _z) : w(0.0f), x(_x), y(_y), z(_z) {}
         constexpr Quaternion(float _w, float _x, float _y, float _z) : w(_w), x(_x), y(_y), z(_z) {}
 
         constexpr Quaternion &operator=(const Quaternion &rhs);
@@ -139,9 +139,9 @@ constexpr Quaternion Quaternion::conjugate() const
 constexpr void Quaternion::rotate_vector(float &vx, float &vy, float &vz)
 {
 	// t = 2q x v
-	float tx = 2. * (y * vz - z * vy);
-	float ty = 2. * (z * vx - x * vz);
-	float tz = 2. * (x * vy - y * vx);
+	float tx = 2.0f * (y * vz - z * vy);
+	float ty = 2.0f * (z * vx - x * vz);
+	float tz = 2.0f * (x * vy - y * vx);
 
 	// v + w t + q x t
 	vx = vx + w * tx + y * tz - z * ty;

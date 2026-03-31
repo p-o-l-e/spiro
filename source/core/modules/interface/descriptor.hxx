@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint>
-#include <memory>
 #include <string>
 #include <string_view>
 #include "primitives.hpp"
@@ -41,7 +40,7 @@ namespace core
         enum  type                        { slider, button, parameter, input, output, pin, dummy, count };
         const Control::type     is        { parameter };
         const Rectangle<float>  constrain { 0.0f, 0.0f, 0.0f, 0.0f };
-        const std::string       postfix   { "fuse" };
+        const std::string_view  postfix;
         
         const float min         { 0.0f  };                      // Min value
         const float max         { 1.0f  };                      // Max value

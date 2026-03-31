@@ -61,7 +61,7 @@ namespace core
     class Grid 
     {
         public:
-            const int sectors;
+            const size_t sectors;
             const Sector* const sector;
 
         private:
@@ -89,8 +89,8 @@ namespace core
             int getIndex(const uint32_t) const;
             int getIndex(const uid_t&) const;
             const Sector* getSector(const map::module::type&, const int) const;
-            const uid_t getUID(const int, const Control::type&) const;
-            uint32_t getHash(const int, const Control::type&) const;
+            const uid_t getUID(size_t, const Control::type&) const;
+            uint32_t getHash(size_t, const Control::type&) const;
             Grid(const Sector*, const int);
             Grid(const std::pair<const Sector*, std::size_t>&);
            ~Grid() = default;
