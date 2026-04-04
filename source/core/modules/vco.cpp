@@ -99,45 +99,83 @@ namespace core
 
     void VCO::process() noexcept
     {
-        if(mode() == Poly)
+        switch(mode())
         {
-            float accu = 0.0;
-            float fm  = powf(ccv[ctl::fm]->load(),  3.0f) * icv[cvi::fm]->load();
-            float pll = powf(ccv[ctl::pll]->load(), 3.0f);
-
-            for(int i = 1; i < settings::poly; ++i)
+            case Poly:
             {
-                if(gate[i])
-                {
-                    set_delta(i);
-                    phase[i] += (delta[i] + fm);
-                    if(phase[i] >= pi) phase[i] -= tao;  
+                float accu = 0.0;
+                float fm  = powf(ccv[ctl::fm]->load(),  3.0f) * icv[cvi::fm]->load();
+                float pll = powf(ccv[ctl::pll]->load(), 3.0f);
 
-                    auto current = (this->*form[(int)ccv[ctl::form]->load()])(i);
+                for(int i = 1; i < settings::poly; ++i)
+                {
+                    if(gate[i])
+                    {
+                        set_delta(i);
+                        phase[i] += (delta[i] + fm);
+                        if(phase[i] >= pi) phase[i] -= tao;  
+
+                        auto current = (this->*form[(int)ccv[ctl::form]->load()])(i);
+
+                        if(icv[cvi::pll] != &zero)
+                        {
+                            phase[i] += fPLL(current, icv[cvi::pll]->load()) * pll;
+                        }
+                        if(icv[cvi::am] != &zero)
+                        {
+                            current = xfade(current * icv[cvi::am]->load(), current, ccv[ctl::am]->load());
+                        }
+                        current *= ccv[ctl::amp]->load();
+                        current *= *pin[i];
+                        accu    += current;
+
+                    }
+                }
+                ocv[cvo::main].store(accu);
+                break;
+            }
+        
+            case Mono:
+            {
+                if(gate[Mono])
+                {
+                    set_delta(Mono);
+
+                    float fm = powf(ccv[ctl::fm]->load(), 3.0f);
+
+                    phase[Mono] += (delta[Mono] + icv[cvi::fm]->load() * fm);
+                    if(phase[Mono] >= pi) phase[Mono] -= tao;  
+
+                    float accu = (this->*form[(int)ccv[ctl::form]->load()])(Mono);
 
                     if(icv[cvi::pll] != &zero)
                     {
-                        phase[i] += fPLL(current, icv[cvi::pll]->load()) * pll;
+                        float f = powf(ccv[ctl::pll]->load(), 3.0f);
+                        phase[Mono] += fPLL(accu, icv[cvi::pll]->load()) * f;
                     }
                     if(icv[cvi::am] != &zero)
                     {
-                        current = xfade(current * icv[cvi::am]->load(), current, ccv[ctl::am]->load());
+                        accu = xfade(accu * icv[cvi::am]->load(), accu, ccv[ctl::am]->load());
                     }
-                    current *= ccv[ctl::amp]->load();
-                    current *= *pin[i];
-                    accu    += current;
-                                    
+                    accu *= ccv[ctl::amp]->load();
+                    if(mode() == Mono) accu *= *pin[Mono];
+                    ocv[cvo::main].store(accu);
                 }
+                else ocv[cvo::main].store(0.0f);
+                break;
             }
-            ocv[cvo::main].store(accu);
 
-        }
-        
-        else 
-        {
-            if(gate[Mono])
+            case Freerun:
+            default:
             {
-                set_delta(Mono);
+                const int octave = ccv[ctl::octave]->load();
+                int n = 12 * (octave + 1);
+                
+                freq[Mono] = chromatic[n] + (chromatic[n + 6] - chromatic[n - 6]) * (ccv[ctl::detune]->load() - 0.5f);
+                delta[Mono] = freq[Mono] * tao / settings::sample_rate; 
+                
+                float range = (freq[Mono] * chromatic_ratio - freq[Mono] / chromatic_ratio) * tao / settings::sample_rate;
+                delta[Mono] += (icv[cvi::detune]->load() - 0.5f) * range * 2.0f;
 
                 float fm = powf(ccv[ctl::fm]->load(), 3.0f);
 
@@ -156,13 +194,12 @@ namespace core
                     accu = xfade(accu * icv[cvi::am]->load(), accu, ccv[ctl::am]->load());
                 }
                 accu *= ccv[ctl::amp]->load();
-                if(mode() == Mono) accu *= *pin[Mono];
+                
                 ocv[cvo::main].store(accu);
+                
+                break;
             }
-            else ocv[cvo::main].store(0.0f);
         }
-
-
     }
 
     VCO::Mode VCO::mode() const noexcept

@@ -34,7 +34,7 @@ namespace core {
             const size_t height;             
             const size_t size;
             constexpr void set(size_t, size_t, const T&) noexcept;
-            constexpr T    get(size_t, size_t) const noexcept;
+            constexpr T&   get(size_t, size_t) const noexcept;
             constexpr T*   raw() const noexcept { return data; }
             constexpr void clr(const T&) noexcept;
             constexpr Canvas(size_t, size_t) noexcept;
@@ -52,14 +52,15 @@ namespace core {
     }
 
     template <typename T>
-    constexpr T Canvas<T>::get(size_t x, size_t y) const noexcept
+    constexpr T& Canvas<T>::get(size_t x, size_t y) const noexcept
     {
         size_t index = x + y * width;
         if(index < size)[[likely]]
         {
             return data[index];
         }
-        return T {};
+        static T zero {};
+        return zero;
     }
 
     template <typename T>

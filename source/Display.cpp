@@ -499,7 +499,7 @@ void Display::skipFrames()
 {
     if(auto data = _data.lock())
     {
-        unsigned long current = data->written();
+        unsigned long current = data->count();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
         data->advance(samplesToRead);
@@ -523,7 +523,7 @@ void Display::renderScope3() noexcept
     
     if(auto data = _data.lock())
     {
-        unsigned long current = data->written();
+        unsigned long current = data->count();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
 
@@ -622,7 +622,7 @@ void Display::renderScope2() noexcept
 
     if(auto data = _data.lock())
     {
-        unsigned long current = data->written();
+        unsigned long current = data->count();
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
 

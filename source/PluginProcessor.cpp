@@ -408,7 +408,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
     core::settings::sample_rate = sampleRate;
     std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
     std::cout<<"Sample rate       : "<<sampleRate<<"\n";
-    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(sampleRate * 8 / core::settings::scope_fps);
+    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(16);
     if(getActiveEditor())
     {
         listeners.call([this](Listener &L) { L.resetCall(); });
@@ -459,8 +459,9 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 	    auto R = spiro.out[core::Spiro::stereo::r].load();
 		DataL[i] = L * 0.2f;
 		DataR[i] = R * 0.2f;
-		buffer.get()->set(core::Point2D<float>{ L , R });
+		buffer->set(core::Point2D<float>{ L , R });
 	}
+    buffer->add(samples);
 }
 
 

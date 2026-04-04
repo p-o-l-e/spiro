@@ -22,6 +22,8 @@
 ******************************************************************************************************************************/
 #pragma once
 #include <atomic>
+#include <cstddef>
+#include <iostream>
 
 namespace core {
 
@@ -29,94 +31,48 @@ namespace core {
     class wavering
     {
         private:
-            T* data;
-            T* i;
-            T* o;
-            std::atomic<unsigned long> got = 0;
+            const std::size_t size;
+            const std::size_t mask;
+            std::size_t r = 0;
+            std::size_t w = 0;
+            std::atomic<unsigned long> counter = 0;
+            T* data = nullptr;
 
         public:
-            const int segments;
-            constexpr void set(const T&) noexcept;
-            constexpr T  get() noexcept;
-            void advance(int) noexcept;
-            unsigned long written() noexcept { return got.load(std::memory_order_relaxed); }
-            constexpr T* raw() const noexcept { return data; }
-            constexpr wavering(const int& n);
-            wavering& operator=(const wavering&);
-            wavering(const wavering&);
-           ~wavering() { delete[] data; }
+            void set(const T& value) noexcept
+            {
+                data[w] = value;
+                w = (w + 1) & mask;
+            }
+
+            void add(unsigned long n) noexcept
+            {
+                counter.fetch_add(n, std::memory_order_relaxed);
+            }
+
+            T get() noexcept
+            {
+                T value = data[r];
+                r = (r + 1) & mask;
+                return value;
+            }
+
+            void advance(std::size_t n) noexcept
+            {
+                r = (r + n) & mask;
+            }
+
+            T* raw() const noexcept { return data; }
+            unsigned long count() noexcept { return counter.load(std::memory_order_relaxed); }
+
+            explicit wavering(std::size_t n): size(std::size_t{ 1 } << n), mask(size - 1)
+            {
+                data = new T[size]{};
+            }
+
+            ~wavering() { delete[] data; }
     };
 
-    template <typename T>
-    constexpr void wavering<T>::set(const T& value) noexcept
-    {
-        *i = value;
-        if(++i >= data + segments)[[unlikely]]
-        {
-            i = data;
-           *i = value;
-        }
-        got.fetch_add(1, std::memory_order_relaxed);
-    }
-
-    template <typename T>
-    constexpr T wavering<T>::get() noexcept
-    {
-        T value = *o;
-        if(++o >= data + segments)[[unlikely]] o = data;
-        return value;
-    }
-
-    template <typename T>
-    void wavering<T>::advance(int n) noexcept
-    {
-        T* p = o + n;
-
-        while (p >= data + segments)
-            p -= segments;
-
-        while (p < data)
-            p += segments;
-
-        o = p;
-    }
-
-    template <typename T>
-    constexpr wavering<T>::wavering(const int& n): segments(n) 
-    { 
-        data = new T[segments]{}; 
-        i = data;
-        o = data;
-    }
-
-    template <typename T>
-    wavering<T>::wavering(const wavering& other): segments(other.segments)
-    {
-        data = new T[segments] {};
-        for (int j = 0; j < segments; ++j)
-        {
-            data[j] = other.data[j];
-        }
-        i = data;
-        o = data;
-    }
-
-    template <typename T>
-    wavering<T>& wavering<T>::operator=(const wavering& other)
-    {
-        if (this != &other)
-        {
-            delete[] data;
-            data = new T[other.segments] {};
-            for (int j = 0; j < other.segments; ++j)
-            {
-                data[j] = other.data[j];
-            }
-            i = data;
-            o = data;
-        }
-        return *this;
-    }
 
 }; // namespace core
 
