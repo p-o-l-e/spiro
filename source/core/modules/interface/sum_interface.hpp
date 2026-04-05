@@ -11,10 +11,10 @@ namespace core
     **********************************************************************************************************************/
     namespace sum 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 2 };
-        constexpr int oc { 2 };
-        constexpr int vc { 1 };
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 2 };
+        constexpr unsigned oc { 2 };
+        constexpr unsigned vc { 1 };
 
         struct ctl { enum id {                                           }; };              // Controls
         struct cvi { enum id { a, b                                      }; };              // CV in
@@ -42,8 +42,10 @@ namespace core
 
         const core::Control set_c[vc][cc]
         {
-        // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
-            { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
+            // -- TYPE ---------------------------- X ------ Y ------ W ------ H ------ ID ------- MIN -- MAX -- DEF -- SKEW - STEP -- RAD - SYM -- FLAG --------
+            {
+                { Control::type::dummy   , {   0.00f,   0.00f,   0.00f,   0.00f }, "dummy"   , 0.00f, 0.00f, 0.00f, 0.00f, 0.000f, 0x00, false, 0x00000000  },
+            }
         };
         
         constexpr Rectangle<float> constrain { 0.0f, 0.0f,  76.0f,  59.0f };

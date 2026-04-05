@@ -12,9 +12,9 @@ namespace core
     **********************************************************************************************************************/
     namespace pdt 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 3 };
-        constexpr int oc { 1 };
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 3 };
+        constexpr unsigned oc { 1 };
 
         struct ctl { enum id {                                   }; };             // Controls
         struct cvi { enum id { a, b, c                           }; };             // CV in

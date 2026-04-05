@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace cro 
     {
-        constexpr int cc { 12 };
-        constexpr int ic {  1 };
-        constexpr int oc {  1 };
+        constexpr unsigned cc { 12 };
+        constexpr unsigned ic {  1 };
+        constexpr unsigned oc {  1 };
 
         struct ctl { enum id { sa, sb, sc, sd, se, sf, sg, sh, menu, scope, type, scale    }; };              // Controls
         struct cvi { enum id {                                                             }; };              // CV in

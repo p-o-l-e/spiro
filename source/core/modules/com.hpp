@@ -33,6 +33,6 @@ namespace core
             int id;
             void process() noexcept override;
             COM();
-           ~COM() = default;
+           ~COM() override = default;
     };
 }

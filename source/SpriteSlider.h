@@ -37,6 +37,6 @@ class SpriteSlider : public juce::Slider
         void paint(juce::Graphics& g) override;
         void init(const juce::Image*, const bool&);
 		SpriteSlider(const juce::Image*, const bool&);
-		SpriteSlider() {};
-	   ~SpriteSlider() = default;
+		SpriteSlider() {}
+	   ~SpriteSlider() override = default;
 };

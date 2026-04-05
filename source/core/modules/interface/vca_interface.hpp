@@ -11,10 +11,10 @@ namespace core
     **********************************************************************************************************************/
     namespace vca 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 3 };
-        constexpr int oc { 2 };
-        constexpr int vc { 2 }; // Variants
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 3 };
+        constexpr unsigned oc { 2 };
+        constexpr unsigned vc { 2 }; // Variants
 
         struct ctl { enum id { amp                               }; };              // Controls
         struct cvi { enum id { a, b, amp                         }; };              // CV in

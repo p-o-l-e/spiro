@@ -11,10 +11,10 @@ namespace core
     **********************************************************************************************************************/
     namespace snh 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 3 };
-        constexpr int oc { 1 };
-        constexpr int vc { 2 }; // Variants
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 3 };
+        constexpr unsigned oc { 1 };
+        constexpr unsigned vc { 2 }; // Variants
 
         struct ctl { enum id { time                                      }; };              // Controls
         struct cvi { enum id { time, a, b                                }; };              // CV in

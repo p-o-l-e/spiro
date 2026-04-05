@@ -55,7 +55,7 @@ namespace core
             void process() noexcept override;
             void reset();
             LFO();
-           ~LFO() = default;
+           ~LFO() override = default;
     }; 
 
-};
+}

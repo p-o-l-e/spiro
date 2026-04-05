@@ -355,14 +355,14 @@ void Processor::reset()
 void Processor::reloadParameters()
 {
     suspendProcessing(true);
-    for(int i = 0; i < spiro.grid->count(core::Control::slider); ++i)
+    for(size_t i = 0; i < spiro.grid->count(core::Control::slider); ++i)
     {
         auto uid = spiro.grid->getUID(i, core::Control::slider);
         auto raw = tree.getRawParameterValue(spiro.grid->name(uid, true));
         spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->ccv[uid.pp] = raw;
     }
     
-    for(int i = 0; i < spiro.grid->count(core::Control::parameter); ++i)
+    for(size_t i = 0; i < spiro.grid->count(core::Control::parameter); ++i)
     {
         auto uid = spiro.grid->getUID(i, core::Control::parameter);
         auto name = spiro.grid->name(uid, true);
@@ -371,14 +371,14 @@ void Processor::reloadParameters()
         parameters[i] = tree.getParameter(name);
     }
 
-    for(int i = 0; i < spiro.grid->count(core::Control::input); ++i)
+    for(size_t i = 0; i < spiro.grid->count(core::Control::input); ++i)
     {
         auto uid = spiro.grid->getUID(i, core::Control::input);
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
         spiro.bay->io[idx].com = &spiro.rack.at(static_cast<core::map::module::type>(uid.mt), uid.mp)->icv[uid.pp];
     }
 
-    for(int i = 0; i < spiro.grid->count(core::Control::output); ++i)
+    for(size_t i = 0; i < spiro.grid->count(core::Control::output); ++i)
     {
         auto uid = spiro.grid->getUID(i, core::Control::output);
         auto idx = spiro.bay->get_index(core::encode_uid(uid));
@@ -392,8 +392,6 @@ void Processor::reloadParameters()
 
     suspendProcessing(false);
 }
-
-
 
 /***************************************************************************************************************************
 * 

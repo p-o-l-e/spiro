@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace rtr 
     {
-        constexpr int cc { 3 };
-        constexpr int ic { 9 };
-        constexpr int oc { 6 };
+        constexpr unsigned cc { 3 };
+        constexpr unsigned ic { 9 };
+        constexpr unsigned oc { 6 };
 
         struct ctl { enum id { x, y, z                                   }; };             // Controls
         struct cvi { enum id { ax, ay, az, bx, by, bz, cvx, cvy, cvz     }; };             // CV in

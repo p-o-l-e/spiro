@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace com 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 1 };
-        constexpr int oc { 2 };
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 1 };
+        constexpr unsigned oc { 2 };
 
         struct cvo { enum id { p_wheel, m_wheel                          }; };              // CV out
 

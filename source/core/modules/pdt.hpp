@@ -33,7 +33,7 @@ namespace core
             const int id;
             void process() noexcept override;
             PDT();
-           ~PDT() = default;
+           ~PDT() override = default;
     };
 
-}; // Namespace
+} // Namespace

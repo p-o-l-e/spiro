@@ -29,10 +29,9 @@
 #include "uid.hpp"
 #include <cstdint>
 #include <iostream>
+#include <sys/types.h>
 
-EnvelopeDisplay::EnvelopeDisplay(Processor* p, const int ID)
-    :processor(p), id(ID)
-
+EnvelopeDisplay::EnvelopeDisplay(Processor* p, uint8_t ID): processor(p), id(ID)
 {
     for (int i = 0; i < Stages; ++i)
     {
@@ -47,8 +46,8 @@ void EnvelopeDisplay::sync()
     for(int i = 0; i < nodes; ++i)
     {
         env.node[i + 1].data[core::breakpoint::Form].store(*module->ccv[core::env::ctl::af + i]);
-        env.node[i + 1].data[core::breakpoint::Level].store(*module->ccv[core::env::ctl::aa + i] * scope_bounds.h);
-        env.node[i + 1].data[core::breakpoint::Time].store(*module->ccv[core::env::ctl::at + i] * scope_bounds.w);
+        env.node[i + 1].data[core::breakpoint::Level].store(*module->ccv[core::env::ctl::aa + i] * (float)scope_bounds.h);
+        env.node[i + 1].data[core::breakpoint::Time].store(*module->ccv[core::env::ctl::at + i] * (float)scope_bounds.w);
     }
 }
 
@@ -79,11 +78,11 @@ void EnvelopeDisplay::transmit()
             float value = env.node[i + 1].data[type[j]];
             if(offset[j] == core::env::ctl::aa)
             {
-                value /= scope_bounds.h;
+                value /= (float)scope_bounds.h;
             }
             else if(offset[j] == core::env::ctl::at) 
             {
-                value /= scope_bounds.w;
+                value /= (float)scope_bounds.w;
             }
             processor->parameters[index]->beginChangeGesture();
             processor->parameters[index]->setValueNotifyingHost(processor->parameters[index]->convertTo0to1(value));
@@ -105,10 +104,10 @@ void EnvelopeDisplay::updateNodes()
     env.node[0].data[core::breakpoint::Level].store(0.0f);
     for(int i = 0; i < Stages; ++i)
     {
-        env.node[i + 1].data[core::breakpoint::Level].store(scope_bounds.h - NP[i]->y + gap);
-        env.node[i + 1].data[core::breakpoint::Time].store(NP[i]->x - gap);
+        env.node[i + 1].data[core::breakpoint::Level].store(float(scope_bounds.h - NP[i]->y + gap));
+        env.node[i + 1].data[core::breakpoint::Time].store(float(NP[i]->x - gap));
     }
-    env.node[5].data[core::breakpoint::Time].store(scope_bounds.w);
+    env.node[5].data[core::breakpoint::Time].store((float)scope_bounds.w);
     env.node[5].data[core::breakpoint::Level].store(0.0f);
 }
 
@@ -123,8 +122,8 @@ void EnvelopeDisplay::load()
     }
     for(int i = 0; i < Stages; ++i)
     {
-        NP[i]->y = area.getHeight() - env.node[i + 1].data[core::breakpoint::Level].load() - gap;
-        NP[i]->x = env.node[i + 1].data[core::breakpoint::Time].load() + gap;
+        NP[i]->y = area.getHeight() - (int)env.node[i + 1].data[core::breakpoint::Level].load() - gap;
+        NP[i]->x = (int)env.node[i + 1].data[core::breakpoint::Time].load() + gap;
         NP[i]->setCentrePosition(NP[i]->x, NP[i]->y);
     }
     repaint();
@@ -149,13 +148,20 @@ void EnvelopeDisplay::paint(juce::Graphics& g)
     g.setColour(colour);
     for(int i = 0; i < Stages; ++i)
     {
-        g.drawLine(NP[i]->x, NP[i]->y, NP[i]->x, area.getHeight() - gap, 1.0f);
+        g.drawLine
+        (
+            (float)NP[i]->x, 
+            (float)NP[i]->y, 
+            (float)NP[i]->x, 
+            float(area.getHeight() - gap), 
+            1.0f
+        );
     }
     g.drawHorizontalLine
     (
         area.getY() + area.getHeight() - gap, 
-        area.getX() + gap - curve_width * 0.5f, 
-        area.getX() + area.getWidth() - gap - curve_width
+        float(area.getX() + gap) - curve_width * 0.5f,
+        float(area.getX() + area.getWidth() - gap) - curve_width
     ); 
 }
 
@@ -167,7 +173,7 @@ void EnvelopeDisplay::resized()
     scope_bounds.w = area.getWidth() - gap * 2;
     scope_bounds.h = area.getHeight() - gap * 2;
 
-    data = std::make_unique<float[]>(scope_bounds.w);
+    data = std::make_unique<float[]>((size_t)scope_bounds.w);
 
     setDefaults();
     load();
@@ -177,25 +183,25 @@ void EnvelopeDisplay::resized()
 
 void EnvelopeDisplay::plot(juce::Graphics& g)
 {
-    float h = area.getHeight();
+    auto h = (float)area.getHeight();
     
     env.generate(data.get(), scope_bounds.w);
 
     float py, cy = 0.0f;
-    float px, cx = gap;
+    float px, cx = (float)gap;
     g.setColour (colour.withAlpha(opacity));
-    for(int i = 0; i < scope_bounds.w ; ++i)
+    for(size_t i = 0; i < (size_t)scope_bounds.w ; ++i)
     {
         py = cy;
         px = cx;
-        cx = i + gap;
+        cx = float(i + (size_t)gap);
         cy = data[i];
         g.setColour(colour.withAlpha(opacity));
-        g.drawVerticalLine(cx, h - cy - gap, h - gap);   // Flood fill
+        g.drawVerticalLine((int)cx, h - cy - (float)gap, h - (float)gap);   // Flood fill
         g.setColour(colour);
-        g.drawLine(px  , h - py - gap, cx  , h - cy - gap, curve_width);
+        g.drawLine(px  , h - py - (float)gap, cx  , h - cy - (float)gap, curve_width);
     }
-    g.drawLine(cx, h - cy - gap, scope_bounds.w + gap, h - gap, curve_width);
+    g.drawLine(cx, h - cy - (float)gap, float(scope_bounds.w + gap), h - (float)gap, curve_width);
 }
 
 void EnvelopeDisplay::mouseDown(const juce::MouseEvent& event)

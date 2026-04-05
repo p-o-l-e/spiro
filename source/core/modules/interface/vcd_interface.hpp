@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace vcd 
     {
-        constexpr int cc { 2 };
-        constexpr int ic { 6 };
-        constexpr int oc { 4 };
+        constexpr unsigned cc { 2 };
+        constexpr unsigned ic { 6 };
+        constexpr unsigned oc { 4 };
 
         struct ctl { enum id { time, feed                                }; };              // Controls
         struct cvi { enum id { time, feed, a, b, c, d                    }; };              // CV in

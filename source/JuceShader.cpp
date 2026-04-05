@@ -1,9 +1,9 @@
 #include "JuceShader.hpp"
 
-Shader::Shader(const juce::OpenGLContext* context,
-               const core::shader::Descriptor* vertex,
-               const core::shader::Descriptor* fragment)
-    : context(context), vertex(vertex), fragment(fragment)
+Shader::Shader(const juce::OpenGLContext* _context,
+               const core::shader::Descriptor* _vertex,
+               const core::shader::Descriptor* _fragment)
+    : context(_context), vertex(_vertex), fragment(_fragment)
 {
     shaderProgram = new juce::OpenGLShaderProgram(*context);
     shaderProgram->addVertexShader(std::string(vertex->shader));

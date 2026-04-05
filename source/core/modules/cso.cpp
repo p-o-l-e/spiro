@@ -124,7 +124,7 @@ void CSO::halvorsen_reset()
     f[5] = 0.1f;     // x
     f[6] = 0.0f;     // y
     f[7] = 0.0f;     // z
-};
+}
 
 
 void CSO::halvorsen()
@@ -149,7 +149,6 @@ void CSO::halvorsen()
         ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 0.5f);
         ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 0.5f);
     }
-
 }
 
 void CSO::tsucs_reset()
@@ -165,7 +164,7 @@ void CSO::tsucs_reset()
     f[7] = 0.650f;   // e
 
     f[8] = 0.001f;   // t
-};
+}
 
 void CSO::tsucs()
 {

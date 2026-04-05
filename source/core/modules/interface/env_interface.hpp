@@ -11,10 +11,10 @@ namespace core
     **********************************************************************************************************************/
     namespace env 
     {
-        constexpr int cc { 17 };
-        constexpr int ic {  1 };
-        constexpr int oc {  1 };
-        constexpr int vc {  4 }; // Variants
+        constexpr unsigned cc { 17 };
+        constexpr unsigned ic {  1 };
+        constexpr unsigned oc {  1 };
+        constexpr unsigned vc {  4 }; // Variants
 
         struct ctl { enum id { at, ht, dt, st, rt, aa, ha, da, sa, ra, af, hf, df, sf, rf, scale, select }; };         // Controls
         struct cvi { enum id {     }; };                                                                               // CV in

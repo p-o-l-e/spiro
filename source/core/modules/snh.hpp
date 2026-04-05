@@ -37,7 +37,7 @@ namespace core
             void process() noexcept override;
             void reset();
             SNH();
-           ~SNH() = default;
+           ~SNH() override = default;
     };
 
 }

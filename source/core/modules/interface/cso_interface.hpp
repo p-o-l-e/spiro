@@ -13,10 +13,10 @@ namespace core
     **********************************************************************************************************************/
     namespace cso 
     {
-        constexpr int cc { 5 };
-        constexpr int ic { 2 };
-        constexpr int oc { 3 };
-        constexpr int vc { 2 };
+        constexpr unsigned cc { 5 };
+        constexpr unsigned ic { 2 };
+        constexpr unsigned oc { 3 };
+        constexpr unsigned vc { 2 };
 
         struct ctl { enum id { tune, warp, amp, form, options    }; };             // Controls
         struct cvi { enum id { fm, warp                          }; };             // CV in

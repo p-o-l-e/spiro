@@ -33,6 +33,6 @@ namespace core
             const int id;
             void process() noexcept override;
             VCA();
-           ~VCA() = default;
+           ~VCA() override = default;
     };
 }

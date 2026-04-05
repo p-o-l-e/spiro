@@ -67,6 +67,6 @@ namespace core
             const int id = 0;
             void process() noexcept override;
             CSO();
-           ~CSO() = default;
+           ~CSO() override = default;
     }; 
 } // Namespace core

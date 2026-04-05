@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace fuse 
     {
-        constexpr int cc { 1 };
-        constexpr int ic { 1 };
-        constexpr int oc { 1 };
+        constexpr unsigned cc { 1 };
+        constexpr unsigned ic { 1 };
+        constexpr unsigned oc { 1 };
 
         struct ctl { enum id {                                           }; };              // Controls
         struct cvi { enum id {                                           }; };              // CV in

@@ -49,7 +49,7 @@ namespace core
             Real L;
             Real F;
         };
-    };
+    }
 
     class ENV: public Module<float>
     {
@@ -78,7 +78,7 @@ namespace core
             void process() noexcept override;
             float value_scale = 1.0f;
             ENV();
-           ~ENV() = default;
+           ~ENV() override = default;
     };
 
 /******************************************************************************************************************************
@@ -104,7 +104,7 @@ constexpr float fCubicOut(float t, float b, float c, float d)
         t /= d;
         t--;
         return c * (t * t * t + 1.0f) + b;
-};
+}
 
 constexpr float fCubicIO(float t, float b, float c, float d)
 {
@@ -124,4 +124,4 @@ inline float (*ease[])(float, float, float, float) =
 
 
 
-};
+}

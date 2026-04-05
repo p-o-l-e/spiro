@@ -33,6 +33,6 @@ namespace core
             int id;
             void process() noexcept override;
             SUM();
-           ~SUM() = default;
+           ~SUM() override = default;
     };
 }

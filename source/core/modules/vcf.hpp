@@ -41,6 +41,6 @@ namespace core {
             void process() noexcept override;
             void reset();
             VCF();
-           ~VCF() = default;
+           ~VCF() override = default;
     };
-};
+}

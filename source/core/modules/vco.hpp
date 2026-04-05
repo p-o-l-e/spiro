@@ -72,7 +72,7 @@ namespace core
             
             void reset();
             VCO();
-           ~VCO();
+           ~VCO() override;
     };
 
 
@@ -82,7 +82,7 @@ namespace core
     *  Waveforms
     *
     **************************************************************************************************************************/
-    inline float fPLL(const float& carrier, const float& modulator)
+    inline float fPLL(float carrier, float modulator)
     {
         std::complex<float> fI = exp( std::complex<float> (0.0, 1.0) * carrier);
         std::complex<float> fO = exp( std::complex<float> (0.0, 1.0) * modulator);
@@ -90,26 +90,26 @@ namespace core
         return fE;
     }
 
-    inline float fTriangle(const float& x, const float& f) noexcept
+    inline float fTriangle(float x, float f) noexcept
     {
         return acosf((1.0f - f) * cosf(x)) - pi * 0.5f; 
     }
 
-    inline float fSquare(const float& x, const float& f) noexcept
+    inline float fSquare(float x, float f) noexcept
     {
-        return atanf(cos(x)/f);
+        return atanf((float)cos(x)/(float)f);
     }
 
-    inline float fRamp(const float& x) noexcept
+    inline float fRamp(float x) noexcept
     {
         return atanf(tanf(x))/(pi * 0.5f);
     }
 
-    inline float fPulse(const float& phase, const float& pw, const float& f) noexcept
+    inline float fPulse(float phase, float pw, float f) noexcept
     {
         return atanf((cosf(phase) + pw)/f) / (pi * 0.5f);
     }
 
 
-}; // Namespace
+} // Namespace
 

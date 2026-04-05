@@ -25,6 +25,7 @@
 #pragma once
 
 #include "canvas.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 
@@ -63,13 +64,13 @@ constexpr void drawHLine(core::Canvas<uint8_t>* canvas, unsigned xo, unsigned yo
     }
 }
 
-constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, int id, int xo, int yo, uint8_t colour, int w = 7, int h = 8)
+constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, unsigned id, size_t xo, size_t yo, uint8_t colour, size_t w = 7, size_t h = 8)
 {
-    int pos = id * w;
+    size_t pos = id * w;
     uint8_t stencil = 0b1;
-    for(int y = 0; y < h; ++y)
+    for(size_t y = 0; y < h; ++y)
     {
-        for(int x = 0; x < w; ++x)
+        for(size_t x = 0; x < w; ++x)
         {
             if(font[pos + x] & stencil) canvas->set(x + xo, y + yo, colour);
         }
@@ -77,12 +78,12 @@ constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, int
     }
 }
 
-const inline void drawTextLabel(core::Canvas<uint8_t>* canvas, const uint8_t* font, const char* text, int xo, int yo, const uint8_t opacity, int w = 7)
+const inline void drawTextLabel(core::Canvas<uint8_t>* canvas, const uint8_t* font, const char* text, size_t xo, size_t yo, uint8_t opacity, size_t w = 7)
 {
-    int n = strlen(text);
-    for(int i = 0; i < n; i++)
+    size_t n = (size_t)strlen(text);
+    for(size_t i = 0; i < n; ++i)
     {
-        drawGlyph(canvas, font, text[i] - 32, xo + i * (w + 1), yo, opacity);
+        drawGlyph(canvas, font, (unsigned)text[i] - 32, xo + i * (w + 1), yo, opacity);
     }
 }
 
@@ -94,25 +95,25 @@ inline float capsuleSDF(float px, float py, float ax, float ay, float bx, float 
     return sqrtf(dx * dx + dy * dy) - r;
 }
 
-inline void alphablend(core::Canvas<float>* canvas, int x, int y, float alpha) 
+inline void alphablend(core::Canvas<float>* canvas, size_t x, size_t y, float alpha) 
 {   
     canvas->set(x, y, canvas->get(x, y) * (1.0f - alpha) + alpha);
 }
 
 const inline void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
 {
-    int xo = (int)floor(std::min(ax, bx) - radius);
-    int xe = (int) ceil(std::max(ax, bx) + radius);
-    int yo = (int)floor(std::min(ay, by) - radius);
-    int ye = (int) ceil(std::max(ay, by) + radius);
-    for(int y = yo; y <= ye; y++)
+    float xo = (float)floor(std::min(ax, bx) - radius);
+    float xe = (float) ceil(std::max(ax, bx) + radius);
+    float yo = (float)floor(std::min(ay, by) - radius);
+    float ye = (float) ceil(std::max(ay, by) + radius);
+    for(size_t y = (size_t)yo; y <= (size_t)ye; y++)
     {
-        for(int x = xo; x <= xe; x++)
+        for(size_t x = (size_t)xo; x <= (size_t)xe; x++)
         {
-            alphablend(canvas, x, y, std::max(std::min(0.5f - capsuleSDF(x, y, ax, ay, bx, by, radius), 1.0f), alpha));
+            alphablend(canvas, x, y, std::max(std::min(0.5f - capsuleSDF((float)x, (float)y, ax, ay, bx, by, radius), 1.0f), alpha));
         }
     }
 }
 
-};
+}
 

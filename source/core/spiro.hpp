@@ -67,4 +67,4 @@ namespace core
             Spiro(const Grid*);
            ~Spiro();
     };
-};
+}

@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace vcf 
     {
-        constexpr int cc { 2 };
-        constexpr int ic { 5 };
-        constexpr int oc { 3 };
+        constexpr unsigned cc { 2 };
+        constexpr unsigned ic { 5 };
+        constexpr unsigned oc { 3 };
 
         struct ctl { enum id { cutoff, Q                                 }; };              // Controls
         struct cvi { enum id { a, b, c, cutoff, Q                        }; };              // CV in

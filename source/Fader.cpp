@@ -22,9 +22,8 @@
 #include "Fader.h"
 #include "Colours.hpp"
 
-juce::Label* SpiroLookAndFeel::createSliderTextBox(juce::Slider &slider)
+juce::Label* SpiroLookAndFeel::createSliderTextBox(juce::Slider&)
 {
-    auto localBounds = slider.getLocalBounds().toFloat();
     auto *l = new juce::Label();
     l->setJustificationType(juce::Justification::right );
     l->setInterceptsMouseClicks(false, false);
@@ -76,10 +75,10 @@ void Fader::paint (juce::Graphics& g)
     g.fillAll(findColour(juce::Slider::textBoxBackgroundColourId));
     auto bounds = getLocalBounds().toFloat();
     auto h = bounds.getHeight();
-    auto w = bounds.getWidth() * 0.75f;
+    auto w = float(bounds.getWidth() * 0.75f);
 
     g.setColour(findColour (juce::Slider::trackColourId));
-    auto c = (getValue() - getMinimum()) / getRange().getLength();
+    auto c = float((getValue() - getMinimum()) / getRange().getLength());
     g.fillRect
     (
         0.0f, 

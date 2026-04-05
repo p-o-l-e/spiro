@@ -39,12 +39,12 @@ class Processor: public juce::AudioProcessor
         void getStateInformation(juce::MemoryBlock& destData) override;
         void setStateInformation(const void* data, int sizeInBytes) override;
 
-        double getTailLengthSeconds() const override { return 0.0; };
-        bool isBusesLayoutSupported(const BusesLayout& layouts) const override { return layouts.getNumChannels(false, 0) == 2; };
+        double getTailLengthSeconds() const override { return 0.0; }
+        bool isBusesLayoutSupported(const BusesLayout& layouts) const override { return layouts.getNumChannels(false, 0) == 2; }
         bool hasEditor() const override { return true; }
-        bool acceptsMidi() const override { return true; };
-        bool producesMidi() const override { return false; };
-        bool isMidiEffect() const override { return false; };
+        bool acceptsMidi() const override { return true; }
+        bool producesMidi() const override { return false; }
+        bool isMidiEffect() const override { return false; }
         int  getNumPrograms() override;
         int  getCurrentProgram() override;
 
@@ -73,10 +73,10 @@ class Processor: public juce::AudioProcessor
         void saveMatrix();
         bool savePreset(juce::String, bool);
         bool loadPreset(juce::String);
-        void reset();
+        void reset() override;
         void reloadParameters();
 
-        const juce::String getName() const override { return JucePlugin_Name; };
+        const juce::String getName() const override { return JucePlugin_Name; }
         const juce::String getProgramName (int index) override;
         void handleMIDI(juce::MidiBuffer& midiMessages);
 
@@ -103,9 +103,9 @@ class Processor: public juce::AudioProcessor
         {
             public:
                 virtual ~Listener() = default;
-                virtual void saveCall() {};
-                virtual void loadCall() {};
-                virtual void resetCall() {};
+                virtual void saveCall() {}
+                virtual void loadCall() {}
+                virtual void resetCall() {}
         };
     
         void addCustomListener(Listener *l) { listeners.add(l);     }

@@ -49,7 +49,7 @@ namespace core
         const float skew        { 0.5f  };
         const float step        { 0.0f  };
  
-        const int   radio_id    { 0     };
+        const unsigned radio_id { 0     };
         const bool  symmetric   { false };
 
         const uint32_t flag     { 0     };                      // Control specific settings
@@ -58,7 +58,7 @@ namespace core
     struct Descriptor 
     {
         const map::module::type type;
-        const int* const cv[map::cv::count];
+        const unsigned* const cv[map::cv::count];
         const std::string_view* const prefix;
         const Control* const set[map::cv::count];
         const Rectangle<float>* const constrain; 
@@ -71,7 +71,7 @@ namespace core
         const std::string_view* parameterId;
         const type* parameterType;
         const uint8_t* parameterPosition;
-        const int parameters;
+        const unsigned parameters;
         const std::string_view* const* choice;
     };
 }

@@ -74,6 +74,6 @@ namespace core {
     };
 
 
-}; // namespace core
+} // namespace core
 
 

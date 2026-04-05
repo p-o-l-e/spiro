@@ -11,9 +11,9 @@ namespace core
     **********************************************************************************************************************/
     namespace mix 
     {
-        constexpr int cc { 3 };
-        constexpr int ic { 5 };
-        constexpr int oc { 2 };
+        constexpr unsigned cc { 3 };
+        constexpr unsigned ic { 5 };
+        constexpr unsigned oc { 2 };
 
         struct ctl { enum id { alpha, theta, amp,                }; };             // Controls
         struct cvi { enum id { l, c, r, alpha, theta             }; };             // CV in

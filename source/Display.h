@@ -135,8 +135,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         const uint8_t opacity = 0xAF;
         std::atomic<bool> needsUpload { true };
         bool repaintTexture = true;
-		int last_page = 0;
-        int stepX = 10, stepY = 10;
+		size_t last_page = 0;
+        unsigned stepX = 10, stepY = 10;
 
         float ndcW;
         float ndcH;
@@ -147,7 +147,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         bool skipScopeRender = false;
 
         constexpr static bool X = true, Y = false;
-        constexpr int grid(const int v, const bool axis) const { return axis? v * stepX: v * stepY; }
+        constexpr size_t grid(size_t v, const bool axis) const { return axis? v * stepX: v * stepY; }
         void bakeTexture(juce::OpenGLTexture*, core::Canvas<uint8_t>*);
         void createShaders();
         void createBloomFBOs();
@@ -164,8 +164,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         std::weak_ptr<core::wavering<core::Point2D<float>>> _data;
 	    OledLabel inputBox;
         juce::OpenGLContext openGLContext;
-		const int rows_max = 12;
-		int files = 0;
+		const size_t rows_max = 12;
+		size_t files = 0;
 
 		std::atomic<float>* scope_type = &core::zero;
 		std::atomic<float>* scope_scale = &core::zero;
@@ -174,19 +174,19 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 
 		Page page = CroA;
         const core::uid_t getUID() const;
-		int row[Page::Limit] = {};
-		int load_page = 0;
+		size_t row[Page::Limit] = {};
+		size_t load_page = 0;
         core::uid_t uid;
 		const core::Rectangle<int> area;
         void switchPage(Processor*, const Page); 
 	
         void offMenu();
         void croMenu();
-    	void moduleMenu(core::Spiro*, const core::map::module::type&, const int);
+    	void moduleMenu(core::Spiro*, const core::map::module::type&, uint8_t);
 		void mainMenu();
 		void saveMenu();
-		void drawSoftGlyphsV(int, int, int, int, core::Canvas<uint8_t>*);
-		void drawSoftGlyphsH(int, int, int, int, core::Canvas<uint8_t>*);
+		void drawSoftGlyphsV(unsigned, unsigned, unsigned, unsigned, core::Canvas<uint8_t>*);
+		void drawSoftGlyphsH(unsigned, unsigned, unsigned, unsigned, core::Canvas<uint8_t>*);
 		void loadMenu(std::vector<std::pair<juce::String, const juce::File>>*);
 		void resized() override;
 		Display(Processor*, std::shared_ptr<core::wavering<core::Point2D<float>>>, const core::Rectangle<int>&);

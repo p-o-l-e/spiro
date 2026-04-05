@@ -49,7 +49,7 @@ namespace core
         const Point2D<float> offset;
         constexpr Sector(const Descriptor* d, const Options* o, const Point2D<float>& f): 
             descriptor(d), options(o), offset(f) {
-        };
+        }
        ~Sector() = default;
     };
     
@@ -66,8 +66,8 @@ namespace core
 
         private:
             const std::unique_ptr<uint8_t[]> relative;
-            const std::unique_ptr<int[]> elements; 
-            const std::unique_ptr<int[]> modules;
+            const std::unique_ptr<size_t[]> elements; 
+            const std::unique_ptr<size_t[]> modules;
             std::unique_ptr<uint32_t[]>  indices[Control::count];
             const std::unique_ptr<std::map<uint32_t, const Control*>> controlMap;
             const std::unique_ptr<std::map<uint32_t, std::pair<std::string, std::string>>> idMap;
@@ -75,14 +75,14 @@ namespace core
             const std::unique_ptr<std::map<uint32_t, std::pair<std::string, std::string>>> calculateIdMap(const Sector*) const;
 
             const std::unique_ptr<uint8_t[]> setRelatives(const Sector*) const;
-            const std::unique_ptr<int[]> countElements(const Sector*) const;
-            const std::unique_ptr<int[]> countModules(const Sector*) const;
+            const std::unique_ptr<size_t[]> countElements(const Sector*) const;
+            const std::unique_ptr<size_t[]> countModules(const Sector*) const;
             void  calculateUIDs();
             
         public:
-            int count(const Control::type& t) const { return elements[t]; }
+            size_t count(const Control::type& t) const { return elements[t]; }
             int count(const Control::type&, map::flag::type) const;
-            int count(const map::module::type& t) const { return modules[t]; }
+            size_t count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;
             const std::string name(const uid_t&, const bool) const;
             const Control* control(const uid_t&) const;
@@ -91,7 +91,7 @@ namespace core
             const Sector* getSector(const map::module::type&, const int) const;
             const uid_t getUID(size_t, const Control::type&) const;
             uint32_t getHash(size_t, const Control::type&) const;
-            Grid(const Sector*, const int);
+            Grid(const Sector*, size_t);
             Grid(const std::pair<const Sector*, std::size_t>&);
            ~Grid() = default;
     };

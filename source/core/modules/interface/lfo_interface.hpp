@@ -13,9 +13,9 @@ namespace core
     **********************************************************************************************************************/
     namespace lfo 
     {
-        constexpr int cc { 6 };
-        constexpr int ic { 2 };
-        constexpr int oc { 2 };
+        constexpr unsigned cc { 6 };
+        constexpr unsigned ic { 2 };
+        constexpr unsigned oc { 2 };
 
         struct ctl { enum id { octave, delta, amp, form, scale, options    }; };             // Controls
         struct cvi { enum id { fm, am                                      }; };             // CV in

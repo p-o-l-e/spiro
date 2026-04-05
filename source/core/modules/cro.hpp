@@ -36,7 +36,7 @@ namespace core
             void process() noexcept override;
 
             CRO();
-           ~CRO() {};
+           ~CRO() override {}
     };
 
-}; // Namespace core
+} // Namespace core

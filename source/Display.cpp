@@ -26,6 +26,7 @@
 #include "juce_graphics/juce_graphics.h"
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <string_view>
@@ -33,7 +34,7 @@
 using namespace juce::gl;
 
 static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
-static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
+//static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
 void Display::switchPage(Processor* o, const Page currentPage)
 {
@@ -54,11 +55,13 @@ void Display::switchPage(Processor* o, const Page currentPage)
         case Save: saveMenu();
         case Load: loadMenu(&o->presets); break;
         case Main: mainMenu(); break;
+        case Info:
+        case Limit:
         default: break;
     }
 }
 
-void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, const int mp)
+void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, uint8_t mp)
 {
     textLayer->clr(0x0);
 
@@ -72,11 +75,11 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, cons
     core::drawTextLabel(textLayer, gtFont, description.c_str(),   grid(3, X), grid(1, Y), opacity);
     core::drawTextLabel(textLayer, gtFont, "-------------------", grid(3, X), grid(2, Y), opacity);
    
-    for(int i = 0, cid = 0; i < sector->options->parameters; ++i)
+    for(unsigned i = 0, cid = 0; i < sector->options->parameters; ++i)
     {
         auto parameter = sector->options->parameterId[i];
         core::drawTextLabel(textLayer, gtFont, parameter.data(), grid(4, X), grid(3, Y) + grid(i, Y), opacity);
-        int offset = grid(parameter.size(), X) + grid(3, X);
+        auto offset = grid((unsigned)parameter.size(), X) + grid(3, X);
         if(sector->options->parameterType[i] == core::Options::Choice)
         {
             auto p = static_cast<int>(*module->ccv[sector->options->parameterPosition[i]]);
@@ -179,7 +182,6 @@ void Display::createShaders()
     uVBlurTex = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*vblurShader, "tex");
     uVBlurTexelSize = std::make_unique<juce::OpenGLShaderProgram::Uniform>(*vblurShader, "texelSize");
     postPosVBlur = std::make_unique<juce::OpenGLShaderProgram::Attribute>(*vblurShader, "position");
-
 
     // Afterglow
     afterglowFadeShader = std::make_unique<juce::OpenGLShaderProgram>(openGLContext);
@@ -489,6 +491,8 @@ void Display::renderOpenGL()
             }
             croMenu();
             break;
+        case Info:
+        case Limit:
         default: 
             break;
     }
@@ -540,7 +544,7 @@ void Display::renderScope3() noexcept
 
         const unsigned long quadCount = samplesToRead - 1;
         const unsigned long vertCount = quadCount * 4;
-        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+        const GLsizeiptr byteSize = GLsizeiptr(vertCount * 2 * sizeof(float));
 
         glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
         glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
@@ -639,7 +643,7 @@ void Display::renderScope2() noexcept
 
         const unsigned long quadCount = samplesToRead - 1;
         const unsigned long vertCount = quadCount * 4;
-        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+        const GLsizeiptr byteSize = GLsizeiptr(vertCount * 2 * sizeof(float));
 
         glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
         glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
@@ -707,7 +711,7 @@ void Display::renderModuleMenu() noexcept
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, area.w, area.h);
-    glClearColor(0.12, 0.16, 0.18, 0.8);
+    glClearColor(0.12f, 0.16f, 0.18f, 0.8f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     brightnessShader->use();
@@ -742,7 +746,7 @@ void Display::saveMenu()
 
     auto Text = inputBox.getText().toRawUTF8();
     core::drawTextLabel(textLayer, gtFont, Text, 46, 40, opacity);
-    int cp = inputBox.getCaretPosition();
+    unsigned cp = (unsigned)inputBox.getCaretPosition();
     core::drawTextLabel(textLayer, gtFont, "_", 46 + 8 * cp, 42, opacity);
 
     core::drawGlyph(textLayer, gtFont, glyph::Cancel, 49, 155, opacity);
@@ -760,7 +764,7 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
 
     last_page = files / rows_max;
 
-    int last_row = files % rows_max - 1;
+    auto last_row = files % rows_max - 1;
     if     (load_page > last_page) load_page = 0;
     else if(load_page < 0) load_page = last_page;
     if(load_page == last_page)
@@ -774,14 +778,15 @@ void Display::loadMenu(std::vector<std::pair<juce::String, const juce::File>>* l
         else if(row[page] < 0) row[page] = rows_max - 1;
     }
 
-    juce::String lp ("LOAD PAGE: "); lp += load_page;
+    juce::String lp ("LOAD PAGE: "); 
+    lp += juce::String(load_page);
     core::drawTextLabel(textLayer, gtFont, lp.toRawUTF8(),        grid(3, X), grid(1, Y)            , opacity);
     core::drawTextLabel(textLayer, gtFont, "-------------------", grid(3, X), grid(2, Y)            , opacity);
     core::drawGlyph(textLayer, gtFont, 113,                       grid(3, X), grid(3 + row[page], Y), opacity);
 
-    for(int i = 0; i < rows_max; ++i)
+    for(unsigned i = 0; i < rows_max; ++i)
     {
-        int pos = i + rows_max * load_page;
+        auto pos = i + rows_max * load_page;
         if(pos >= files) break;
         core::drawTextLabel(textLayer, gtFont, list->at(pos).first.toRawUTF8(), grid(4, X), grid(3 + i, Y), opacity);
     }
@@ -816,7 +821,7 @@ void Display::mainMenu()
     skipScopeRender = true;
 }
 
-void Display::drawSoftGlyphsV(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
+void Display::drawSoftGlyphsV(unsigned a, unsigned b, unsigned c, unsigned d, core::Canvas<uint8_t>* canvas)
 {
     auto step = canvas->height / 30;
     auto offset = canvas->width / 30;
@@ -826,7 +831,7 @@ void Display::drawSoftGlyphsV(int a, int b, int c, int d, core::Canvas<uint8_t>*
     core::drawGlyph(canvas, gtFont, d, offset, step * 26, opacity);
 }
 
-void Display::drawSoftGlyphsH(int a, int b, int c, int d, core::Canvas<uint8_t>* canvas)
+void Display::drawSoftGlyphsH(unsigned a, unsigned b, unsigned c, unsigned d, core::Canvas<uint8_t>* canvas)
 {
     auto step = canvas->width / 30;
     auto offset = canvas->height - canvas->height / 17;
@@ -891,25 +896,23 @@ void Display::newOpenGLContextCreated()
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
-};
+}
 
 void Display::resized()
 {
     inputBox.setBounds(0, 0, 1, 1);
     
-    const auto bounds = getLocalBounds().toFloat();
-
-    ndcW = 2.0f / area.w;
-    ndcH = 2.0f / area.h;
-    ndcCenterX = -1.0f + (area.w * 0.5f * ndcW);
-    ndcCenterY = -1.0f + (area.h * 0.5f * ndcH);
+    ndcW = 2.0f / (float)area.w;
+    ndcH = 2.0f / (float)area.h;
+    ndcCenterX = -1.0f + ((float)area.w * 0.5f * ndcW);
+    ndcCenterY = -1.0f + ((float)area.h * 0.5f * ndcH);
     scopeScaleMultiplier = 10.0f * std::max(ndcW, ndcH);
 }
 
-Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& area): processor(p), _data(buf), area(area)
+Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& _area): processor(p), _data(buf), area(_area)
 {
     framebuffer = std::make_unique<juce::Image>(juce::Image::PixelFormat::ARGB, area.w, area.h, true);
-    textLayer = new core::Canvas<uint8_t>(area.w, area.h);
+    textLayer = new core::Canvas<uint8_t>((size_t)area.w, (size_t)area.h);
     textLayer->clr(0x0);
 
     juce::OpenGLPixelFormat pixelFormat;
@@ -959,18 +962,21 @@ OledLabel::OledLabel()
 
 static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
 {
+#ifdef DEBUG
+    drawBorder(canvas);
+#endif
     const float W = float(canvas->width);
     const float H = float(canvas->height);
     // usable area after enforcing minGap
     const float usableW = std::max(0.0f, W - 2.0f * float(minGap));
     const float usableH = std::max(0.0f, H - 2.0f * float(minGap));
     // enforce square divisions
-    const float stepX = usableW / vdiv;
-    const float stepY = usableH / hdiv;
+    const float stepX = usableW / (float)vdiv;
+    const float stepY = usableH / (float)hdiv;
     const float step  = std::min(stepX, stepY);
     // actual grid size
-    const float gridW = step * vdiv;
-    const float gridH = step * hdiv;
+    const float gridW = step * (float)vdiv;
+    const float gridH = step * (float)hdiv;
     // center the grid inside the minGap box
     const float hgap = (W - gridW) * 0.5f;
     const float vgap = (H - gridH) * 0.5f;
@@ -982,55 +988,56 @@ static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsi
     // Major vertical lines
     for (unsigned i = 0; i <= vdiv; ++i)
     {
-        float x = hgap + i * step;
-        int xi = int(std::round(x));
-        core::drawVLine(canvas, xi, int(std::round(vgap)), int(std::round(vgap + gridH)), intensity);
+        float x = hgap + (float)i * step;
+        auto xi = unsigned(std::round(x));
+        core::drawVLine(canvas, xi, unsigned(std::round(vgap)), unsigned(std::round(vgap + gridH)), intensity);
     }
     // Major horizontal lines
     for (unsigned i = 0; i <= hdiv; ++i)
     {
-        float y = vgap + i * step;
-        int yi = int(std::round(y));
-        core::drawHLine(canvas, int(std::round(hgap)), yi, int(std::round(hgap + gridW)), intensity);
+        float y = vgap + (float)i * step;
+        auto yi = unsigned(std::round(y));
+        core::drawHLine(canvas, unsigned(std::round(hgap)), yi, unsigned(std::round(hgap + gridW)), intensity);
     }
     // Minor vertical ticks
     const float tickH = step * 0.2f;
 
     for (unsigned i = 0; i < vdiv * 5; ++i)
     {
-        float x = hgap + i * sub;
-        int xi = int(std::round(x));
+        float x = hgap + (float)i * sub;
+        auto xi = unsigned(std::round(x));
 
-        core::drawVLine(canvas, xi, int(std::round(cy - tickH)), int(std::round(cy + tickH)), intensity);
+        core::drawVLine(canvas, xi, unsigned(std::round(cy - tickH)), unsigned(std::round(cy + tickH)), intensity);
     }
     // Minor horizontal ticks
     const float tickW = step * 0.2f;
 
     for (unsigned i = 0; i < hdiv * 5; ++i)
     {
-        float y = vgap + i * sub;
-        int yi = int(std::round(y));
+        float y = vgap + (float)i * sub;
+        auto yi = unsigned(std::round(y));
 
-        core::drawHLine(canvas, int(std::round(cx - tickW)), yi, int(std::round(cx + tickW)), intensity);
+        core::drawHLine(canvas, unsigned(std::round(cx - tickW)), yi, unsigned(std::round(cx + tickW)), intensity);
     }
     // Dotted lines at ±2.4 divisions
     const float dottedOffset = step * 2.4f;
 
-    const int yt = int(std::round(cy - dottedOffset));
-    const int yb = int(std::round(cy + dottedOffset));
+    const auto yt = size_t(std::round(cy - dottedOffset));
+    const auto yb = size_t(std::round(cy + dottedOffset));
 
     for (unsigned i = 0; i < vdiv * 5; ++i)
     {
-        int x = int(std::round(hgap + i * sub));
+        auto x = size_t(std::round(hgap + (float)i * sub));
         canvas->set(x, yt, intensity);
         canvas->set(x, yb, intensity);
     }
 }
-
+/*
 static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept
 {
-    core::drawHLine(canvas, 0, 0, canvas->width, 0xFF);
-    core::drawHLine(canvas, 0, canvas->height - 1, canvas->width, 0xFF);
-    core::drawVLine(canvas, 0, 0, canvas->height, 0xFF);
-    core::drawVLine(canvas, canvas->width - 1, 0, canvas->height, 0xFF);
+    core::drawHLine(canvas, 0, 0, (unsigned)canvas->width, 0xFF);
+    core::drawHLine(canvas, 0, (unsigned)canvas->height - 1, (unsigned)canvas->width, 0xFF);
+    core::drawVLine(canvas, 0, 0, (unsigned)canvas->height, 0xFF);
+    core::drawVLine(canvas, (unsigned)canvas->width - 1, 0, (unsigned)canvas->height, 0xFF);
 }
+*/

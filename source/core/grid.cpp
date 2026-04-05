@@ -34,11 +34,11 @@
 
 namespace core
 {
-    Grid::Grid(const Sector* s, const int size): 
+    Grid::Grid(const Sector* s, size_t size): 
     sectors(size), sector(s), relative(setRelatives(s)), elements(countElements(s)), modules(countModules(s)),
     controlMap(calculateControlMap(s)), idMap(calculateIdMap(s))
     {
-        for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
+        for(size_t i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
     };
 
@@ -50,21 +50,21 @@ namespace core
         modules(countModules(o.first)),
         controlMap(calculateControlMap(o.first)), idMap(calculateIdMap(o.first))
     {
-        for(int i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
+        for(size_t i = 0; i < Control::count; ++i) indices[i] = std::make_unique<uint32_t[]>(elements[i]);
         calculateUIDs();
     };
 
     void Grid::calculateUIDs()
     {
-        int count[Control::count];
-        for(int i = 0; i < Control::count; ++i) count[i] = 0;
+        size_t count[Control::count];
+        for(size_t i = 0; i < Control::count; ++i) count[i] = 0;
 
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             auto mp = relative[i];
-            for(int pt = 0; pt < map::cv::count; ++pt)
+            for(size_t pt = 0; pt < map::cv::count; ++pt)
             {
-                for(int pp = 0; pp < *sector[i].descriptor->cv[pt]; ++pp)
+                for(uint8_t pp = 0; pp < *sector[i].descriptor->cv[pt]; ++pp)
                 {
                     auto t = sector[i].descriptor->set[pt][pp].is;
                     indices[t][count[t]] = encode_uid(sector[i].descriptor->type, mp, static_cast<map::cv::index>(pt), pp);
@@ -77,11 +77,11 @@ namespace core
     int Grid::count(const Control::type& ct, map::flag::type ft) const
     {
         int n = 0;
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
-            for(int t = 0; t < map::cv::count; ++t)
+            for(size_t t = 0; t < map::cv::count; ++t)
             {
-                for(int e = 0; e < *sector[i].descriptor->cv[t]; ++e)
+                for(size_t e = 0; e < *sector[i].descriptor->cv[t]; ++e)
                 {   
                     if(sector[i].descriptor->set[t][e].is == ct)
                     {
@@ -173,7 +173,7 @@ namespace core
 
     const Sector* Grid::getSector(const map::module::type& mt, const int mp) const
     {
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             if(sector[i].descriptor->type == mt)
             {
@@ -196,7 +196,7 @@ namespace core
     const Rectangle<float> Grid::getBounds(const uid_t& uid) const
     {
         Rectangle<float> bounds { 0, 0, 0, 0 };
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             if(sector[i].descriptor->type == static_cast<map::module::type>(uid.mt))
             {
@@ -245,15 +245,15 @@ namespace core
         return r;
     }
     
-    const std::unique_ptr<int[]> Grid::countElements(const Sector* d) const
+    const std::unique_ptr<size_t[]> Grid::countElements(const Sector* d) const
     {
-        auto r = std::make_unique<int[]>(Control::count);
-        for(int i = 0; i < Control::count; ++i) r[i] = 0;
-        for(int i = 0; i < sectors; ++i)
+        auto r = std::make_unique<size_t[]>(Control::count);
+        for(size_t i = 0; i < Control::count; ++i) r[i] = 0;
+        for(size_t i = 0; i < sectors; ++i)
         {
-            for(int t = 0; t < map::cv::count; ++t)
+            for(size_t t = 0; t < map::cv::count; ++t)
             {
-                for(int e = 0; e < *d[i].descriptor->cv[t]; ++e)
+                for(size_t e = 0; e < *d[i].descriptor->cv[t]; ++e)
                 {   
                     ++r[d[i].descriptor->set[t][e].is];
                 }
@@ -262,12 +262,12 @@ namespace core
         return r;
     }
 
-    const std::unique_ptr<int[]> Grid::countModules(const Sector* d) const
+    const std::unique_ptr<size_t[]> Grid::countModules(const Sector* d) const
     {
-        auto r = std::make_unique<int[]>(map::module::count);
-        for(int i = 0; i < map::module::count; ++i) r[i] = 0;
+        auto r = std::make_unique<size_t[]>(map::module::count);
+        for(size_t i = 0; i < map::module::count; ++i) r[i] = 0;
 
-        for(int i = 0; i < sectors; ++i)
+        for(size_t i = 0; i < sectors; ++i)
         {
             ++r[d[i].descriptor->type];
         }

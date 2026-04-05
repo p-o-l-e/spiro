@@ -26,7 +26,7 @@
 class SpiroLookAndFeel : public juce::LookAndFeel_V4
 {
     public:
-        SpiroLookAndFeel() {};
+        SpiroLookAndFeel() {}
         juce::Label *createSliderTextBox(juce::Slider &) override;
         juce::Slider::SliderLayout getSliderLayout(juce::Slider &slider) override;
     private:
@@ -47,7 +47,7 @@ class Fader: public juce::Slider
         void mouseUp (const juce::MouseEvent& event) override;
        
         Fader();
-       ~Fader();
+       ~Fader() override;
     private:
         SpiroLookAndFeel lf;
 };

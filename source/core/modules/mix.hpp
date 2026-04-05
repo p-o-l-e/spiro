@@ -34,7 +34,7 @@ namespace core
             void process() noexcept override;
 
             MIX();
-           ~MIX() {};
+           ~MIX() override = default;
     };
 
-}; // Namespace core
+} // Namespace core

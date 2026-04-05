@@ -43,7 +43,7 @@ inline void Envelope::start()
     for(int i = 0; i < env::Segments; ++i)
     {
         value[i] = node[i].data[breakpoint::Level].load();
-        time[i]  = node[i].data[breakpoint::Time].load();
+        time[i]  = (unsigned)node[i].data[breakpoint::Time].load();
         curve[i] = node[i].data[breakpoint::Form].load();
     }
     theta = value[stage] - value[stage - 1];

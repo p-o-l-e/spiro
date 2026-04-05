@@ -44,7 +44,7 @@ struct OnePole
     public:
         void reset(const float ms)
         {
-            a = expf(- tao / (ms * 0.001f * settings::sample_rate));
+            a = expf(- tao / (ms * 0.001f * (float)settings::sample_rate));
             b = 1.0f - a;
             z = 0.0f;
         }
@@ -53,7 +53,7 @@ struct OnePole
             z = (in * b) + (z * a);
             return z;
         }
-        OnePole() { reset(10.0f); };
+        OnePole() { reset(10.0f); }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,13 +86,13 @@ struct EnvelopeFollower
 
 inline void EnvelopeFollower::init(const float aMs, const float rMs, const float sample_rate)
 {
-    a = pow( 0.01, 1.0 / ( aMs * sample_rate * 0.001 ) );
-    r = pow( 0.01, 1.0 / ( rMs * sample_rate * 0.001 ) );
+    a = powf( 0.01f, 1.0f / ( aMs * (float)sample_rate * 0.001f ) );
+    r = powf( 0.01f, 1.0f / ( rMs * (float)sample_rate * 0.001f ) );
 }
 
 inline void EnvelopeFollower::process(const float in) noexcept
 {
-    float f = fabs(in);
+    float f = fabsf(in);
     if (f > envelope) envelope = a * ( envelope - f ) + f;
     else              envelope = r * ( envelope - f ) + f;
 }
@@ -103,22 +103,22 @@ struct Limiter
 {
     EnvelopeFollower e;
     float threshold = 0.01f;
-    inline void  init(const float, const float, const float);
-    inline float process(const float in) noexcept;
+    inline void  init(float, float, float);
+    inline float process(float in) noexcept;
     inline Limiter();
 };
 
 inline Limiter::Limiter()
 {
-    init(1.0f, 10.0f, settings::sample_rate);
+    init(1.0f, 10.0f, (float)settings::sample_rate);
 }
 
-inline void Limiter::init(const float aMs, const float rMs, const float sample_rate)
+inline void Limiter::init(float aMs, float rMs, float sample_rate)
 {
     e.init(aMs, rMs, sample_rate);
 }
 
-inline float Limiter::process(const float in) noexcept
+inline float Limiter::process(float in) noexcept
 {
     float out = in;
     e.process(out);

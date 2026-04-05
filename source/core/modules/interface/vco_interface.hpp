@@ -12,9 +12,9 @@ namespace core
     **********************************************************************************************************************/
     namespace vco 
     {
-        constexpr int cc { 10 };
-        constexpr int ic {  5 };
-        constexpr int oc {  1 };
+        constexpr unsigned cc { 10 };
+        constexpr unsigned ic {  5 };
+        constexpr unsigned oc {  1 };
 
         struct ctl { enum id { octave, detune, pll, pwm, fm, am, amp, form, mode, options  }; };              // Controls
         struct cvi { enum id {         detune, pll, pwm, fm, am                            }; };              // CV in

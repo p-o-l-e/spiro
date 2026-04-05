@@ -43,9 +43,8 @@ namespace core {
             void process() noexcept override;
             void reset();
             VCD();
-           ~VCD();
+           ~VCD() override;
     };
 
-
-};
+}
 

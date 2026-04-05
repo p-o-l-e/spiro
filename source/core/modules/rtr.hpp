@@ -35,7 +35,7 @@ namespace core
             int id;
             void process() noexcept override;
             RTR();
-           ~RTR() = default;
+           ~RTR() override = default;
     };
 
 }
