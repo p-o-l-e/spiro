@@ -64,8 +64,14 @@ namespace core
         b = g * a;
 
         float is = icv[cvi::a]->load() + icv[cvi::b]->load() + icv[cvi::c]->load();
+        // 12dB
         float va = a * iceq[0] + b * (is - iceq[1]);
         float vb = iceq[1] + g * va;
+        iceq[0]  = 2.0f * va - iceq[0];
+        iceq[1]  = 2.0f * vb - iceq[1];
+        // 24dB
+        va = a * iceq[0] + b * (is - iceq[1]);
+        vb = iceq[1] + g * va;
         iceq[0]  = 2.0f * va - iceq[0];
         iceq[1]  = 2.0f * vb - iceq[1];
 
