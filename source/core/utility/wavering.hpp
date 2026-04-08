@@ -21,6 +21,7 @@
 *
 ******************************************************************************************************************************/
 #pragma once
+#include "env_interface.hpp"
 #include <atomic>
 #include <cstddef>
 #include <iostream>
@@ -54,6 +55,13 @@ namespace core {
             {
                 T value = data[r];
                 r = (r + 1) & mask;
+                return value;
+            }
+
+            T get(size_t jump) noexcept
+            {
+                T value = data[r];
+                r = (r + jump) & mask;
                 return value;
             }
 

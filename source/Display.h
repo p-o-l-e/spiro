@@ -24,6 +24,8 @@
 #include "PluginProcessor.h"
 #include "canvas.hpp"
 #include "JuceShader.hpp"
+#include "iospecs.hpp"
+#include "primitives.hpp"
 #include <cstdint>
 #include <memory>
 
@@ -128,7 +130,9 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         GLuint scopeFBO_MSAA; GLuint scopeColorBuffer_MSAA;
         float blurTexelSizeX = 0.0f;   // 1.0f / area.w
         float blurTexelSizeY = 0.0f;   // 1.0f / area.h
-
+        core::Point2D<float> cRay { -1.0f, 0.0f };
+        core::Point2D<float> pRay { -1.0f, 0.0f };
+        
         void renderBloom() noexcept;
 
         const float contrast = 0.6f;
@@ -138,8 +142,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		size_t last_page = 0;
         unsigned stepX = 10, stepY = 10;
 
-        float ndcW;
-        float ndcH;
+        core::Point2D<float> ndcu; // NDC Unit
         float ndcCenterX;
         float ndcCenterY;
         float scopeScaleMultiplier;
@@ -179,6 +182,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         core::uid_t uid;
 		const core::Rectangle<int> area;
         void switchPage(Processor*, const Page); 
+        void asyncUpdate();
 	
         void offMenu();
         void croMenu();

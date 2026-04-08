@@ -623,7 +623,7 @@ Editor::~Editor()
 
 void Editor::timerCallback()  
 { 
-    display->openGLContext.triggerRepaint();
+    //display->openGLContext.triggerRepaint();
 
     static int f = 0;
     if(fade) ++f;

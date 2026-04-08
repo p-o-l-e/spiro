@@ -459,7 +459,12 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 		DataR[i] = R * 0.2f;
 		buffer->set(core::Point2D<float>{ L , R });
 	}
-    buffer->add(samples);
+
+    buffer->add((unsigned long)samples);
+    if(buffer->count() % 2048 == 0)
+    {
+        triggerAsyncUpdate();
+    }
 }
 
 
@@ -469,6 +474,12 @@ juce::AudioProcessorEditor* Processor::createEditor()
 
     suspendProcessing(true);
     return new Editor(*this, tree);
+}
+
+void Processor::handleAsyncUpdate()
+{
+    Editor* editor = dynamic_cast<Editor*>(getActiveEditor());
+    if(editor) editor->display->asyncUpdate();
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

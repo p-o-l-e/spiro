@@ -25,7 +25,7 @@
 #include "wavering.hpp"
 #include "spiro.hpp"
 
-class Processor: public juce::AudioProcessor
+class Processor: public juce::AudioProcessor, private juce::AsyncUpdater
 {
     public:
         core::Spiro spiro;
@@ -87,7 +87,6 @@ class Processor: public juce::AudioProcessor
         
         bool armed = false;
 
-
         juce::AudioProcessorEditor* createEditor() override;
         juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
         juce::RangedAudioParameter** parameters;
@@ -96,8 +95,6 @@ class Processor: public juce::AudioProcessor
         juce::CriticalSection localResourcesLock;
         juce::CriticalSection parametersLock;
         juce::CriticalSection sharedResourcesLock;
-
-
 
         class Listener 
         {
@@ -115,6 +112,7 @@ class Processor: public juce::AudioProcessor
        ~Processor() override;
 
     private:
+        void handleAsyncUpdate() override;
         juce::ListenerList<Listener> listeners;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor)
 };

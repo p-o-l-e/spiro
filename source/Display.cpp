@@ -23,12 +23,14 @@
 #include "Colours.hpp"
 #include "canvas.hpp"
 #include "fonts.h"
+#include "iospecs.hpp"
 #include "juce_graphics/juce_graphics.h"
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <iostream>
 #include <string_view>
 
 using namespace juce::gl;
@@ -609,6 +611,11 @@ void Display::renderScope3() noexcept
     glDisable(GL_BLEND);
 }
 
+void Display::asyncUpdate()
+{
+   openGLContext.triggerRepaint(); 
+}
+
 void Display::renderScope2() noexcept
 {
     using namespace core::shader;
@@ -643,7 +650,7 @@ void Display::renderScope2() noexcept
 
         const unsigned long quadCount = samplesToRead - 1;
         const unsigned long vertCount = quadCount * 4;
-        const GLsizeiptr byteSize = GLsizeiptr(vertCount * 2 * sizeof(float));
+        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
 
         glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
         glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
@@ -887,26 +894,26 @@ void Display::offMenu()
 
 void Display::newOpenGLContextCreated()
 {
-
     createShaders();
     createBloomFBOs();
-
 
     glBindFramebuffer(GL_FRAMEBUFFER, afterglowFBO);
     glViewport(0, 0, area.w, area.h);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    openGLContext.setContinuousRepainting(false);
 }
 
 void Display::resized()
 {
     inputBox.setBounds(0, 0, 1, 1);
     
-    ndcW = 2.0f / (float)area.w;
-    ndcH = 2.0f / (float)area.h;
-    ndcCenterX = -1.0f + ((float)area.w * 0.5f * ndcW);
-    ndcCenterY = -1.0f + ((float)area.h * 0.5f * ndcH);
-    scopeScaleMultiplier = 10.0f * std::max(ndcW, ndcH);
+    ndcu.x = 2.0f / (float)area.w;
+    ndcu.y = 2.0f / (float)area.h;
+    ndcCenterX = -1.0f + ((float)area.w * 0.5f * ndcu.x);
+    ndcCenterY = -1.0f + ((float)area.h * 0.5f * ndcu.y);
+    scopeScaleMultiplier = 10.0f * std::max(ndcu.x, ndcu.y);
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& _area): processor(p), _data(buf), area(_area)
@@ -921,14 +928,15 @@ Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<floa
     pixelFormat.blueBits  = 8;
     pixelFormat.alphaBits = 8;   // ⭐ critical
     pixelFormat.multisamplingLevel = 8;
+    openGLContext.setComponentPaintingEnabled(false);
+    openGLContext.setContinuousRepainting(false);
     openGLContext.setPixelFormat(pixelFormat);
     openGLContext.setRenderer(this); 
     openGLContext.attachTo(*this);
 
     setOpaque(false);
 
-    openGLContext.setComponentPaintingEnabled(false);
-    openGLContext.setContinuousRepainting(false);
+
     addAndMakeVisible(inputBox);
 
     inputBox.onTextChange = [this](){
@@ -963,7 +971,7 @@ OledLabel::OledLabel()
 static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
 {
 #ifdef DEBUG
-    drawBorder(canvas);
+//    drawBorder(canvas);
 #endif
     const float W = float(canvas->width);
     const float H = float(canvas->height);
