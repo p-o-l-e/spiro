@@ -479,6 +479,7 @@ void Display::renderOpenGL()
             }
             break;
         case CroA: 
+            if(samplesToRead < samplesPerFrame) break;
             if(repaintTexture)
             {
                 textLayer->clr(0x0);
@@ -525,7 +526,7 @@ void Display::renderScope3() noexcept
     
     if(auto data = _data.lock())
     {
-        if(samplesToRead < 0x40) return;
+        if(samplesToRead < samplesPerFrame) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
         float halfWidth = 0.007f;
@@ -546,14 +547,9 @@ void Display::renderScope3() noexcept
         float* ptr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
         if(!ptr) return;
 
-        float prevX, prevY;
-        {
-            auto raw = data->get();
-            prevX = raw.x * gain + ndcCenterX;
-            prevY = raw.y * gain + ndcCenterY;
-        }
+        static float prevX = 0, prevY = 0;
 
-        for(unsigned long i = 1; i < samplesToRead; ++i)
+        for(unsigned long i = 0; i < samplesPerFrame; ++i)
         {
             auto raw = data->get();
             float x = raw.x * gain + ndcCenterX;
@@ -579,6 +575,8 @@ void Display::renderScope3() noexcept
             prevX = x;
             prevY = y;
         }
+
+        samplesToRead -= samplesPerFrame;
 
         glUnmapBuffer(GL_ARRAY_BUFFER);
 
@@ -643,7 +641,6 @@ void Display::renderScope2() noexcept
 
     if(auto data = _data.lock())
     {
-        if(samplesToRead < samplesPerFrame) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
         float halfWidth = 1.0f / (float)area.w * 2.0f;
@@ -664,14 +661,10 @@ void Display::renderScope2() noexcept
         float* ptr = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
         if(!ptr) return;
 
-        float prevX, prevY;
-        {
-            auto raw = data->get();
-            prevX = -1.0f;
-            prevY = raw.y * gain + ndcCenterY;
-        }
+        float prevX = -1.0f;
+        static float prevY = ndcCenterY;
 
-        for(unsigned long i = 1; i < samplesPerFrame; ++i)
+        for(unsigned long i = 0; i < samplesPerFrame; ++i)
         {
             auto raw = data->get();
             float x = core::remap(float(i), float(0), float(samplesPerFrame - 1), -1.0f, 1.0f);
