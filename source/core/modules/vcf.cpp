@@ -75,8 +75,8 @@ namespace core
         iceq[0]  = 2.0f * va - iceq[0];
         iceq[1]  = 2.0f * vb - iceq[1];
 
-        ocv[cvo::lp].store(vb);
+        ocv[cvo::hp].store(vb);
         ocv[cvo::bp].store(va);
-        ocv[cvo::hp].store(is - k * va - vb);
+        ocv[cvo::lp].store(is - k * va - vb);
     }
 };
