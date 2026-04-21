@@ -407,7 +407,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
     core::settings::sample_rate = sampleRate;
     std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
     std::cout<<"Sample rate       : "<<sampleRate<<"\n";
-    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(16);
+    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(14);
     if(getActiveEditor())
     {
         listeners.call([this](Listener &L) { L.resetCall(); });

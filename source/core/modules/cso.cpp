@@ -110,9 +110,9 @@ void CSO::helmholz()
     }
     else
     {     
-        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 3.0f);
-        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 3.0f);
-        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 3.0f);
+        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 1.5f);
+        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 1.5f);
+        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 1.5f);
     }
 }
 
@@ -145,9 +145,9 @@ void CSO::halvorsen()
     }
     else
     {
-        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 0.5f);
-        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 0.5f);
-        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 0.5f);
+        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 0.20f);
+        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 0.20f);
+        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 0.20f);
     }
 }
 
