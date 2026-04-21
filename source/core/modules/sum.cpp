@@ -20,6 +20,7 @@
 * SOFTWARE.
 ******************************************************************************************************************************/
 #include "sum.hpp"
+#include "constants.hpp"
 #include "node.hpp"
 #include "sum_interface.hpp"
 
@@ -30,8 +31,9 @@ namespace core
 
     void SUM::process() noexcept
     {
-        ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
-        ocv[cvo::b].store(ocv[cvo::a]);
+        auto sum = (icv[cvi::a]->load() + icv[cvi::b]->load());
+        ocv[cvo::a].store(sum);
+        ocv[cvo::b].store(sum);
     };
 
     SUM::SUM(): Module(idc, &sum::descriptor[0]), id(idc++)
