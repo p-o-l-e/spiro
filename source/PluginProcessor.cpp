@@ -24,6 +24,7 @@
 #include "PluginEditor.h"
 #include "core/grid.hpp"
 #include "core/uid.hpp"
+#include "iospecs.hpp"
 #include <cstdint>
 
 
@@ -461,10 +462,7 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 	}
 
     buffer->add((unsigned long)samples);
-    if(buffer->count() % 2048 == 0)
-    {
-        triggerAsyncUpdate();
-    }
+    triggerAsyncUpdate();
 }
 
 

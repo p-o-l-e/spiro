@@ -25,6 +25,7 @@
 #include "canvas.hpp"
 #include "JuceShader.hpp"
 #include "iospecs.hpp"
+#include "juce_events/juce_events.h"
 #include "primitives.hpp"
 #include <cstdint>
 #include <memory>
@@ -53,7 +54,7 @@ struct OledLabel: public juce::TextEditor
    ~OledLabel() = default;
 };
 
-class Display: public juce::Component, private juce::OpenGLRenderer
+class Display: public juce::Component, private juce::OpenGLRenderer, public juce::Timer
 {
     public:
 		enum Page {	VcoA, VcoB,	VcoC, VcoD,	CsoA, CsoB,	LfoA, LfoB, Save, Load,	CroA, Main, Info, Limit };
@@ -68,6 +69,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer
             AfterglowAccu,
             Size
         };
+
+        const static int target_fps = 30;
 
 	private:
         Processor *processor;
@@ -147,6 +150,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         float ndcCenterY;
         float scopeScaleMultiplier;
         unsigned long samplesLastProduced = 0;
+        unsigned long samplesToRead = 0;
+        unsigned samplesPerFrame = 0;
         bool skipScopeRender = false;
 
         constexpr static bool X = true, Y = false;
@@ -158,6 +163,9 @@ class Display: public juce::Component, private juce::OpenGLRenderer
         void renderQuad(juce::OpenGLTexture*);
         void renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute&);
         void skipFrames();
+
+        void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
+        void renderCroHUD() noexcept;
         void renderScope2() noexcept;
         void renderScope3() noexcept;
         void renderModuleMenu() noexcept;
@@ -183,6 +191,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer
 		const core::Rectangle<int> area;
         void switchPage(Processor*, const Page); 
         void asyncUpdate();
+        void timerCallback() override;
 	
         void offMenu();
         void croMenu();

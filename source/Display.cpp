@@ -27,15 +27,16 @@
 #include "juce_graphics/juce_graphics.h"
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <string>
 #include <string_view>
 
 using namespace juce::gl;
 
-static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity = 0x5F, unsigned vdiv = 10, unsigned hdiv = 8, unsigned minGap = 5) noexcept;
 //static constexpr void drawBorder(core::Canvas<uint8_t>* canvas) noexcept;
 
 void Display::switchPage(Processor* o, const Page currentPage)
@@ -107,12 +108,6 @@ void Display::moduleMenu(core::Spiro* o, const core::map::module::type& mt, uint
 
     repaintTexture = true;
     skipScopeRender = true;
-}
-
-void Display::openGLContextClosing()
-{
-    // Clean up when context is closing
-    brightnessShader.reset();
 }
 
 void Display::createShaders()
@@ -489,6 +484,7 @@ void Display::renderOpenGL()
                 textLayer->clr(0x0);
                 drawSoftGlyphsH(glyph::StepLeft, glyph::StepRight, glyph::Minus, glyph::Plus, textLayer);
                 drawGraticule(textLayer);
+                renderCroHUD();
                 bakeTexture(&croTexture, textLayer);
             }
             croMenu();
@@ -529,10 +525,6 @@ void Display::renderScope3() noexcept
     
     if(auto data = _data.lock())
     {
-        unsigned long current = data->count();
-        unsigned long samplesToRead = current - samplesLastProduced;
-        samplesLastProduced = current;
-
         if(samplesToRead < 0x40) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
@@ -613,7 +605,25 @@ void Display::renderScope3() noexcept
 
 void Display::asyncUpdate()
 {
+    if(auto data = _data.lock())
+    {
+        unsigned long current = data->count();
+        samplesToRead += (current - samplesLastProduced);
+        samplesLastProduced = current;
+    }
+}
+
+void Display::timerCallback()
+{
    openGLContext.triggerRepaint(); 
+}
+
+void Display::renderCroHUD() noexcept
+{
+    auto step = textLayer->width / 30;
+    auto offset = textLayer->height - textLayer->height / 17;
+    auto scale = std::format("{:.1f}", (scope_scale->load() + 1.0f));
+    core::drawTextLabel(textLayer, gtFont, scale.c_str(), grid(17, X), offset, opacity);
 }
 
 void Display::renderScope2() noexcept
@@ -633,11 +643,7 @@ void Display::renderScope2() noexcept
 
     if(auto data = _data.lock())
     {
-        unsigned long current = data->count();
-        unsigned long samplesToRead = current - samplesLastProduced;
-        samplesLastProduced = current;
-
-        if(samplesToRead < 0x40) return;
+        if(samplesToRead < samplesPerFrame) return;
 
         float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
         float halfWidth = 1.0f / (float)area.w * 2.0f;
@@ -648,7 +654,7 @@ void Display::renderScope2() noexcept
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        const unsigned long quadCount = samplesToRead - 1;
+        const unsigned long quadCount = samplesPerFrame - 1;
         const unsigned long vertCount = quadCount * 4;
         const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
 
@@ -665,10 +671,10 @@ void Display::renderScope2() noexcept
             prevY = raw.y * gain + ndcCenterY;
         }
 
-        for(unsigned long i = 1; i < samplesToRead; ++i)
+        for(unsigned long i = 1; i < samplesPerFrame; ++i)
         {
             auto raw = data->get();
-            float x = core::remap(float(i), float(0), float(samplesToRead - 1), -1.0f, 1.0f);
+            float x = core::remap(float(i), float(0), float(samplesPerFrame - 1), -1.0f, 1.0f);
             float y = raw.y * gain + ndcCenterY;
 
             float dx = x - prevX;
@@ -703,6 +709,8 @@ void Display::renderScope2() noexcept
         glDisableVertexAttribArray(attributeID);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDisable(GL_BLEND);
+
+        samplesToRead -= samplesPerFrame;
     }
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
@@ -903,6 +911,14 @@ void Display::newOpenGLContextCreated()
     glClear(GL_COLOR_BUFFER_BIT);
 
     openGLContext.setContinuousRepainting(false);
+    samplesPerFrame = unsigned(std::floor(float(core::settings::sample_rate) / float(target_fps)));
+    startTimerHz(target_fps);
+}
+
+void Display::openGLContextClosing()
+{
+    stopTimer();
+    brightnessShader.reset();
 }
 
 void Display::resized()
@@ -913,7 +929,7 @@ void Display::resized()
     ndcu.y = 2.0f / (float)area.h;
     ndcCenterX = -1.0f + ((float)area.w * 0.5f * ndcu.x);
     ndcCenterY = -1.0f + ((float)area.h * 0.5f * ndcu.y);
-    scopeScaleMultiplier = 10.0f * std::max(ndcu.x, ndcu.y);
+    //scopeScaleMultiplier = 10.0f * std::max(ndcu.x, ndcu.y);
 }
 
 Display::Display(Processor* p, std::shared_ptr<core::wavering<core::Point2D<float>>> buf, const core::Rectangle<int>& _area): processor(p), _data(buf), area(_area)
@@ -968,7 +984,7 @@ OledLabel::OledLabel()
     setColour(juce::TextEditor::ColourIds::shadowColourId,            juce::Colour::fromRGBA(0,0,0,0));
 }
 
-static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
+void Display::drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsigned vdiv, unsigned hdiv, unsigned minGap) noexcept
 {
 #ifdef DEBUG
 //    drawBorder(canvas);
@@ -1032,6 +1048,8 @@ static void drawGraticule(core::Canvas<uint8_t>* canvas, uint8_t intensity, unsi
 
     const auto yt = size_t(std::round(cy - dottedOffset));
     const auto yb = size_t(std::round(cy + dottedOffset));
+
+    scopeScaleMultiplier = (((float)canvas->height - vgap * 2.0f) / float(canvas->height)) * 0.6f;
 
     for (unsigned i = 0; i < vdiv * 5; ++i)
     {

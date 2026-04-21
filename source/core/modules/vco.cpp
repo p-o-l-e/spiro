@@ -75,7 +75,7 @@ namespace core
 
         float ob = cosf(phase[voice] + mem[1][voice] + pw);
         mem[1][voice] = (ob + mem[1][voice]) * 0.5f;
-        return oa - ob;
+        return (oa - ob) * 2.0f / 3.0f;
     }
 
     inline float VCO::pulse(const int& voice)
@@ -93,8 +93,8 @@ namespace core
             (0.5f - ccv[ctl::pwm]->load()) * pi :
             (0.5f - ccv[ctl::pwm]->load() + icv[cvi::pwm]->load()) * pi;
 
-            float feed = (fTriangle(phase[voice], 0.001f) * fSquare(phase[voice] + pw, 0.001f))/pi + (pi * 0.5f - fabsf(pw)) * 0.25f;
-        return feed * (pi - fabsf(pw));
+        float feed = (fTriangle(phase[voice], 0.001f) * fSquare(phase[voice] + pw, 0.001f))/pi + (pi * 0.5f - fabsf(pw)) * 0.25f;
+        return feed * (pi - fabsf(pw)) * 0.8f;
     }
 
     void VCO::process() noexcept
