@@ -46,21 +46,21 @@ namespace core
     {
         phase += (*ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm])) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
-        return atanf(tanf(phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
+        return atanf(tanf(phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load()) * 2.0f / 3.0f;
     }
 
     float LFO::saw()
     {
         phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
-        return atanf(tanf(pi - phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
+        return atanf(tanf(pi - phase * 0.5f)) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load()) * 2.0f / 3.0f;
     }
 
     float LFO::square()
     {
         phase += ( *ccv[lfo::ctl::delta] + fabsf(*icv[lfo::cvi::fm]) ) * (*ccv[lfo::ctl::scale] + 0.001f) * tao / settings::sample_rate;
         if(phase > pi) phase -= tao;
-        return (phase > 0.0f ? 1.0f : 0.0f) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
+        return (phase > 0.0f ? 1.0f : -1.0f) * ccv[lfo::ctl::amp]->load() * (icv[lfo::cvi::am] == &zero ? 1.0f : icv[lfo::cvi::am]->load());
     }
 
     float LFO::triangle()
