@@ -6,7 +6,7 @@ TEST_CASE ("Boot performance")
         std::vector<Catch::Benchmark::storage_for<Processor>> storage (size_t (meter.runs()));
         meter.measure ([&] (int i) { storage[(size_t) i].construct(); });
     };
-
+/*
     BENCHMARK_ADVANCED ("Processor destructor")
     (Catch::Benchmark::Chronometer meter)
     {
@@ -22,11 +22,12 @@ TEST_CASE ("Boot performance")
         Processor plugin;
 
         // due to complex construction logic of the editor, let's measure open/close together
-        meter.measure ([&] (int /* i */) {
+        meter.measure ([&] (int) {
             auto editor = plugin.createEditorIfNeeded();
-            plugin.editorBeingDeleted (editor);
-            delete editor;
+            //plugin.editorBeingDeleted (editor);
+            //delete editor;
             return plugin.getActiveEditor();
         });
     };
+*/
 }

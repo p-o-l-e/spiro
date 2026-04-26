@@ -28,6 +28,8 @@
 
 namespace core {
 
+    enum Mode { R, W };
+
     template <typename T>
     class wavering
     {
@@ -36,19 +38,20 @@ namespace core {
             const std::size_t mask;
             std::size_t r = 0;
             std::size_t w = 0;
-            std::atomic<unsigned long> counter = 0;
+            std::atomic<unsigned long> counter[2];
             T* data = nullptr;
 
         public:
+
             void set(const T& value) noexcept
             {
                 data[w] = value;
                 w = (w + 1) & mask;
             }
 
-            void add(unsigned long n) noexcept
+            void sync(unsigned long n, enum Mode mode) noexcept
             {
-                counter.fetch_add(n, std::memory_order_relaxed);
+                counter[mode].fetch_add(n, std::memory_order_relaxed);
             }
 
             T get() noexcept
@@ -65,13 +68,28 @@ namespace core {
                 return value;
             }
 
+            T read(size_t size, float pos, float min = -1.0f, float max = 1.0f)
+            {
+                if (pos < min) [[unlikely]] pos = min;
+                else if (pos > max) [[unlikely]] pos = max;
+
+                const float n = (pos - min) / (max - min);
+                const size_t index = size_t(n * float(size - 1));
+                return data[(r + index) & mask];
+            }
+
+            std::ptrdiff_t pool() noexcept
+            {
+                return std::ptrdiff_t(count(Mode::W)) - std::ptrdiff_t(count(Mode::R));
+            }
+
             void advance(std::size_t n) noexcept
             {
                 r = (r + n) & mask;
             }
 
             T* raw() const noexcept { return data; }
-            unsigned long count() noexcept { return counter.load(std::memory_order_relaxed); }
+            unsigned long count(Mode mode) noexcept { return counter[mode].load(std::memory_order_relaxed); }
 
             explicit wavering(std::size_t n): size(std::size_t{ 1 } << n), mask(size - 1)
             {

@@ -14,7 +14,7 @@ set(COMPANY_NAME "POLE")
 set(BUNDLE_ID "com.spiro.spiro")
 
 # Valid choices: AAX Unity VST VST3 AU AUv3 Standalone
-set(FORMATS Standalone)
+set(FORMATS Standalone VST3)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Force JUCE to work with sccache

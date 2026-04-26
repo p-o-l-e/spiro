@@ -84,17 +84,17 @@ namespace shader {
             void main()
             {
                 vec4 sum = vec4(0.0);
-                sum += texture2D(tex, vTex + vec2(-5.0 * texelSize, 0.0)) * 0.010;
-                sum += texture2D(tex, vTex + vec2(-4.0 * texelSize, 0.0)) * 0.015;
-                sum += texture2D(tex, vTex + vec2(-3.0 * texelSize, 0.0)) * 0.027;
+                sum += texture2D(tex, vTex + vec2(-5.0 * texelSize, 0.0)) * 0.020;
+                sum += texture2D(tex, vTex + vec2(-4.0 * texelSize, 0.0)) * 0.025;
+                sum += texture2D(tex, vTex + vec2(-3.0 * texelSize, 0.0)) * 0.037;
                 sum += texture2D(tex, vTex + vec2(-2.0 * texelSize, 0.0)) * 0.056;
                 sum += texture2D(tex, vTex + vec2(-1.0 * texelSize, 0.0)) * 0.164;
                 sum += texture2D(tex, vTex) * 0.455;
                 sum += texture2D(tex, vTex + vec2( 1.0 * texelSize, 0.0)) * 0.164;
                 sum += texture2D(tex, vTex + vec2( 2.0 * texelSize, 0.0)) * 0.056;
-                sum += texture2D(tex, vTex + vec2( 3.0 * texelSize, 0.0)) * 0.027;
-                sum += texture2D(tex, vTex + vec2( 4.0 * texelSize, 0.0)) * 0.015;
-                sum += texture2D(tex, vTex + vec2( 5.0 * texelSize, 0.0)) * 0.010;
+                sum += texture2D(tex, vTex + vec2( 3.0 * texelSize, 0.0)) * 0.037;
+                sum += texture2D(tex, vTex + vec2( 4.0 * texelSize, 0.0)) * 0.025;
+                sum += texture2D(tex, vTex + vec2( 5.0 * texelSize, 0.0)) * 0.020;
                 gl_FragColor = sum;
             }
 
@@ -109,17 +109,17 @@ namespace shader {
             void main()
             {
                 vec4 sum = vec4(0.0);
-                sum += texture2D(tex, vTex + vec2( 0.0, -5.0 * texelSize)) * 0.010;
-                sum += texture2D(tex, vTex + vec2( 0.0, -4.0 * texelSize)) * 0.015;
-                sum += texture2D(tex, vTex + vec2( 0.0, -3.0 * texelSize)) * 0.027;
+                sum += texture2D(tex, vTex + vec2( 0.0, -5.0 * texelSize)) * 0.020;
+                sum += texture2D(tex, vTex + vec2( 0.0, -4.0 * texelSize)) * 0.025;
+                sum += texture2D(tex, vTex + vec2( 0.0, -3.0 * texelSize)) * 0.037;
                 sum += texture2D(tex, vTex + vec2( 0.0, -2.0 * texelSize)) * 0.056;
                 sum += texture2D(tex, vTex + vec2( 0.0, -1.0 * texelSize)) * 0.164;
                 sum += texture2D(tex, vTex) * 0.455;
                 sum += texture2D(tex, vTex + vec2( 0.0,  1.0 * texelSize)) * 0.164;
                 sum += texture2D(tex, vTex + vec2( 0.0,  2.0 * texelSize)) * 0.056;
-                sum += texture2D(tex, vTex + vec2( 0.0,  3.0 * texelSize)) * 0.027;
-                sum += texture2D(tex, vTex + vec2( 0.0,  4.0 * texelSize)) * 0.015;
-                sum += texture2D(tex, vTex + vec2( 0.0,  5.0 * texelSize)) * 0.010;
+                sum += texture2D(tex, vTex + vec2( 0.0,  3.0 * texelSize)) * 0.037;
+                sum += texture2D(tex, vTex + vec2( 0.0,  4.0 * texelSize)) * 0.025;
+                sum += texture2D(tex, vTex + vec2( 0.0,  5.0 * texelSize)) * 0.020;
                 gl_FragColor = sum;
             }
 

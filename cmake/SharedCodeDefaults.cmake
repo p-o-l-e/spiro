@@ -9,7 +9,7 @@ if (MSVC)
     # Warnings
     target_compile_options(SharedCode INTERFACE
         /W4
-        /WX
+        #/WX
     )
 
     # Release

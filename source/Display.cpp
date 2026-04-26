@@ -27,6 +27,7 @@
 #include "juce_graphics/juce_graphics.h"
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
+#include "wavering.hpp"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -480,6 +481,10 @@ void Display::renderOpenGL()
             break;
         case CroA: 
             if(samplesToRead < samplesPerFrame) break;
+
+            else if(auto data = _data.lock())
+                if(data->pool() < samplesPerFrame) break;
+            
             if(repaintTexture)
             {
                 textLayer->clr(0x0);
@@ -502,7 +507,7 @@ void Display::skipFrames()
 {
     if(auto data = _data.lock())
     {
-        unsigned long current = data->count();
+        unsigned long current = data->count(core::Mode::W);
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
         data->advance(samplesToRead);
@@ -605,7 +610,7 @@ void Display::asyncUpdate()
 {
     if(auto data = _data.lock())
     {
-        unsigned long current = data->count();
+        unsigned long current = data->count(core::Mode::W);
         samplesToRead += (current - samplesLastProduced);
         samplesLastProduced = current;
     }
@@ -651,6 +656,100 @@ void Display::renderScope2() noexcept
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        const unsigned long quadCount = area.w - 1;
+        const unsigned long vertCount = quadCount * 4;
+        const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
+
+        glBindBuffer(GL_ARRAY_BUFFER, scopeVBO);
+        glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, GL_STREAM_DRAW);
+
+        float* ptr = (float*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        if(!ptr) return;
+
+        float prevX = -1.0f;
+        static float prevY = ndcCenterY;
+
+        for(float i = -1.0f; i < 1.0f; i += ndcu.x)
+        {
+            auto raw = data->read(samplesPerFrame, i);// data->get();
+            float x = i;
+            float y = (raw.y + raw.x) * gain + ndcCenterY;
+
+            float dx = x - prevX;
+            float dy = y - prevY;
+
+            float len = std::sqrt(dx*dx + dy*dy);
+            if (len < 1e-9f) len = 1.0f;
+
+            dx /= len;
+            dy /= len;
+
+            float nx = -dy * halfWidth;
+            float ny =  dx * halfWidth;
+
+            *ptr++ = prevX + nx; *ptr++ = prevY + ny;
+            *ptr++ = prevX - nx; *ptr++ = prevY - ny;
+            *ptr++ = x     + nx; *ptr++ = y     + ny;
+            *ptr++ = x     - nx; *ptr++ = y     - ny;
+
+            prevX = x;
+            prevY = y;
+        }
+
+        data->advance(samplesPerFrame);
+        data->sync(samplesPerFrame, core::Mode::R);
+
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+
+        auto attributeID = shader[ShaderType::Solid]->vA[postprocess::attribute::position]->attributeID;
+        glEnableVertexAttribArray(attributeID);
+        glVertexAttribPointer(attributeID, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)vertCount);
+
+        glDisableVertexAttribArray(attributeID);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisable(GL_BLEND);
+
+        samplesToRead -= samplesPerFrame;
+    }
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, scopeFBO_MSAA); 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, scopeFBO); 
+    glBlitFramebuffer( 0, 0, area.w, area.h, 0, 0, area.w, area.h, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+
+    renderBloom();
+
+    glDisable(GL_BLEND);
+}
+/*
+void Display::renderScope2() noexcept
+{
+    using namespace core::shader;
+    // 1) Draw background/UI to main framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, area.w, area.h);
+    renderQuad(&croTexture);
+    // 2) Draw scope into full-res scopeFBO
+    glBindFramebuffer(GL_FRAMEBUFFER, scopeFBO_MSAA);
+    glViewport(0, 0, area.w, area.h);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glEnable(GL_MULTISAMPLE);    
+
+    if(auto data = _data.lock())
+    {
+
+        float gain = (*scope_scale + 1.0f) * scopeScaleMultiplier;
+        float halfWidth = 1.0f / (float)area.w * 2.0f;
+
+        shader[ShaderType::Solid]->use();
+        shader[ShaderType::Solid]->fU[solid::uniform::color]->set(palette::cro::fg, 4);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         const unsigned long quadCount = samplesPerFrame - 1;
         const unsigned long vertCount = quadCount * 4;
         const GLsizeiptr byteSize = vertCount * 2 * sizeof(float);
@@ -668,7 +767,7 @@ void Display::renderScope2() noexcept
         {
             auto raw = data->get();
             float x = core::remap(float(i), float(0), float(samplesPerFrame - 1), -1.0f, 1.0f);
-            float y = raw.y * gain + ndcCenterY;
+            float y = (raw.y + raw.x) * gain + ndcCenterY;
 
             float dx = x - prevX;
             float dy = y - prevY;
@@ -714,7 +813,7 @@ void Display::renderScope2() noexcept
 
     glDisable(GL_BLEND);
 }
-
+*/
 void Display::renderModuleMenu() noexcept
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

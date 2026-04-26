@@ -25,6 +25,7 @@
 #include "core/grid.hpp"
 #include "core/uid.hpp"
 #include "iospecs.hpp"
+#include "wavering.hpp"
 #include <cstdint>
 
 
@@ -461,7 +462,7 @@ void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& m
 		buffer->set(core::Point2D<float>{ L , R });
 	}
 
-    buffer->add((unsigned long)samples);
+    buffer->sync((unsigned long)samples, core::Mode::W);
     triggerAsyncUpdate();
 }
 
