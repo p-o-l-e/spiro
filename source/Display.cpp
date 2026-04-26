@@ -28,6 +28,7 @@
 #include "shader_descriptor.hpp"
 #include "shapes.hpp"
 #include "wavering.hpp"
+#include <atomic>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -456,6 +457,8 @@ void Display::renderFullscreenQuad(juce::OpenGLShaderProgram::Attribute& posAttr
 
 void Display::renderOpenGL()
 {
+    ++paintCalls;
+
     if(skipScopeRender)
         skipFrames();
 
@@ -479,12 +482,24 @@ void Display::renderOpenGL()
                 repaintTexture = false;
             }
             break;
+
         case CroA: 
             if(samplesToRead < samplesPerFrame) break;
 
             else if(auto data = _data.lock())
-                if(data->pool() < samplesPerFrame) break;
+            {
+                if(repaintRequests > paintCalls)
+                {
+                    auto frames = repaintRequests - paintCalls;
+                    auto samples = samplesPerFrame * frames;
+                    data->advance(samples);
+                    data->sync(samples, core::Mode::R);
+                    repaintRequests = paintCalls;
+                }
             
+                if(data->pool() < samplesPerFrame) 
+                    break;
+            }
             if(repaintTexture)
             {
                 textLayer->clr(0x0);
@@ -495,6 +510,7 @@ void Display::renderOpenGL()
             }
             croMenu();
             break;
+
         case Info:
         case Limit:
         default: 
@@ -511,6 +527,7 @@ void Display::skipFrames()
         unsigned long samplesToRead = current - samplesLastProduced;
         samplesLastProduced = current;
         data->advance(samplesToRead);
+        data->sync(samplesToRead, core::Mode::R);
     }
 }
 
@@ -619,6 +636,7 @@ void Display::asyncUpdate()
 void Display::timerCallback()
 {
    openGLContext.triggerRepaint(); 
+   ++repaintRequests;
 }
 
 void Display::renderCroHUD() noexcept

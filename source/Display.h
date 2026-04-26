@@ -70,7 +70,7 @@ class Display: public juce::Component, private juce::OpenGLRenderer, public juce
             Size
         };
 
-        const static int target_fps = 30;
+        const static int target_fps = 29;
 
 	private:
         Processor *processor;
@@ -136,6 +136,9 @@ class Display: public juce::Component, private juce::OpenGLRenderer, public juce
         core::Point2D<float> cRay { -1.0f, 0.0f };
         core::Point2D<float> pRay { -1.0f, 0.0f };
         
+        uint64_t repaintRequests { 0 };
+        uint64_t paintCalls { 0 };
+
         void renderBloom() noexcept;
 
         const float contrast = 0.6f;
