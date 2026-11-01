@@ -272,6 +272,43 @@ bool Processor::loadPreset(juce::String presetName)
     return false;
 }
 
+void Processor::initPreset()
+{
+    auto setToDefault = [this](const juce::String& name)
+    {
+        if(auto* p = dynamic_cast<juce::RangedAudioParameter*>(tree.getParameter(name)))
+        {
+            p->beginChangeGesture();
+            p->setValueNotifyingHost(p->getDefaultValue());
+            p->endChangeGesture();
+        }
+    };
+
+    for(size_t i = 0; i < spiro.grid->count(core::Control::slider); ++i)
+        setToDefault(spiro.grid->name(spiro.grid->getUID(i, core::Control::slider), true));
+
+    for(size_t i = 0; i < spiro.grid->count(core::Control::parameter); ++i)
+        setToDefault(spiro.grid->name(spiro.grid->getUID(i, core::Control::parameter), true));
+
+    for(size_t i = 0; i < spiro.grid->count(core::Control::button); ++i)
+        setToDefault(spiro.grid->name(spiro.grid->getUID(i, core::Control::button), true));
+
+    for(size_t i = 0; i < spiro.grid->count(core::Control::input) * spiro.grid->count(core::Control::output); ++i)
+        setToDefault("mm" + juce::String(i));
+
+    if(auto* p = dynamic_cast<juce::RangedAudioParameter*>(tree.getParameter(spiro.grid->name(core::uid_t{ core::map::module::env, 0, core::map::cv::c, core::env::ctl::select }, true))))
+    {
+        p->beginChangeGesture();
+        p->setValueNotifyingHost(1.0f);
+        p->endChangeGesture();
+    }
+
+    currentPresetName = "INIT";
+
+    reset();
+    loadMatrix();
+}
+
 void Processor::presetFilesAvailableChanged()
 {
     presets.clear();

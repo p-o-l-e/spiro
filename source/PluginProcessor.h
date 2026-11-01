@@ -75,6 +75,7 @@ class Processor: public juce::AudioProcessor, private juce::AsyncUpdater
         void applyMatrix();
         bool savePreset(juce::String, bool);
         bool loadPreset(juce::String);
+        void initPreset();
         void reset() override;
         void reloadParameters();
 

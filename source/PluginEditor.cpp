@@ -363,7 +363,14 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
                     }
                     case 2:
                     {
-                        // INIT 
+                        processor.initPreset();
+                        loadMatrix();
+                        for(uint8_t i = 0; i < envn; ++i)
+                        {
+                            switchEnvelope(i);    // Apply envelope select state (env A is selected by init)
+                            env[i]->load();       // Re-sync AHDSR breakpoint displays with the reset parameters
+                        }
+                        display->mainMenu();
                         break;
                     }
                     default:
