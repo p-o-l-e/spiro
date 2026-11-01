@@ -179,6 +179,39 @@ void Patchbay::clear()
     }
 }
 
+void Patchbay::disconnect_all()
+{
+    // Unlike disconnect(), this must NOT clear matrix cells: Sockets::load()
+    // re-applies the matrix right after tearing live cords down.
+    for(int i = 0; i < nodes; i++)
+    {
+        if(io[i].on && io[i].to != nullptr)
+        {
+            Socket* a = &io[i];
+            Socket* b = a->to;
+
+            a->on = false;
+            b->on = false;
+            a->to = nullptr;
+            b->to = nullptr;
+
+            if(a->route == SOCKET_IN)
+            {
+                a->data = &zero;
+                if(a->com != nullptr) *a->com = a->data;
+            }
+            else
+            {
+                b->data = &zero;
+                if(b->com != nullptr) *b->com = b->data;
+            }
+
+            on_disconnect(a->route == SOCKET_OUT ? a->id : b->id);
+        }
+    }
+    src = nullptr;
+}
+
 void Patchbay::draw()
 {
     for(int i = 0; i < nodes; i++)
@@ -373,7 +406,6 @@ Patchbay::Patchbay(const int& w, const int& h, const int& ins, const int& outs):
     }
     canvas.clr(0);
     matrix.clr(false);
-    std::cout  <<"-- Patchbay initialized...\n";
 
 }
 

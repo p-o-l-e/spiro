@@ -118,6 +118,7 @@ namespace core {
             void move_test(const float&, const float&, const int&);
             void deselect();
             void clear();
+            void disconnect_all();
 
             Patchbay(const int&, const int&, const int&, const int&);
            ~Patchbay();

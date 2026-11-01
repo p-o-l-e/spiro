@@ -86,33 +86,67 @@ void ENV::iterate(int v) noexcept
         if(stage[v] == ADSR::Sustain && hold[v]) {}
         else
         {
-            pin[v] =
-            (
-                ease[(int)node[stage[v]][v].F]
+            if(delta[v] == 0)
+            {
+                // Zero-length stage: skip the easing (avoids 0/0 -> NaN) and advance
+                pin[v] = node[stage[v]][v].L;
+                departed[v] = 0;
+                next_stage(v);
+            }
+            else
+            {
+                pin[v] =
                 (
-                    (float)departed[v],
-                    node[stage[v] - 1][v].L,
-                    theta[v],
-                    (float)delta[v]
-                )
-            );
-            departed[v]++;
-            if (departed[v] >= delta[v]) next_stage(v);
+                    ease[(int)node[stage[v]][v].F]
+                    (
+                        (float)departed[v],
+                        node[stage[v] - 1][v].L,
+                        theta[v],
+                        (float)delta[v]
+                    )
+                );
+                departed[v]++;
+                if (departed[v] >= delta[v]) next_stage(v);
+            }
             ocv[env::cvo::a].store(pin[v]);
         }
     }
-    ocv[env::cvo::a].store(0.0f);
 }
 
 void ENV::process() noexcept
 {
-    for(int voice = 0; voice < settings::poly; ++voice) 
+    for(int voice = 0; voice < settings::poly; ++voice)
     {
-        if(gate[voice]) 
+        if(gate[voice])
         {
             iterate(voice);
         }
+        else
+        {
+            ocv[env::cvo::a].store(0.0f);
+        }
     }
+}
+
+void ENV::reset()
+{
+    for(int v = 0; v < settings::poly; ++v)
+    {
+        stage[v]    = ADSR::Start;
+        departed[v] = 0;
+        theta[v]    = 0.0f;
+        delta[v]    = 0;
+        pin[v]      = 0.0f;
+        gate[v]     = false;
+        hold[v]     = false;
+        for(int i = 0; i < env::Segments; ++i)
+        {
+            node[i][v].T = 0;
+            node[i][v].L = 0.0f;
+            node[i][v].F = 0.0f;
+        }
+    }
+    for(unsigned i = 0; i < env::oc; ++i) ocv[i].store(0.0f);
 }
 
 core::ENV::ENV(): Module(idc, &env::descriptor[0]), id(idc++)

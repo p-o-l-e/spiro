@@ -39,7 +39,7 @@ namespace core {
         public:
             const int id;
             void process() noexcept override;
-            void reset();
+            void reset() override;
             VCF();
            ~VCF() override = default;
     };

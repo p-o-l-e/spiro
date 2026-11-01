@@ -76,6 +76,7 @@ namespace core
             void start(float, int) noexcept;          
             void jump(int, int) noexcept;                       // Jump to stage N 
             void process() noexcept override;
+            void reset() override;
             float value_scale = 1.0f;
             ENV();
            ~ENV() override = default;

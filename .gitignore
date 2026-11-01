@@ -31,6 +31,8 @@
 render/
 assets/source/
 build/
+cmake-build-release/
+cmake-build-debug/
 build_unix/
 out/
 .cache/

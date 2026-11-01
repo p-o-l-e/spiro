@@ -30,16 +30,14 @@ namespace core
 
     Rack::Rack(const Grid* grid): grid(grid)
     { 
-        std::cout<<"Rack::Rack()\n"; 
         node = new Module<float>*[grid->sectors]; 
-        std::cout<<"-- Space for rack allocated...\n";
         for(int i = 0; i < grid->sectors; ++i)
         {
             node[i] = create_node(grid->sector[i].descriptor->type);
+            node[i]->position = grid->getRelative(i);
         }
         calculateModuleMap();
         calculateIndexMap();
-        std::cout<<"-- Rack built...\n";
     }
 
     void Rack::calculateModuleMap()
@@ -88,7 +86,6 @@ namespace core
    
     Rack::~Rack()
     { 
-        std::cout<<"Rack::~Rack()\n";
         for(int i = 0; i < grid->sectors; ++i) delete node[i]; 
         delete[] node;
     }

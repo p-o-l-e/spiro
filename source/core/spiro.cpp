@@ -36,6 +36,16 @@ namespace core
         out[stereo::r].store(mixer->ocv[stereo::r].load());
     }
 
+    void Spiro::reset()
+    {
+        active.clear();
+        voiceIndex = 1;
+        for(int i = 0; i < settings::poly; ++i) note[i] = 0;
+        for(int i = 0; i < grid->sectors; ++i) rack.at(i)->reset();
+        out[stereo::l].store(0.0f);
+        out[stereo::r].store(0.0f);
+    }
+
     Spiro::Spiro(const Grid* grid): grid(grid), rack(grid), oscn(grid->count(map::module::vco))
     {
         envelope    = new ENV*[oscn];

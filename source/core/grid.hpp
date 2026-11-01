@@ -81,6 +81,7 @@ namespace core
             
         public:
             size_t count(const Control::type& t) const { return elements[t]; }
+            uint8_t getRelative(const size_t i) const { return relative[i]; }
             int count(const Control::type&, map::flag::type) const;
             size_t count(const map::module::type& t) const { return modules[t]; }
             const Rectangle<float> getBounds(const uid_t&) const;

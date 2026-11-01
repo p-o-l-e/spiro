@@ -53,7 +53,7 @@ namespace core
         public:
             const int id = 0;
             void process() noexcept override;
-            void reset();
+            void reset() override;
             LFO();
            ~LFO() override = default;
     }; 

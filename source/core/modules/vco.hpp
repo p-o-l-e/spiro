@@ -70,11 +70,10 @@ namespace core
             void set_delta(const unsigned&);
             void set_fine(const unsigned&);
             
-            void reset();
+            void reset() override;
             VCO();
            ~VCO() override;
     };
-
 
 
     /**************************************************************************************************************************

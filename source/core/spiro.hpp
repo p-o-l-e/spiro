@@ -60,6 +60,7 @@ namespace core
             std::atomic<float> out[2];                       // LR Output
             void midiMessage(uint8_t, uint8_t, uint8_t);
             void process() noexcept;
+            void reset();
             void addConnection(int pos) noexcept;
             void removeConnection(int pos) noexcept;
             Spiro operator=(Spiro) = delete;

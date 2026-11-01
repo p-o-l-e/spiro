@@ -28,7 +28,6 @@
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor(&o), processor(o), valueTreeState(tree)
 {
-    std::cout<<"-- Constructing Editor...\n";
     processor.suspendProcessing(true);
    /***************************************************************************************************************************
     * 
@@ -501,7 +500,6 @@ Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioPro
     processor.suspendProcessing(false);
 
     startTimerHz(core::settings::scope_fps);
-    std::cout<<"-- Editor created\n";
 } 
 
 void Editor::setOption(const core::uid_t& uid, const float delta, const float max)
@@ -526,17 +524,7 @@ void Editor::setOption(const core::uid_t& uid, const float delta, const float ma
 
 void Editor::loadMatrix()
 {
-    int i = 0;
-    for(int x = 0; x < processor.spiro.grid->count(core::Control::input); ++x)
-    {
-        for(int y = 0; y < processor.spiro.grid->count(core::Control::output); ++y)
-        {
-            processor.matrix[i] = processor.tree.getParameter("mm" + juce::String(i)); 
-            processor.spiro.bay->matrix.set(x, y, core::bool_from_range(processor.matrix[i]->getValue()));
-            ++i;
-        }
-    }
-    processor.sockets->load();
+    processor.loadMatrix();
     processor.sockets->repaint();
 }
 
@@ -618,7 +606,6 @@ void Editor::switchEnvelope(uint8_t e)
 Editor::~Editor()
 {
     stopTimer();
-    std::cout<<"-- Editor deconstructed\n";
 }
 
 void Editor::timerCallback()  
@@ -637,9 +624,6 @@ void Editor::timerCallback()
 ******************************************************************************************************************************/
 void Editor::resized()
 {
-    std::cout<<"-- Resizing Editor...\n";
-
-    processor.suspendProcessing(true);
 
 	bg.setBounds(0, 0, core::constraints::W, core::constraints::H);
     bg.setVisible(true);
@@ -711,5 +695,4 @@ void Editor::resized()
     );
     loadMatrix();
 
-    std::cout<<"-- Editor resized\n";
 }

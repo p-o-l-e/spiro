@@ -25,6 +25,7 @@
 #include "core/grid.hpp"
 #include "core/uid.hpp"
 #include "iospecs.hpp"
+#include "utility.hpp"
 #include "wavering.hpp"
 #include <cstdint>
 
@@ -37,8 +38,7 @@ Processor::Processor(): AudioProcessor
                         spiro(new core::Grid(core::settings::create_sector_map())),
                         tree(*this, nullptr, juce::Identifier ("default"), createParameterLayout())
 {
-    suspendProcessing(true);
-    std::cout<<"Processor::Processor()\n"; 
+    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(14);
     parameters = new juce::RangedAudioParameter*[spiro.grid->count(core::Control::parameter)];    
     matrix = new juce::AudioProcessorParameter*[spiro.grid->count(core::Control::input) * spiro.grid->count(core::Control::output)];
     sockets = std::make_unique<Sockets>(core::constraints::pbay, *spiro.grid);
@@ -58,6 +58,8 @@ Processor::Processor(): AudioProcessor
     };
 
     spiro.bay = sockets->bay;
+
+    scanPresetDir();
 }
 
 Processor::~Processor()
@@ -73,9 +75,7 @@ Processor::~Processor()
 ******************************************************************************************************************************/
 juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLayout()
 {
-    std::cout<<"-- Processor: createParameterLayout()\n";
 
-    suspendProcessing(true);
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
     for(int i = 0; i < spiro.grid->count(core::Control::slider); ++i)
@@ -146,9 +146,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout Processor::createParameterLa
 *  Preset routines
 * 
 **************************************************************************************************************************/
-int Processor::getNumPrograms() 
+int Processor::getNumPrograms()
 {
-    return presets.size();
+    if(presets.empty()) scanPresetDir();
+    return (int)presets.size();
 }
 
 int Processor::getCurrentProgram()
@@ -156,24 +157,37 @@ int Processor::getCurrentProgram()
     return currentPresetPosition;
 }
 
-void Processor::setCurrentProgram(int index) 
+void Processor::setCurrentProgram(int index)
 {
-    currentPresetPosition = index; /// Warning
+    if(presets.empty()) scanPresetDir();
+    if(index < 0 || index >= (int)presets.size()) return;
+    currentPresetPosition = index;
+    loadPreset(presets[index].first);
 }
 
-const juce::String Processor::getProgramName(int index) 
+const juce::String Processor::getProgramName(int index)
 {
-    if(index < (int)presets.size())
+    if(presets.empty()) scanPresetDir();
+    if(index >= 0 && index < (int)presets.size())
     {
         return presets[index].first;
     }
     return juce::String {};
 }
 
-void Processor::changeProgramName(int index, const juce::String& newName) 
+void Processor::changeProgramName(int index, const juce::String& newName)
 {
-    currentPresetPosition = index; // Warning
-    currentPresetName = newName; //// Warning 
+    if(presets.empty()) scanPresetDir();
+    if(index < 0 || index >= (int)presets.size() || newName.isEmpty()) return;
+
+    juce::File oldFile = presets[index].second;
+    if(oldFile.existsAsFile())
+        oldFile.moveFileTo(oldFile.getParentDirectory().getChildFile(newName));
+
+    presets[index].first = newName;
+    currentPresetPosition = index;
+    currentPresetName = newName;
+    scanPresetDir();
 }
 
 juce::Result Processor::getPresetsFolder()
@@ -181,7 +195,6 @@ juce::Result Processor::getPresetsFolder()
     preset_directory = juce::File::getSpecialLocation(juce::File::SpecialLocationType::userDocumentsDirectory);
     preset_directory = preset_directory.getChildFile("Spiro").getChildFile("Presets");
     juce::Result res = preset_directory.createDirectory();
-    std::cout<<"Processor::getPresetsFolder()\n";
     return res;
 }
 
@@ -192,7 +205,6 @@ juce::Result Processor::getPresetsFolder()
 **************************************************************************************************************************/
 bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNameExists)
 {
-    suspendProcessing(true);
     getPresetsFolder();
 
     currentPresetName = presetName;
@@ -200,9 +212,9 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
     getStateInformation(newPresetFileContent);
 
     auto presetFile = preset_directory.getChildFile(presetName);
-    if(skipIfPresetWithThisNameExists)
+    if(skipIfPresetWithThisNameExists && presetFile.existsAsFile())
     {
-        return false; /// --------> CHECK
+        return false;
     }
 
 
@@ -213,15 +225,13 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
     jassert(file.wasOk());
     if(file.failed())
     {
-        suspendProcessing(false);
         return false;
     }
     file = tempFile.create();
 
     jassert(file.wasOk());
-    if(file.failed()) 
+    if(file.failed())
     {
-        suspendProcessing(false);
         return false;
     }
 
@@ -231,15 +241,14 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
         stream->truncate();
         stream->write(newPresetFileContent.getData(), newPresetFileContent.getSize());
     }
-    else 
+    else
     {
-        suspendProcessing(false);
         return false;
     }
     tempFile.moveFileTo(presetFile);
     tempFile.deleteFile();
 
-    suspendProcessing(false);
+    scanPresetDir();
     return true;
 }
 
@@ -251,7 +260,6 @@ bool Processor::savePreset(juce::String presetName, bool skipIfPresetWithThisNam
 **************************************************************************************************************************/
 bool Processor::loadPreset(juce::String presetName)
 {
-    suspendProcessing(true);
     scanPresetDir();
     auto presetFile = findPresetFile(presetName);
     if (presetFile.getFullPathName().isNotEmpty() && presetFile.existsAsFile())
@@ -259,10 +267,8 @@ bool Processor::loadPreset(juce::String presetName)
         currentPresetName = presetName;
         juce::MemoryMappedFile file(presetFile, juce::MemoryMappedFile::readOnly);
         setStateInformation(file.getData(), int(file.getSize()));
-        suspendProcessing(false);
         return true;
     }
-    suspendProcessing(false);
     return false;
 }
 
@@ -296,7 +302,6 @@ juce::StringArray Processor::getPresetList()
     juce::StringArray presetList;
     presetList.ensureStorageAllocated(int(presets.size()));
     for(auto& preset: presets) presetList.add(preset.first);
-    std::cout<<"Processor::getPresetList()\n";
     return presetList;
 }
 
@@ -322,10 +327,11 @@ void Processor::scanPresetDir()
 **************************************************************************************************************************/
 void Processor::getStateInformation(juce::MemoryBlock& destData)
 {
+    saveMatrix();
     listeners.call([this](Listener &L) { L.saveCall(); });
     auto state = tree.copyState();
     state.setProperty(presetNameID, currentPresetName, nullptr);
-    std::unique_ptr<juce::XmlElement> xml(state.createXml());   
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
     copyXmlToBinary(*xml, destData);
 }
 
@@ -344,6 +350,21 @@ void Processor::setStateInformation(const void* data, int sizeInBytes)
         {
             tree.replaceState(juce::ValueTree::fromXml(*xmlState));
             juce::String presetNameLoaded = tree.state.getProperty (presetNameID, "");
+            if(presetNameLoaded.isNotEmpty())
+            {
+                currentPresetName = presetNameLoaded;
+                for(size_t i = 0; i < presets.size(); ++i)
+                {
+                    if(presets[i].first == presetNameLoaded)
+                    {
+                        currentPresetPosition = (int)i;
+                        break;
+                    }
+                }
+            }
+            // Apply the restored state to the DSP core (works headless, without an editor)
+            reloadParameters();
+            loadMatrix();
         }
     }
     listeners.call([this](Listener &L) { L.loadCall(); });
@@ -351,12 +372,64 @@ void Processor::setStateInformation(const void* data, int sizeInBytes)
 
 void Processor::reset()
 {
+    const juce::ScopedLock sl(getCallbackLock());
+    spiro.reset();
+    reloadParameters();
+    applyMatrix();
+}
 
+void Processor::saveMatrix()
+{
+    if(spiro.bay == nullptr) return;
+    int i = 0;
+    for(int x = 0; x < spiro.grid->count(core::Control::input); ++x)
+    {
+        for(int y = 0; y < spiro.grid->count(core::Control::output); ++y)
+        {
+            matrix[i] = tree.getParameter("mm" + juce::String(i));
+            if(matrix[i] != nullptr)
+            {
+                const float v = spiro.bay->matrix.get(x, y) ? 1.0f : 0.0f;
+                if(!juce::approximatelyEqual(matrix[i]->getValue(), v))
+                    matrix[i]->setValueNotifyingHost(v);
+            }
+            ++i;
+        }
+    }
+}
+
+void Processor::applyMatrix()
+{
+    // Re-wire the patchbay from its current matrix (live cords), without
+    // re-reading the mm parameters. Used when the host re-prepares us
+    // (prepareToPlay/reset), so live connections survive.
+    const juce::ScopedLock sl(getCallbackLock());
+    if(spiro.bay == nullptr || sockets == nullptr) return;
+    sockets->load();
+}
+
+void Processor::loadMatrix()
+{
+    // mm parameters -> patchbay matrix -> wire. Used on state/preset recall.
+    const juce::ScopedLock sl(getCallbackLock());
+    if(spiro.bay == nullptr) return;
+    int i = 0;
+    for(int x = 0; x < spiro.grid->count(core::Control::input); ++x)
+    {
+        for(int y = 0; y < spiro.grid->count(core::Control::output); ++y)
+        {
+            matrix[i] = tree.getParameter("mm" + juce::String(i));
+            const bool on = matrix[i] != nullptr && core::bool_from_range(matrix[i]->getValue());
+            spiro.bay->matrix.set(x, y, on);
+            ++i;
+        }
+    }
+    applyMatrix();
 }
 
 void Processor::reloadParameters()
 {
-    suspendProcessing(true);
+    const juce::ScopedLock sl(getCallbackLock());
     for(size_t i = 0; i < spiro.grid->count(core::Control::slider); ++i)
     {
         auto uid = spiro.grid->getUID(i, core::Control::slider);
@@ -391,52 +464,36 @@ void Processor::reloadParameters()
     {
         matrix[i] = tree.getParameter("mm" + juce::String(i));
     }
-
-    suspendProcessing(false);
 }
 
 /***************************************************************************************************************************
 * 
-*  Prepare to play 
+*  Prepare to play
 * 
 **************************************************************************************************************************/
 void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-    std::cout<<"-- Processor: prepareToPlay()\n";
 
     core::settings::buffer_size = samplesPerBlock;
-    core::settings::sample_rate = sampleRate;
-    std::cout<<"Samples per block : "<<samplesPerBlock<<"\n";
-    std::cout<<"Sample rate       : "<<sampleRate<<"\n";
-    buffer = std::make_shared<core::wavering<core::Point2D<float>>>(14);
+    core::settings::sample_rate = (unsigned)sampleRate;
+    if(!buffer) buffer = std::make_shared<core::wavering<core::Point2D<float>>>(14);
+    {
+        const juce::ScopedLock sl(getCallbackLock());
+        spiro.reset();          // Rebuild sample-rate dependent module state (delay lines, smoothing, etc.)
+        reloadParameters();
+        applyMatrix();          // Re-wire live patchbay cords (mm params may be stale mid-session)
+    }
     if(getActiveEditor())
     {
         listeners.call([this](Listener &L) { L.resetCall(); });
     }
-    reloadParameters();
     suspendProcessing(false);
 }
 
 void Processor::releaseResources()
 {
-    suspendProcessing(true);
-}
-
-/******************************************************************************************************************************
-* 
-*  MIDI
-* 
-******************************************************************************************************************************/
-void Processor::handleMIDI(juce::MidiBuffer& midiMessages)
-{
-    for(const auto metadata : midiMessages) 
-    {
-        uint8_t status  = metadata.data[0];
-        uint8_t msb = (metadata.numBytes >= 2) ? metadata.data[1] : 0;
-        uint8_t lsb = (metadata.numBytes == 3) ? metadata.data[2] : 0;
-        spiro.midiMessage(status, msb, lsb);
-    }
-    midiMessages.clear();
+    // Do not suspend here: hosts may keep calling processBlock after releaseResources,
+    // and the wrapper outputs silence while the processor is suspended.
 }
 
 /******************************************************************************************************************************
@@ -446,32 +503,54 @@ void Processor::handleMIDI(juce::MidiBuffer& midiMessages)
 ******************************************************************************************************************************/
 void Processor::processBlock(juce::AudioBuffer<float>& data, juce::MidiBuffer& midiMessages)
 {
-	handleMIDI(midiMessages);
-	data.clear();
-	int samples = data.getNumSamples();
-	float* DataL = data.getWritePointer(0);
-	float* DataR = data.getWritePointer(1);
+    const juce::ScopedNoDenormals noDenormals;
 
-	for(int i = 0; i < samples; i++)
-	{
-	    spiro.process();
-	    auto L = spiro.out[core::Spiro::stereo::l].load();
-	    auto R = spiro.out[core::Spiro::stereo::r].load();
-		DataL[i] = L * 0.2f;
-		DataR[i] = R * 0.2f;
-		buffer->set(core::Point2D<float>{ L , R });
-	}
+    data.clear();
 
-    buffer->sync((unsigned long)samples, core::Mode::W);
+    if(!isSuspended())
+    {
+        const int samples = data.getNumSamples();
+        float* DataL = data.getWritePointer(0);
+        float* DataR = data.getNumChannels() > 1 ? data.getWritePointer(1) : DataL;
+
+        auto render = [&](int from, int to)
+        {
+            for(int i = from; i < to; ++i)
+            {
+                spiro.process();
+                const float L = spiro.out[core::Spiro::stereo::l].load() * 0.2f;
+                const float R = spiro.out[core::Spiro::stereo::r].load() * 0.2f;
+                DataL[i] = L;
+                DataR[i] = R;
+                if(buffer) buffer->set(core::Point2D<float>{ L, R });
+            }
+        };
+
+        // Apply MIDI events at their sample positions, not at the start of the block
+        int pos = 0;
+        for(const auto& metadata : midiMessages)
+        {
+            const int eventPos = juce::jlimit(0, samples, metadata.samplePosition);
+            render(pos, eventPos);
+            pos = eventPos;
+            const uint8_t status = metadata.data[0];
+            const uint8_t msb    = metadata.numBytes >= 2 ? metadata.data[1] : 0;
+            const uint8_t lsb    = metadata.numBytes == 3 ? metadata.data[2] : 0;
+            spiro.midiMessage(status, msb, lsb);
+        }
+        render(pos, samples);
+
+        if(buffer) buffer->sync((unsigned long)samples, core::Mode::W);
+    }
+
+    midiMessages.clear();
     triggerAsyncUpdate();
 }
 
 
 juce::AudioProcessorEditor* Processor::createEditor()
 {
-    std::cout<<"-- Processor: createEditor()\n";
 
-    suspendProcessing(true);
     return new Editor(*this, tree);
 }
 

@@ -46,13 +46,16 @@ juce_add_plugin("${PROJECT_NAME}"
     PLUGIN_CODE SPRO
     FORMATS "${FORMATS}"
 
+    NEEDS_MIDI_INPUT TRUE
+    IS_SYNTH TRUE
+
     PRODUCT_NAME "${PRODUCT_NAME}")
 
 add_library(SharedCode INTERFACE)
 
 clap_juce_extensions_plugin(TARGET "${PROJECT_NAME}"
     CLAP_ID "${BUNDLE_ID}"
-    CLAP_FEATURES audio-effect)
+    CLAP_FEATURES instrument)
 
 # Enable fast math, C++20 and a few other target defaults
 include(SharedCodeDefaults)

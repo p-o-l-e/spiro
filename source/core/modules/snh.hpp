@@ -35,7 +35,7 @@ namespace core
         public:
             int id;
             void process() noexcept override;
-            void reset();
+            void reset() override;
             SNH();
            ~SNH() override = default;
     };

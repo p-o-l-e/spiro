@@ -26,13 +26,11 @@
 
 Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
 {
-    std::cout  <<"-- Initializing sockets...\n";
     auto inputs = o.count(core::Control::input);
     auto outputs = o.count(core::Control::output);
 
     bay = new core::Patchbay(bounds.w, bounds.h, inputs, outputs);
 
-    std::cout  <<"---- Inputs...\n";
     for(size_t i = 0; i < inputs; ++i)
     {   
         auto hash = o.getHash(i, core::Control::input);
@@ -44,7 +42,6 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
         };
         bay->set_socket(&offset, SR, hash, SOCKET_IN, i);
     }
-    std::cout  <<"---- Outputs...\n";
     for(size_t i = 0; i < outputs; ++i)
     {
         auto hash = o.getHash(i, core::Control::output);
@@ -57,7 +54,6 @@ Sockets::Sockets(const core::Rectangle<int>& bounds, const core::Grid& o)
         bay->set_socket(&offset, SR, hash, SOCKET_OUT, i);
     }
     bay->draw();
-    std::cout  <<"-- Sockets initialized!\n";
 };
 
 Sockets::~Sockets()
@@ -130,6 +126,7 @@ core::Socket* Sockets::fromModMatrix(int position, bool route)
 
 void Sockets::load()
 {
+    bay->disconnect_all();
     bay->clear();
     for(int x = 0; x < bay->inputs; ++x)
     {

@@ -71,6 +71,8 @@ class Processor: public juce::AudioProcessor, private juce::AsyncUpdater
         void presetFilesAvailableChanged();
         juce::Result getPresetsFolder();
         void saveMatrix();
+        void loadMatrix();
+        void applyMatrix();
         bool savePreset(juce::String, bool);
         bool loadPreset(juce::String);
         void reset() override;
@@ -78,7 +80,6 @@ class Processor: public juce::AudioProcessor, private juce::AsyncUpdater
 
         const juce::String getName() const override { return JucePlugin_Name; }
         const juce::String getProgramName (int index) override;
-        void handleMIDI(juce::MidiBuffer& midiMessages);
 
         juce::AudioDeviceManager deviceManager;
         std::unique_ptr<Sockets> sockets;
