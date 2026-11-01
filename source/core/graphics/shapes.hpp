@@ -78,7 +78,7 @@ constexpr void drawGlyph(core::Canvas<uint8_t>* canvas, const uint8_t* font, uns
     }
 }
 
-const inline void drawTextLabel(core::Canvas<uint8_t>* canvas, const uint8_t* font, const char* text, size_t xo, size_t yo, uint8_t opacity, size_t w = 7)
+inline void drawTextLabel(core::Canvas<uint8_t>* canvas, const uint8_t* font, const char* text, size_t xo, size_t yo, uint8_t opacity, size_t w = 7)
 {
     size_t n = (size_t)strlen(text);
     for(size_t i = 0; i < n; ++i)
@@ -100,7 +100,7 @@ inline void alphablend(core::Canvas<float>* canvas, size_t x, size_t y, float al
     canvas->set(x, y, canvas->get(x, y) * (1.0f - alpha) + alpha);
 }
 
-const inline void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
+inline void lineSDFAABB(core::Canvas<float>* canvas, float ax, float ay, float bx, float by, float radius, float alpha) 
 {
     float xo = (float)floor(std::min(ax, bx) - radius);
     float xe = (float) ceil(std::max(ax, bx) + radius);

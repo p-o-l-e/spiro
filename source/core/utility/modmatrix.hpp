@@ -26,7 +26,6 @@
 #include "constants.hpp"
 #include <cstdint>
 #include <functional>
-#include <atomic>
 #include <utility>
 
 #define SOCKET_IN       1
@@ -75,10 +74,10 @@ namespace core {
         bool on = false;                                    // Is connected ?
         Socket* to = nullptr;
 
-        std::atomic<float>* data  = &zero;                  // Output
-        std::atomic<float>** com  = &data;                  // Pointer to module input pointer
+        float* data  = &zero;                                // Output
+        float** com  = &data;                                // Pointer to module input pointer
         constexpr void collapse();                          // Collapse to centre
-        constexpr void drag(const float&, const float&);
+        constexpr void drag(float, float);
         Socket(int n = 32);
        ~Socket();
     };
@@ -96,7 +95,7 @@ namespace core {
             int counter = 0;
 
         public:
-            int get_index(const uint32_t&) const;
+            [[nodiscard]] int get_index(uint32_t) const;
             void  connect(Socket*, Socket*);
             void  disconnect(Socket*, Socket*);
             std::function<void(uint32_t)> on_connect;
@@ -110,12 +109,12 @@ namespace core {
             const int inputs;
             const int outputs;
             
-            void set_socket(const Point2D<int>*, const int&, const uint32_t&, const bool&, const int&);
-            void drag(const float&, const float&);
+            void set_socket(const Point2D<int>*, int, uint32_t, bool, int);
+            void drag(float, float);
             void draw();
-            int  down_test(const float&, const float&, const int&);
-            int  up_test(const float&, const float&, const int&);
-            void move_test(const float&, const float&, const int&);
+            [[nodiscard]] int down_test(float, float, int);
+            [[nodiscard]] int up_test(float, float, int);
+            void move_test(float, float, int);
             void deselect();
             void clear();
             void disconnect_all();

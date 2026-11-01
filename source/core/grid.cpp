@@ -30,7 +30,6 @@
 #include <string>
 #include <map>
 #include <utility>
-#include "control.hpp"
 
 namespace core
 {
@@ -74,7 +73,7 @@ namespace core
         }
     }
 
-    int Grid::count(const Control::type& ct, map::flag::type ft) const
+    int Grid::count(Control::type ct, map::flag::type ft) const
     {
         int n = 0;
         for(size_t i = 0; i < sectors; ++i)
@@ -104,7 +103,7 @@ namespace core
         return -1;
     }
 
-    int Grid::getIndex(const uint32_t hash) const
+    int Grid::getIndex(uint32_t hash) const
     {
         auto uid = decode_uid(hash);
         size_t t = control(uid)->is;
@@ -171,7 +170,7 @@ namespace core
         return r;
     }
 
-    const Sector* Grid::getSector(const map::module::type& mt, const int mp) const
+    const Sector* Grid::getSector(map::module::type mt, int mp) const
     {
         for(size_t i = 0; i < sectors; ++i)
         {
@@ -183,17 +182,17 @@ namespace core
         return nullptr;
     }
 
-    const uid_t Grid::getUID(size_t index, const Control::type& type) const
+    uid_t Grid::getUID(size_t index, Control::type type) const
     {
         return decode_uid(indices[type][index]);
     }
 
-    uint32_t Grid::getHash(size_t index, const Control::type& type) const
+    uint32_t Grid::getHash(size_t index, Control::type type) const
     {
         return indices[type][index];
     }
 
-    const Rectangle<float> Grid::getBounds(const uid_t& uid) const
+    Rectangle<float> Grid::getBounds(const uid_t& uid) const
     {
         Rectangle<float> bounds { 0, 0, 0, 0 };
         for(size_t i = 0; i < sectors; ++i)
@@ -213,7 +212,7 @@ namespace core
         return bounds;
     }
 
-    const std::string Grid::name(const uid_t& uid, const bool snake) const
+    std::string Grid::name(const uid_t& uid, bool snake) const
     {
         return snake ? idMap->find(encode_uid(uid))->second.first : idMap->find(encode_uid(uid))->second.second;
     }

@@ -28,7 +28,6 @@
 #include "env.hpp"
 #include "uid.hpp"
 #include <cstdint>
-#include <iostream>
 #include <sys/types.h>
 
 EnvelopeDisplay::EnvelopeDisplay(Processor* p, uint8_t ID): processor(p), id(ID)

@@ -23,7 +23,6 @@
 #include "Display.h"
 #include "core/modules/interface/descriptor.hxx"
 #include <cstdint>
-#include <iostream>
 #include <memory>
 
 Editor::Editor(Processor& o, juce::AudioProcessorValueTreeState& tree): AudioProcessorEditor(&o), processor(o), valueTreeState(tree)

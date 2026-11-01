@@ -30,7 +30,6 @@
 #include "modules/interface/cro_interface.hpp"
 #include "modules/interface/descriptor.hxx"
 #include "uid.hpp"
-#include "control.hpp"
 #include "../assets/svg/svg_modules.hpp"
 
     
@@ -80,18 +79,18 @@ namespace core
             void  calculateUIDs();
             
         public:
-            size_t count(const Control::type& t) const { return elements[t]; }
-            uint8_t getRelative(const size_t i) const { return relative[i]; }
-            int count(const Control::type&, map::flag::type) const;
-            size_t count(const map::module::type& t) const { return modules[t]; }
-            const Rectangle<float> getBounds(const uid_t&) const;
-            const std::string name(const uid_t&, const bool) const;
-            const Control* control(const uid_t&) const;
-            int getIndex(const uint32_t) const;
-            int getIndex(const uid_t&) const;
-            const Sector* getSector(const map::module::type&, const int) const;
-            const uid_t getUID(size_t, const Control::type&) const;
-            uint32_t getHash(size_t, const Control::type&) const;
+            [[nodiscard]] size_t count(Control::type t) const noexcept { return elements[t]; }
+            [[nodiscard]] uint8_t getRelative(size_t i) const noexcept { return relative[i]; }
+            [[nodiscard]] int count(Control::type, map::flag::type) const;
+            [[nodiscard]] size_t count(map::module::type t) const noexcept { return modules[t]; }
+            [[nodiscard]] Rectangle<float> getBounds(const uid_t&) const;
+            [[nodiscard]] std::string name(const uid_t&, bool) const;
+            [[nodiscard]] const Control* control(const uid_t&) const;
+            [[nodiscard]] int getIndex(uint32_t) const;
+            [[nodiscard]] int getIndex(const uid_t&) const;
+            [[nodiscard]] const Sector* getSector(map::module::type, int) const;
+            [[nodiscard]] uid_t getUID(size_t, Control::type) const;
+            [[nodiscard]] uint32_t getHash(size_t, Control::type) const;
             Grid(const Sector*, size_t);
             Grid(const std::pair<const Sector*, std::size_t>&);
            ~Grid() = default;

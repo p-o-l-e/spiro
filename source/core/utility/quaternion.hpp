@@ -44,16 +44,16 @@ class Quaternion
             return Quaternion(q1.w - q2.w, q1.x - q2.x, q1.y - q2.y, q1.z - q2.z);
         }
 
-        constexpr float dot(const Quaternion &q) const;
-        const float norm() const;
-        constexpr float norm_sq() const;
+        [[nodiscard]] constexpr float dot(const Quaternion& q) const noexcept;
+        [[nodiscard]] float norm() const;
+        [[nodiscard]] constexpr float norm_sq() const noexcept;
         const Quaternion &normalize();
 
-        constexpr Quaternion conjugate() const;
+        [[nodiscard]] constexpr Quaternion conjugate() const noexcept;
         constexpr void rotate_vector(float &vx, float &vy, float &vz);
 
-        const void from_euler(const float&, const float&, const float&);
-        const void from_axis_angle(const float&, const float&, const float&, const float&);
+        void from_euler(float, float, float);
+        void from_axis_angle(float, float, float, float);
 };
 
 // Assigns a quaternion to the current quaternion

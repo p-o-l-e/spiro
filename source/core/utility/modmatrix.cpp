@@ -70,7 +70,7 @@ constexpr void Socket::collapse()
 }
 
 
-constexpr void Socket::drag(const float& x, const float& y)
+constexpr void Socket::drag(float x, float y)
 {          
     cord.focused = true;
     auto xe = x, ye = y;
@@ -220,7 +220,7 @@ void Patchbay::draw()
     }
 }
 
-int Patchbay::down_test(const float& x, const float& y, const int& mb)
+int Patchbay::down_test(float x, float y, int mb)
 {
     if(mb == core::settings::mb::lmb)
     {
@@ -288,7 +288,7 @@ int Patchbay::down_test(const float& x, const float& y, const int& mb)
 }
 
 
-int Patchbay::up_test(const float& x, const float& y, const int& mb)
+int Patchbay::up_test(float x, float y, int mb)
 {
     if(mb == -1)[[unlikely]] return 0;
 
@@ -369,7 +369,7 @@ void Patchbay::deselect()
     for(int i = 0; i < nodes; i++) io[i].cord.focused = false;
 }
 
-void Patchbay::move_test(const float& x, const float& y, const int& mb)
+void Patchbay::move_test(float x, float y, int mb)
 {
     if(mb == -1)[[unlikely]] return;
 
@@ -386,7 +386,7 @@ void Patchbay::move_test(const float& x, const float& y, const int& mb)
     else deselect();
 }
 
-void Patchbay::drag(const float& x, const float& y)
+void Patchbay::drag(float x, float y)
 {
     if(src != nullptr)
     {
@@ -415,7 +415,7 @@ Patchbay::~Patchbay()
     delete[] io;
 }
 
-void Patchbay::set_socket(const Point2D<int>* o, const int& radius, const uint32_t& id, const bool& route, const int& p)
+void Patchbay::set_socket(const Point2D<int>* o, int radius, uint32_t id, bool route, int p)
 {
     io[counter].bounds.x = o->x;
     io[counter].bounds.y = o->y;
@@ -428,7 +428,7 @@ void Patchbay::set_socket(const Point2D<int>* o, const int& radius, const uint32
     ++counter;
 }
 
-int Patchbay::get_index(const uint32_t& id) const
+int Patchbay::get_index(uint32_t id) const
 {
     for(int i = 0; i < nodes; ++i)
     {

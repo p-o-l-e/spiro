@@ -25,9 +25,7 @@
 #include <set>
 #include <cstdlib>
 #include <cmath>
-#include <iostream>
 #include <functional>
-#include <atomic>
 #include <memory>
 #include "node.hpp"
 #include "env_interface.hpp"

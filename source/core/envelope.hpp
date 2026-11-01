@@ -26,17 +26,17 @@ class Envelope
         float curve[env::Segments];
         unsigned departed;
         int stage = 0;
-        void start();          
-        void next_stage();
-        void reset();
-        float iterate();
+        void start() noexcept; 
+        void next_stage() noexcept;
+        void reset() noexcept;
+        [[nodiscard]] float iterate() noexcept;
         bool regenerate = false;
-        void generate(float*, const int);
+        void generate(float*, int) noexcept;
         Envelope();
        ~Envelope() = default;
 };
 
-inline void Envelope::start()
+inline void Envelope::start() noexcept
 {
     stage = 1;
     departed = 0;
@@ -50,7 +50,7 @@ inline void Envelope::start()
     delta = time[stage] - time[stage - 1];
 }
 
-inline void Envelope::reset()
+inline void Envelope::reset() noexcept
 {
     stage    = 0;
     departed = 0;
@@ -62,7 +62,7 @@ inline void Envelope::reset()
     }
 }
 
-inline void Envelope::next_stage()
+inline void Envelope::next_stage() noexcept
 {
     stage++;
     departed = 0;
@@ -74,7 +74,7 @@ inline void Envelope::next_stage()
     }
 }
 
-inline float Envelope::iterate()
+inline float Envelope::iterate() noexcept
 {
     if(stage > 0)
     {
@@ -86,7 +86,7 @@ inline float Envelope::iterate()
     return 0.0f;
 }
 
-inline void Envelope::generate(float* data, const int width)
+inline void Envelope::generate(float* data, int width) noexcept
 {
     reset();
     start();

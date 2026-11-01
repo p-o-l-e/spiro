@@ -23,7 +23,6 @@
 #include "env.hpp"
 #include "interface/env_interface.hpp"
 #include "vco.hpp"
-#include <iostream>
 namespace core {
 using namespace env; 
 
@@ -106,9 +105,9 @@ void ENV::iterate(int v) noexcept
                     )
                 );
                 departed[v]++;
-                if (departed[v] >= delta[v]) next_stage(v);
+                if (departed[v] >= delta[v]) [[unlikely]] next_stage(v);
             }
-            ocv[env::cvo::a].store(pin[v]);
+            ocv[env::cvo::a] = pin[v];
         }
     }
 }
@@ -123,7 +122,7 @@ void ENV::process() noexcept
         }
         else
         {
-            ocv[env::cvo::a].store(0.0f);
+            ocv[env::cvo::a] = 0.0f;
         }
     }
 }
@@ -146,7 +145,7 @@ void ENV::reset()
             node[i][v].F = 0.0f;
         }
     }
-    for(unsigned i = 0; i < env::oc; ++i) ocv[i].store(0.0f);
+    for(unsigned i = 0; i < env::oc; ++i) ocv[i] = 0.0f;
 }
 
 core::ENV::ENV(): Module(idc, &env::descriptor[0]), id(idc++)

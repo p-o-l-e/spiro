@@ -24,7 +24,6 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 
 
 namespace core
@@ -32,8 +31,8 @@ namespace core
     void Spiro::process() noexcept
     {
         for(const auto o: whitelist) rack.process(o);
-        out[stereo::l].store(mixer->ocv[stereo::l].load());
-        out[stereo::r].store(mixer->ocv[stereo::r].load());
+        out[stereo::l].store(mixer->ocv[stereo::l]);
+        out[stereo::r].store(mixer->ocv[stereo::r]);
     }
 
     void Spiro::reset()
@@ -158,13 +157,13 @@ namespace core
                 break;            
             
             case MidiMessage::PITCH_BEND:
-                com->ocv[com::cvo::p_wheel].store(float((lsb | (msb << 7)) - 8192.0f) / 8192.0f);
+                com->ocv[com::cvo::p_wheel] = float((lsb | (msb << 7)) - 8192.0f) / 8192.0f;
                 break;
 
             case MidiMessage::CONTROL_CHANGE:
                 if(msb == 1)  // Mod Wheel (CC #1)
                 {
-                    com->ocv[com::cvo::m_wheel].store(lsb / 127.0f * 2.0f - 1.0f);
+                    com->ocv[com::cvo::m_wheel] = lsb / 127.0f * 2.0f - 1.0f;
                 }
                 break;
 

@@ -67,7 +67,7 @@ namespace core {
             return tmp;
         }
 
-        constexpr Point2D operator/(Point2D& rhs) const noexcept
+        constexpr Point2D operator/(const Point2D& rhs) const noexcept
         {
             Point2D tmp = *this;
             tmp.x /= rhs.x;

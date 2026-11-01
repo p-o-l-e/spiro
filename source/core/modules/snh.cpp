@@ -36,12 +36,12 @@ void SNH::process() noexcept
     const float epsilon = 1.0f / settings::sample_rate;
     const float t_scale = scale * (float(settings::sample_rate) / 1000.0f);
     const float base = std::powf(ccv[ctl::time]->load(), 2);
-    const float factor = icv[cvi::time] != &zero ? base * fabsf(icv[cvi::time]->load()) : base;
+    const float factor = icv[cvi::time] != &zero ? base * fabsf((*icv[cvi::time])) : base;
 
     if (t > t_scale + epsilon)
     {
         t = 0.0f;
-        ocv[cvo::a].store(icv[cvi::a]->load() + icv[cvi::b]->load());
+        ocv[cvo::a] = (*icv[cvi::a]) + (*icv[cvi::b]);
     }
 
     t += factor;

@@ -34,15 +34,15 @@ namespace core
     {
         Point3D<float> a 
         { 
-            icv[cvi::l]->load(), 
-            icv[cvi::c]->load(), 
-            icv[cvi::r]->load() 
+            (*icv[cvi::l]), 
+            (*icv[cvi::c]), 
+            (*icv[cvi::r]) 
         };
-        float lc = ccv[ctl::alpha]->load() + icv[cvi::alpha]->load();
-        float cr = ccv[ctl::theta]->load() + icv[cvi::theta]->load();
+        float lc = ccv[ctl::alpha]->load() + (*icv[cvi::alpha]);
+        float cr = ccv[ctl::theta]->load() + (*icv[cvi::theta]);
         Point2D<float> lr = c3c2(a, lc, cr);
-        ocv[cvo::l].store(lr.x * ccv[ctl::amp]->load());
-        ocv[cvo::r].store(lr.y * ccv[ctl::amp]->load());
+        ocv[cvo::l] = lr.x * ccv[ctl::amp]->load();
+        ocv[cvo::r] = lr.y * ccv[ctl::amp]->load();
     }
 
     MIX::MIX(): Module(idc, &mix::descriptor), id(idc++)

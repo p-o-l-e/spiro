@@ -32,27 +32,27 @@ namespace core
     {
         Point3D<float> a 
         { 
-            icv[cvi::ax]->load() + 
-            icv[cvi::bx]->load(),
-            icv[cvi::ay]->load() +
-            icv[cvi::by]->load(),
-            icv[cvi::az]->load() +
-            icv[cvi::bz]->load() 
+            (*icv[cvi::ax]) + 
+            (*icv[cvi::bx]),
+            (*icv[cvi::ay]) +
+            (*icv[cvi::by]),
+            (*icv[cvi::az]) +
+            (*icv[cvi::bz]) 
         };
 
-        float x = ccv[ctl::x]->load() + pi * icv[cvi::cvx]->load();
-        float y = ccv[ctl::y]->load() + pi * icv[cvi::cvy]->load();
-        float z = ccv[ctl::z]->load() + pi * icv[cvi::cvz]->load();
+        float x = ccv[ctl::x]->load() + pi * (*icv[cvi::cvx]);
+        float y = ccv[ctl::y]->load() + pi * (*icv[cvi::cvy]);
+        float z = ccv[ctl::z]->load() + pi * (*icv[cvi::cvz]);
 
         q.from_euler(x, y, z);
         q.rotate_vector(a.x, a.y, a.z);
 
-        ocv[cvo::ax].store(a.x);
-        ocv[cvo::ay].store(a.y);
-        ocv[cvo::az].store(a.z);
-        ocv[cvo::bx].store(a.x);
-        ocv[cvo::by].store(a.y);
-        ocv[cvo::bz].store(a.z);
+        ocv[cvo::ax] = a.x;
+        ocv[cvo::ay] = a.y;
+        ocv[cvo::az] = a.z;
+        ocv[cvo::bx] = a.x;
+        ocv[cvo::by] = a.y;
+        ocv[cvo::bz] = a.z;
 
     }
 

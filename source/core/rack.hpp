@@ -16,13 +16,13 @@ namespace core
             void calculateModuleMap();
             void calculateIndexMap();
             Module<float>** node;
-            Module<float>* create_node(const map::module::type&);
+            Module<float>* create_node(map::module::type);
 
         public:
-            Module<float>* at(const map::module::type&, const uint8_t&) const noexcept;
-            Module<float>* at(const int&) const noexcept;
-            int index(uint8_t, uint8_t) const noexcept;
-            void process(const int&) noexcept;
+            [[nodiscard]] Module<float>* at(map::module::type, uint8_t) const noexcept;
+            [[nodiscard]] Module<float>* at(int) const noexcept;
+            [[nodiscard]] int index(uint8_t, uint8_t) const noexcept;
+            void process(int) noexcept;
             Rack(const Grid*);
            ~Rack();
     };

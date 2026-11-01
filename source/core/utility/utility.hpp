@@ -42,7 +42,7 @@ struct OnePole
         float z;
 
     public:
-        void reset(const float ms)
+        void reset(float ms) noexcept
         {
             a = expf(- tao / (ms * 0.001f * (float)settings::sample_rate));
             b = 1.0f - a;
@@ -80,11 +80,11 @@ struct EnvelopeFollower
     float r;
     float envelope = 0.0f;
 
-    inline void init(const float, const float, const float);
+    void init(float, float, float) noexcept;
     inline void process(const float in) noexcept;
 };
 
-inline void EnvelopeFollower::init(const float aMs, const float rMs, const float sample_rate)
+inline void EnvelopeFollower::init(float aMs, float rMs, float sample_rate) noexcept
 {
     a = powf( 0.01f, 1.0f / ( aMs * (float)sample_rate * 0.001f ) );
     r = powf( 0.01f, 1.0f / ( rMs * (float)sample_rate * 0.001f ) );
@@ -103,7 +103,7 @@ struct Limiter
 {
     EnvelopeFollower e;
     float threshold = 0.01f;
-    inline void  init(float, float, float);
+    void init(float, float, float) noexcept;
     inline float process(float in) noexcept;
     inline Limiter();
 };
@@ -113,7 +113,7 @@ inline Limiter::Limiter()
     init(1.0f, 10.0f, (float)settings::sample_rate);
 }
 
-inline void Limiter::init(float aMs, float rMs, float sample_rate)
+inline void Limiter::init(float aMs, float rMs, float sample_rate) noexcept
 {
     e.init(aMs, rMs, sample_rate);
 }
@@ -131,7 +131,7 @@ inline float Limiter::process(float in) noexcept
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Crossfader: f == 1? a = max; f==0? b = max ////////////////////////////////////////////////////////////////////
-constexpr float xfade(const float a, const float b, const float f) noexcept
+[[nodiscard]] constexpr float xfade(float a, float b, float f) noexcept
 {
     return a * f + b * (1.0f - f);
 }
@@ -139,7 +139,7 @@ constexpr float xfade(const float a, const float b, const float f) noexcept
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 3to2 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-constexpr Point2D<T> c3c2(const Point3D<T>& in, const float a, const float b) noexcept
+[[nodiscard]] constexpr Point2D<T> c3c2(const Point3D<T>& in, float a, float b) noexcept
 {
     auto ac = a > 0.5f ? (1.0f - a) * 2.0f : a * 2.0f;
     auto bc = b > 0.5f ? (1.0f - b) * 2.0f : b * 2.0f;
@@ -148,17 +148,17 @@ constexpr Point2D<T> c3c2(const Point3D<T>& in, const float a, const float b) no
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Departed samples to milliseconds //////////////////////////////////////////////////////////////////////////////
-constexpr unsigned DStoMS(const unsigned samples, const unsigned sample_rate) noexcept
+[[nodiscard]] constexpr unsigned DStoMS(unsigned samples, unsigned sample_rate) noexcept
 {
     return samples * 1000 / sample_rate;
 }
 
-constexpr unsigned MStoDS(const unsigned ms, const unsigned sample_rate) noexcept
+[[nodiscard]] constexpr unsigned MStoDS(unsigned ms, unsigned sample_rate) noexcept
 {
     return ms * sample_rate / 1000;
 }
 
-constexpr bool bool_from_range(const float value, const float min = 0.0f, const float max = 1.0f) noexcept
+[[nodiscard]] constexpr bool bool_from_range(float value, float min = 0.0f, float max = 1.0f) noexcept
 {
     return value > ((max - min) * 0.5f);
 }
@@ -170,17 +170,17 @@ inline int rand_in_range(const int l, const int r) noexcept
 */
 
 template <typename T>
-constexpr T remap(T source, T source_min, T source_max, T target_min, T target_max) noexcept
+[[nodiscard]] constexpr T remap(T source, T source_min, T source_max, T target_min, T target_max) noexcept
 {
     return target_min + ((target_max - target_min) * (source - source_min)) / (source_max - source_min);
 }
 
-constexpr bool sign(const float data) noexcept
+[[nodiscard]] constexpr bool sign(float data) noexcept
 {
     return data > 0.0f ? true : false;
 }
 
-constexpr bool sign(const int data) noexcept
+[[nodiscard]] constexpr bool sign(int data) noexcept
 {
     return data > 0 ? true : false;
 }
@@ -201,7 +201,7 @@ struct DCBlock
         }
 };
 
-inline void resampleLinear(wavering<Point2D<float>>& data, int samplesToRead, Point2D<float>* out, int samplesToWrite)
+inline void resampleLinear(wavering<Point2D<float>>& data, int samplesToRead, Point2D<float>* out, int samplesToWrite) noexcept
 {
     for (int i = 0; i < samplesToWrite; ++i)
     {

@@ -27,6 +27,7 @@
 #include "iospecs.hpp"
 #include "juce_events/juce_events.h"
 #include "primitives.hpp"
+#include <atomic>
 #include <cstdint>
 #include <memory>
 
@@ -181,8 +182,8 @@ class Display: public juce::Component, private juce::OpenGLRenderer, public juce
 		const size_t rows_max = 12;
 		size_t files = 0;
 
-		std::atomic<float>* scope_type = &core::zero;
-		std::atomic<float>* scope_scale = &core::zero;
+		std::atomic<float>* scope_type = &core::azero;
+		std::atomic<float>* scope_scale = &core::azero;
 		std::atomic<float>  ts { 0.02f };
 		std::atomic<float>* time_scale = &ts;
 

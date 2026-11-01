@@ -22,7 +22,6 @@
 
 #pragma once
 #include <cstdint>
-#include <iostream>
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "Colours.hpp"

@@ -3,7 +3,7 @@
 namespace core
 {
     // Calculates the length/modulus/magnitude or the norm of a quaternion
-    const float Quaternion::norm() const
+    float Quaternion::norm() const
     {
         return sqrtf (w * w + x * x + y * y + z * z);
     }
@@ -20,7 +20,7 @@ namespace core
     }
 
     // Creates a quaternion by a rotation given by Euler angles (multiplication order from right to left)
-    const void Quaternion::from_euler (const float& _x, const float& _y, const float& _z)
+    void Quaternion::from_euler(float _x, float _y, float _z)
     {
         float X = _x * 0.5f;
         float Y = _y * 0.5f;
@@ -43,7 +43,7 @@ namespace core
     }
 
     // Creates quaternion by a rotation given as axis-angle orientation
-    const void Quaternion::from_axis_angle (const float& _x, const float& _y, const float& _z, const float& angle)
+    void Quaternion::from_axis_angle(float _x, float _y, float _z, float angle)
     {
         float halfAngle = angle * 0.5;
 

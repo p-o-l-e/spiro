@@ -31,9 +31,9 @@ namespace core
 
     void SUM::process() noexcept
     {
-        auto sum = (icv[cvi::a]->load() + icv[cvi::b]->load());
-        ocv[cvo::a].store(sum);
-        ocv[cvo::b].store(sum);
+        auto sum = ((*icv[cvi::a]) + (*icv[cvi::b]));
+        ocv[cvo::a] = sum;
+        ocv[cvo::b] = sum;
     };
 
     SUM::SUM(): Module(idc, &sum::descriptor[0]), id(idc++)

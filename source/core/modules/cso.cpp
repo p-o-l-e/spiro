@@ -61,7 +61,7 @@ void CSO::sprott()
 {
     f[4] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 1000.0f / settings::sample_rate + 1.0f / settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[2] = 0.1f + ccv[ctl::warp]->load();
-    else f[2] = 0.1f + ccv[ctl::warp]->load() * icv[cvi::warp]->load();
+    else f[2] = 0.1f + ccv[ctl::warp]->load() * (*icv[cvi::warp]);
 
     f[5] += f[4] * f[6] * f[0];
     f[6] += f[4] * (- f[6] * f[7] - f[5]);
@@ -75,9 +75,9 @@ void CSO::sprott()
     }
     else
     {
-        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 0.4f);
-        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 0.4f);
-        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 0.4f);
+        ocv[cvo::x] = f[5] * ccv[ctl::amp]->load() * 0.4f;
+        ocv[cvo::y] = f[6] * ccv[ctl::amp]->load() * 0.4f;
+        ocv[cvo::z] = f[7] * ccv[ctl::amp]->load() * 0.4f;
     }
 }
 
@@ -96,7 +96,7 @@ void CSO::helmholz()
 {
     f[2] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 1000.0f / settings::sample_rate + 10.0f/settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[1] = ((ccv[ctl::warp]->load() - 0.5f) * 0.03f) + 0.55f;
-    else f[1] = ((ccv[ctl::warp]->load() * fabsf(icv[cvi::warp]->load()) - 0.5f) * 0.03f) + 0.55f;
+    else f[1] = ((ccv[ctl::warp]->load() * fabsf((*icv[cvi::warp])) - 0.5f) * 0.03f) + 0.55f;
 
         f[5] += f[2] * f[6];
         f[6] += f[2] * f[0] * f[7];
@@ -110,9 +110,9 @@ void CSO::helmholz()
     }
     else
     {     
-        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 1.5f);
-        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 1.5f);
-        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 1.5f);
+        ocv[cvo::x] = f[5] * ccv[ctl::amp]->load() * 1.5f;
+        ocv[cvo::y] = f[6] * ccv[ctl::amp]->load() * 1.5f;
+        ocv[cvo::z] = f[7] * ccv[ctl::amp]->load() * 1.5f;
     }
 }
 
@@ -131,7 +131,7 @@ void CSO::halvorsen()
 {
     f[1] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * 200.0f / settings::sample_rate + 10.0f/settings::sample_rate;
     if(icv[cvi::warp] == &zero) f[0] = 1.4f + ccv[ctl::warp]->load();
-    else f[0] = 1.4f + ccv[ctl::warp]->load() * fabsf(icv[cvi::warp]->load());
+    else f[0] = 1.4f + ccv[ctl::warp]->load() * fabsf((*icv[cvi::warp]));
 
     f[5] += f[1] * ( - f[0] * f[5] - 4.0f * f[6] - 4.0f * f[7] - f[6] * f[6]);
     f[6] += f[1] * ( - f[0] * f[6] - 4.0f * f[7] - 4.0f * f[5] - f[7] * f[7]);
@@ -145,9 +145,9 @@ void CSO::halvorsen()
     }
     else
     {
-        ocv[cvo::x].store(f[5] * ccv[ctl::amp]->load() * 0.20f);
-        ocv[cvo::y].store(f[6] * ccv[ctl::amp]->load() * 0.20f);
-        ocv[cvo::z].store(f[7] * ccv[ctl::amp]->load() * 0.20f);
+        ocv[cvo::x] = f[5] * ccv[ctl::amp]->load() * 0.20f;
+        ocv[cvo::y] = f[6] * ccv[ctl::amp]->load() * 0.20f;
+        ocv[cvo::z] = f[7] * ccv[ctl::amp]->load() * 0.20f;
     }
 }
 
@@ -169,7 +169,7 @@ void CSO::tsucs_reset()
 void CSO::tsucs()
 {
     if(icv[cvi::warp] == &zero) f[7] = ccv[ctl::warp]->load() / 8.0f + 0.55f;
-    else f[7] = ccv[ctl::warp]->load() * fabsf(icv[cvi::warp]->load())  / 8.0f + 0.55f;
+    else f[7] = ccv[ctl::warp]->load() * fabsf((*icv[cvi::warp]))  / 8.0f + 0.55f;
     double st = 1.0 / settings::sample_rate;
     f[8] = (ccv[ctl::tune]->load() + ccv[cvi::fm]->load()) * st * 40.0 + st;
 
@@ -185,9 +185,9 @@ void CSO::tsucs()
     }
     else
     {
-        ocv[cvo::x].store((f[0]) * ccv[ctl::amp]->load() * 0.05f);
-        ocv[cvo::y].store((f[1]) * ccv[ctl::amp]->load() * 0.05f);
-        ocv[cvo::z].store((f[2] - 45.0f) * ccv[ctl::amp]->load() * 0.05f);
+        ocv[cvo::x] = (f[0]) * ccv[ctl::amp]->load() * 0.05f;
+        ocv[cvo::y] = (f[1]) * ccv[ctl::amp]->load() * 0.05f;
+        ocv[cvo::z] = (f[2] - 45.0f) * ccv[ctl::amp]->load() * 0.05f;
     }
 }
 

@@ -10,12 +10,12 @@ namespace core
     {
             int position;
             const Descriptor* const descriptor;
-            std::atomic<T>** ccv;                   // Controls
-            std::atomic<T>** icv;                   // Inputs
-            std::atomic<T>*  ocv;                   // Outputs
+            std::atomic<T>** ccv;                   // Controls (pointees are host-owned parameter atomics)
+            T** icv;                                // Inputs (point at other modules' outputs, audio thread only)
+            T*  ocv;                                // Outputs (audio thread only)
             virtual void process() noexcept = 0;
             virtual void reset() {}
-            Module(const int, const Descriptor*);
+            Module(int, const Descriptor*);
             virtual ~Module();
     };
 }

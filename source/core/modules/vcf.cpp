@@ -33,7 +33,7 @@ namespace core
     VCF::VCF(): Module(idc, &vcf::descriptor), id(idc++)
     { 
         for(int i = 0; i < ic; ++i) icv[i] = &zero;
-        for(int i = 0; i < cc; ++i) ccv[i] = &zero;
+        for(int i = 0; i < cc; ++i) ccv[i] = &azero;
         reset(); 
     }
 
@@ -50,20 +50,20 @@ namespace core
 
     void VCF::process() noexcept
     {
-        float cutoff = ccv[ctl::cutoff]->load() + icv[cvi::cutoff]->load();
-        if      (cutoff < 0.0f) cutoff = 0.0f;
-        else if (cutoff > 1.0f) cutoff = 1.0f;
+        float cutoff = ccv[ctl::cutoff]->load() + (*icv[cvi::cutoff]);
+        if      (cutoff < 0.0f) [[unlikely]] cutoff = 0.0f;
+        else if (cutoff > 1.0f) [[unlikely]] cutoff = 1.0f;
 
-        float Q = ccv[ctl::Q]->load() + icv[ctl::Q]->load();
-        if      (Q < 0.0f) Q = 0.0f;
-        else if (Q > 1.0f) Q = 1.0f;
+        float Q = ccv[ctl::Q]->load() + (*icv[ctl::Q]);
+        if      (Q < 0.0f) [[unlikely]] Q = 0.0f;
+        else if (Q > 1.0f) [[unlikely]] Q = 1.0f;
 
         g = powf(cutoff, 5) * 0.6f + 0.01f;
         k = (1.0f - Q * Q * 0.9f) + 0.01f;
         a = 1.0f / (1.0f + g * (g + k));
         b = g * a;
 
-        float is = icv[cvi::a]->load() + icv[cvi::b]->load() + icv[cvi::c]->load();
+        float is = (*icv[cvi::a]) + (*icv[cvi::b]) + (*icv[cvi::c]);
         // 12dB
         float va = a * iceq[0] + b * (is - iceq[1]);
         float vb = iceq[1] + g * va;
@@ -75,8 +75,8 @@ namespace core
         iceq[0]  = 2.0f * va - iceq[0];
         iceq[1]  = 2.0f * vb - iceq[1];
 
-        ocv[cvo::hp].store(vb);
-        ocv[cvo::bp].store(va);
-        ocv[cvo::lp].store(is - k * va - vb);
+        ocv[cvo::hp] = vb;
+        ocv[cvo::bp] = va;
+        ocv[cvo::lp] = is - k * va - vb;
     }
 };

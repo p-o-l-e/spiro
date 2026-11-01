@@ -9,8 +9,8 @@ namespace core
 #define CORE_FLOAT
 #ifdef CORE_FLOAT
 
-    extern std::atomic<float> zero;
-    extern std::atomic<float> one;
+    extern float zero;                          // Plain zero for module io (audio thread only)
+    extern std::atomic<float> azero;            // Atomic zero for control-pointer defaults (ccv)
     
     constexpr float pi                 = 3.14159265358979323846f;
     constexpr float tao                = 6.28318530717958647692f;
@@ -18,8 +18,8 @@ namespace core
 
 #elifdef CORE_DOUBLE
 
-    extern std::atomic<double> zero;
-    extern std::atomic<double> one;
+    extern double zero;
+    extern std::atomic<double> azero;
     
     constexpr double pi                 = 3.14159265358979323846;
     constexpr double tao                = 6.28318530717958647692;

@@ -5,14 +5,14 @@
 
 namespace core
 {
-    Module<float>* Rack::at(const map::module::type& type, const uint8_t& pos) const noexcept
+    Module<float>* Rack::at(map::module::type type, uint8_t pos) const noexcept
     {
         uint16_t uid = static_cast<uint8_t>(type) << 8;
         uid += pos;
         return moduleMap.find(uid)->second;
     }
 
-    Module<float>* Rack::at(const int& pos) const noexcept
+    Module<float>* Rack::at(int pos) const noexcept
     {
         return node[pos];
     }
@@ -23,7 +23,7 @@ namespace core
         return indexMap.find(uid)->second;
     }
 
-    void Rack::process(const int& p) noexcept 
+    void Rack::process(int p) noexcept 
     { 
         node[p]->process(); 
     }
@@ -61,7 +61,7 @@ namespace core
         }
     }
 
-    Module<float>* Rack::create_node(const map::module::type& t)
+    Module<float>* Rack::create_node(map::module::type t)
     {
         switch (t)
         {

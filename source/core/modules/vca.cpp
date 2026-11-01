@@ -43,11 +43,11 @@ namespace core
         }
         else 
         {
-            v = ccv[ctl::amp]->load() * sigmoid_amp(icv[cvi::amp]->load());
+            v = ccv[ctl::amp]->load() * sigmoid_amp((*icv[cvi::amp]));
         }
-        float o = (icv[cvi::a]->load() + icv[cvi::b]->load()) * v; 
-        ocv[cvo::a].store(o);
-        ocv[cvo::b].store(o);
+        float o = ((*icv[cvi::a]) + (*icv[cvi::b])) * v; 
+        ocv[cvo::a] = o;
+        ocv[cvo::b] = o;
     };
 
     VCA::VCA(): Module(idc, &vca::descriptor[0]), id(idc++)

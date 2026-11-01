@@ -37,11 +37,11 @@ namespace core {
             if(icv[i] == &zero) continue;
             else 
             {
-                s *= icv[i]->load();
+                s *= (*icv[i]);
                 o = true;
             }
         }
-        ocv[0].store( o ? s : 0.0f);
+        ocv[0] =  o ? s : 0.0f;
     };
 
     PDT::PDT(): Module(idc, &pdt::descriptor), id(idc++)

@@ -24,7 +24,6 @@
 #include "env_interface.hpp"
 #include <atomic>
 #include <cstddef>
-#include <iostream>
 
 namespace core {
 
@@ -54,21 +53,21 @@ namespace core {
                 counter[mode].fetch_add(n, std::memory_order_relaxed);
             }
 
-            T get() noexcept
+            [[nodiscard]] T get() noexcept
             {
                 T value = data[r];
                 r = (r + 1) & mask;
                 return value;
             }
 
-            T get(size_t jump) noexcept
+            [[nodiscard]] T get(size_t jump) noexcept
             {
                 T value = data[r];
                 r = (r + jump) & mask;
                 return value;
             }
 
-            T read(size_t size, float pos, float min = -1.0f, float max = 1.0f)
+            [[nodiscard]] T read(size_t size, float pos, float min = -1.0f, float max = 1.0f)
             {
                 if (pos < min) [[unlikely]] pos = min;
                 else if (pos > max) [[unlikely]] pos = max;
@@ -78,7 +77,7 @@ namespace core {
                 return data[(r + index) & mask];
             }
 
-            std::ptrdiff_t pool() noexcept
+            [[nodiscard]] std::ptrdiff_t pool() noexcept
             {
                 return std::ptrdiff_t(count(Mode::W)) - std::ptrdiff_t(count(Mode::R));
             }
@@ -88,8 +87,8 @@ namespace core {
                 r = (r + n) & mask;
             }
 
-            T* raw() const noexcept { return data; }
-            unsigned long count(Mode mode) noexcept { return counter[mode].load(std::memory_order_relaxed); }
+            [[nodiscard]] T* raw() const noexcept { return data; }
+            [[nodiscard]] unsigned long count(Mode mode) const noexcept { return counter[mode].load(std::memory_order_relaxed); }
 
             explicit wavering(std::size_t n): size(std::size_t{ 1 } << n), mask(size - 1)
             {

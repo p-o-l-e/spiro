@@ -40,7 +40,7 @@ namespace core
      * Data : 0x FF FF FF FF
      * index:     3  2  1  0     MSB->LSB
      * ***********************************************************************************************************************/
-    constexpr uint8_t extract_byte(uint32_t data, shift index) noexcept
+    [[nodiscard]] constexpr uint8_t extract_byte(uint32_t data, shift index) noexcept
     {
         return uint8_t((data >> index) & 0xFF);
     }
@@ -52,17 +52,17 @@ namespace core
      * CC : Parameter type
      * DD : Parameter id/position
      * ***********************************************************************************************************************/
-    constexpr uint32_t encode_uid(const map::module::type& mt, uint8_t mp, const map::cv::index& pt, uint8_t& pp) noexcept 
+    [[nodiscard]] constexpr uint32_t encode_uid(map::module::type mt, uint8_t mp, map::cv::index pt, uint8_t pp) noexcept
     {
         return uint32_t((uint8_t(mt) << 24) | (mp << 16) | (uint8_t(pt) << 8) | pp);
     }
 
-    constexpr uint32_t encode_uid(const uid_t& uid) noexcept 
+    [[nodiscard]] constexpr uint32_t encode_uid(const uid_t& uid) noexcept
     {
         return uint32_t((uid.mt << 24) | (uid.mp << 16) | (uid.pt << 8) | uid.pp);
     }
 
-    constexpr uid_t decode_uid(const uint32_t& data) noexcept
+    [[nodiscard]] constexpr uid_t decode_uid(const uint32_t data) noexcept
     {
         return uid_t
         (
